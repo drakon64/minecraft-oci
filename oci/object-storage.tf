@@ -6,6 +6,15 @@ resource "oci_objectstorage_bucket" "minecraft_backup" {
 	versioning = "Enabled"
 }
 
+resource "oci_identity_policy" "object_storage_lifecycle_policy" {
+	compartment_id = var.oci_compartment
+	name = "Object_Storage_Lifecycle_Policy"
+	description = "Object Storage Lifecycle Policy"
+	statements = [
+		"Allow service objectstorage-uk-london-1 to manage object-family in tenancy"
+	]
+}
+
 resource "oci_objectstorage_object_lifecycle_policy" "minecraft_backup" {
 	bucket = "minecraft-backup"
 	namespace = var.oci_namespace
