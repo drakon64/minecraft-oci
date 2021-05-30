@@ -21,7 +21,7 @@
       lineinfile:
          path: /etc/cloud/cloud.cfg
          line: "apt_preserve_sources_list: true"
-      when: edition = bedrock
+      when: edition == "bedrock"
 
     - name: Enabling AMD64 apt repositories
       copy:
@@ -30,7 +30,7 @@
          owner: root
          group: root
          mode: 0644
-      when: edition = bedrock
+      when: edition == "bedrock"
 
     - name: Adding AMD64 apt repositories
       copy:
@@ -39,7 +39,7 @@
          owner: root
          group: root
          mode: 0644
-      when: edition = bedrock
+      when: edition == "bedrock"
 
     - name: Installing packages
       apt:
@@ -53,14 +53,14 @@
           - python3-pip
          state: present
          update_cache: yes
-      when: edition = bedrock
+      when: edition == "bedrock"
 
     - name: Installing packages
       apt:
          name: default-jre-headless
          state: present
          update_cache: yes
-      when: edition = java
+      when: edition == "java"
 
     - name: Creating the minecraft user
       user:
@@ -83,7 +83,7 @@
          group: minecraft
          mode: u=rwX,g=rX,o=rX
          remote_src: yes
-      when: edition = bedrock
+      when: edition == "bedrock"
 
     - name: Downloading Minecraft Java server
       get_url:
@@ -92,13 +92,13 @@
          owner: minecraft
          group: minecraft
          mode: 0644
-      when: edition = java
+      when: edition == "java"
 
     - name: Making the Bedrock server executable
       file:
          path: /home/minecraft/bedrock/bedrock_server
          mode: 0755
-      when: edition = bedrock
+      when: edition == "bedrock"
 
     - name: Copying the server scripts
       template:
@@ -110,13 +110,6 @@
       with_items:
        - stop
        - backup
-
-    - vars:
-         command: "/home/minecraft/bedrock/bedrock_server"
-      when: edition = bedrock
-    - vars:
-         command: "/usr/bin/java -Xmx1024M -Xms1024M -jar server.jar nogui"
-      when: edition = java
 
     - name: Copying the systemd units
       template:
