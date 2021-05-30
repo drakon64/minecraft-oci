@@ -1,0 +1,4 @@
+.DS_Store
+provider.tf
+terraform.sh
+oci.zip

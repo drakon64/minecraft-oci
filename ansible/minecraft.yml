@@ -1,0 +1,119 @@
+ - hosts: all
+
+   tasks:
+
+    - name: Setting the timezone to Europe/London
+      timezone:
+         name: Europe/London
+
+    - name: Removing the Oracle Cloud iptables rules
+      lineinfile:
+         path: /etc/iptables/rules.v4
+         search_string: "-A INPUT -j REJECT --reject-with icmp-host-prohibited"
+         line: "#-A INPUT -j REJECT --reject-with icmp-host-prohibited"
+      register: iptables
+
+    - name: Reloading iptables
+      shell: iptables-restore < /etc/iptables/rules.v4
+      when: iptables.changed
+
+    - name: Preventing cloud-init from overwriting /etc/apt/sources.list
+      lineinfile:
+         path: /etc/cloud/cloud.cfg
+         line: "apt_preserve_sources_list: true"
+
+    - name: Enabling AMD64 apt repositories
+      copy:
+         src: files/arch
+         dest: /var/lib/dpkg/arch
+         owner: root
+         group: root
+         mode: 0644
+
+    - name: Adding AMD64 apt repositories
+      copy:
+         src: files/sources.list
+         dest: /etc/apt/sources.list
+         owner: root
+         group: root
+         mode: 0644
+
+    - name: Installing packages
+      apt:
+         name:
+          - unzip
+          - qemu-user
+          - libc6:amd64
+          - zlib1g:amd64
+          - libssl1.1:amd64
+          - libstdc++6:amd64
+          - python3-pip
+         state: present
+         update_cache: yes
+
+    - name: Creating the minecraft user
+      user:
+         name: minecraft
+         shell: /bin/nologin
+
+    - name: Creating the bedrock directory
+      file:
+         path: /home/minecraft/bedrock
+         state: directory
+         owner: minecraft
+         group: minecraft
+         mode: 0755
+
+    - name: Extracting Minecraft Bedrock server
+      unarchive:
+         src: https://minecraft.azureedge.net/bin-linux/bedrock-server-1.16.221.01.zip
+         dest: /home/minecraft/bedrock/
+         owner: minecraft
+         group: minecraft
+         mode: u=rwX,g=rX,o=rX
+         remote_src: yes
+
+    - name: Making the Bedrock server executable
+      file:
+         path: /home/minecraft/bedrock/bedrock_server
+         mode: 0755
+
+    - name: Copying the Bedrock server scripts
+      copy:
+         src: files/{{ item }}_bedrock.sh
+         dest: /home/minecraft/
+         owner: minecraft
+         group: minecraft
+         mode: 0755
+      with_items:
+       - stop
+       - backup
+
+    - name: Copying the systemd units
+      copy:
+         src: files/systemd/{{ item }}
+         dest: /etc/systemd/system/
+         owner: root
+         group: root
+         mode: 0644
+      with_items:
+       - minecraft-bedrock.service
+       - minecraft-bedrock-backup.service
+       - minecraft-bedrock-backup.timer
+       - apt-upgrade.service
+       - apt-upgrade.timer
+
+    - name: Starting the systemd units
+      systemd:
+         name: "{{ item }}"
+         state: started
+         enabled: yes
+         daemon_reload: yes
+      with_items:
+       - minecraft-bedrock.service
+       - minecraft-bedrock-backup.timer
+       - apt-upgrade.timer
+
+    - name: Installing the OCI client
+      pip:
+         name: oci-cli

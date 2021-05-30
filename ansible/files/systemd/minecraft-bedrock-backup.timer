@@ -1,0 +1,9 @@
+[Unit]
+Description=Backup Minecraft server
+
+[Timer]
+OnCalendar=1:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target
