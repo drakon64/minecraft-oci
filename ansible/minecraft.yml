@@ -57,7 +57,9 @@
 
     - name: Installing packages
       apt:
-         name: default-jre-headless
+         name:
+          - default-jre-headless
+          - python3-pip
          state: present
          update_cache: yes
       when: edition == "java"
