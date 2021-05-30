@@ -18,3 +18,7 @@ variable "oci_image_id" {
 variable "ssh_authorized_keys" {
 	type = string
 }
+
+variable "management_ip" {
+	type = string
+}
