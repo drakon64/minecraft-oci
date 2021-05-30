@@ -8,7 +8,7 @@ resource "oci_core_instance" "minecraft_instance" {
 	}
 	shape_config {
 		memory_in_gbs = 4
-		ocpus = 3
+		ocpus = 4
 	}
 
 	display_name = "minecraft"
