@@ -30,4 +30,15 @@ resource "oci_core_security_list" "security-list" {
 			max = 19132
 		}
 	}
+
+	ingress_security_rules {
+		stateless = false
+		source = var.management_ip
+		source_type = "CIDR_BLOCK"
+		protocol = "6"
+		tcp_options {
+			min = 25565
+			max = 25565
+		}
+	}
 }
