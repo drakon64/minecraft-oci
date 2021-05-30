@@ -7,7 +7,7 @@ resource "oci_objectstorage_bucket" "minecraft_backup" {
 }
 
 resource "oci_identity_policy" "object_storage_lifecycle_policy" {
-	compartment_id = var.oci_compartment
+	compartment_id = var.oci_tenancy
 	name = "Object_Storage_Lifecycle_Policy"
 	description = "Object Storage Lifecycle Policy"
 	statements = [
