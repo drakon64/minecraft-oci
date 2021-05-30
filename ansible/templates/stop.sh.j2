@@ -1,0 +1,7 @@
+#!/bin/sh
+
+tmux send-keys -t minecraft-{{ edition }} stop ENTER
+
+while tmux list-sessions | grep --quiet minecraft-{{ edition }} ; do
+	sleep 1
+done

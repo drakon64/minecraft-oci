@@ -1,0 +1,12 @@
+[Unit]
+Description=Minecraft {{ edition | capitalize }} Server
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/systemctl stop minecraft-{{ edition }}
+ExecStart=/usr/bin/sudo -u minecraft /home/minecraft/backup_{{ edition }}.sh
+ExecStart=/usr/bin/systemctl start minecraft-{{ edition }}
+
+[Install]
+WantedBy=multi-user.target

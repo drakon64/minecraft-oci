@@ -85,6 +85,15 @@
          remote_src: yes
       when: edition = bedrock
 
+    - name: Downloading Minecraft Java server
+      get_url:
+         url: https://launcher.mojang.com/v1/objects/1b557e7b033b583cd9f66746b7a9ab1ec1673ced/server.jar
+         dest: /home/minecraft/java/server.jar
+         owner: minecraft
+         group: minecraft
+         mode: 0644
+      when: edition = java
+
     - name: Making the Bedrock server executable
       file:
          path: /home/minecraft/bedrock/bedrock_server
@@ -92,9 +101,9 @@
       when: edition = bedrock
 
     - name: Copying the server scripts
-      copy:
-         src: files/{{ item }}_{{ edition }}.sh
-         dest: /home/minecraft/
+      template:
+         src: templates/{{ item }}.sh.j2
+         dest: /home/minecraft/{{ item }}_edition.sh
          owner: minecraft
          group: minecraft
          mode: 0755
@@ -102,19 +111,26 @@
        - stop
        - backup
 
+    - vars:
+         command: "/home/minecraft/bedrock/bedrock_server"
+      when: edition = bedrock
+    - vars:
+         command: "java -Xmx1024M -Xms1024M -jar server.jar nogui"
+      when: edition = java
+
     - name: Copying the systemd units
-      copy:
-         src: files/systemd/{{ item }}
-         dest: /etc/systemd/system/
+      template:
+         src: "{{ item.type }}/systemd/{{ item.src }}"
+         dest: /etc/systemd/system/{{ item.dest }}
          owner: root
          group: root
          mode: 0644
       with_items:
-       - minecraft-{{ edition }}.service
-       - minecraft-{{ edition }}-backup.service
-       - minecraft-{{ edition }}-backup.timer
-       - apt-upgrade.service
-       - apt-upgrade.timer
+       - { src: "minecraft.service.j2", dest: "minecraft-{{ edition }}.service", type: "templates" }
+       - { src: "minecraft-backup.service.j2", dest: "minecraft-{{ edition }}-backup.service", type: "templates" }
+       - { src: "minecraft-backup.timer.j2", dest: "minecraft-{{ edition }}-backup.timer", type: "templates" }
+       - { src: "apt-upgrade.service", dest: "apt-upgrade.service", type: "files" }
+       - { src: "apt-upgrade.timer", dest: "apt-upgrade.timer", type: "files" }
 
     - name: Starting the systemd units
       systemd:
