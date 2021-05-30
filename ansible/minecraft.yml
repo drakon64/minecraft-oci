@@ -75,7 +75,7 @@
          group: minecraft
          mode: 0755
 
-    - name: Extracting Minecraft Bedrock server
+    - name: Downloading Minecraft Bedrock server
       unarchive:
          src: https://minecraft.azureedge.net/bin-linux/bedrock-server-1.16.221.01.zip
          dest: /home/minecraft/bedrock/
