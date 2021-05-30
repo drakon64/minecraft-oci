@@ -103,7 +103,7 @@
     - name: Copying the server scripts
       template:
          src: templates/{{ item }}.sh.j2
-         dest: /home/minecraft/{{ item }}_edition.sh
+         dest: /home/minecraft/{{ item }}_{{ edition }}.sh
          owner: minecraft
          group: minecraft
          mode: 0755
