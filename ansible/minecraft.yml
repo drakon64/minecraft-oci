@@ -128,6 +128,8 @@
          owner: minecraft
          group: minecraft
          mode: 0644
+      when:
+       - restore_backup == "true"
 
     - name: Restoring the latest server backup
       unarchive:
