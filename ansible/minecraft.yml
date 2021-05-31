@@ -69,6 +69,12 @@
          name: minecraft
          shell: /bin/nologin
 
+    - name: Removing the existing server
+      file:
+         path: /home/minecraft/{{ edition }}
+         state: absent
+      when: new_server == "true"
+
     - name: Creating the server directory
       file:
          path: /home/minecraft/{{ edition }}
@@ -76,6 +82,8 @@
          owner: minecraft
          group: minecraft
          mode: 0755
+      when:
+       - new_server == "true"
 
     - name: Downloading Minecraft Bedrock server
       unarchive:
@@ -85,7 +93,10 @@
          group: minecraft
          mode: u=rwX,g=rX,o=rX
          remote_src: yes
-      when: edition == "bedrock"
+      when:
+       - edition == "bedrock"
+       - new_server == "true"
+       - restore_backup == "false"
 
     - name: Downloading Minecraft Java server
       get_url:
@@ -94,7 +105,41 @@
          owner: minecraft
          group: minecraft
          mode: 0644
-      when: edition == "java"
+      when:
+       - edition == "java"
+       - new_server == "true"
+       - restore_backup == "false"
+
+    - name: Installing the OCI client
+      pip:
+         name: oci-cli
+
+    - name: Downloading the latest server backup
+      command: oci os object get --auth instance_principal --bucket-name minecraft-backup --file {{ edition }}.tar.gz --name {{ edition }}.tar.gz
+      args:
+         chdir: /home/minecraft
+      when:
+       - new_server == "true"
+       - restore_backup == "true"
+
+    - name: Setting permissions for the downloaded backup
+      file:
+         path: /home/minecraft/{{ edition }}.tar.gz
+         owner: minecraft
+         group: minecraft
+         mode: 0644
+
+    - name: Restoring the latest server backup
+      unarchive:
+         src: /home/minecraft/{{ edition }}.tar.gz
+         dest: /home/minecraft/
+         owner: minecraft
+         group: minecraft
+         mode: u=rwX,g=rX,o=rX
+         remote_src: yes
+      when:
+       - new_server == "true"
+       - restore_backup == "true"
 
     - name: Making the Bedrock server executable
       file:
@@ -137,7 +182,3 @@
        - minecraft-{{ edition }}.service
        - minecraft-{{ edition }}-backup.timer
        - apt-upgrade.timer
-
-    - name: Installing the OCI client
-      pip:
-         name: oci-cli
