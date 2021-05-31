@@ -33,7 +33,7 @@ resource "oci_core_security_list" "security-list" {
 
 	ingress_security_rules {
 		stateless = false
-		source = var.management_ip
+		source = "0.0.0.0/0"
 		source_type = "CIDR_BLOCK"
 		protocol = "6"
 		tcp_options {
