@@ -2,7 +2,7 @@
 Description=Apt Upgrade
 
 [Timer]
-OnCalendar=Tue 2:00
+OnCalendar=Tue 7:00
 Persistent=true
 
 [Install]
