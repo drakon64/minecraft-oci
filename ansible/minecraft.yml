@@ -21,7 +21,9 @@
       lineinfile:
          path: /etc/cloud/cloud.cfg
          line: "apt_preserve_sources_list: true"
-      when: edition == "bedrock"
+      when:
+       - edition == "bedrock"
+       - ansible_architecture != "x86_64"
 
     - name: Enabling AMD64 apt repositories
       copy:
@@ -30,7 +32,9 @@
          owner: root
          group: root
          mode: 0644
-      when: edition == "bedrock"
+      when:
+       - edition == "bedrock"
+       - ansible_architecture != "x86_64"
 
     - name: Adding AMD64 apt repositories
       copy:
@@ -39,13 +43,14 @@
          owner: root
          group: root
          mode: 0644
-      when: edition == "bedrock"
+      when:
+       - edition == "bedrock"
+       - ansible_architecture != "x86_64"
 
-    - name: Installing packages
+    - name: Installing Bedrock packages
       apt:
          name:
           - unzip
-          - qemu-user
           - libc6:amd64
           - zlib1g:amd64
           - libssl1.1:amd64
@@ -55,7 +60,15 @@
          update_cache: yes
       when: edition == "bedrock"
 
-    - name: Installing packages
+    - name: Installing AMD64 application support
+      apt:
+         name: qemu-user
+         state: present
+      when:
+       - edition == "bedrock"
+       - ansible_architecture != "x86_64"
+
+    - name: Installing Java packages
       apt:
          name:
           - default-jre-headless
