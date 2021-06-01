@@ -95,8 +95,7 @@
          owner: minecraft
          group: minecraft
          mode: 0755
-      when:
-       - new_server == "true"
+      when: new_server == "true"
 
     - name: Downloading Minecraft Bedrock server
       unarchive:
@@ -131,9 +130,7 @@
       command: oci os object get --auth instance_principal --bucket-name minecraft-backup --file {{ edition }}.tar.gz --name {{ edition }}.tar.gz
       args:
          chdir: /home/minecraft
-      when:
-       - new_server == "true"
-       - restore_backup == "true"
+      when: restore_backup == "true"
 
     - name: Setting permissions for the downloaded backup
       file:
@@ -141,8 +138,7 @@
          owner: minecraft
          group: minecraft
          mode: 0644
-      when:
-       - restore_backup == "true"
+      when: restore_backup == "true"
 
     - name: Restoring the latest server backup
       unarchive:
@@ -152,9 +148,7 @@
          group: minecraft
          mode: u=rwX,g=rX,o=rX
          remote_src: yes
-      when:
-       - new_server == "true"
-       - restore_backup == "true"
+      when: restore_backup == "true"
 
     - name: Making the Bedrock server executable
       file:
