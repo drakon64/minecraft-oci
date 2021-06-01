@@ -80,7 +80,7 @@
     - name: Creating the minecraft user
       user:
          name: minecraft
-         shell: /bin/nologin
+         shell: /usr/sbin/nologin
 
     - name: Removing the existing server
       file:
