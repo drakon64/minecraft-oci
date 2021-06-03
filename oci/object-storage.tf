@@ -3,6 +3,7 @@ resource "oci_objectstorage_bucket" "minecraft_backup" {
 	name = var.backup_bucket_name
 	namespace = var.oci_namespace
 
+	auto_tiering = "InfrequentAccess"
 	versioning = "Enabled"
 }
 
