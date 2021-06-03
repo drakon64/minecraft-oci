@@ -193,6 +193,8 @@
        - { src: "minecraft-backup.timer.j2", dest: "minecraft-{{ edition }}-backup.timer", type: "templates" }
        - { src: "apt-upgrade.service", dest: "apt-upgrade.service", type: "files" }
        - { src: "apt-upgrade.timer", dest: "apt-upgrade.timer", type: "files" }
+       - { src: "oci-disk-utilization.service", dest: "oci-disk-utilization.service", type: "files" }
+       - { src: "oci-disk-utilization.timer", dest: "oci-disk-utilization.timer", type: "files" }
 
     - name: Starting the systemd units
       systemd:
@@ -204,3 +206,4 @@
        - minecraft-{{ edition }}.service
        - minecraft-{{ edition }}-backup.timer
        - apt-upgrade.timer
+       - oci-disk-utilization.timer
