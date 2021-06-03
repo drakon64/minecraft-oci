@@ -6,8 +6,18 @@ variable "oci_compartment" {
 	type = string
 }
 
+variable "oci_compartment_name" {
+	type = string
+	default = "minecraft"
+}
+
 variable "oci_namespace" {
 	type = string
+}
+
+variable "oci_compute_display_name" {
+	type = string
+	default = "minecraft"
 }
 
 variable "oci_image_id" {
@@ -21,4 +31,9 @@ variable "ssh_authorized_keys" {
 
 variable "management_ip" {
 	type = string
+}
+
+variable "backup_bucket_name" {
+	type = string
+	default = "minecraft-backup"
 }

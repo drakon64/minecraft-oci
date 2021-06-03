@@ -1,6 +1,6 @@
 resource "oci_objectstorage_bucket" "minecraft_backup" {
 	compartment_id = oci_identity_compartment.tf-compartment.id
-	name = "minecraft-backup"
+	name = var.backup_bucket_name
 	namespace = var.oci_namespace
 
 	versioning = "Enabled"
