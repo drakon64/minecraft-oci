@@ -15,6 +15,21 @@ variable "oci_namespace" {
 	type = string
 }
 
+variable "oci_compute_shape" {
+	type = string
+	default = "VM.Standard.A1.Flex"
+}
+
+variable "oci_compute_memory" {
+	type = number
+	default = 3
+}
+
+variable "oci_compute_ocpus" {
+	type = number
+	default = 3
+}
+
 variable "oci_compute_display_name" {
 	type = string
 	default = "minecraft"

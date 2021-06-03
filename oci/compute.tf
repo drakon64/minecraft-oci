@@ -1,14 +1,14 @@
 resource "oci_core_instance" "minecraft_instance" {
 	availability_domain = data.oci_identity_availability_domains.ads.availability_domains[0].name
 	compartment_id = oci_identity_compartment.tf-compartment.id
-	shape = "VM.Standard.A1.Flex"
+	shape = var.oci_compute_shape
 	source_details {
 		source_id = var.oci_image_id
 		source_type = "image"
 	}
 	shape_config {
-		memory_in_gbs = 4
-		ocpus = 4
+		memory_in_gbs = var.oci_compute_memory
+		ocpus = var.oci_compute_ocpus
 	}
 
 	display_name = var.oci_compute_display_name
