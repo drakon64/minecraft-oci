@@ -17,6 +17,35 @@ oci --auth instance_principal monitoring metric-data post --metric-data "[
 			\"faultDomain\": \"$(echo $METADATA | jq --raw-output .faultDomain)\",
 			\"imageId\": \"$(echo $METADATA | jq --raw-output .image)\",
 			\"instancePoolId\": \"$(echo $METADATA | jq --raw-output .instancePoolId)\",
+			\"mount\": \"/\",
+			\"region\": \"$REGION\",
+			\"resourceDisplayName\": \"$(echo $METADATA | jq --raw-output .displayName)\",
+			\"resourceId\": \"$(echo $METADATA | jq --raw-output .id)\",
+			\"shape\": \"$(echo $METADATA | jq --raw-output .shape)\"
+		},
+		\"metadata\": {
+			\"displayName\": \"Disk Utilization\",
+			\"maxRange\": \"100\",
+			\"minRange\": \"0\",
+			\"unit\": \"Percent\"
+		},
+		\"name\": \"diskUtilization\",
+		\"namespace\": \"minecraft\"
+	},
+	{
+		\"compartmentId\": \"$(echo $METADATA | jq --raw-output .compartmentId)\",
+		\"datapoints\": [
+			{
+				\"timestamp\": \"$(date --iso-8601=seconds)\",
+				\"value\": $(df --output=pcent /boot/efi | grep -v 'Use%' | awk '{print $1}' | tr -d \%)
+			}
+		],
+		\"dimensions\": {
+			\"availabilityDomain\": \"$(echo $METADATA | jq --raw-output .availabilityDomain)\",
+			\"faultDomain\": \"$(echo $METADATA | jq --raw-output .faultDomain)\",
+			\"imageId\": \"$(echo $METADATA | jq --raw-output .image)\",
+			\"instancePoolId\": \"$(echo $METADATA | jq --raw-output .instancePoolId)\",
+			\"mount\": \"/boot/efi\",
 			\"region\": \"$REGION\",
 			\"resourceDisplayName\": \"$(echo $METADATA | jq --raw-output .displayName)\",
 			\"resourceId\": \"$(echo $METADATA | jq --raw-output .id)\",
