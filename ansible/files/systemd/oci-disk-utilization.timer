@@ -1,0 +1,10 @@
+[Unit]
+Description=OCI Disk Utilization Monitor
+
+[Timer]
+OnCalendar=*-*-* *:*:00
+Persistent=true
+AccuracySec=1m
+
+[Install]
+WantedBy=timers.target

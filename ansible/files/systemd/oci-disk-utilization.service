@@ -1,0 +1,11 @@
+[Unit]
+Description=OCI Disk Utilization Monitor
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/home/minecraft/disk-utilization.sh
+WorkingDirectory=/home/minecraft
+
+[Install]
+WantedBy=multi-user.target
