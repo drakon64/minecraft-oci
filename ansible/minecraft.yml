@@ -171,11 +171,14 @@
 
     - name: Copying the OS scripts
       copy:
-         src: files/disk-utilization.sh
+         src: files/{{ item }}.sh
          dest: /home/minecraft/
          owner: minecraft
          group: minecraft
          mode: 0755
+      with_items:
+       - apt-reboot
+       - disk-utilization
 
     - name: Copying the systemd units
       template:
