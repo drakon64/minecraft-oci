@@ -158,7 +158,7 @@
          mode: 0755
       when: edition == "bedrock"
 
-    - name: Copying the server scripts
+    - name: Copying the Minecraft server scripts
       template:
          src: templates/{{ item }}.sh.j2
          dest: /home/minecraft/{{ item }}_{{ edition }}.sh
@@ -168,6 +168,14 @@
       with_items:
        - stop
        - backup
+
+    - name: Copying the OS scripts
+      copy:
+         src: files/disk-utilization.sh
+         dest: /home/minecraft/
+         owner: minecraft
+         group: minecraft
+         mode: 0755
 
     - name: Copying the systemd units
       template:
