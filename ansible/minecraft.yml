@@ -88,6 +88,8 @@
 
     - name: Populate service facts
       ansible.builtin.service_facts:
+      when:
+       - new_server == "true"
 
     - name: Stopping the existing server
       systemd:
