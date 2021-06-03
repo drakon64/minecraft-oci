@@ -4,7 +4,7 @@ Description=OCI Disk Utilization Monitor
 [Timer]
 OnCalendar=*-*-* *:*:00
 Persistent=true
-AccuracySec=1m
+AccuracySec=1s
 
 [Install]
 WantedBy=timers.target
