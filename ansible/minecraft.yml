@@ -1,3 +1,5 @@
+# yaml-language-server: $schema=https://json.schemastore.org/ansible-playbook.json
+
  - hosts: all
 
    tasks:
@@ -83,6 +85,17 @@
       user:
          name: minecraft
          shell: /bin/bash
+
+    - name: Populate service facts
+      ansible.builtin.service_facts:
+
+    - name: Stopping the existing server
+      systemd:
+         name: minecraft-{{ edition }}
+         state: stopped
+      when:
+       - new_server == "true"
+       - ansible_facts.services['minecraft-' + edition + '.service'] is defined
 
     - name: Removing the existing server
       file:
