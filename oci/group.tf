@@ -14,3 +14,12 @@ resource "oci_identity_policy" "minecraft_backup" {
 		"Allow dynamic-group ${oci_identity_dynamic_group.minecraft.name} to manage objects in compartment id ${oci_identity_compartment.tf-compartment.id} where all {target.bucket.name='${oci_objectstorage_bucket.minecraft_backup.name}', any {request.permission='OBJECT_INSPECT', request.permission='OBJECT_READ', request.permission='OBJECT_CREATE', request.permission='OBJECT_OVERWRITE'}}"
 	]
 }
+
+resource "oci_identity_policy" "minecraft_monitoring" {
+	compartment_id = oci_identity_compartment.tf-compartment.id
+	description = "Minecraft monitoring"
+	name = "minecraft-monitoring"
+	statements = [
+		"Allow dynamic-group ${oci_identity_dynamic_group.minecraft.name} to use metrics in compartment id ${oci_identity_compartment.tf-compartment.id} where target.metrics.namespace='minecraft'"
+	]
+}
