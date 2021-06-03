@@ -1,0 +1,18 @@
+[Unit]
+Description=Minecraft {{ edition | capitalize }} Server
+After=network.target
+
+[Service]
+Type=forking
+ExecStart=/usr/bin/tmux new-session -s minecraft-{{ edition }} -d '{{ command }}'
+ExecStop=/home/minecraft/stop_{{ edition }}.sh
+
+WorkingDirectory=/home/minecraft/{{ edition }}
+
+Nice=-20
+
+User=minecraft
+Group=minecraft
+
+[Install]
+WantedBy=multi-user.target

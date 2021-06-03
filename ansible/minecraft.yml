@@ -21,6 +21,9 @@
       lineinfile:
          path: /etc/cloud/cloud.cfg
          line: "apt_preserve_sources_list: true"
+      when:
+       - edition == "bedrock"
+       - ansible_architecture != "x86_64"
 
     - name: Enabling AMD64 apt repositories
       copy:
@@ -29,6 +32,9 @@
          owner: root
          group: root
          mode: 0644
+      when:
+       - edition == "bedrock"
+       - ansible_architecture != "x86_64"
 
     - name: Adding AMD64 apt repositories
       copy:
@@ -37,12 +43,14 @@
          owner: root
          group: root
          mode: 0644
+      when:
+       - edition == "bedrock"
+       - ansible_architecture != "x86_64"
 
-    - name: Installing packages
+    - name: Installing Bedrock packages
       apt:
          name:
           - unzip
-          - qemu-user
           - libc6:amd64
           - zlib1g:amd64
           - libssl1.1:amd64
@@ -50,21 +58,46 @@
           - python3-pip
          state: present
          update_cache: yes
+      when: edition == "bedrock"
+
+    - name: Installing AMD64 application support
+      apt:
+         name: qemu-user
+         state: present
+      when:
+       - edition == "bedrock"
+       - ansible_architecture != "x86_64"
+
+    - name: Installing Java packages
+      apt:
+         name:
+          - default-jre-headless
+          - python3-pip
+         state: present
+         update_cache: yes
+      when: edition == "java"
 
     - name: Creating the minecraft user
       user:
          name: minecraft
-         shell: /bin/nologin
+         shell: /bin/bash
 
-    - name: Creating the bedrock directory
+    - name: Removing the existing server
       file:
-         path: /home/minecraft/bedrock
+         path: /home/minecraft/{{ edition }}
+         state: absent
+      when: new_server == "true"
+
+    - name: Creating the server directory
+      file:
+         path: /home/minecraft/{{ edition }}
          state: directory
          owner: minecraft
          group: minecraft
          mode: 0755
+      when: new_server == "true"
 
-    - name: Extracting Minecraft Bedrock server
+    - name: Downloading Minecraft Bedrock server
       unarchive:
          src: https://minecraft.azureedge.net/bin-linux/bedrock-server-1.16.221.01.zip
          dest: /home/minecraft/bedrock/
@@ -72,16 +105,61 @@
          group: minecraft
          mode: u=rwX,g=rX,o=rX
          remote_src: yes
+      when:
+       - edition == "bedrock"
+       - new_server == "true"
+       - restore_backup == "false"
+
+    - name: Downloading Minecraft Java server
+      get_url:
+         url: https://launcher.mojang.com/v1/objects/1b557e7b033b583cd9f66746b7a9ab1ec1673ced/server.jar
+         dest: /home/minecraft/java/server.jar
+         owner: minecraft
+         group: minecraft
+         mode: 0644
+      when:
+       - edition == "java"
+       - new_server == "true"
+       - restore_backup == "false"
+
+    - name: Installing the OCI client
+      pip:
+         name: oci-cli
+
+    - name: Downloading the latest server backup
+      command: oci os object get --auth instance_principal --bucket-name minecraft-backup --file {{ edition }}.tar.gz --name {{ edition }}.tar.gz
+      args:
+         chdir: /home/minecraft
+      when: restore_backup == "true"
+
+    - name: Setting permissions for the downloaded backup
+      file:
+         path: /home/minecraft/{{ edition }}.tar.gz
+         owner: minecraft
+         group: minecraft
+         mode: 0644
+      when: restore_backup == "true"
+
+    - name: Restoring the latest server backup
+      unarchive:
+         src: /home/minecraft/{{ edition }}.tar.gz
+         dest: /home/minecraft/
+         owner: minecraft
+         group: minecraft
+         mode: u=rwX,g=rX,o=rX
+         remote_src: yes
+      when: restore_backup == "true"
 
     - name: Making the Bedrock server executable
       file:
          path: /home/minecraft/bedrock/bedrock_server
          mode: 0755
+      when: edition == "bedrock"
 
-    - name: Copying the Bedrock server scripts
-      copy:
-         src: files/{{ item }}_bedrock.sh
-         dest: /home/minecraft/
+    - name: Copying the server scripts
+      template:
+         src: templates/{{ item }}.sh.j2
+         dest: /home/minecraft/{{ item }}_{{ edition }}.sh
          owner: minecraft
          group: minecraft
          mode: 0755
@@ -90,18 +168,18 @@
        - backup
 
     - name: Copying the systemd units
-      copy:
-         src: files/systemd/{{ item }}
-         dest: /etc/systemd/system/
+      template:
+         src: "{{ item.type }}/systemd/{{ item.src }}"
+         dest: /etc/systemd/system/{{ item.dest }}
          owner: root
          group: root
          mode: 0644
       with_items:
-       - minecraft-bedrock.service
-       - minecraft-bedrock-backup.service
-       - minecraft-bedrock-backup.timer
-       - apt-upgrade.service
-       - apt-upgrade.timer
+       - { src: "minecraft.service.j2", dest: "minecraft-{{ edition }}.service", type: "templates" }
+       - { src: "minecraft-backup.service.j2", dest: "minecraft-{{ edition }}-backup.service", type: "templates" }
+       - { src: "minecraft-backup.timer.j2", dest: "minecraft-{{ edition }}-backup.timer", type: "templates" }
+       - { src: "apt-upgrade.service", dest: "apt-upgrade.service", type: "files" }
+       - { src: "apt-upgrade.timer", dest: "apt-upgrade.timer", type: "files" }
 
     - name: Starting the systemd units
       systemd:
@@ -110,10 +188,6 @@
          enabled: yes
          daemon_reload: yes
       with_items:
-       - minecraft-bedrock.service
-       - minecraft-bedrock-backup.timer
+       - minecraft-{{ edition }}.service
+       - minecraft-{{ edition }}-backup.timer
        - apt-upgrade.timer
-
-    - name: Installing the OCI client
-      pip:
-         name: oci-cli

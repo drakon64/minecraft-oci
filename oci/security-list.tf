@@ -11,7 +11,7 @@ resource "oci_core_security_list" "security-list" {
 
 	ingress_security_rules {
 		stateless = false
-		source = "86.129.183.228/32"
+		source = var.management_ip
 		source_type = "CIDR_BLOCK"
 		protocol = "6"
 		tcp_options {
@@ -28,6 +28,17 @@ resource "oci_core_security_list" "security-list" {
 		udp_options {
 			min = 19132
 			max = 19132
+		}
+	}
+
+	ingress_security_rules {
+		stateless = false
+		source = "0.0.0.0/0"
+		source_type = "CIDR_BLOCK"
+		protocol = "6"
+		tcp_options {
+			min = 25565
+			max = 25565
 		}
 	}
 }

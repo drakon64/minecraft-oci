@@ -8,10 +8,10 @@ resource "oci_core_instance" "minecraft_instance" {
 	}
 	shape_config {
 		memory_in_gbs = 4
-		ocpus = 3
+		ocpus = 4
 	}
 
-	display_name = "minecraft"
+	display_name = var.oci_compute_display_name
 	create_vnic_details {
 		assign_public_ip = true
 		subnet_id = oci_core_subnet.vcn-subnet.id
