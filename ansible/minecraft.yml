@@ -71,15 +71,20 @@
        - edition == "bedrock"
        - ansible_architecture != "x86_64"
 
+    - name: Adding the OpenJDK PPA
+      apt_repository:
+         repo: ppa:openjdk-r/ppa
+      when: edition == "paper" or edition == "geyser"
+
     - name: Installing Java packages
       apt:
          name:
-          - default-jre-headless
+          - "{{ java }}"
           - python3-pip
           - jq
          state: present
          update_cache: yes
-      when: edition == "java"
+      when: edition == "java" or edition == "paper" or edition == "geyser"
 
     - name: Creating the minecraft user
       user:
@@ -136,6 +141,90 @@
          mode: 0644
       when:
        - edition == "java"
+       - new_server == "true"
+       - restore_backup == "false"
+
+    - name: Downloading Paper server
+      get_url:
+         url: https://papermc.io/api/v2/projects/paper/versions/1.16.5/builds/762/downloads/paper-1.16.5-762.jar
+         dest: /home/minecraft/{{ edition }}/server.jar
+         owner: minecraft
+         group: minecraft
+         mode: 0644
+      when:
+       - edition == "paper" or edition == "geyser"
+       - new_server == "true"
+       - restore_backup == "false"
+
+    - name: Creating the server plugins directory
+      file:
+         path: /home/minecraft/geyser/plugins
+         state: directory
+         owner: minecraft
+         group: minecraft
+         mode: 0755
+      when:
+       - edition == "geyser"
+       - new_server == "true"
+       - restore_backup == "false"
+
+    - name: Downloading the Geyser plugin
+      get_url:
+         url: https://ci.opencollab.dev/job/GeyserMC/job/Geyser/job/master/lastSuccessfulBuild/artifact/bootstrap/spigot/target/Geyser-Spigot.jar
+         dest: /home/minecraft/geyser/plugins/
+         owner: minecraft
+         group: minecraft
+         mode: 0644
+      when:
+       - edition == "geyser"
+       - new_server == "true"
+       - restore_backup == "false"
+
+    - name: Downloading the Floodgate plugin
+      get_url:
+         url: https://ci.opencollab.dev/job/GeyserMC/job/Floodgate/job/master/lastSuccessfulBuild/artifact/bukkit/target/floodgate-bukkit.jar
+         dest: /home/minecraft/geyser/plugins/
+         owner: minecraft
+         group: minecraft
+         mode: 0644
+      when:
+       - edition == "geyser"
+       - new_server == "true"
+       - restore_backup == "false"
+
+    - name: Downloading the CustomCommandPrefix plugin
+      copy:
+         src: files/CustomCommandPrefix-1.0.jar
+         dest: /home/minecraft/geyser/plugins/CustomCommandPrefix.jar
+         owner: minecraft
+         group: minecraft
+         mode: 0644
+      when:
+       - edition == "geyser"
+       - new_server == "true"
+       - restore_backup == "false"
+
+    - name: Creating the CustomCommandPrefix directory
+      file:
+         path: /home/minecraft/geyser/plugins/CustomCommandPrefix
+         state: directory
+         owner: minecraft
+         group: minecraft
+         mode: 0755
+      when:
+       - edition == "geyser"
+       - new_server == "true"
+       - restore_backup == "false"
+
+    - name: Configuring the custom command prefix
+      copy:
+         content: "prefix: '?'"
+         dest: /home/minecraft/geyser/plugins/CustomCommandPrefix/config.yml
+         owner: minecraft
+         group: minecraft
+         mode: 0644
+      when:
+       - edition == "geyser"
        - new_server == "true"
        - restore_backup == "false"
 
@@ -210,6 +299,17 @@
        - { src: "apt-upgrade.timer", dest: "apt-upgrade.timer", type: "files" }
        - { src: "oci-disk-utilization.service", dest: "oci-disk-utilization.service", type: "files" }
        - { src: "oci-disk-utilization.timer", dest: "oci-disk-utilization.timer", type: "files" }
+
+    - name: Accepting the Minecraft Server EULA
+      copy:
+         content: eula=true
+         dest: /home/minecraft/{{ edition }}/eula.txt
+         owner: minecraft
+         group: minecraft
+         mode: 0644
+      when:
+      - edition == "java" or edition == "paper" or edition == "geyser"
+      - eula == "true"
 
     - name: Starting the systemd units
       systemd:
