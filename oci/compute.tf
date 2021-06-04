@@ -17,6 +17,9 @@ resource "oci_core_instance" "minecraft_instance" {
 		assign_public_ip = true
 		subnet_id = oci_core_subnet.vcn-subnet.id
 	}
+	instance_options {
+		are_legacy_imds_endpoints_disabled = true
+	}
 	metadata = {
 		ssh_authorized_keys = var.ssh_authorized_keys
 	}
