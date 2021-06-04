@@ -78,7 +78,7 @@
     - name: Installing Java packages
       apt:
          name:
-          - openjdk-15-jre-headless
+          - openjdk-16-jre-headless
           - python3-pip
           - jq
          state: present
