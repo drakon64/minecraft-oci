@@ -155,13 +155,17 @@
        - new_server == "true"
        - restore_backup == "false"
 
-    - name: Creating the server plugins directory
+    - name: Creating the Paper plugin directories
       file:
-         path: /home/minecraft/geyser/plugins
+         path: /home/minecraft/geyser/plugins/{{ item }}
          state: directory
          owner: minecraft
          group: minecraft
          mode: 0755
+      with_items:
+       - CustomCommandPrefix
+       - floodgate-bukkit
+       - Geyser-Spigot/packs
       when:
        - edition == "geyser"
        - new_server == "true"
@@ -179,6 +183,25 @@
        - new_server == "true"
        - restore_backup == "false"
 
+    - name: Configuring the Geyser plugin
+      lineinfile:
+         path: /home/minecraft/geyser/plugins/Geyser-Spigot/config.yml
+         regexp: "{{ item.regexp }}"
+         line: "{{ item.line }}"
+      with_items:
+       - { regexp: "compression-level:", line: "compression-level: -1" }
+       - { regexp: "auth-type:", line: "auth-type: floodgate" }
+       - { regexp: "command-suggestions:", line: "command-suggestions: false" }
+       - { regexp: "passthrough-motd:", line: "passthrough-motd: true" }
+       - { regexp: "passthrough-player-counts:", line: "passthrough-player-counts: true" }
+       - { regexp: "forward-player-ping:", line: "forward-player-ping: true" }
+       - { regexp: "allow-third-party-capes:", line: "allow-third-party-capes: false" }
+       - { regexp: "xbox-achievements-enabled:", line: "xbox-achievements-enabled: true" }
+      when:
+       - edition == "geyser"
+       - new_server == "true"
+       - restore_backup == "false"
+
     - name: Downloading the Floodgate plugin
       get_url:
          url: https://ci.opencollab.dev/job/GeyserMC/job/Floodgate/job/master/lastSuccessfulBuild/artifact/bukkit/target/floodgate-bukkit.jar
@@ -191,6 +214,18 @@
        - new_server == "true"
        - restore_backup == "false"
 
+    - name: Configuring the Floodgate plugin
+      lineinfile:
+         path: /home/minecraft/geyser/plugins/floodgate-bukkit/config.yml
+         regexp: "{{ item.regexp }}"
+         line: "{{ item.line }}"
+      with_items:
+       - { regexp: "enable:", line: "enable: true" }
+      when:
+       - edition == "geyser"
+       - new_server == "true"
+       - restore_backup == "false"
+
     - name: Downloading the CustomCommandPrefix plugin
       copy:
          src: files/CustomCommandPrefix-1.0.jar
@@ -198,21 +233,6 @@
          owner: minecraft
          group: minecraft
          mode: 0644
-      when:
-       - edition == "geyser"
-       - new_server == "true"
-       - restore_backup == "false"
-
-    - name: Creating the plugin directories
-      file:
-         path: /home/minecraft/geyser/plugins/{{ item }}
-         state: directory
-         owner: minecraft
-         group: minecraft
-         mode: 0755
-      with_items:
-       - CustomCommandPrefix
-       - Geyser-Spigot/packs
       when:
        - edition == "geyser"
        - new_server == "true"
