@@ -203,13 +203,16 @@
        - new_server == "true"
        - restore_backup == "false"
 
-    - name: Creating the CustomCommandPrefix directory
+    - name: Creating the plugin directories
       file:
-         path: /home/minecraft/geyser/plugins/CustomCommandPrefix
+         path: /home/minecraft/geyser/plugins/{{ item }}
          state: directory
          owner: minecraft
          group: minecraft
          mode: 0755
+      with_items:
+       - CustomCommandPrefix
+       - Geyser-Spigot/packs
       when:
        - edition == "geyser"
        - new_server == "true"
@@ -226,6 +229,14 @@
        - edition == "geyser"
        - new_server == "true"
        - restore_backup == "false"
+
+    - name: Downloading the GeyserOptionalPack resource pack
+      get_url:
+         url: https://ci.opencollab.dev/job/GeyserMC/job/GeyserOptionalPack/job/master/lastSuccessfulBuild/artifact/GeyserOptionalPack.mcpack
+         dest: /home/minecraft/geyser/plugins/Geyser-Spigot/packs/
+         owner: minecraft
+         group: minecraft
+         mode: 0644
 
     - name: Installing the OCI client
       pip:
