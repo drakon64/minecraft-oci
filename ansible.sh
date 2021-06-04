@@ -1,4 +1,4 @@
-#!/bin/sh -x
+#!/bin/sh
 
 check_ip() {
 	if [ -z "$2" ] ; then
