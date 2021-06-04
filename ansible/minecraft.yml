@@ -220,7 +220,7 @@
          regexp: "{{ item.regexp }}"
          line: "{{ item.line }}"
       with_items:
-       - { regexp: "enable:", line: "enable: true" }
+       - { regexp: "  enable:", line: "  enable: true" }
       when:
        - edition == "geyser"
        - new_server == "true"
