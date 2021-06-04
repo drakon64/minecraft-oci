@@ -28,7 +28,7 @@ while getopts :inbp arg ; do
 			if [ "$3" = "bedrock" ] ; then
 				echo "$2 edition=bedrock command='/home/minecraft/bedrock/bedrock_server' new_server=false restore_backup=false" > ansible/inventory
 			elif [ "$3" = "java" ] ; then
-				echo "$2 edition=java java=default-jre-headless command='/usr/bin/java -Xmx1024M -Xms1024M -jar server.jar nogui' eula=$EULA new_server=false restore_backup=false" > ansible/inventory
+				echo "$2 edition=java command='/usr/bin/java -Xmx1024M -Xms1024M -jar server.jar nogui' eula=$EULA new_server=false restore_backup=false" > ansible/inventory
 			elif [ "$3" = "paper" ] ; then
 				echo "$2 edition=paper java=openjdk-16-jre-headless command='/usr/bin/java -Xmx1024M -Xms1024M -jar server.jar nogui' eula=$EULA new_server=false restore_backup=false" > ansible/inventory
 			elif [ "$3" = "geyser" ] ; then
@@ -43,7 +43,7 @@ while getopts :inbp arg ; do
 			if [ "$3" = "bedrock" ] ; then
 				echo "$2 edition=bedrock command='/home/minecraft/bedrock/bedrock_server' new_server=true restore_backup=false" > ansible/inventory
 			elif [ "$3" = "java" ] ; then
-				echo "$2 edition=java java=default-jre-headless command='/usr/bin/java -Xmx1024M -Xms1024M -jar server.jar nogui' eula=$EULA new_server=true restore_backup=false" > ansible/inventory
+				echo "$2 edition=java command='/usr/bin/java -Xmx1024M -Xms1024M -jar server.jar nogui' eula=$EULA new_server=true restore_backup=false" > ansible/inventory
 			elif [ "$3" = "paper" ] ; then
 				echo "$2 edition=paper java=openjdk-16-jre-headless command='/usr/bin/java -Xmx1024M -Xms1024M -jar server.jar nogui' eula=$EULA new_server=true restore_backup=false" > ansible/inventory
 			elif [ "$3" = "geyser" ] ; then

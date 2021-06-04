@@ -74,12 +74,11 @@
     - name: Adding the OpenJDK PPA
       apt_repository:
          repo: ppa:openjdk-r/ppa
-      when: edition == "paper" or edition == "geyser"
 
     - name: Installing Java packages
       apt:
          name:
-          - "{{ java }}"
+          - openjdk-15-jre-headless
           - python3-pip
           - jq
          state: present
