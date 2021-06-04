@@ -15,7 +15,13 @@ check_edition() {
 }
 
 check_eula() {
-	EULA="true"
+	if [ -z "$4" ] || [ "$4" = "no" ] || [ "$4" = "false" ] ; then
+		EULA="false"
+	elif [ "$4" = "yes" ] || [ "$4" = "true" ] ; then
+		EULA="true"
+	else
+		echo "You must specify one of the following arguments: yes	no"
+	fi
 }
 
 while getopts :inbp arg ; do
