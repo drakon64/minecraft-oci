@@ -3,6 +3,7 @@ resource "oci_core_instance" "minecraft_instance" {
 	compartment_id = oci_identity_compartment.tf-compartment.id
 	shape = var.oci_compute_shape
 	source_details {
+		boot_volume_size_in_gbs = 50
 		source_id = var.oci_image_id
 		source_type = "image"
 	}
