@@ -250,6 +250,10 @@
          owner: minecraft
          group: minecraft
          mode: 0644
+      when:
+       - edition == "geyser"
+       - new_server == "true"
+       - restore_backup == "false"
 
     - name: Installing the OCI client
       pip:
