@@ -4,9 +4,9 @@
 
    tasks:
 
-    - name: Setting the timezone to Europe/London
+    - name: Setting the timezone
       timezone:
-         name: Europe/London
+         name: "{{ timezone }}"
 
     - name: Removing the Oracle Cloud iptables rules
       lineinfile:
