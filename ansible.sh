@@ -25,7 +25,7 @@ check_bucket_name() {
 	fi
 }
 
-while getopts :inbp arg ; do
+while getopts :inbpc arg ; do
 	case ${arg} in
 		i)
 			check_ip "$@"
@@ -71,6 +71,9 @@ while getopts :inbp arg ; do
 			;;
 		p)
 			ansible-playbook --diff --inventory ansible/inventory --user ubuntu --become ansible/minecraft.yml
+			;;
+		c)
+			ansible-playbook --diff --inventory ansible/inventory --user ubuntu --become ansible/minecraft.yml --extra_vars "geyser_config=true" --tags geyser_config
 			;;
 		*)
 	esac
