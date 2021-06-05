@@ -103,7 +103,7 @@
          name: minecraft
          shell: /bin/bash
 
-    - name: Populate service facts
+    - name: Populating service facts
       service_facts:
       when:
        - new_server == "true"
