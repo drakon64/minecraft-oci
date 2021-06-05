@@ -20,4 +20,13 @@ resource "oci_objectstorage_object_lifecycle_policy" "minecraft_backup" {
 
 		target = "previous-object-versions"
 	}
+	rules {
+		action = "ABORT"
+		is_enabled = "true"
+		name = "multipart-uploads"
+		time_amount = 1
+		time_unit = "DAYS"
+
+		target = "multipart-uploads"
+	}
 }
