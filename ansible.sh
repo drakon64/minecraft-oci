@@ -73,7 +73,7 @@ while getopts :inbpc arg ; do
 			ansible-playbook --diff --inventory ansible/inventory --user ubuntu --become ansible/minecraft.yml
 			;;
 		c)
-			ansible-playbook --diff --inventory ansible/inventory --user ubuntu --become ansible/minecraft.yml --extra_vars "geyser_config=true" --tags geyser_config
+			ansible-playbook --diff --inventory ansible/inventory --user ubuntu --become ansible/minecraft.yml --extra-vars "geyser_config=true" --tags geyser-config
 			;;
 		*)
 	esac

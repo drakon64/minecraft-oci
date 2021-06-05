@@ -91,6 +91,7 @@
       apt:
          name:
           - openjdk-16-jre-headless
+          - acl
           - python3-pip
           - jq
          state: present
@@ -244,6 +245,7 @@
 
     - name: Reloading the Geyser config
       command: tmux send-keys -t minecraft-geyser geyser reload ENTER
+      become_user: minecraft
       when:
        - edition == "geyser"
        - geyser_config == "true"
