@@ -18,26 +18,35 @@ check_eula() {
 	fi
 }
 
+check_bucket_name() {
+	if [ -z "$4" ] ; then
+		echo "You must specify the name of the bucket to restore from"
+		exit 1
+	fi
+}
+
 while getopts :inbp arg ; do
 	case ${arg} in
 		i)
 			check_ip "$@"
 			check_eula "$@"
+			check_bucket_name "$@"
 
 			if [ "$3" = "bedrock" ] ; then
-				echo "$2 edition=bedrock command='/home/minecraft/bedrock/bedrock_server' new_server=false restore_backup=false" > ansible/inventory
+				echo "$2 edition=bedrock command='/home/minecraft/bedrock/bedrock_server' new_server=false restore_backup=false bucket_name=$4" > ansible/inventory
 			elif [ "$3" = "java" ] || [ "$3" = "paper" ] || [ "$3" = "geyser" ] ; then
-				echo "$2 edition=$3 command='/usr/bin/java -Xmx1024M -Xms1024M -jar server.jar nogui' eula=$EULA new_server=false restore_backup=false" > ansible/inventory
+				echo "$2 edition=$3 command='/usr/bin/java -Xmx1024M -Xms1024M -jar server.jar nogui' eula=$EULA new_server=false restore_backup=false bucket_name=$4" > ansible/inventory
 			fi
 			;;
 		n)
 			check_ip "$@"
 			check_eula "$@"
+			check_bucket_name "$@"
 
 			if [ "$3" = "bedrock" ] ; then
-				echo "$2 edition=bedrock command='/home/minecraft/bedrock/bedrock_server' new_server=true restore_backup=false" > ansible/inventory
+				echo "$2 edition=bedrock command='/home/minecraft/bedrock/bedrock_server' new_server=true restore_backup=false bucket_name=$4" > ansible/inventory
 			elif [ "$3" = "java" ] || [ "$3" = "paper" ] || [ "$3" = "geyser" ] ; then
-				echo "$2 edition=$3 command='/usr/bin/java -Xmx1024M -Xms1024M -jar server.jar nogui' eula=$EULA new_server=true restore_backup=false" > ansible/inventory
+				echo "$2 edition=$3 command='/usr/bin/java -Xmx1024M -Xms1024M -jar server.jar nogui' eula=$EULA new_server=true restore_backup=false bucket_name=$4" > ansible/inventory
 			else
 				echo "You must specify one of the following arguments: bedrock	java	paper	geyser"
 				exit 1
@@ -46,11 +55,12 @@ while getopts :inbp arg ; do
 		b)
 			check_ip "$@"
 			check_eula "$@"
+			check_bucket_name "$@"
 
 			if [ "$3" = "bedrock" ] ; then
-				echo "$2 edition=bedrock command='/home/minecraft/bedrock/bedrock_server' new_server=true restore_backup=true" > ansible/inventory
+				echo "$2 edition=bedrock command='/home/minecraft/bedrock/bedrock_server' new_server=true restore_backup=true bucket_name=$4" > ansible/inventory
 			elif [ "$3" = "java" ] || [ "$3" = "paper" ] || [ "$3" = "geyser" ] ; then
-				echo "$2 edition=$3 command='/usr/bin/java -Xmx1024M -Xms1024M -jar server.jar nogui' eula=$EULA new_server=true restore_backup=true" > ansible/inventory
+				echo "$2 edition=$3 command='/usr/bin/java -Xmx1024M -Xms1024M -jar server.jar nogui' eula=$EULA new_server=true restore_backup=true bucket_name=$4" > ansible/inventory
 			else
 				echo "You must specify one of the following arguments: bedrock	java	paper	geyser"
 				exit 1

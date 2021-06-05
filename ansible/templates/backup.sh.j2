@@ -3,5 +3,5 @@
 BACKUP={{ edition }}.tar.gz
 
 tar cfO - {{ edition }} | gzip --best > "$BACKUP"
-oci os object put --auth instance_principal --bucket-name minecraft-backup --file "$BACKUP" --force
+oci os object put --auth instance_principal --bucket-name {{ bucket_name }} --file "$BACKUP" --force
 rm "$BACKUP"

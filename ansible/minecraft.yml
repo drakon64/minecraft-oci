@@ -256,7 +256,7 @@
          name: oci-cli
 
     - name: Downloading the latest server backup
-      command: oci os object get --auth instance_principal --bucket-name minecraft-backup --file {{ edition }}.tar.gz --name {{ edition }}.tar.gz
+      command: oci os object get --auth instance_principal --bucket-name {{ bucket_name }} --file {{ edition }}.tar.gz --name {{ edition }}.tar.gz
       args:
          chdir: /home/minecraft
       when: restore_backup == "true"
