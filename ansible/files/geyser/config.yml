@@ -25,7 +25,7 @@ bedrock:
   server-name: "Geyser"
   # How much to compress network traffic to the Bedrock client. The higher the number, the more CPU usage used, but
   # the smaller the bandwidth used. Does not have any effect below -1 or above 9. Set to -1 to disable.
-compression-level: -1
+  compression-level: -1
   # Whether to enable PROXY protocol or not for clients. You DO NOT WANT this feature unless you run UDP reverse proxy
   # in front of your Geyser instance.
   enable-proxy-protocol: false
@@ -43,7 +43,7 @@ remote:
   # For plugin versions, if address has been set to "auto", the port will also follow the server's listening port.
   port: 25565
   # Authentication type. Can be offline, online, or floodgate (see https://github.com/GeyserMC/Geyser/wiki/Floodgate).
-auth-type: floodgate
+  auth-type: floodgate
   # Allow for password-based authentication methods through Geyser. Only useful in online mode.
   # If this is false, users must authenticate to Microsoft using a code provided by Geyser on their desktop.
   allow-password-authentication: true
@@ -181,8 +181,7 @@ xbox-achievements-enabled: true
 metrics:
   # If metrics should be enabled
   enabled: false
-  # UUID of server, don't change!
-  uuid:
+  #uuid:
 
 # ADVANCED OPTIONS - DO NOT TOUCH UNLESS YOU KNOW WHAT YOU ARE DOING!
 
