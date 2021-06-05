@@ -181,6 +181,7 @@ xbox-achievements-enabled: true
 metrics:
   # If metrics should be enabled
   enabled: false
+  # UUID of server, don't change!
   #uuid:
 
 # ADVANCED OPTIONS - DO NOT TOUCH UNLESS YOU KNOW WHAT YOU ARE DOING!
