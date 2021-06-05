@@ -183,17 +183,17 @@
        - new_server == "true"
        - restore_backup == "false"
 
-    - name: Configuring the Geyser plugin
-      copy:
-         src: files/geyser/config.yml
-         dest: /home/minecraft/geyser/plugins/Geyser-Spigot/config.yml
-         owner: minecraft
-         group: minecraft
-         mode: 0644
-      when:
-       - edition == "geyser"
-       - new_server == "true"
-       - restore_backup == "false"
+#    - name: Configuring the Geyser plugin
+#      copy:
+#         src: files/geyser/config.yml
+#         dest: /home/minecraft/geyser/plugins/Geyser-Spigot/config.yml
+#         owner: minecraft
+#         group: minecraft
+#         mode: 0644
+#      when:
+#       - edition == "geyser"
+#       - new_server == "true"
+#       - restore_backup == "false"
 
     - name: Downloading the Floodgate plugin
       get_url:
@@ -207,17 +207,17 @@
        - new_server == "true"
        - restore_backup == "false"
 
-    - name: Configuring the Floodgate plugin
-      copy:
-         src: files/floodgate/config.yml
-         dest: /home/minecraft/geyser/plugins/floodgate-bukkit/config.yml
-         owner: minecraft
-         group: minecraft
-         mode: 0644
-      when:
-       - edition == "geyser"
-       - new_server == "true"
-       - restore_backup == "false"
+#    - name: Configuring the Floodgate plugin
+#      copy:
+#         src: files/floodgate/config.yml
+#         dest: /home/minecraft/geyser/plugins/floodgate-bukkit/config.yml
+#         owner: minecraft
+#         group: minecraft
+#         mode: 0644
+#      when:
+#       - edition == "geyser"
+#       - new_server == "true"
+#       - restore_backup == "false"
 
     - name: Downloading the CustomCommandPrefix plugin
       copy:
