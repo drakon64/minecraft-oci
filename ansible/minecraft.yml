@@ -186,7 +186,7 @@
          mode: 0755
       with_items:
        - CustomCommandPrefix
-       - floodgate-bukkit
+#       - floodgate-bukkit
        - Geyser-Spigot/packs
       when:
        - edition == "geyser"
