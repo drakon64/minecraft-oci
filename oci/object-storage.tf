@@ -8,7 +8,7 @@ resource "oci_objectstorage_bucket" "minecraft_backup" {
 }
 
 resource "oci_objectstorage_object_lifecycle_policy" "minecraft_backup" {
-	bucket = "minecraft-backup"
+	bucket = var.backup_bucket_name
 	namespace = var.oci_namespace
 
 	rules {
