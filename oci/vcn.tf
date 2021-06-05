@@ -1,7 +1,7 @@
 resource "oci_core_vcn" "vcn" {
 	cidr_blocks = [ "10.0.0.0/16" ]
 	compartment_id = oci_identity_compartment.tf-compartment.id
-	display_name = "minecraft"
+	display_name = var.oci_compute_display_name
 	dns_label = "minecraft"
 }
 
