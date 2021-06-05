@@ -363,8 +363,8 @@
          group: minecraft
          mode: 0644
       when:
-      - edition == "java" or edition == "paper" or edition == "geyser"
-      - eula == "true"
+       - edition == "java" or edition == "paper" or edition == "geyser"
+       - eula == "true"
 
     - name: Starting the systemd units
       systemd:
