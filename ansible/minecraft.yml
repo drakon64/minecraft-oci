@@ -243,7 +243,7 @@
       tags: geyser-config
 
     - name: Reloading the Geyser config
-      command: tmux send-keys -t minecraft-{{ edition }} geyser reload ENTER
+      command: tmux send-keys -t minecraft-geyser geyser reload ENTER
       when:
        - edition == "geyser"
        - geyser_config == "true"
