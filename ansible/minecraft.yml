@@ -85,7 +85,7 @@
     - name: Adding the OpenJDK PPA
       apt_repository:
          repo: ppa:openjdk-r/ppa
-      when: edition == "java" or edition == "paper" or edition == "geyser"
+      when: type == "java"
 
     - name: Installing Java packages
       apt:
@@ -95,7 +95,7 @@
           - jq
          state: present
          update_cache: yes
-      when: edition == "java" or edition == "paper" or edition == "geyser"
+      when: type == "java"
 
     - name: Creating the minecraft user
       user:
@@ -363,7 +363,7 @@
          group: minecraft
          mode: 0644
       when:
-       - edition == "java" or edition == "paper" or edition == "geyser"
+       - type == "java"
        - new_server == "true"
        - restore_backup == "false"
        - eula == "true"
