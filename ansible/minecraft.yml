@@ -149,14 +149,6 @@
          chdir: /home/minecraft
       when: restore_backup == "true"
 
-    - name: Setting permissions for the downloaded backup
-      file:
-         path: /home/minecraft/{{ edition }}.tar.gz
-         owner: minecraft
-         group: minecraft
-         mode: 0644
-      when: restore_backup == "true"
-
     - name: Restoring the latest server backup
       unarchive:
          src: /home/minecraft/{{ edition }}.tar.gz
@@ -165,6 +157,12 @@
          group: minecraft
          mode: u=rwX,g=rX,o=rX
          remote_src: yes
+      when: restore_backup == "true"
+
+    - name: Removing the downloaded backup
+      file:
+         path: /home/minecraft/{{ edition }}.tar.gz
+         state: absent
       when: restore_backup == "true"
 
     - name: Making the Bedrock server executable
