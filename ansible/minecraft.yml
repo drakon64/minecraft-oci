@@ -155,6 +155,17 @@
        - new_server == "true"
        - restore_backup == "false"
 
+    - name: Copying the server.properties file
+      copy:
+         src: files/{{ type }}/server.properties
+         dest: /home/minecraft/{{ edition }}/
+         owner: minecraft
+         group: minecraft
+         mode: 0644
+      when:
+       - new_server == "true"
+       - restore_backup == "false"
+
     - name: Creating the Paper plugin directories
       file:
          path: /home/minecraft/geyser/plugins/{{ item }}
