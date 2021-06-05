@@ -103,7 +103,7 @@
          shell: /bin/bash
 
     - name: Populate service facts
-      ansible.builtin.service_facts:
+      service_facts:
       when:
        - new_server == "true"
 
