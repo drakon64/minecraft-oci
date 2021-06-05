@@ -1,8 +1,12 @@
 # yaml-language-server: $schema=https://json.schemastore.org/ansible-playbook.json
 
  - hosts: all
+   gather_facts: no
 
    tasks:
+
+    - name: Gathering Facts
+      setup:
 
     - name: Setting the timezone
       timezone:
@@ -108,7 +112,7 @@
       when:
        - new_server == "true"
 
-    - name: Stopping the existing server
+    - name: Gathering Facts about services
       systemd:
          name: minecraft-{{ edition }}
          state: stopped
