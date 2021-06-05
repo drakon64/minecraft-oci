@@ -74,6 +74,7 @@
     - name: Adding the OpenJDK PPA
       apt_repository:
          repo: ppa:openjdk-r/ppa
+      when: edition == "java" or edition == "paper" or edition == "geyser"
 
     - name: Installing Java packages
       apt:
