@@ -364,6 +364,8 @@
          mode: 0644
       when:
        - edition == "java" or edition == "paper" or edition == "geyser"
+       - new_server == "true"
+       - restore_backup == "false"
        - eula == "true"
 
     - name: Starting the systemd units
