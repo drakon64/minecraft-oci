@@ -38,9 +38,20 @@
        - edition == "bedrock"
        - ansible_architecture != "x86_64"
 
+    - name: Getting the instance availability domain
+      uri:
+         url: http://169.254.169.254/opc/v2/instance/ociAdName
+         headers:
+            Authorization: Bearer Oracle
+         return_content: yes
+      when:
+       - edition == "bedrock"
+       - ansible_architecture != "x86_64"
+      register: availability_domain
+
     - name: Adding AMD64 apt repositories
-      copy:
-         src: files/sources.list
+      template:
+         src: templates/sources.list.j2
          dest: /etc/apt/sources.list
          owner: root
          group: root
