@@ -71,15 +71,19 @@
        - edition == "bedrock"
        - ansible_architecture != "x86_64"
 
+    - name: Adding the OpenJDK PPA
+      apt_repository:
+         repo: ppa:openjdk-r/ppa
+
     - name: Installing Java packages
       apt:
          name:
-          - default-jre-headless
+          - openjdk-16-jre-headless
           - python3-pip
           - jq
          state: present
          update_cache: yes
-      when: edition == "java"
+      when: edition == "java" or edition == "paper" or edition == "geyser"
 
     - name: Creating the minecraft user
       user:
@@ -138,6 +142,114 @@
        - edition == "java"
        - new_server == "true"
        - restore_backup == "false"
+
+    - name: Downloading Paper server
+      get_url:
+         url: https://papermc.io/api/v2/projects/paper/versions/1.16.5/builds/762/downloads/paper-1.16.5-762.jar
+         dest: /home/minecraft/{{ edition }}/server.jar
+         owner: minecraft
+         group: minecraft
+         mode: 0644
+      when:
+       - edition == "paper" or edition == "geyser"
+       - new_server == "true"
+       - restore_backup == "false"
+
+    - name: Creating the Paper plugin directories
+      file:
+         path: /home/minecraft/geyser/plugins/{{ item }}
+         state: directory
+         owner: minecraft
+         group: minecraft
+         mode: 0755
+      with_items:
+       - CustomCommandPrefix
+       - floodgate-bukkit
+       - Geyser-Spigot/packs
+      when:
+       - edition == "geyser"
+       - new_server == "true"
+       - restore_backup == "false"
+
+    - name: Downloading the Geyser plugin
+      get_url:
+         url: https://ci.opencollab.dev/job/GeyserMC/job/Geyser/job/master/lastSuccessfulBuild/artifact/bootstrap/spigot/target/Geyser-Spigot.jar
+         dest: /home/minecraft/geyser/plugins/
+         owner: minecraft
+         group: minecraft
+         mode: 0644
+      when:
+       - edition == "geyser"
+       - new_server == "true"
+       - restore_backup == "false"
+
+    - name: Configuring the Geyser plugin
+      copy:
+         src: files/geyser/config.yml
+         dest: /home/minecraft/geyser/plugins/Geyser-Spigot/config.yml
+         owner: minecraft
+         group: minecraft
+         mode: 0644
+      when:
+       - edition == "geyser"
+       - new_server == "true"
+       - restore_backup == "false"
+
+    - name: Downloading the Floodgate plugin
+      get_url:
+         url: https://ci.opencollab.dev/job/GeyserMC/job/Floodgate/job/master/lastSuccessfulBuild/artifact/bukkit/target/floodgate-bukkit.jar
+         dest: /home/minecraft/geyser/plugins/
+         owner: minecraft
+         group: minecraft
+         mode: 0644
+      when:
+       - edition == "geyser"
+       - new_server == "true"
+       - restore_backup == "false"
+
+    - name: Configuring the Floodgate plugin
+      copy:
+         src: files/floodgate/config.yml
+         dest: /home/minecraft/geyser/plugins/floodgate-bukkit/config.yml
+         owner: minecraft
+         group: minecraft
+         mode: 0644
+      when:
+       - edition == "geyser"
+       - new_server == "true"
+       - restore_backup == "false"
+
+    - name: Downloading the CustomCommandPrefix plugin
+      copy:
+         src: files/CustomCommandPrefix-1.0.jar
+         dest: /home/minecraft/geyser/plugins/CustomCommandPrefix.jar
+         owner: minecraft
+         group: minecraft
+         mode: 0644
+      when:
+       - edition == "geyser"
+       - new_server == "true"
+       - restore_backup == "false"
+
+    - name: Configuring the custom command prefix
+      copy:
+         content: "prefix: '?'"
+         dest: /home/minecraft/geyser/plugins/CustomCommandPrefix/config.yml
+         owner: minecraft
+         group: minecraft
+         mode: 0644
+      when:
+       - edition == "geyser"
+       - new_server == "true"
+       - restore_backup == "false"
+
+    - name: Downloading the GeyserOptionalPack resource pack
+      get_url:
+         url: https://ci.opencollab.dev/job/GeyserMC/job/GeyserOptionalPack/job/master/lastSuccessfulBuild/artifact/GeyserOptionalPack.mcpack
+         dest: /home/minecraft/geyser/plugins/Geyser-Spigot/packs/
+         owner: minecraft
+         group: minecraft
+         mode: 0644
 
     - name: Installing the OCI client
       pip:
@@ -208,6 +320,17 @@
        - { src: "apt-upgrade.timer", dest: "apt-upgrade.timer", type: "files" }
        - { src: "oci-disk-utilization.service", dest: "oci-disk-utilization.service", type: "files" }
        - { src: "oci-disk-utilization.timer", dest: "oci-disk-utilization.timer", type: "files" }
+
+    - name: Accepting the Minecraft Server EULA
+      copy:
+         content: eula=true
+         dest: /home/minecraft/{{ edition }}/eula.txt
+         owner: minecraft
+         group: minecraft
+         mode: 0644
+      when:
+      - edition == "java" or edition == "paper" or edition == "geyser"
+      - eula == "true"
 
     - name: Starting the systemd units
       systemd:
