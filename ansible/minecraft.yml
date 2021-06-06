@@ -192,7 +192,7 @@
          mode: 0755
       with_items:
        - CustomCommandPrefix
-#       - floodgate-bukkit
+       - floodgate-bukkit
        - Geyser-Spigot/packs
       when:
        - edition == "geyser"
@@ -220,8 +220,8 @@
          mode: 0644
       when:
        - edition == "geyser"
-       - geyser_config == "true"
-      tags: geyser-config
+       - new_server == "true"
+       - restore_backup == "false"
 
     - name: Downloading the Floodgate plugin
       get_url:
@@ -244,16 +244,8 @@
          mode: 0644
       when:
        - edition == "geyser"
-       - geyser_config == "true"
-      tags: geyser-config
-
-    - name: Reloading the Geyser config
-      command: tmux send-keys -t minecraft-geyser geyser reload ENTER
-      become_user: minecraft
-      when:
-       - edition == "geyser"
-       - geyser_config == "true"
-      tags: geyser-config
+       - new_server == "true"
+       - restore_backup == "false"
 
     - name: Downloading the CustomCommandPrefix plugin
       copy:
