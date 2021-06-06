@@ -107,12 +107,12 @@
          name: minecraft
          shell: /bin/bash
 
-    - name: Populating service facts
+    - name: Gathering Facts about services
       service_facts:
       when:
        - new_server == "true"
 
-    - name: Gathering Facts about services
+    - name: Stopping the existing server
       systemd:
          name: minecraft-{{ edition }}
          state: stopped
