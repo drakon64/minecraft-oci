@@ -259,7 +259,7 @@
        - new_server == "true"
        - restore_backup == "false"
 
-    - name: Configuring the custom command prefix
+    - name: Configuring the CustomCommandPrefix plugin
       copy:
          content: "prefix: '?'"
          dest: /home/minecraft/geyser/plugins/CustomCommandPrefix/config.yml
