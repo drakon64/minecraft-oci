@@ -4,5 +4,5 @@ terraform.sh
 oci.zip
 inventory
 
-ansible/files/bedrock/server.properties
-ansible/files/java/server.properties
+ansible/files/bedrock/*
+ansible/files/java/*

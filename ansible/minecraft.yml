@@ -207,6 +207,18 @@
        - new_server == "true" or update_server == "true"
        - restore_backup == "false"
 
+    - name: Configuring the Paper server
+      copy:
+         src: files/java/paper/{{ item }}.yml
+         dest: /home/minecraft/{{ edition }}/
+         owner: minecraft
+         group: minecraft
+         mode: 0644
+      with_items:
+       - bukkit
+       - paper
+       - spigot
+
     - name: Creating the Paper plugin directories
       file:
          path: /home/minecraft/geyser/plugins/{{ item }}
@@ -237,7 +249,7 @@
 
     - name: Configuring the Geyser plugin
       copy:
-         src: files/geyser/config.yml
+         src: files/java/paper/geyser/config.yml
          dest: /home/minecraft/geyser/plugins/Geyser-Spigot/config.yml
          owner: minecraft
          group: minecraft
@@ -249,7 +261,7 @@
 
     - name: Downloading the Floodgate plugin
       get_url:
-         url: https://ci.opencollab.dev/job/GeyserMC/job/Floodgate/job/master/lastSuccessfulBuild/artifact/bukkit/target/floodgate-bukkit.jar
+         url: https://ci.opencollab.dev/job/GeyserMC/job/Floodgate/job/master/lastSuccessfulBuild/artifact/spigot/target/floodgate-spigot.jar
          dest: /home/minecraft/geyser/plugins/
          owner: minecraft
          group: minecraft
@@ -261,7 +273,7 @@
 
     - name: Configuring the Floodgate plugin
       copy:
-         src: files/floodgate/config.yml
+         src: files/java/paper/geyser/floodgate/config.yml
          dest: /home/minecraft/geyser/plugins/floodgate-bukkit/config.yml
          owner: minecraft
          group: minecraft
