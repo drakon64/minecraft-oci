@@ -218,6 +218,10 @@
        - bukkit
        - paper
        - spigot
+      when:
+       - edition == "paper" or edition == "geyser"
+       - new_server == "true" or update_server == "true"
+       - restore_backup == "false"
 
     - name: Creating the Paper plugin directories
       file:
