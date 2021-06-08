@@ -315,9 +315,19 @@
       command: oci os object get --auth instance_principal --bucket-name {{ bucket_name }} --file {{ edition }}.tar.gz --name {{ edition }}.tar.gz
       args:
          chdir: /home/minecraft
-      when: restore_backup == "true"
+      when:
+       - restore_backup == "true"
+       - backup_version == ""
 
-    - name: Restoring the latest server backup
+    - name: Downloading the server backup
+      command: oci os object get --auth instance_principal --bucket-name {{ bucket_name }} --file {{ edition }}.tar.gz --name {{ edition }}.tar.gz --version-id {{ backup_version }}
+      args:
+         chdir: /home/minecraft
+      when:
+       - restore_backup == "true"
+       - backup_version | length > 0
+
+    - name: Restoring the server backup
       unarchive:
          src: /home/minecraft/{{ edition }}.tar.gz
          dest: /home/minecraft/
