@@ -110,14 +110,14 @@
     - name: Gathering Facts about services
       service_facts:
       when:
-       - new_server == "true"
+       - new_server == "true" or update_server == "true"
 
     - name: Stopping the existing server
       systemd:
          name: minecraft-{{ edition }}
          state: stopped
       when:
-       - new_server == "true"
+       - new_server == "true" or update_server == "true"
        - ansible_facts.services['minecraft-' + edition + '.service'] is defined
 
     - name: Removing the existing server
@@ -135,6 +135,30 @@
          mode: 0755
       when: new_server == "true"
 
+    - name: Backing up the existing server
+      shell: tar cfO - {{ edition }} | gzip --best | oci os object put --auth instance_principal --bucket-name {{ bucket_name }} --file - --name "{{ edition }}.tar.gz" --force
+      args:
+         chdir: /home/minecraft
+      when: update_server == "true"
+
+    - name: Removing existing Bedrock data
+      file:
+         path: "{{ item }}"
+         state: absent
+      with_items:
+       - behavior_packs
+       - definitions
+       - development_behavior_packs
+       - development_resource_packs
+       - development_skin_packs
+       - minecraftpe
+       - premium_cache
+       - resource_packs
+       - structures
+       - treatments
+       - world_templates
+      when: update_server == "true"
+
     - name: Downloading Minecraft Bedrock server
       unarchive:
          src: https://minecraft.azureedge.net/bin-linux/bedrock-server-1.17.0.03.zip
@@ -143,6 +167,9 @@
          group: minecraft
          mode: u=rwX,g=rX,o=rX
          remote_src: yes
+         exclude:
+          - permissions.json
+          - whitelist.json
       when:
        - edition == "bedrock"
        - new_server == "true"
