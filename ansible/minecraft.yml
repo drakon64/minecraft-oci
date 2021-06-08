@@ -143,7 +143,7 @@
 
     - name: Removing existing Bedrock data
       file:
-         path: "{{ item }}"
+         path: /home/minecraft/bedrock/{{ item }}
          state: absent
       with_items:
        - behavior_packs
@@ -157,7 +157,9 @@
        - structures
        - treatments
        - world_templates
-      when: update_server == "true"
+      when:
+       - edition == "bedrock"
+       - update_server == "true"
 
     - name: Downloading Minecraft Bedrock server
       unarchive:
@@ -172,7 +174,7 @@
           - whitelist.json
       when:
        - edition == "bedrock"
-       - new_server == "true"
+       - new_server == "true" or update_server == "true"
        - restore_backup == "false"
 
     - name: Downloading Minecraft Java server
