@@ -25,7 +25,7 @@ check_bucket_name() {
 	fi
 }
 
-while getopts :inbpc arg ; do
+while getopts :inbp arg ; do
 	case ${arg} in
 		i)
 			check_ip "$@"
