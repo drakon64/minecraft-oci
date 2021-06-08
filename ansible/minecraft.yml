@@ -137,7 +137,7 @@
 
     - name: Downloading Minecraft Bedrock server
       unarchive:
-         src: https://minecraft.azureedge.net/bin-linux/bedrock-server-1.16.221.01.zip
+         src: https://minecraft.azureedge.net/bin-linux/bedrock-server-1.17.0.03.zip
          dest: /home/minecraft/bedrock/
          owner: minecraft
          group: minecraft
@@ -150,7 +150,7 @@
 
     - name: Downloading Minecraft Java server
       get_url:
-         url: https://launcher.mojang.com/v1/objects/1b557e7b033b583cd9f66746b7a9ab1ec1673ced/server.jar
+         url: https://launcher.mojang.com/v1/objects/0a269b5f2c5b93b1712d0f5dc43b6182b9ab254e/server.jar
          dest: /home/minecraft/java/server.jar
          owner: minecraft
          group: minecraft
