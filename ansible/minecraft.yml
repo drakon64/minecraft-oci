@@ -91,7 +91,6 @@
       apt:
          name:
           - openjdk-16-jre-headless
-          - acl
           - python3-pip
           - jq
          state: present
