@@ -3,3 +3,6 @@ provider.tf
 terraform.sh
 oci.zip
 inventory
+
+ansible/files/bedrock/*
+ansible/files/java/*

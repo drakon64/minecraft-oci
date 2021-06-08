@@ -25,7 +25,7 @@ check_bucket_name() {
 	fi
 }
 
-while getopts :inbpc arg ; do
+while getopts :inbp arg ; do
 	case ${arg} in
 		i)
 			check_ip "$@"
@@ -33,9 +33,9 @@ while getopts :inbpc arg ; do
 			check_bucket_name "$@"
 
 			if [ "$3" = "bedrock" ] ; then
-				echo "$2 edition=bedrock type=bedrock command='/home/minecraft/bedrock/bedrock_server' new_server=false restore_backup=false bucket_name=$5 timezone=$6 geyser_config=false" > ansible/inventory
+				echo "$2 edition=bedrock type=bedrock command='/home/minecraft/bedrock/bedrock_server' new_server=false update_server=false restore_backup=false backup=version=$7 bucket_name=$5 timezone=$6" > ansible/inventory
 			elif [ "$3" = "java" ] || [ "$3" = "paper" ] || [ "$3" = "geyser" ] ; then
-				echo "$2 edition=$3 type=java command='/usr/bin/java -Xmx1024M -Xms1024M -jar server.jar nogui' eula=$EULA new_server=false restore_backup=false bucket_name=$5 timezone=$6 geyser_config=false" > ansible/inventory
+				echo "$2 edition=$3 type=java command='/usr/bin/java -Xmx1024M -Xms1024M -jar server.jar nogui' eula=$EULA new_server=false update_server=false restore_backup=false backup=version=$7 bucket_name=$5 timezone=$6" > ansible/inventory
 			else
 				echo "You must specify one of the following arguments: bedrock	java	paper	geyser"
 				exit 1
@@ -47,9 +47,9 @@ while getopts :inbpc arg ; do
 			check_bucket_name "$@"
 
 			if [ "$3" = "bedrock" ] ; then
-				echo "$2 edition=bedrock type=bedrock command='/home/minecraft/bedrock/bedrock_server' new_server=true restore_backup=false bucket_name=$5 timezone=$6 geyser_config=false" > ansible/inventory
+				echo "$2 edition=bedrock type=bedrock command='/home/minecraft/bedrock/bedrock_server' new_server=true update_server=false restore_backup=false backup=version=$7 bucket_name=$5 timezone=$6" > ansible/inventory
 			elif [ "$3" = "java" ] || [ "$3" = "paper" ] || [ "$3" = "geyser" ] ; then
-				echo "$2 edition=$3 type=java command='/usr/bin/java -Xmx1024M -Xms1024M -jar server.jar nogui' eula=$EULA new_server=true restore_backup=false bucket_name=$5 timezone=$6 geyser_config=false" > ansible/inventory
+				echo "$2 edition=$3 type=java command='/usr/bin/java -Xmx1024M -Xms1024M -jar server.jar nogui' eula=$EULA new_server=true update_server=false restore_backup=false backup=version=$7 bucket_name=$5 timezone=$6" > ansible/inventory
 			else
 				echo "You must specify one of the following arguments: bedrock	java	paper	geyser"
 				exit 1
@@ -61,19 +61,28 @@ while getopts :inbpc arg ; do
 			check_bucket_name "$@"
 
 			if [ "$3" = "bedrock" ] ; then
-				echo "$2 edition=bedrock type=bedrock command='/home/minecraft/bedrock/bedrock_server' new_server=true restore_backup=true bucket_name=$5 timezone=$6 geyser_config=false" > ansible/inventory
+				echo "$2 edition=bedrock type=bedrock command='/home/minecraft/bedrock/bedrock_server' new_server=true update_server=false restore_backup=true backup=version=$7 bucket_name=$5 timezone=$6" > ansible/inventory
 			elif [ "$3" = "java" ] || [ "$3" = "paper" ] || [ "$3" = "geyser" ] ; then
-				echo "$2 edition=$3 type=java command='/usr/bin/java -Xmx1024M -Xms1024M -jar server.jar nogui' eula=$EULA new_server=true restore_backup=true bucket_name=$5 timezone=$6 geyser_config=false" > ansible/inventory
+				echo "$2 edition=$3 type=java command='/usr/bin/java -Xmx1024M -Xms1024M -jar server.jar nogui' eula=$EULA new_server=true update_server=false restore_backup=true backup=version=$7 bucket_name=$5 timezone=$6" > ansible/inventory
 			else
 				echo "You must specify one of the following arguments: bedrock	java	paper	geyser"
 				exit 1
 			fi
 			;;
+		u)
+			check_ip "$@"
+			check_eula "$@"
+			check_bucket_name "$@"
+
+			if [ "$3" = "bedrock" ] ; then
+				echo "$2 edition=bedrock type=bedrock command='/home/minecraft/bedrock/bedrock_server' new_server=false update_server=true restore_backup=false backup=version=$7 bucket_name=$5 timezone=$6" > ansible/inventory
+			else
+				echo "You must specify one of the following arguments: bedrock"
+				exit 1
+			fi
+			;;
 		p)
 			ansible-playbook --diff --inventory ansible/inventory --user ubuntu --become ansible/minecraft.yml
-			;;
-		c)
-			ansible-playbook --diff --inventory ansible/inventory --user ubuntu --become ansible/minecraft.yml --extra-vars "geyser_config=true" --tags geyser-config
 			;;
 		*)
 	esac

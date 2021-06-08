@@ -1,12 +1,8 @@
 # yaml-language-server: $schema=https://json.schemastore.org/ansible-playbook.json
 
  - hosts: all
-   gather_facts: no
 
    tasks:
-
-    - name: Gathering Facts
-      setup:
 
     - name: Setting the timezone
       timezone:
@@ -95,7 +91,6 @@
       apt:
          name:
           - openjdk-16-jre-headless
-          - acl
           - python3-pip
           - jq
          state: present
@@ -110,14 +105,14 @@
     - name: Gathering Facts about services
       service_facts:
       when:
-       - new_server == "true"
+       - new_server == "true" or update_server == "true"
 
     - name: Stopping the existing server
       systemd:
          name: minecraft-{{ edition }}
          state: stopped
       when:
-       - new_server == "true"
+       - new_server == "true" or update_server == "true"
        - ansible_facts.services['minecraft-' + edition + '.service'] is defined
 
     - name: Removing the existing server
@@ -135,41 +130,70 @@
          mode: 0755
       when: new_server == "true"
 
+    - name: Backing up the existing server
+      shell: tar cfO - {{ edition }} | gzip --best | oci os object put --auth instance_principal --bucket-name {{ bucket_name }} --file - --name "{{ edition }}.tar.gz" --force
+      args:
+         chdir: /home/minecraft
+      when: update_server == "true"
+
+    - name: Removing existing Bedrock data
+      file:
+         path: /home/minecraft/bedrock/{{ item }}
+         state: absent
+      with_items:
+       - behavior_packs
+       - definitions
+       - development_behavior_packs
+       - development_resource_packs
+       - development_skin_packs
+       - minecraftpe
+       - premium_cache
+       - resource_packs
+       - structures
+       - treatments
+       - world_templates
+      when:
+       - edition == "bedrock"
+       - update_server == "true"
+
     - name: Downloading Minecraft Bedrock server
       unarchive:
-         src: https://minecraft.azureedge.net/bin-linux/bedrock-server-1.16.221.01.zip
+         src: https://minecraft.azureedge.net/bin-linux/bedrock-server-1.17.0.03.zip
          dest: /home/minecraft/bedrock/
          owner: minecraft
          group: minecraft
          mode: u=rwX,g=rX,o=rX
          remote_src: yes
+         exclude:
+          - permissions.json
+          - whitelist.json
       when:
        - edition == "bedrock"
-       - new_server == "true"
+       - new_server == "true" or update_server == "true"
        - restore_backup == "false"
 
     - name: Downloading Minecraft Java server
       get_url:
-         url: https://launcher.mojang.com/v1/objects/1b557e7b033b583cd9f66746b7a9ab1ec1673ced/server.jar
+         url: https://launcher.mojang.com/v1/objects/0a269b5f2c5b93b1712d0f5dc43b6182b9ab254e/server.jar
          dest: /home/minecraft/java/server.jar
          owner: minecraft
          group: minecraft
          mode: 0644
       when:
        - edition == "java"
-       - new_server == "true"
+       - new_server == "true" or update_server == "true"
        - restore_backup == "false"
 
     - name: Downloading Paper server
       get_url:
-         url: https://papermc.io/api/v2/projects/paper/versions/1.16.5/builds/762/downloads/paper-1.16.5-762.jar
+         url: https://papermc.io/api/v2/projects/paper/versions/1.16.5/builds/775/downloads/paper-1.16.5-775.jar
          dest: /home/minecraft/{{ edition }}/server.jar
          owner: minecraft
          group: minecraft
          mode: 0644
       when:
        - edition == "paper" or edition == "geyser"
-       - new_server == "true"
+       - new_server == "true" or update_server == "true"
        - restore_backup == "false"
 
     - name: Copying the server.properties file
@@ -180,7 +204,23 @@
          group: minecraft
          mode: 0644
       when:
-       - new_server == "true"
+       - new_server == "true" or update_server == "true"
+       - restore_backup == "false"
+
+    - name: Configuring the Paper server
+      copy:
+         src: files/java/paper/{{ item }}.yml
+         dest: /home/minecraft/{{ edition }}/
+         owner: minecraft
+         group: minecraft
+         mode: 0644
+      with_items:
+       - bukkit
+       - paper
+       - spigot
+      when:
+       - edition == "paper" or edition == "geyser"
+       - new_server == "true" or update_server == "true"
        - restore_backup == "false"
 
     - name: Creating the Paper plugin directories
@@ -192,7 +232,7 @@
          mode: 0755
       with_items:
        - CustomCommandPrefix
-#       - floodgate-bukkit
+       - floodgate-bukkit
        - Geyser-Spigot/packs
       when:
        - edition == "geyser"
@@ -208,52 +248,44 @@
          mode: 0644
       when:
        - edition == "geyser"
-       - new_server == "true"
+       - new_server == "true" or update_server == "true"
        - restore_backup == "false"
 
     - name: Configuring the Geyser plugin
       copy:
-         src: files/geyser/config.yml
+         src: files/java/paper/geyser/config.yml
          dest: /home/minecraft/geyser/plugins/Geyser-Spigot/config.yml
          owner: minecraft
          group: minecraft
          mode: 0644
       when:
        - edition == "geyser"
-       - geyser_config == "true"
-      tags: geyser-config
+       - new_server == "true" or update_server == "true"
+       - restore_backup == "false"
 
     - name: Downloading the Floodgate plugin
       get_url:
-         url: https://ci.opencollab.dev/job/GeyserMC/job/Floodgate/job/master/lastSuccessfulBuild/artifact/bukkit/target/floodgate-bukkit.jar
+         url: https://ci.opencollab.dev/job/GeyserMC/job/Floodgate/job/master/lastSuccessfulBuild/artifact/spigot/target/floodgate-spigot.jar
          dest: /home/minecraft/geyser/plugins/
          owner: minecraft
          group: minecraft
          mode: 0644
       when:
        - edition == "geyser"
-       - new_server == "true"
+       - new_server == "true" or update_server == "true"
        - restore_backup == "false"
 
     - name: Configuring the Floodgate plugin
       copy:
-         src: files/floodgate/config.yml
+         src: files/java/paper/geyser/floodgate/config.yml
          dest: /home/minecraft/geyser/plugins/floodgate-bukkit/config.yml
          owner: minecraft
          group: minecraft
          mode: 0644
       when:
        - edition == "geyser"
-       - geyser_config == "true"
-      tags: geyser-config
-
-    - name: Reloading the Geyser config
-      command: tmux send-keys -t minecraft-geyser geyser reload ENTER
-      become_user: minecraft
-      when:
-       - edition == "geyser"
-       - geyser_config == "true"
-      tags: geyser-config
+       - new_server == "true" or update_server == "true"
+       - restore_backup == "false"
 
     - name: Downloading the CustomCommandPrefix plugin
       copy:
@@ -264,7 +296,7 @@
          mode: 0644
       when:
        - edition == "geyser"
-       - new_server == "true"
+       - new_server == "true" or update_server == "true"
        - restore_backup == "false"
 
     - name: Configuring the CustomCommandPrefix plugin
@@ -276,7 +308,7 @@
          mode: 0644
       when:
        - edition == "geyser"
-       - new_server == "true"
+       - new_server == "true" or update_server == "true"
        - restore_backup == "false"
 
     - name: Downloading the GeyserOptionalPack resource pack
@@ -288,7 +320,7 @@
          mode: 0644
       when:
        - edition == "geyser"
-       - new_server == "true"
+       - new_server == "true" or update_server == "true"
        - restore_backup == "false"
 
     - name: Installing the OCI client
@@ -299,9 +331,19 @@
       command: oci os object get --auth instance_principal --bucket-name {{ bucket_name }} --file {{ edition }}.tar.gz --name {{ edition }}.tar.gz
       args:
          chdir: /home/minecraft
-      when: restore_backup == "true"
+      when:
+       - restore_backup == "true"
+       - backup_version == ""
 
-    - name: Restoring the latest server backup
+    - name: Downloading the server backup
+      command: oci os object get --auth instance_principal --bucket-name {{ bucket_name }} --file {{ edition }}.tar.gz --name {{ edition }}.tar.gz --version-id {{ backup_version }}
+      args:
+         chdir: /home/minecraft
+      when:
+       - restore_backup == "true"
+       - backup_version | length > 0
+
+    - name: Restoring the server backup
       unarchive:
          src: /home/minecraft/{{ edition }}.tar.gz
          dest: /home/minecraft/
