@@ -352,7 +352,7 @@
     - name: Configuring the ViaVersion plugin
       copy:
          src: files/java/paper/viaversion/config.yml
-         dest: /home/minecraft/geyser/plugins/ViaVersion/config.yml
+         dest: /home/minecraft/{{ edition }}/plugins/ViaVersion/config.yml
          owner: minecraft
          group: minecraft
          mode: 0644
