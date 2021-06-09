@@ -15,7 +15,7 @@ checkforupdates: true
 send-supported-versions: false
 # Block specific Minecraft protocols that ViaVersion allows
 # List of all Minecraft protocol versions: http://wiki.vg/Protocol_version_numbers or use a generator: https://via.krusic22.com
-block-protocols: []
+block-protocols: [5,47,107,108,109,110,210,315,316,335,338,340,393,401,404,477,480,485,490,498,573,575,578,735,736,751,753]
 # Change the blocked disconnect message
 block-disconnect-msg: You are using an unsupported Minecraft version!
 # If you use ProtocolLib, we can't reload without kicking the players.
