@@ -4,6 +4,39 @@ resource "oci_core_security_list" "security-list" {
 
 	egress_security_rules {
 		stateless = false
+		destination = var.management_ip
+		destination_type = "CIDR_BLOCK"
+		protocol = "6"
+		tcp_options {
+			min = 22
+			max = 22
+		}
+	}
+
+	egress_security_rules {
+		stateless = false
+		destination = "0.0.0.0/0"
+		destination_type = "CIDR_BLOCK"
+		protocol = "6"
+		tcp_options {
+			min = 80
+			max = 80
+		}
+	}
+
+	egress_security_rules {
+		stateless = false
+		destination = "0.0.0.0/0"
+		destination_type = "CIDR_BLOCK"
+		protocol = "6"
+		tcp_options {
+			min = 443
+			max = 443
+		}
+	}
+
+	egress_security_rules {
+		stateless = false
 		destination = "0.0.0.0/0"
 		destination_type = "CIDR_BLOCK"
 		protocol = "6"
