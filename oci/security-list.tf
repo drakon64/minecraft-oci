@@ -63,6 +63,19 @@ resource "oci_core_security_list" "security-list" {
 		}
 	}
 
+	egress_security_rules {
+		stateless = false
+		destination = "0.0.0.0/0"
+		destination_type = "CIDR_BLOCK"
+		protocol = "17"
+		udp_options {
+			source_port_range {
+				min = 53
+				max = 53
+			}
+		}
+	}
+
 	ingress_security_rules {
 		stateless = false
 		source = var.management_ip
@@ -93,6 +106,17 @@ resource "oci_core_security_list" "security-list" {
 		tcp_options {
 			min = 25565
 			max = 25565
+		}
+	}
+
+	ingress_security_rules {
+		stateless = false
+		source = "0.0.0.0/0"
+		source_type = "CIDR_BLOCK"
+		protocol = "17"
+		udp_options {
+			min = 53
+			max = 53
 		}
 	}
 }

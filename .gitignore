@@ -6,3 +6,5 @@ inventory
 
 ansible/files/bedrock/*
 ansible/files/java/*
+
+ansible/files/bedrockconnect/custom_servers.json

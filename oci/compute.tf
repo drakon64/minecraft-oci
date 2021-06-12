@@ -24,3 +24,28 @@ resource "oci_core_instance" "minecraft_instance" {
 		ssh_authorized_keys = var.ssh_authorized_keys
 	}
 }
+
+resource "oci_core_instance" "bedrockconnect_instance" {
+	availability_domain = data.oci_identity_availability_domains.ads.availability_domains[0].name
+	compartment_id = oci_identity_compartment.tf-compartment.id
+	shape = "VM.Standard.E2.1.Micro"
+	source_details {
+		boot_volume_size_in_gbs = 50
+		source_id = "ocid1.image.oc1.uk-london-1.aaaaaaaa242yn72gd7r2dgeogdgtibx7bknz6lf3ra27ci6xq3lom622dsqq"
+		source_type = "image"
+	}
+
+	display_name = "bedrockconnect"
+	create_vnic_details {
+		assign_public_ip = true
+		subnet_id = oci_core_subnet.vcn-subnet.id
+	}
+	instance_options {
+		are_legacy_imds_endpoints_disabled = true
+	}
+	metadata = {
+		ssh_authorized_keys = var.ssh_authorized_keys
+	}
+
+	count = var.bedrockconnect ? 1 : 0
+}

@@ -1,0 +1,138 @@
+# yaml-language-server: $schema=https://json.schemastore.org/ansible-playbook.json
+
+ - hosts: all
+   vars:
+      domains:
+       - domain: "cubecraft.net"
+         subdomain:
+          - "mco"
+       - domain: "galaxite.net"
+         subdomain:
+          - "play"
+       - domain: "hivebedrock.network"
+         subdomain:
+          - "@"
+          - "geo"
+       - domain: "inpvp.net"
+         subdomain:
+          - "play"
+       - domain: "lbsg.net"
+         subdomain:
+          - "mco"
+       - domain: "mineplex.com"
+         subdomain:
+          - "mco"
+
+   tasks:
+
+    - name: Setting the timezone
+      timezone:
+         name: "{{ timezone }}"
+
+    - name: Removing the Oracle Cloud iptables rules
+      lineinfile:
+         path: /etc/iptables/rules.v4
+         search_string: "-A INPUT -j REJECT --reject-with icmp-host-prohibited"
+         line: "#-A INPUT -j REJECT --reject-with icmp-host-prohibited"
+      register: iptables
+
+    - name: Reloading iptables
+      shell: iptables-restore < /etc/iptables/rules.v4
+      when: iptables.changed
+
+    - name: Installing the BedrockConnect packages
+      apt:
+         name:
+          - default-jre-headless
+          - bind9
+          - python3-pip
+          - jq
+         state: present
+         update_cache: yes
+
+    - name: Creating the minecraft user
+      user:
+         name: minecraft
+         shell: /bin/bash
+
+    - name: Creating the bedrockconnect directory
+      file:
+         path: /home/minecraft/bedrockconnect
+         state: directory
+         owner: minecraft
+         group: minecraft
+         mode: 0755
+
+    - name: Downloading BedrockConnect
+      get_url:
+         url: https://github.com/Pugmatt/BedrockConnect/releases/download/1.7/BedrockConnect-1.0-SNAPSHOT.jar
+         dest: /home/minecraft/bedrockconnect/BedrockConnect.jar
+         owner: minecraft
+         group: minecraft
+         mode: 0755
+
+    - name: Copying the BedrockConnect custom server list
+      template:
+         src: files/bedrockconnect/custom_servers.json
+         dest: /home/minecraft/bedrockconnect/
+         owner: minecraft
+         group: minecraft
+         mode: 0644
+
+    - name: Copying the BIND9 zones
+      template:
+        src: templates/bedrockconnect/db.j2
+        dest: /var/cache/bind/db.{{ item.domain }}
+        owner: root
+        group: root
+        mode: 0644
+      with_items: "{{ domains }}"
+
+    - name: Copying the BIND9 configuration
+      copy:
+        src: files/bedrockconnect/named.conf.local
+        dest: /etc/bind/
+        owner: root
+        group: root
+        mode: 0644
+
+    - name: Installing the OCI client
+      pip:
+         name: oci-cli
+
+    - name: Copying the OS scripts
+      copy:
+         src: files/{{ item }}.sh
+         dest: /home/minecraft/
+         owner: minecraft
+         group: minecraft
+         mode: 0755
+      with_items:
+       - apt-reboot
+       - disk-utilization
+
+    - name: Copying the systemd units
+      template:
+         src: "{{ item.type }}/systemd/{{ item.src }}"
+         dest: /etc/systemd/system/{{ item.dest }}
+         owner: root
+         group: root
+         mode: 0644
+      with_items:
+       - { src: "minecraft.service.j2", dest: "bedrockconnect.service", type: "templates" }
+       - { src: "apt-upgrade.service", dest: "apt-upgrade.service", type: "files" }
+       - { src: "apt-upgrade.timer", dest: "apt-upgrade.timer", type: "files" }
+       - { src: "oci-disk-utilization.service", dest: "oci-disk-utilization.service", type: "files" }
+       - { src: "oci-disk-utilization.timer", dest: "oci-disk-utilization.timer", type: "files" }
+
+    - name: Starting the systemd units
+      systemd:
+         name: "{{ item }}"
+         state: restarted
+         enabled: yes
+         daemon_reload: yes
+      with_items:
+       - bedrockconnect.service
+       - bind9.service
+       - apt-upgrade.timer
+       - oci-disk-utilization.timer
