@@ -1,7 +1,8 @@
 .DS_Store
 provider.tf
 terraform.sh
-oci.zip
+minecraft.zip
+bedrockconnect.zip
 inventory
 
 ansible/files/bedrock/*

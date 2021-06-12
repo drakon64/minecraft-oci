@@ -3,7 +3,7 @@ resource "oci_core_dhcp_options" "dhcp-options" {
 	vcn_id = oci_core_vcn.vcn.id
 
 	options {
-			type = "DomainNameServer"
-			server_type = "VcnLocalPlusInternet"
+		type = "DomainNameServer"
+		server_type = "VcnLocalPlusInternet"
 	}
 }

@@ -66,7 +66,3 @@ variable "topic_name" {
 variable "management_email" {
 	type = string
 }
-
-variable "bedrockconnect" {
-	type = bool
-}
