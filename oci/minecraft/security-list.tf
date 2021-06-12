@@ -17,10 +17,10 @@ resource "oci_core_security_list" "security-list" {
 		stateless = false
 		source = "0.0.0.0/0"
 		source_type = "CIDR_BLOCK"
-		protocol = "17"
-		udp_options {
-			min = 19132
-			max = 19132
+		protocol = "6"
+		tcp_options {
+			min = 25565
+			max = 25565
 		}
 	}
 
@@ -28,10 +28,10 @@ resource "oci_core_security_list" "security-list" {
 		stateless = false
 		source = "0.0.0.0/0"
 		source_type = "CIDR_BLOCK"
-		protocol = "6"
-		tcp_options {
-			min = 25565
-			max = 25565
+		protocol = "17"
+		udp_options {
+			min = 19132
+			max = 19132
 		}
 	}
 
