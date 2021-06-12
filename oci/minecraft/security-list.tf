@@ -2,61 +2,6 @@ resource "oci_core_security_list" "security-list" {
 	compartment_id = oci_identity_compartment.tf-compartment.id
 	vcn_id = oci_core_vcn.vcn.id
 
-	egress_security_rules {
-		stateless = false
-		destination = var.management_ip
-		destination_type = "CIDR_BLOCK"
-		protocol = "6"
-		tcp_options {
-			min = 22
-			max = 22
-		}
-	}
-
-	egress_security_rules {
-		stateless = false
-		destination = "0.0.0.0/0"
-		destination_type = "CIDR_BLOCK"
-		protocol = "6"
-		tcp_options {
-			min = 80
-			max = 80
-		}
-	}
-
-	egress_security_rules {
-		stateless = false
-		destination = "0.0.0.0/0"
-		destination_type = "CIDR_BLOCK"
-		protocol = "6"
-		tcp_options {
-			min = 443
-			max = 443
-		}
-	}
-
-	egress_security_rules {
-		stateless = false
-		destination = "0.0.0.0/0"
-		destination_type = "CIDR_BLOCK"
-		protocol = "6"
-		tcp_options {
-			min = 80
-			max = 80
-		}
-	}
-
-	egress_security_rules {
-		stateless = false
-		destination = "0.0.0.0/0"
-		destination_type = "CIDR_BLOCK"
-		protocol = "6"
-		tcp_options {
-			min = 443
-			max = 443
-		}
-	}
-
 	ingress_security_rules {
 		stateless = false
 		source = var.management_ip
@@ -87,6 +32,28 @@ resource "oci_core_security_list" "security-list" {
 		tcp_options {
 			min = 25565
 			max = 25565
+		}
+	}
+
+	egress_security_rules {
+		stateless = false
+		destination = "0.0.0.0/0"
+		destination_type = "CIDR_BLOCK"
+		protocol = "6"
+		tcp_options {
+			min = 80
+			max = 80
+		}
+	}
+
+	egress_security_rules {
+		stateless = false
+		destination = "0.0.0.0/0"
+		destination_type = "CIDR_BLOCK"
+		protocol = "6"
+		tcp_options {
+			min = 443
+			max = 443
 		}
 	}
 }
