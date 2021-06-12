@@ -5,14 +5,16 @@ Param (
 	[Parameter(Mandatory, ParameterSetName="NewServer")] [Switch] $NewServer,
 	[Parameter(Mandatory, ParameterSetName="RestoreBackup")] [Switch] $RestoreBackup,
 	[Parameter(Mandatory, ParameterSetName="UpdateServer")] [Switch] $UpdateServer,
+	[Parameter(Mandatory, ParameterSetName="BedrockConnect")] [Switch] $BedrockConnect,
 	[Parameter(Mandatory, ParameterSetName="RunPlaybook")] [Switch] $RunPlaybook,
+	[Parameter(Mandatory, ParameterSetName="RunBedrockConnectPlaybook")] [Switch] $RunBedrockConnectPlaybook,
 
 	[Parameter(Mandatory, ParameterSetName="Config")] [Parameter(Mandatory, ParameterSetName="NewServer")] [Parameter(Mandatory, ParameterSetName="RestoreBackup")] [Parameter(Mandatory, ParameterSetName="UpdateServer")] [ValidateSet("bedrock", "java", "paper", "geyser")] [String] $Edition,
-	[Parameter(Mandatory, ParameterSetName="Config")] [Parameter(Mandatory, ParameterSetName="NewServer")] [Parameter(Mandatory, ParameterSetName="RestoreBackup")] [Parameter(Mandatory, ParameterSetName="UpdateServer")] [String] $IpAddress,
+	[Parameter(Mandatory, ParameterSetName="Config")] [Parameter(Mandatory, ParameterSetName="NewServer")] [Parameter(Mandatory, ParameterSetName="RestoreBackup")] [Parameter(Mandatory, ParameterSetName="UpdateServer")] [Parameter(Mandatory, ParameterSetName="BedrockConnect")] [String] $IpAddress,
 	[Parameter(Mandatory, ParameterSetName="Config")] [Parameter(Mandatory, ParameterSetName="NewServer")] [Parameter(Mandatory, ParameterSetName="RestoreBackup")] [Parameter(Mandatory, ParameterSetName="UpdateServer")] [ValidateSet("true", "false")] [String] $Eula,
 	[Parameter(Mandatory, ParameterSetName="Config")] [Parameter(Mandatory, ParameterSetName="NewServer")] [Parameter(Mandatory, ParameterSetName="RestoreBackup")] [Parameter(Mandatory, ParameterSetName="UpdateServer")] [String] $BucketName,
 
-	[Parameter(Mandatory, ParameterSetName="Config")] [Parameter(Mandatory, ParameterSetName="NewServer")] [Parameter(Mandatory, ParameterSetName="RestoreBackup")] [Parameter(Mandatory, ParameterSetName="UpdateServer")] [String] $Timezone,
+	[Parameter(Mandatory, ParameterSetName="Config")] [Parameter(Mandatory, ParameterSetName="NewServer")] [Parameter(Mandatory, ParameterSetName="RestoreBackup")] [Parameter(Mandatory, ParameterSetName="UpdateServer")] [Parameter(Mandatory, ParameterSetName="BedrockConnect")] [String] $Timezone,
 
 	[Parameter(ParameterSetName="RestoreBackup")] [String] $BackupVersion
 )
@@ -45,6 +47,12 @@ ElseIf ($UpdateServer) {
 		"$IpAddress edition=$Edition type=java command='/usr/bin/java -Xmx1024M -Xms1024M -jar server.jar nogui' eula=$Eula new_server=false update_server=true restore_backup=false backup_version= bucket_name=$BucketName timezone=$Timezone" | Out-File -FilePath ansible/inventory
 	}
 }
+ElseIf ($BedrockConnect) {
+	"$IpAddress edition=bedrockconnect type=bedrockconnect command='/usr/bin/java -jar BedrockConnect.jar nodb=true custom_servers=/home/minecraft/bedrockconnect/custom_servers.json' timezone=$Timezone" | Out-File -FilePath ansible/inventory
+}
 ElseIf ($RunPlaybook) {
 	ansible-playbook --diff --inventory ansible/inventory --user ubuntu --become ansible/minecraft.yml
+}
+ElseIf ($RunBedrockConnectPlaybook) {
+	ansible-playbook --diff --inventory ansible/inventory --user ubuntu --become ansible/bedrockconnect.yml
 }

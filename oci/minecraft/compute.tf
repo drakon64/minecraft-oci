@@ -16,6 +16,9 @@ resource "oci_core_instance" "minecraft_instance" {
 	create_vnic_details {
 		assign_public_ip = true
 		subnet_id = oci_core_subnet.vcn-subnet.id
+		nsg_ids = [
+			oci_core_network_security_group.minecraft.id
+		]
 	}
 	instance_options {
 		are_legacy_imds_endpoints_disabled = true

@@ -5,11 +5,11 @@ After=network.target
 [Service]
 Type=forking
 ExecStart=/usr/bin/tmux new-session -s minecraft-{{ edition }} -d '{{ command }}'
+{% if type != "bedrockconnect" -%}
 ExecStop=/home/minecraft/stop_{{ edition }}.sh
+{% endif %}
 
 WorkingDirectory=/home/minecraft/{{ edition }}
-
-Nice=-20
 
 User=minecraft
 Group=minecraft
