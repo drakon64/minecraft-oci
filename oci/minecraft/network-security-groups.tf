@@ -50,7 +50,7 @@ resource "oci_core_network_security_group_security_rule" "bedrock" {
 	}
 }
 
-resource "oci_core_network_security_group_security_rule" "http_minecraft" {
+resource "oci_core_network_security_group_security_rule" "http" {
 	network_security_group_id = oci_core_network_security_group.minecraft.id
 	direction = "EGRESS"
 	protocol = 6
@@ -65,7 +65,7 @@ resource "oci_core_network_security_group_security_rule" "http_minecraft" {
 	}
 }
 
-resource "oci_core_network_security_group_security_rule" "https_minecraft" {
+resource "oci_core_network_security_group_security_rule" "https" {
 	network_security_group_id = oci_core_network_security_group.minecraft.id
 	direction = "EGRESS"
 	protocol = 6
