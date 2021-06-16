@@ -3,6 +3,6 @@
 apt update
 apt -y upgrade
 
-if [ -f /var/run/reboot-required ] ; do
+if [ -f /var/run/reboot-required ] ; then
 	reboot
 fi
