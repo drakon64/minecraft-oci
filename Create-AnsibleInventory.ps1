@@ -50,7 +50,7 @@ ElseIf ($UpdateServer) {
 	}
 }
 ElseIf ($BedrockConnect) {
-	"$IpAddress edition=bedrockconnect type=bedrockconnect command='/usr/bin/java -jar BedrockConnect.jar nodb=true custom_servers=/home/minecraft/bedrockconnect/custom_servers.json' timezone=$Timezone" | Out-File -FilePath ansible/inventory
+	"$IpAddress edition=bedrockconnect type=bedrockconnect command='/usr/bin/java -jar BedrockConnect.jar nodb=true custom_servers=/home/minecraft/bedrockconnect/custom_servers.json user_servers=false featured_servers=false' timezone=$Timezone" | Out-File -FilePath ansible/inventory
 }
 ElseIf ($RunPlaybook) {
 	ansible-playbook --diff --inventory ansible/inventory --user ubuntu --become ansible/minecraft.yml
