@@ -1,6 +1,5 @@
-resource "oci_core_security_list" "security-list" {
-	compartment_id = oci_identity_compartment.tf-compartment.id
-	vcn_id = oci_core_vcn.vcn.id
+resource "oci_core_default_security_list" "default-security-list" {
+	manage_default_resource_id = oci_core_vcn.vcn.default_security_list_id
 
 	ingress_security_rules {
 		stateless = false
