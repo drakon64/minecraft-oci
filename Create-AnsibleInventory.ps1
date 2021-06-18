@@ -16,35 +16,37 @@ Param (
 
 	[Parameter(Mandatory, ParameterSetName="Config")] [Parameter(Mandatory, ParameterSetName="NewServer")] [Parameter(Mandatory, ParameterSetName="RestoreBackup")] [Parameter(Mandatory, ParameterSetName="UpdateServer")] [Parameter(Mandatory, ParameterSetName="BedrockConnect")] [String] $Timezone,
 
-	[Parameter(ParameterSetName="RestoreBackup")] [String] $BackupVersion
+	[Parameter(ParameterSetName="RestoreBackup")] [String] $BackupVersion,
+
+	[Parameter(Mandatory, ParameterSetName="Config")] [Parameter(Mandatory, ParameterSetName="NewServer")] [Parameter(Mandatory, ParameterSetName="RestoreBackup")] [Parameter(Mandatory, ParameterSetName="UpdateServer")] [ValidateSet("true", "false")] [String] $RestorePermissions
 )
 
 If ($Config) {
 	If ($Edition -eq "bedrock") {
-		"$IpAddress edition=bedrock type=bedrock command='/home/minecraft/bedrock/bedrock_server' new_server=false update_server=false restore_backup=false backup_version= bucket_name=$BucketName timezone=$Timezone" | Out-File -FilePath ansible/inventory
+		"$IpAddress edition=bedrock type=bedrock command='/home/minecraft/bedrock/bedrock_server' new_server=false update_server=false restore_backup=false restore_permissions=$RestorePermissions opsfile=permissions backup_version= bucket_name=$BucketName timezone=$Timezone" | Out-File -FilePath ansible/inventory
 	} ElseIf ($Edition -eq "java" -Or $Edition -eq "paper" -Or $Edition -eq "geyser") {
-		"$IpAddress edition=$Edition type=java command='/usr/bin/java -Xmx1024M -Xms1024M -jar server.jar nogui' eula=$Eula new_server=false update_server=false restore_backup=false backup_version= bucket_name=$BucketName timezone=$Timezone" | Out-File -FilePath ansible/inventory
+		"$IpAddress edition=$Edition type=java command='/usr/bin/java -Xmx1024M -Xms1024M -jar server.jar nogui' eula=$Eula new_server=false update_server=false restore_backup=false restore_permissions=$RestorePermissions opsfile=ops backup_version= bucket_name=$BucketName timezone=$Timezone" | Out-File -FilePath ansible/inventory
 	}
 }
 ElseIf ($NewServer) {
 	If ($Edition -eq "bedrock") {
-		"$IpAddress edition=bedrock type=bedrock command='/home/minecraft/bedrock/bedrock_server' new_server=true update_server=false restore_backup=false backup_version= bucket_name=$BucketName timezone=$Timezone" | Out-File -FilePath ansible/inventory
+		"$IpAddress edition=bedrock type=bedrock command='/home/minecraft/bedrock/bedrock_server' new_server=true update_server=false restore_backup=false restore_permissions=$RestorePermissions opsfile=permissions backup_version= bucket_name=$BucketName timezone=$Timezone" | Out-File -FilePath ansible/inventory
 	} ElseIf ($Edition -eq "java" -Or $Edition -eq "paper" -Or $Edition -eq "geyser") {
-		"$IpAddress edition=$Edition type=java command='/usr/bin/java -Xmx1024M -Xms1024M -jar server.jar nogui' eula=$Eula new_server=true update_server=false restore_backup=false backup_version= bucket_name=$BucketName timezone=$Timezone" | Out-File -FilePath ansible/inventory
+		"$IpAddress edition=$Edition type=java command='/usr/bin/java -Xmx1024M -Xms1024M -jar server.jar nogui' eula=$Eula new_server=true update_server=false restore_backup=false restore_permissions=$RestorePermissions opsfile=ops backup_version= bucket_name=$BucketName timezone=$Timezone" | Out-File -FilePath ansible/inventory
 	}
 }
 ElseIf ($RestoreBackup) {
 	If ($Edition -eq "bedrock") {
-		"$IpAddress edition=bedrock type=bedrock command='/home/minecraft/bedrock/bedrock_server' new_server=true update_server=false restore_backup=true backup_version=$BackupVersion bucket_name=$BucketName timezone=$Timezone" | Out-File -FilePath ansible/inventory
+		"$IpAddress edition=bedrock type=bedrock command='/home/minecraft/bedrock/bedrock_server' new_server=true update_server=false restore_backup=true restore_permissions=$RestorePermissions opsfile=permissions backup_version=$BackupVersion bucket_name=$BucketName timezone=$Timezone" | Out-File -FilePath ansible/inventory
 	} ElseIf ($Edition -eq "java" -Or $Edition -eq "paper" -Or $Edition -eq "geyser") {
-		"$IpAddress edition=$Edition type=java command='/usr/bin/java -Xmx1024M -Xms1024M -jar server.jar nogui' eula=$Eula new_server=true update_server=false restore_backup=true backup_version=$BackupVersion bucket_name=$BucketName timezone=$Timezone" | Out-File -FilePath ansible/inventory
+		"$IpAddress edition=$Edition type=java command='/usr/bin/java -Xmx1024M -Xms1024M -jar server.jar nogui' eula=$Eula new_server=true update_server=false restore_backup=true restore_permissions=$RestorePermissions opsfile=ops backup_version=$BackupVersion bucket_name=$BucketName timezone=$Timezone" | Out-File -FilePath ansible/inventory
 	}
 }
 ElseIf ($UpdateServer) {
 	If ($Edition -eq "bedrock") {
-		"$IpAddress edition=bedrock type=bedrock command='/home/minecraft/bedrock/bedrock_server' new_server=false update_server=true restore_backup=false backup_version= bucket_name=$BucketName timezone=$Timezone" | Out-File -FilePath ansible/inventory
+		"$IpAddress edition=bedrock type=bedrock command='/home/minecraft/bedrock/bedrock_server' new_server=false update_server=true restore_backup=false restore_permissions=$RestorePermissions opsfile=permissions backup_version= bucket_name=$BucketName timezone=$Timezone" | Out-File -FilePath ansible/inventory
 	} ElseIf ($Edition -eq "java" -Or $Edition -eq "paper" -Or $Edition -eq "geyser") {
-		"$IpAddress edition=$Edition type=java command='/usr/bin/java -Xmx1024M -Xms1024M -jar server.jar nogui' eula=$Eula new_server=false update_server=true restore_backup=false backup_version= bucket_name=$BucketName timezone=$Timezone" | Out-File -FilePath ansible/inventory
+		"$IpAddress edition=$Edition type=java command='/usr/bin/java -Xmx1024M -Xms1024M -jar server.jar nogui' eula=$Eula new_server=false update_server=true restore_backup=false restore_permissions=$RestorePermissions opsfile=ops backup_version= bucket_name=$BucketName timezone=$Timezone" | Out-File -FilePath ansible/inventory
 	}
 }
 ElseIf ($BedrockConnect) {

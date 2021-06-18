@@ -207,6 +207,19 @@
        - new_server == "true" or update_server == "true"
        - restore_backup == "false"
 
+    - name: Copying the server permissions files
+      copy:
+         src: files/{{ type }}/{{ item }}.json
+         dest: /home/minecraft/{{ edition }}/
+         owner: minecraft
+         group: minecraft
+         mode: 0644
+      with_items:
+       - "{{ opsfile }}"
+       - whitelist
+      when:
+       - restore_permissions == "true"
+
     - name: Configuring the Paper server
       copy:
          src: files/java/paper/{{ item }}.yml
