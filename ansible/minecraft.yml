@@ -59,6 +59,7 @@
       when:
        - edition == "bedrock"
        - ansible_architecture != "x86_64"
+       - not ansible_check_mode
 
     - name: Installing Bedrock packages
       apt:
