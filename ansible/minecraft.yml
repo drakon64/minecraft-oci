@@ -186,7 +186,7 @@
 
     - name: Downloading Paper server
       get_url:
-         url: https://papermc.io/api/v2/projects/paper/versions/1.16.5/builds/775/downloads/paper-1.16.5-775.jar
+         url: https://papermc.io/api/v2/projects/paper/versions/1.16.5/builds/778/downloads/paper-1.16.5-778.jar
          dest: /home/minecraft/{{ edition }}/server.jar
          owner: minecraft
          group: minecraft
