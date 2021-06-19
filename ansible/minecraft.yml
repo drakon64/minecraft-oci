@@ -38,6 +38,13 @@
        - edition == "bedrock"
        - ansible_architecture != "x86_64"
 
+    - name: Getting the instance architecture
+      command: dpkg --print-architecture
+      when:
+       - edition == "bedrock"
+       - ansible_architecture != "x86_64"
+      register: architecture
+
     - name: Getting the instance availability domain
       uri:
          url: http://169.254.169.254/opc/v2/instance/ociAdName
