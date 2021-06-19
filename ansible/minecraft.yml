@@ -159,7 +159,7 @@
 
     - name: Downloading Minecraft Bedrock server
       unarchive:
-         src: https://minecraft.azureedge.net/bin-linux/bedrock-server-1.17.0.03.zip
+         src: https://minecraft.azureedge.net/bin-linux/bedrock-server-1.17.1.01.zip
          dest: /home/minecraft/bedrock/
          owner: minecraft
          group: minecraft
