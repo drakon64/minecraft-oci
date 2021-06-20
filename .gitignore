@@ -3,7 +3,7 @@ provider.tf
 terraform.sh
 minecraft.zip
 bedrockconnect.zip
-inventory
+ansible/inventory
 
 ansible/files/bedrock/*
 ansible/files/java/*
