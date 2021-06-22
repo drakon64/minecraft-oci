@@ -12,7 +12,6 @@
 [all:vars]
 ansible_user=ubuntu
 ansible_become=yes
-ansible_diff=yes
 
 [bedrock:vars]
 edition=bedrock
