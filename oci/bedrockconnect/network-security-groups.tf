@@ -2,7 +2,7 @@ resource "oci_core_network_security_group" "bedrockconnect" {
 	compartment_id = oci_identity_compartment.tf-compartment.id
 	vcn_id = oci_core_vcn.vcn.id
 
-	display_name = "bedrockconnect"
+	display_name = var.oci_compute_display_name
 }
 
 resource "oci_core_network_security_group_security_rule" "ssh" {
