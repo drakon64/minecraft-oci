@@ -3,25 +3,28 @@
  - hosts: all
    vars:
       domains:
-       - domain: "cubecraft.net"
-         subdomain:
-          - "mco"
-       - domain: "galaxite.net"
-         subdomain:
-          - "play"
        - domain: "hivebedrock.network"
          subdomain:
-          - "@"
           - "geo"
+          - "@"
+       - domain: "mineplex.com"
+         subdomain:
+          - "mco"
        - domain: "inpvp.net"
          subdomain:
           - "play"
        - domain: "lbsg.net"
          subdomain:
           - "mco"
-       - domain: "mineplex.com"
+       - domain: "cubecraft.net"
          subdomain:
           - "mco"
+       - domain: "galaxite.net"
+         subdomain:
+          - "play"
+       - domain: "pixelparadise.gg"
+         subdomain:
+          - "play"
 
    tasks:
 

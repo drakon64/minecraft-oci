@@ -1,18 +1,12 @@
-zone "cubecraft.net" IN {
-	type master;
-	file "db.cubecraft.net";
-	allow-query { any; };
-};
-
-zone "galaxite.net" IN {
-	type master;
-	file "db.galaxite.net";
-	allow-query { any; };
-};
-
 zone "hivebedrock.network" IN {
 	type master;
 	file "db.hivebedrock.network";
+	allow-query { any; };
+};
+
+zone "mineplex.com" IN {
+	type master;
+	file "db.mineplex.com";
 	allow-query { any; };
 };
 
@@ -28,8 +22,20 @@ zone "lbsg.net" IN {
 	allow-query { any; };
 };
 
-zone "mineplex.com" IN {
+zone "cubecraft.net" IN {
 	type master;
-	file "db.mineplex.com";
+	file "db.cubecraft.net";
+	allow-query { any; };
+};
+
+zone "galaxite.net" IN {
+	type master;
+	file "db.galaxite.net";
+	allow-query { any; };
+};
+
+zone "pixelparadise.gg" IN {
+	type master;
+	file "db.pixelparadise.gg";
 	allow-query { any; };
 };
