@@ -105,6 +105,13 @@
          update_cache: yes
       when: type == "java"
 
+    - name: Installing BuildTools packages
+      apt:
+         name: git
+         state: present
+         update_cache: yes
+      when: edition == "spigot" or edition == "geyser"
+
     - name: Creating the minecraft user
       user:
          name: minecraft
@@ -192,17 +199,37 @@
        - new_server == "true" or update_server == "true"
        - restore_backup == "false"
 
-    - name: Downloading Paper server
+    - name: Downloading BuildTools
       get_url:
-         url: https://papermc.io/api/v2/projects/paper/versions/1.16.5/builds/778/downloads/paper-1.16.5-778.jar
-         dest: /home/minecraft/{{ edition }}/server.jar
+         url: https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar
+         dest: /home/minecraft/{{ edition }}/BuildTools.jar
          owner: minecraft
          group: minecraft
          mode: 0644
       when:
-       - edition == "paper" or edition == "geyser"
+       - edition == "spigot" or edition == "geyser"
        - new_server == "true" or update_server == "true"
        - restore_backup == "false"
+
+    - name: Configuring Git for BuildTools
+      command: git config --global --unset core.autocrlf
+      when:
+       - edition == "spigot" or edition == "geyser"
+       - new_server == "true" or update_server == "true"
+       - restore_backup == "false"
+      become: yes
+      become_user: minecraft
+
+    - name: Building Spigot
+      command: java -jar BuildTools.jar --rev 1.17.1
+      args:
+         chdir: /home/minecraft/{{ edition }}/
+      when:
+       - edition == "spigot" or edition == "geyser"
+       - new_server == "true" or update_server == "true"
+       - restore_backup == "false"
+      become: yes
+      become_user: minecraft
 
     - name: Copying the server.properties file
       copy:
@@ -228,23 +255,22 @@
       when:
        - restore_permissions == "true"
 
-    - name: Configuring the Paper server
+    - name: Configuring the Spigot server
       copy:
-         src: files/java/paper/{{ item }}.yml
+         src: files/java/spigot/{{ item }}.yml
          dest: /home/minecraft/{{ edition }}/
          owner: minecraft
          group: minecraft
          mode: 0644
       with_items:
        - bukkit
-       - paper
        - spigot
       when:
-       - edition == "paper" or edition == "geyser"
+       - edition == "spigot" or edition == "geyser"
        - new_server == "true" or update_server == "true"
        - restore_backup == "false"
 
-    - name: Creating the Paper plugin directories
+    - name: Creating the Spigot plugin directories
       file:
          path: /home/minecraft/geyser/plugins/{{ item }}
          state: directory
@@ -274,7 +300,7 @@
 
     - name: Configuring the Geyser plugin
       copy:
-         src: files/java/paper/geyser/config.yml
+         src: files/java/spigot/geyser/config.yml
          dest: /home/minecraft/geyser/plugins/Geyser-Spigot/config.yml
          owner: minecraft
          group: minecraft
@@ -298,7 +324,7 @@
 
     - name: Configuring the Floodgate plugin
       copy:
-         src: files/java/paper/geyser/floodgate/config.yml
+         src: files/java/spigot/geyser/floodgate/config.yml
          dest: /home/minecraft/geyser/plugins/floodgate-bukkit/config.yml
          owner: minecraft
          group: minecraft
