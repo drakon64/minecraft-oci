@@ -22,12 +22,12 @@ variable "oci_compute_shape" {
 
 variable "oci_compute_memory" {
 	type = number
-	default = 3
+	default = 1
 }
 
 variable "oci_compute_ocpus" {
 	type = number
-	default = 3
+	default = 1
 }
 
 variable "oci_compute_display_name" {
@@ -55,7 +55,7 @@ variable "backup_bucket_name" {
 
 variable "backup_retention_days" {
 	type = number
-	default = 31
+	default = 30
 }
 
 variable "topic_name" {
