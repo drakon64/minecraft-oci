@@ -1,5 +1,5 @@
 .DS_Store
-ansible/inventory
+ansible/inventory.ini
 
 ansible/files/bedrock/*
 ansible/files/java/*
