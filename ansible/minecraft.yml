@@ -107,7 +107,9 @@
 
     - name: Installing BuildTools packages
       apt:
-         name: git
+         name:
+          - git
+          - acl
          state: present
          update_cache: yes
       when: edition == "spigot" or edition == "geyser"
@@ -219,9 +221,12 @@
        - restore_backup == "false"
       become: yes
       become_user: minecraft
+      register: git
+      changed_when: git.rc == 5
+      failed_when: git.rc != 5
 
     - name: Building Spigot
-      command: java -jar BuildTools.jar --rev 1.17.1
+      command: java -jar BuildTools.jar --rev {{ version }}
       args:
          chdir: /home/minecraft/{{ edition }}/
       when:
@@ -465,7 +470,7 @@
 
     - name: Linking spigot.jar to server.jar
       file:
-         src: /home/minecraft/{{ edition }}/spigot.jar
+         src: /home/minecraft/{{ edition }}/spigot-{{ version }}.jar
          path: /home/minecraft/{{ edition }}/server.jar
          state: link
          owner: minecraft

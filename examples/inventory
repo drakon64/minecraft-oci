@@ -2,7 +2,7 @@
 {{ server_ip_address }} new_server=false update_server=false restore_backup=false restore_permissions=false backup_version= bucket_name={{ bucket_name }} timezone=Europe/London
 
 [java]
-{{ server_ip_address }} edition=java eula=false new_server=false update_server=false restore_backup=false restore_permissions=false backup_version= bucket_name={{ bucket_name }} timezone=Europe/London
+{{ server_ip_address }} edition=java version=1.17.1 eula=false new_server=false update_server=false restore_backup=false restore_permissions=false backup_version= bucket_name={{ bucket_name }} timezone=Europe/London
 
 [bedrockconnect]
 {{ server_ip_address }} timezone=Europe/London
