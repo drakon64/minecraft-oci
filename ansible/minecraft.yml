@@ -105,15 +105,6 @@
          update_cache: yes
       when: type == "java"
 
-    - name: Installing BuildTools packages
-      apt:
-         name:
-          - git
-          - acl
-         state: present
-         update_cache: yes
-      when: edition == "spigot" or edition == "geyser"
-
     - name: Creating the minecraft user
       user:
          name: minecraft
@@ -201,40 +192,51 @@
        - new_server == "true" or update_server == "true"
        - restore_backup == "false"
 
-    - name: Downloading BuildTools
+    - name: Getting a list of Paper builds
+      uri:
+         url: https://papermc.io/api/v2/projects/paper/versions/{{ version }}
+         method: GET
+         headers:
+            accept: application/json
+         return_content: true
+      register: paper_builds
+      when:
+       - edition == "paper" or edition == "geyser"
+       - new_server == "true" or update_server == "true"
+       - restore_backup == "false"
+
+    - name: Getting the latest Paper build
+      shell: echo "{{ paper_builds.content }}" | jq ".builds | max"
+      register: paper_latest
+      when:
+       - edition == "paper" or edition == "geyser"
+       - new_server == "true" or update_server == "true"
+       - restore_backup == "false"
+
+    - name: Getting the download URL for the latest Paper build
+      uri:
+         url: https://papermc.io/api/v2/projects/paper/versions/{{ version }}/builds/{{ paper_latest.stdout }}
+         method: GET
+         headers:
+            accept: application/json
+         return_content: true
+      register: paper_download
+      when:
+       - edition == "paper" or edition == "geyser"
+       - new_server == "true" or update_server == "true"
+       - restore_backup == "false"
+
+    - name: Downloading Minecraft Paper server
       get_url:
-         url: https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar
-         dest: /home/minecraft/{{ edition }}/BuildTools.jar
+         url: "{{ paper_download.content }}"
+         dest: /home/minecraft/{{ edition }}/server.jar
          owner: minecraft
          group: minecraft
          mode: 0644
       when:
-       - edition == "spigot" or edition == "geyser"
+       - edition == "java"
        - new_server == "true" or update_server == "true"
        - restore_backup == "false"
-
-    - name: Configuring Git for BuildTools
-      command: git config --global --unset core.autocrlf
-      when:
-       - edition == "spigot" or edition == "geyser"
-       - new_server == "true" or update_server == "true"
-       - restore_backup == "false"
-      become: yes
-      become_user: minecraft
-      register: git
-      changed_when: git.rc == 5
-      failed_when: git.rc != 5
-
-    - name: Building Spigot
-      command: java -jar BuildTools.jar --rev {{ version }}
-      args:
-         chdir: /home/minecraft/{{ edition }}/
-      when:
-       - edition == "spigot" or edition == "geyser"
-       - new_server == "true" or update_server == "true"
-       - restore_backup == "false"
-      become: yes
-      become_user: minecraft
 
     - name: Copying the server.properties file
       copy:
@@ -260,22 +262,35 @@
       when:
        - restore_permissions == "true"
 
-    - name: Configuring the Spigot server
+    - name: Configuring the Paper server
       copy:
-         src: files/java/spigot/{{ item }}.yml
+         src: files/java/paper/{{ item }}.yml
          dest: /home/minecraft/{{ edition }}/
          owner: minecraft
          group: minecraft
          mode: 0644
       with_items:
        - bukkit
-       - spigot
+       - paper
       when:
-       - edition == "spigot" or edition == "geyser"
+       - edition == "paper" or edition == "geyser"
        - new_server == "true" or update_server == "true"
        - restore_backup == "false"
 
-    - name: Creating the Spigot plugin directories
+    - name: Creating the Chunky plugin directory
+      file:
+         path: /home/minecraft/{{ edition }}/plugins/Chunky
+         state: directory
+         owner: minecraft
+         group: minecraft
+         mode: 0755
+      when:
+       - edition == "paper" or edition == "geyser"
+       - chunky == "true"
+       - new_server == "true"
+       - restore_backup == "false"
+
+    - name: Creating the Geyser plugin directories
       file:
          path: /home/minecraft/geyser/plugins/{{ item }}
          state: directory
@@ -285,15 +300,41 @@
       with_items:
        - CustomCommandPrefix
        - floodgate-bukkit
-       - Geyser-Spigot/packs
+       - Geyser-Paper/packs
       when:
        - edition == "geyser"
        - new_server == "true"
        - restore_backup == "false"
 
+    - name: Downloading the Chunky plugin
+      get_url:
+         url: https://ci.codemc.io/view/Author/job/pop4959/job/Chunky/lastBuild/artifact/bukkit/build/libs/Chunky-1.2.136.jar
+         dest: /home/minecraft/{{ edition }}/plugins/
+         owner: minecraft
+         group: minecraft
+         mode: 0644
+      when:
+       - edition == "paper" or edition == "geyser"
+       - chunky == "true"
+       - new_server == "true" or update_server == "true"
+       - restore_backup == "false"
+
+    - name: Configuring the Chunky plugin
+      copy:
+         src: files/java/paper/chunky/config.yml
+         dest: /home/minecraft/{{ edition }}/plugins/Chunky/config.yml
+         owner: minecraft
+         group: minecraft
+         mode: 0644
+      when:
+       - edition == "paper" or edition == "geyser"
+       - chunky == "true"
+       - new_server == "true" or update_server == "true"
+       - restore_backup == "false"
+
     - name: Downloading the Geyser plugin
       get_url:
-         url: https://ci.opencollab.dev/job/GeyserMC/job/Geyser/job/master/lastSuccessfulBuild/artifact/bootstrap/spigot/target/Geyser-Spigot.jar
+         url: https://ci.opencollab.dev/job/GeyserMC/job/Geyser/job/master/lastSuccessfulBuild/artifact/bootstrap/paper/target/Geyser-Paper.jar
          dest: /home/minecraft/geyser/plugins/
          owner: minecraft
          group: minecraft
@@ -305,8 +346,8 @@
 
     - name: Configuring the Geyser plugin
       copy:
-         src: files/java/spigot/geyser/config.yml
-         dest: /home/minecraft/geyser/plugins/Geyser-Spigot/config.yml
+         src: files/java/paper/geyser/config.yml
+         dest: /home/minecraft/geyser/plugins/Geyser-Paper/config.yml
          owner: minecraft
          group: minecraft
          mode: 0644
@@ -317,7 +358,7 @@
 
     - name: Downloading the Floodgate plugin
       get_url:
-         url: https://ci.opencollab.dev/job/GeyserMC/job/Floodgate/job/master/lastSuccessfulBuild/artifact/spigot/target/floodgate-spigot.jar
+         url: https://ci.opencollab.dev/job/GeyserMC/job/Floodgate/job/master/lastSuccessfulBuild/artifact/paper/target/floodgate-paper.jar
          dest: /home/minecraft/geyser/plugins/
          owner: minecraft
          group: minecraft
@@ -329,7 +370,7 @@
 
     - name: Configuring the Floodgate plugin
       copy:
-         src: files/java/spigot/geyser/floodgate/config.yml
+         src: files/java/paper/geyser/floodgate/config.yml
          dest: /home/minecraft/geyser/plugins/floodgate-bukkit/config.yml
          owner: minecraft
          group: minecraft
@@ -366,7 +407,7 @@
     - name: Downloading the GeyserOptionalPack resource pack
       get_url:
          url: https://ci.opencollab.dev/job/GeyserMC/job/GeyserOptionalPack/job/master/lastSuccessfulBuild/artifact/GeyserOptionalPack.mcpack
-         dest: /home/minecraft/geyser/plugins/Geyser-Spigot/packs/
+         dest: /home/minecraft/geyser/plugins/Geyser-Paper/packs/
          owner: minecraft
          group: minecraft
          mode: 0644
@@ -455,6 +496,22 @@
        - { src: "oci-disk-utilization.service", dest: "oci-disk-utilization.service", type: "files" }
        - { src: "oci-disk-utilization.timer", dest: "oci-disk-utilization.timer", type: "files" }
 
+    - name: Copying the systemd units for Chunky
+      template:
+         src: templates/systemd/minecraft-chunky-{{ item }}.j2
+         dest: /etc/systemd/system/minecraft-{{ edition }}-chunky-{{ item }}
+         owner: root
+         group: root
+         mode: 0644
+      with_items:
+       - start.service
+       - start.timer
+       - stop.service
+       - stop.timer
+      when:
+       - edition == "paper" or edition == "geyser"
+       - chunky == "true"
+
     - name: Accepting the Minecraft Server EULA
       copy:
          content: eula=true
@@ -468,15 +525,15 @@
        - restore_backup == "false"
        - eula == "true"
 
-    - name: Linking spigot.jar to server.jar
+    - name: Linking paper.jar to server.jar
       file:
-         src: /home/minecraft/{{ edition }}/spigot-{{ version }}.jar
+         src: /home/minecraft/{{ edition }}/paper-{{ version }}.jar
          path: /home/minecraft/{{ edition }}/server.jar
          state: link
          owner: minecraft
          group: minecraft
          mode: 0755
-      when: edition == "spigot" or edition == "geyser"
+      when: edition == "paper" or edition == "geyser"
 
     - name: Starting the systemd units
       systemd:
@@ -489,3 +546,16 @@
        - minecraft-{{ edition }}-backup.timer
        - apt-upgrade.timer
        - oci-disk-utilization.timer
+
+    - name: Starting the Chunky systemd timers
+      systemd:
+         name: minecraft-{{ edition }}-chunky-{{ item }}.timer
+         state: started
+         enabled: yes
+         daemon_reload: yes
+      with_items:
+       - start
+       - stop
+      when:
+       - edition == "paper" or edition == "geyser"
+       - chunky == "true"
