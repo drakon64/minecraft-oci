@@ -14,7 +14,7 @@ resource "oci_monitoring_alarm" "High-CPU-Utilization" {
 	metric_compartment_id_in_subtree = "false"
 	namespace = "oci_computeagent"
 	pending_duration = "PT5M"
-	query = "CpuUtilization[1m]{resourceId = ${oci_core_instance.minecraft_instance.id}}.mean() > 75"
+	query = "CpuUtilization[1m]{resourceId = ${oci_core_instance.minecraft_instance.id}}.mean() > 87.5"
 	resolution = "1m"
 	severity = "WARNING"
 }
@@ -78,7 +78,7 @@ resource "oci_monitoring_alarm" "Critical-CPU-Utilization" {
 	metric_compartment_id_in_subtree = "false"
 	namespace = "oci_computeagent"
 	pending_duration = "PT5M"
-	query = "CpuUtilization[1m]{resourceId = ${oci_core_instance.minecraft_instance.id}}.mean() > 90"
+	query = "CpuUtilization[1m]{resourceId = ${oci_core_instance.minecraft_instance.id}}.mean() > 99"
 	repeat_notification_duration = "PT1H"
 	resolution = "1m"
 	severity = "CRITICAL"
