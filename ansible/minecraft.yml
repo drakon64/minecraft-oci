@@ -72,7 +72,7 @@
       when: update_server == "true"
 
     - name: Getting the latest Paper build
-      shell: curl https://papermc.io/api/v2/projects/paper/versions/{{ version }} | jq ".builds | max"
+      shell: curl --silent https://papermc.io/api/v2/projects/paper/versions/{{ version }} | jq ".builds | max"
       register: paper_latest
       when:
        - new_server == "true" or update_server == "true"
