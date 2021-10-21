@@ -19,83 +19,11 @@
       shell: iptables-restore < /etc/iptables/rules.v4
       when: iptables.changed
 
-    - name: Preventing cloud-init from overwriting /etc/apt/sources.list
-      lineinfile:
-         path: /etc/cloud/cloud.cfg
-         line: "apt_preserve_sources_list: true"
-      when:
-       - edition == "bedrock"
-       - ansible_architecture != "x86_64"
-
-    - name: Enabling AMD64 apt repositories
-      copy:
-         src: files/arch
-         dest: /var/lib/dpkg/arch
-         owner: root
-         group: root
-         mode: 0644
-      when:
-       - edition == "bedrock"
-       - ansible_architecture != "x86_64"
-
-    - name: Getting the instance architecture
-      command: dpkg --print-architecture
-      when:
-       - edition == "bedrock"
-       - ansible_architecture != "x86_64"
-      register: architecture
-
-    - name: Getting the instance availability domain
-      uri:
-         url: http://169.254.169.254/opc/v2/instance/ociAdName
-         headers:
-            Authorization: Bearer Oracle
-         return_content: yes
-      when:
-       - edition == "bedrock"
-       - ansible_architecture != "x86_64"
-      register: availability_domain
-
-    - name: Adding AMD64 apt repositories
-      template:
-         src: templates/sources.list.j2
-         dest: /etc/apt/sources.list
-         owner: root
-         group: root
-         mode: 0644
-      when:
-       - edition == "bedrock"
-       - ansible_architecture != "x86_64"
-       - not ansible_check_mode
-
-    - name: Installing Bedrock packages
-      apt:
-         name:
-          - unzip
-          - libc6:amd64
-          - zlib1g:amd64
-          - libssl1.1:amd64
-          - libstdc++6:amd64
-          - python3-pip
-          - jq
-         state: present
-         update_cache: yes
-      when: edition == "bedrock"
-
-    - name: Installing AMD64 application support
-      apt:
-         name: qemu-user
-         state: present
-      when:
-       - edition == "bedrock"
-       - ansible_architecture != "x86_64"
-
     - name: Adding the OpenJDK PPA
       apt_repository:
          repo: ppa:openjdk-r/ppa
-      when: type == "java"
 
-    - name: Installing Java packages
+    - name: Installing packages
       apt:
          name:
           - openjdk-16-jre-headless
@@ -103,7 +31,6 @@
           - jq
          state: present
          update_cache: yes
-      when: type == "java"
 
     - name: Creating the minecraft user
       user:
@@ -144,54 +71,6 @@
          chdir: /home/minecraft
       when: update_server == "true"
 
-    - name: Removing existing Bedrock data
-      file:
-         path: /home/minecraft/bedrock/{{ item }}
-         state: absent
-      with_items:
-       - behavior_packs
-       - definitions
-       - development_behavior_packs
-       - development_resource_packs
-       - development_skin_packs
-       - minecraftpe
-       - premium_cache
-       - resource_packs
-       - structures
-       - treatments
-       - world_templates
-      when:
-       - edition == "bedrock"
-       - update_server == "true"
-
-    - name: Downloading Minecraft Bedrock server
-      unarchive:
-         src: https://minecraft.azureedge.net/bin-linux/bedrock-server-1.17.2.01.zip
-         dest: /home/minecraft/bedrock/
-         owner: minecraft
-         group: minecraft
-         mode: u=rwX,g=rX,o=rX
-         remote_src: yes
-         exclude:
-          - permissions.json
-          - whitelist.json
-      when:
-       - edition == "bedrock"
-       - new_server == "true" or update_server == "true"
-       - restore_backup == "false"
-
-    - name: Downloading Minecraft Java server
-      get_url:
-         url: https://launcher.mojang.com/v1/objects/0a269b5f2c5b93b1712d0f5dc43b6182b9ab254e/server.jar
-         dest: /home/minecraft/java/server.jar
-         owner: minecraft
-         group: minecraft
-         mode: 0644
-      when:
-       - edition == "java"
-       - new_server == "true" or update_server == "true"
-       - restore_backup == "false"
-
     - name: Getting a list of Paper builds
       uri:
          url: https://papermc.io/api/v2/projects/paper/versions/{{ version }}
@@ -201,7 +80,6 @@
          return_content: true
       register: paper_builds
       when:
-       - edition == "paper" or edition == "geyser"
        - new_server == "true" or update_server == "true"
        - restore_backup == "false"
 
@@ -209,7 +87,6 @@
       shell: echo '{{ paper_builds.content }}' | jq ".builds | max"
       register: paper_latest
       when:
-       - edition == "paper" or edition == "geyser"
        - new_server == "true" or update_server == "true"
        - restore_backup == "false"
 
@@ -221,13 +98,12 @@
          group: minecraft
          mode: 0644
       when:
-       - edition == "paper" or edition == "geyser"
        - new_server == "true" or update_server == "true"
        - restore_backup == "false"
 
     - name: Copying the server.properties file
       copy:
-         src: files/{{ type }}/server.properties
+         src: files/java/server.properties
          dest: /home/minecraft/{{ edition }}/
          owner: minecraft
          group: minecraft
@@ -238,26 +114,25 @@
 
     - name: Copying the server permissions files
       copy:
-         src: files/{{ type }}/{{ item }}.json
+         src: files/java/{{ item }}.json
          dest: /home/minecraft/{{ edition }}/
          owner: minecraft
          group: minecraft
          mode: 0644
       with_items:
-       - "{{ opsfile }}"
+       - ops
        - whitelist
       when:
        - restore_permissions == "true"
 
     - name: Configuring the Paper server
       copy:
-         src: files/java/paper/spigot.yml
+         src: files/java/spigot.yml
          dest: /home/minecraft/{{ edition }}/
          owner: minecraft
          group: minecraft
          mode: 0644
       when:
-       - edition == "paper" or edition == "geyser"
        - new_server == "true" or update_server == "true"
        - restore_backup == "false"
 
@@ -291,7 +166,7 @@
 
     - name: Configuring the Geyser plugin
       copy:
-         src: files/java/paper/geyser/config.yml
+         src: files/java/geyser/config.yml
          dest: /home/minecraft/geyser/plugins/Geyser-Spigot/config.yml
          owner: minecraft
          group: minecraft
@@ -315,7 +190,7 @@
 
     - name: Configuring the Floodgate plugin
       copy:
-         src: files/java/paper/geyser/floodgate/config.yml
+         src: files/java/geyser/floodgate/config.yml
          dest: /home/minecraft/geyser/plugins/floodgate/config.yml
          owner: minecraft
          group: minecraft
@@ -397,12 +272,6 @@
          state: absent
       when: restore_backup == "true"
 
-    - name: Making the Bedrock server executable
-      file:
-         path: /home/minecraft/bedrock/bedrock_server
-         mode: 0755
-      when: edition == "bedrock"
-
     - name: Copying the Minecraft server scripts
       template:
          src: templates/{{ item }}.sh.j2
@@ -449,7 +318,6 @@
          group: minecraft
          mode: 0644
       when:
-       - type == "java"
        - new_server == "true"
        - restore_backup == "false"
        - eula == "true"
