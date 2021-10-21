@@ -175,18 +175,6 @@
        - new_server == "true" or update_server == "true"
        - restore_backup == "false"
 
-    - name: Configuring the Floodgate plugin
-      copy:
-         src: files/java/geyser/floodgate/config.yml
-         dest: /home/minecraft/geyser/plugins/floodgate/config.yml
-         owner: minecraft
-         group: minecraft
-         mode: 0644
-      when:
-       - edition == "geyser"
-       - new_server == "true" or update_server == "true"
-       - restore_backup == "false"
-
     - name: Downloading the CustomCommandPrefix plugin
       copy:
          src: files/CustomCommandPrefix-1.0.jar
