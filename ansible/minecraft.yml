@@ -120,7 +120,7 @@
          group: minecraft
          mode: 0644
       with_items:
-       - "{{ opsfile }}"
+       - ops
        - whitelist
       when:
        - restore_permissions == "true"
