@@ -23,7 +23,7 @@
       apt_repository:
          repo: ppa:openjdk-r/ppa
 
-    - name: Installing Java packages
+    - name: Installing packages
       apt:
          name:
           - openjdk-16-jre-headless
@@ -80,7 +80,6 @@
          return_content: true
       register: paper_builds
       when:
-       - edition == "paper" or edition == "geyser"
        - new_server == "true" or update_server == "true"
        - restore_backup == "false"
 
@@ -88,7 +87,6 @@
       shell: echo '{{ paper_builds.content }}' | jq ".builds | max"
       register: paper_latest
       when:
-       - edition == "paper" or edition == "geyser"
        - new_server == "true" or update_server == "true"
        - restore_backup == "false"
 
@@ -100,7 +98,6 @@
          group: minecraft
          mode: 0644
       when:
-       - edition == "paper" or edition == "geyser"
        - new_server == "true" or update_server == "true"
        - restore_backup == "false"
 
@@ -136,7 +133,6 @@
          group: minecraft
          mode: 0644
       when:
-       - edition == "paper" or edition == "geyser"
        - new_server == "true" or update_server == "true"
        - restore_backup == "false"
 
