@@ -103,7 +103,7 @@
 
     - name: Copying the server.properties file
       copy:
-         src: files/{{ edition }}/server.properties
+         src: files/java/server.properties
          dest: /home/minecraft/{{ edition }}/
          owner: minecraft
          group: minecraft
@@ -114,7 +114,7 @@
 
     - name: Copying the server permissions files
       copy:
-         src: files/{{ edition }}/{{ item }}.json
+         src: files/java/{{ item }}.json
          dest: /home/minecraft/{{ edition }}/
          owner: minecraft
          group: minecraft
@@ -127,7 +127,7 @@
 
     - name: Configuring the Paper server
       copy:
-         src: files/java/paper/spigot.yml
+         src: files/java/spigot.yml
          dest: /home/minecraft/{{ edition }}/
          owner: minecraft
          group: minecraft
@@ -166,7 +166,7 @@
 
     - name: Configuring the Geyser plugin
       copy:
-         src: files/java/paper/geyser/config.yml
+         src: files/java/geyser/config.yml
          dest: /home/minecraft/geyser/plugins/Geyser-Spigot/config.yml
          owner: minecraft
          group: minecraft
@@ -190,7 +190,7 @@
 
     - name: Configuring the Floodgate plugin
       copy:
-         src: files/java/paper/geyser/floodgate/config.yml
+         src: files/java/geyser/floodgate/config.yml
          dest: /home/minecraft/geyser/plugins/floodgate/config.yml
          owner: minecraft
          group: minecraft
