@@ -486,16 +486,6 @@
        - restore_backup == "false"
        - eula == "true"
 
-    - name: Linking paper.jar to server.jar
-      file:
-         src: /home/minecraft/{{ edition }}/paper-{{ version }}.jar
-         path: /home/minecraft/{{ edition }}/server.jar
-         state: link
-         owner: minecraft
-         group: minecraft
-         mode: 0755
-      when: edition == "paper" or edition == "geyser"
-
     - name: Starting the systemd units
       systemd:
          name: "{{ item }}"
