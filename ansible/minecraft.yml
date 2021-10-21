@@ -19,14 +19,10 @@
       shell: iptables-restore < /etc/iptables/rules.v4
       when: iptables.changed
 
-    - name: Adding the OpenJDK PPA
-      apt_repository:
-         repo: ppa:openjdk-r/ppa
-
     - name: Installing packages
       apt:
          name:
-          - openjdk-16-jre-headless
+          - openjdk-17-jre-headless
           - python3-pip
           - jq
          state: present
