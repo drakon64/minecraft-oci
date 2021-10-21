@@ -1,6 +1,6 @@
 locals {
-	memory_warn = (oci_core_instance.minecraft_instance.shape_config[0].memory_in_gbs - 1) / oci_core_instance.minecraft_instance.shape_config[0].memory_in_gbs
-	memory_critical = (oci_core_instance.minecraft_instance.shape_config[0].memory_in_gbs - 0.5) / oci_core_instance.minecraft_instance.shape_config[0].memory_in_gbs
+	memory_warn = ((oci_core_instance.minecraft_instance.shape_config[0].memory_in_gbs - 1) / oci_core_instance.minecraft_instance.shape_config[0].memory_in_gbs) * 100
+	memory_critical = ((oci_core_instance.minecraft_instance.shape_config[0].memory_in_gbs - 0.5) / oci_core_instance.minecraft_instance.shape_config[0].memory_in_gbs) * 100
 }
 
 resource "oci_monitoring_alarm" "High-CPU-Utilization" {
