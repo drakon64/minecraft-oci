@@ -20,11 +20,12 @@ settings:
   save-user-cache-on-stop-only: false
   moved-wrongly-threshold: 0.0625
   moved-too-quickly-multiplier: 10.0
-  log-villager-deaths: true
   timeout-time: 60
   restart-on-crash: true
   restart-script: ./start.sh
   netty-threads: 4
+  log-villager-deaths: true
+  log-named-deaths: true
   attribute:
     maxHealth:
       max: 2048.0
@@ -49,17 +50,17 @@ commands:
   - summon
   - testforblock
   - tellraw
-  log: true
-  tab-complete: 0
-  send-namespaced: true
   spam-exclusions:
   - /skill
   silent-commandblock-console: false
+  log: true
+  tab-complete: 0
+  send-namespaced: true
+players:
+  disable-saving: false
 stats:
   disable-saving: false
   forced-stats: {}
-players:
-  disable-saving: false
 world-settings:
   default:
     verbose: false

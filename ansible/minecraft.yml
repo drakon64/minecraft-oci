@@ -192,9 +192,30 @@
        - new_server == "true" or update_server == "true"
        - restore_backup == "false"
 
-    - name: Downloading Paper server
+    - name: Getting a list of Paper builds
+      uri:
+         url: https://papermc.io/api/v2/projects/paper/versions/{{ version }}
+         method: GET
+         headers:
+            accept: application/json
+         return_content: true
+      register: paper_builds
+      when:
+       - edition == "paper" or edition == "geyser"
+       - new_server == "true" or update_server == "true"
+       - restore_backup == "false"
+
+    - name: Getting the latest Paper build
+      shell: echo '{{ paper_builds.content }}' | jq ".builds | max"
+      register: paper_latest
+      when:
+       - edition == "paper" or edition == "geyser"
+       - new_server == "true" or update_server == "true"
+       - restore_backup == "false"
+
+    - name: Downloading Minecraft Paper server
       get_url:
-         url: https://papermc.io/api/v2/projects/paper/versions/1.16.5/builds/778/downloads/paper-1.16.5-778.jar
+         url: https://papermc.io/api/v2/projects/paper/versions/{{ version }}/builds/{{ paper_latest.stdout }}/downloads/paper-{{ version }}-{{ paper_latest.stdout }}.jar
          dest: /home/minecraft/{{ edition }}/server.jar
          owner: minecraft
          group: minecraft
@@ -230,21 +251,17 @@
 
     - name: Configuring the Paper server
       copy:
-         src: files/java/paper/{{ item }}.yml
+         src: files/java/paper/spigot.yml
          dest: /home/minecraft/{{ edition }}/
          owner: minecraft
          group: minecraft
          mode: 0644
-      with_items:
-       - bukkit
-       - paper
-       - spigot
       when:
        - edition == "paper" or edition == "geyser"
        - new_server == "true" or update_server == "true"
        - restore_backup == "false"
 
-    - name: Creating the Paper plugin directories
+    - name: Creating the Geyser plugin directories
       file:
          path: /home/minecraft/geyser/plugins/{{ item }}
          state: directory
@@ -253,7 +270,7 @@
          mode: 0755
       with_items:
        - CustomCommandPrefix
-       - floodgate-bukkit
+       - floodgate
        - Geyser-Spigot/packs
       when:
        - edition == "geyser"
@@ -299,7 +316,7 @@
     - name: Configuring the Floodgate plugin
       copy:
          src: files/java/paper/geyser/floodgate/config.yml
-         dest: /home/minecraft/geyser/plugins/floodgate-bukkit/config.yml
+         dest: /home/minecraft/geyser/plugins/floodgate/config.yml
          owner: minecraft
          group: minecraft
          mode: 0644
