@@ -249,33 +249,20 @@
       when:
        - restore_permissions == "true"
 
-    - name: Configuring the Paper server
-      copy:
-         src: files/java/paper/{{ item }}.yml
-         dest: /home/minecraft/{{ edition }}/
-         owner: minecraft
-         group: minecraft
-         mode: 0644
-      with_items:
-       - bukkit
-       - paper
-      when:
-       - edition == "paper" or edition == "geyser"
-       - new_server == "true" or update_server == "true"
-       - restore_backup == "false"
-
-    - name: Creating the Chunky plugin directory
-      file:
-         path: /home/minecraft/{{ edition }}/plugins/Chunky
-         state: directory
-         owner: minecraft
-         group: minecraft
-         mode: 0755
-      when:
-       - edition == "paper" or edition == "geyser"
-       - chunky == "true"
-       - new_server == "true"
-       - restore_backup == "false"
+   # - name: Configuring the Paper server
+   #   copy:
+   #      src: files/java/paper/{{ item }}.yml
+   #      dest: /home/minecraft/{{ edition }}/
+   #      owner: minecraft
+   #      group: minecraft
+   #      mode: 0644
+   #   with_items:
+   #    - bukkit
+   #    - paper
+   #   when:
+   #    - edition == "paper" or edition == "geyser"
+   #    - new_server == "true" or update_server == "true"
+   #    - restore_backup == "false"
 
     - name: Creating the Geyser plugin directories
       file:
@@ -305,17 +292,17 @@
        - new_server == "true" or update_server == "true"
        - restore_backup == "false"
 
-    - name: Configuring the Geyser plugin
-      copy:
-         src: files/java/paper/geyser/config.yml
-         dest: /home/minecraft/geyser/plugins/Geyser-Paper/config.yml
-         owner: minecraft
-         group: minecraft
-         mode: 0644
-      when:
-       - edition == "geyser"
-       - new_server == "true" or update_server == "true"
-       - restore_backup == "false"
+   # - name: Configuring the Geyser plugin
+   #   copy:
+   #      src: files/java/paper/geyser/config.yml
+   #      dest: /home/minecraft/geyser/plugins/Geyser-Spigot/config.yml
+   #      owner: minecraft
+   #      group: minecraft
+   #      mode: 0644
+   #   when:
+   #    - edition == "geyser"
+   #    - new_server == "true" or update_server == "true"
+   #    - restore_backup == "false"
 
     - name: Downloading the Floodgate plugin
       get_url:
@@ -329,17 +316,17 @@
        - new_server == "true" or update_server == "true"
        - restore_backup == "false"
 
-    - name: Configuring the Floodgate plugin
-      copy:
-         src: files/java/paper/geyser/floodgate/config.yml
-         dest: /home/minecraft/geyser/plugins/floodgate-bukkit/config.yml
-         owner: minecraft
-         group: minecraft
-         mode: 0644
-      when:
-       - edition == "geyser"
-       - new_server == "true" or update_server == "true"
-       - restore_backup == "false"
+   # - name: Configuring the Floodgate plugin
+   #   copy:
+   #      src: files/java/paper/geyser/floodgate/config.yml
+   #      dest: /home/minecraft/geyser/plugins/floodgate-bukkit/config.yml
+   #      owner: minecraft
+   #      group: minecraft
+   #      mode: 0644
+   #   when:
+   #    - edition == "geyser"
+   #    - new_server == "true" or update_server == "true"
+   #    - restore_backup == "false"
 
     - name: Downloading the CustomCommandPrefix plugin
       copy:
@@ -457,22 +444,6 @@
        - { src: "oci-disk-utilization.service", dest: "oci-disk-utilization.service", type: "files" }
        - { src: "oci-disk-utilization.timer", dest: "oci-disk-utilization.timer", type: "files" }
 
-    - name: Copying the systemd units for Chunky
-      template:
-         src: templates/systemd/minecraft-chunky-{{ item }}.j2
-         dest: /etc/systemd/system/minecraft-{{ edition }}-chunky-{{ item }}
-         owner: root
-         group: root
-         mode: 0644
-      with_items:
-       - start.service
-       - start.timer
-       - stop.service
-       - stop.timer
-      when:
-       - edition == "paper" or edition == "geyser"
-       - chunky == "true"
-
     - name: Accepting the Minecraft Server EULA
       copy:
          content: eula=true
@@ -497,16 +468,3 @@
        - minecraft-{{ edition }}-backup.timer
        - apt-upgrade.timer
        - oci-disk-utilization.timer
-
-    - name: Starting the Chunky systemd timers
-      systemd:
-         name: minecraft-{{ edition }}-chunky-{{ item }}.timer
-         state: started
-         enabled: yes
-         daemon_reload: yes
-      with_items:
-       - start
-       - stop
-      when:
-       - edition == "paper" or edition == "geyser"
-       - chunky == "true"
