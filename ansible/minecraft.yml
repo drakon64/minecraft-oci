@@ -22,7 +22,6 @@
     - name: Adding the OpenJDK PPA
       apt_repository:
          repo: ppa:openjdk-r/ppa
-      when: type == "java"
 
     - name: Installing Java packages
       apt:
@@ -32,7 +31,6 @@
           - jq
          state: present
          update_cache: yes
-      when: type == "java"
 
     - name: Creating the minecraft user
       user:
@@ -108,7 +106,7 @@
 
     - name: Copying the server.properties file
       copy:
-         src: files/{{ type }}/server.properties
+         src: files/{{ edition }}/server.properties
          dest: /home/minecraft/{{ edition }}/
          owner: minecraft
          group: minecraft
@@ -119,7 +117,7 @@
 
     - name: Copying the server permissions files
       copy:
-         src: files/{{ type }}/{{ item }}.json
+         src: files/{{ edition }}/{{ item }}.json
          dest: /home/minecraft/{{ edition }}/
          owner: minecraft
          group: minecraft
@@ -324,7 +322,6 @@
          group: minecraft
          mode: 0644
       when:
-       - type == "java"
        - new_server == "true"
        - restore_backup == "false"
        - eula == "true"
