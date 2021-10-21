@@ -71,20 +71,8 @@
          chdir: /home/minecraft
       when: update_server == "true"
 
-    - name: Getting a list of Paper builds
-      uri:
-         url: https://papermc.io/api/v2/projects/paper/versions/{{ version }}
-         method: GET
-         headers:
-            accept: application/json
-         return_content: true
-      register: paper_builds
-      when:
-       - new_server == "true" or update_server == "true"
-       - restore_backup == "false"
-
     - name: Getting the latest Paper build
-      shell: echo '{{ paper_builds.content }}' | jq ".builds | max"
+      shell: curl https://papermc.io/api/v2/projects/paper/versions/{{ version }} | jq ".builds | max"
       register: paper_latest
       when:
        - new_server == "true" or update_server == "true"
