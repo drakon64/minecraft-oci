@@ -12,7 +12,7 @@ ExecStart=/usr/bin/tmux new-session -s minecraft-{{ edition }} -d '{{ high_ram_c
 {% endif %}
 ExecStop=/home/minecraft/stop_{{ edition }}.sh
 {% else %}
-ExecStart=/usr/bin/java -jar BedrockConnect.jar
+ExecStart={{ command }}
 {% endif %}
 
 WorkingDirectory=/home/minecraft/{{ edition }}
