@@ -213,28 +213,15 @@
        - new_server == "true" or update_server == "true"
        - restore_backup == "false"
 
-    - name: Getting the download URL for the latest Paper build
-      uri:
-         url: https://papermc.io/api/v2/projects/paper/versions/{{ version }}/builds/{{ paper_latest.stdout }}
-         method: GET
-         headers:
-            accept: application/json
-         return_content: true
-      register: paper_download
-      when:
-       - edition == "paper" or edition == "geyser"
-       - new_server == "true" or update_server == "true"
-       - restore_backup == "false"
-
     - name: Downloading Minecraft Paper server
       get_url:
-         url: "{{ paper_download.content }}"
+         url: https://papermc.io/api/v2/projects/paper/versions/{{ version }}/builds/{{ paper_latest.stdout }}/downloads/paper-{{ version }}-{{ paper_latest.stdout }}.jar
          dest: /home/minecraft/{{ edition }}/server.jar
          owner: minecraft
          group: minecraft
          mode: 0644
       when:
-       - edition == "java"
+       - edition == "paper" or edition == "geyser"
        - new_server == "true" or update_server == "true"
        - restore_backup == "false"
 
