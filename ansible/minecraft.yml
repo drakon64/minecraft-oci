@@ -287,41 +287,15 @@
       with_items:
        - CustomCommandPrefix
        - floodgate-bukkit
-       - Geyser-Paper/packs
+       - Geyser-Spigot/packs
       when:
        - edition == "geyser"
        - new_server == "true"
        - restore_backup == "false"
 
-    - name: Downloading the Chunky plugin
-      get_url:
-         url: https://ci.codemc.io/view/Author/job/pop4959/job/Chunky/lastBuild/artifact/bukkit/build/libs/Chunky-1.2.136.jar
-         dest: /home/minecraft/{{ edition }}/plugins/
-         owner: minecraft
-         group: minecraft
-         mode: 0644
-      when:
-       - edition == "paper" or edition == "geyser"
-       - chunky == "true"
-       - new_server == "true" or update_server == "true"
-       - restore_backup == "false"
-
-    - name: Configuring the Chunky plugin
-      copy:
-         src: files/java/paper/chunky/config.yml
-         dest: /home/minecraft/{{ edition }}/plugins/Chunky/config.yml
-         owner: minecraft
-         group: minecraft
-         mode: 0644
-      when:
-       - edition == "paper" or edition == "geyser"
-       - chunky == "true"
-       - new_server == "true" or update_server == "true"
-       - restore_backup == "false"
-
     - name: Downloading the Geyser plugin
       get_url:
-         url: https://ci.opencollab.dev/job/GeyserMC/job/Geyser/job/master/lastSuccessfulBuild/artifact/bootstrap/paper/target/Geyser-Paper.jar
+         url: https://ci.opencollab.dev/job/GeyserMC/job/Geyser/job/master/lastSuccessfulBuild/artifact/bootstrap/spigot/target/Geyser-Spigot.jar
          dest: /home/minecraft/geyser/plugins/
          owner: minecraft
          group: minecraft
@@ -345,7 +319,7 @@
 
     - name: Downloading the Floodgate plugin
       get_url:
-         url: https://ci.opencollab.dev/job/GeyserMC/job/Floodgate/job/master/lastSuccessfulBuild/artifact/paper/target/floodgate-paper.jar
+         url: https://ci.opencollab.dev/job/GeyserMC/job/Floodgate/job/master/lastSuccessfulBuild/artifact/spigot/target/floodgate-spigot.jar
          dest: /home/minecraft/geyser/plugins/
          owner: minecraft
          group: minecraft
@@ -394,7 +368,7 @@
     - name: Downloading the GeyserOptionalPack resource pack
       get_url:
          url: https://ci.opencollab.dev/job/GeyserMC/job/GeyserOptionalPack/job/master/lastSuccessfulBuild/artifact/GeyserOptionalPack.mcpack
-         dest: /home/minecraft/geyser/plugins/Geyser-Paper/packs/
+         dest: /home/minecraft/geyser/plugins/Geyser-Spigot/packs/
          owner: minecraft
          group: minecraft
          mode: 0644
