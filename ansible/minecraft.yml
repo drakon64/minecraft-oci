@@ -123,6 +123,7 @@
       when:
        - restore_permissions == "true"
        - update_server == "false"
+       - restore_backup == "false"
 
     - name: Creating the Geyser plugin directories
       file:
