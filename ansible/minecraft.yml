@@ -206,7 +206,7 @@
        - restore_backup == "false"
 
     - name: Getting the latest Paper build
-      shell: echo "{{ paper_builds.content }}" | jq ".builds | max"
+      shell: echo '{{ paper_builds.content }}' | jq ".builds | max"
       register: paper_latest
       when:
        - edition == "paper" or edition == "geyser"
