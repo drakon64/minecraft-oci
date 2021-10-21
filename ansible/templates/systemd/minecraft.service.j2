@@ -4,15 +4,15 @@ After=network.target
 
 [Service]
 Type=forking
-{% if type == "java" %}
+{% if edition != "bedrockconnect" %}
 {% if ansible_memtotal_mb < 12288 %}
 ExecStart=/usr/bin/tmux new-session -s minecraft-{{ edition }} -d '{{ command }}'
 {% else %}
 ExecStart=/usr/bin/tmux new-session -s minecraft-{{ edition }} -d '{{ high_ram_command }}'
 {% endif %}
-{% endif %}
-{% if type != "bedrockconnect" %}
 ExecStop=/home/minecraft/stop_{{ edition }}.sh
+{% else %}
+ExecStart=/usr/bin/java -jar BedrockConnect.jar
 {% endif %}
 
 WorkingDirectory=/home/minecraft/{{ edition }}
