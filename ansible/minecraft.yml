@@ -96,19 +96,6 @@
        - new_server == "true" or update_server == "true"
        - restore_backup == "false"
 
-    - name: Copying the server permissions files
-      copy:
-         src: files/java/{{ item }}.json
-         dest: /home/minecraft/{{ edition }}/
-         owner: minecraft
-         group: minecraft
-         mode: 0644
-      with_items:
-       - ops
-       - whitelist
-      when:
-       - restore_permissions == "true"
-
     - name: Configuring the Paper server
       copy:
          src: files/java/{{ item }}.yml
@@ -122,6 +109,20 @@
       when:
        - new_server == "true" or update_server == "true"
        - restore_backup == "false"
+
+    - name: Copying the server permissions files
+      copy:
+         src: files/java/{{ item }}.json
+         dest: /home/minecraft/{{ edition }}/
+         owner: minecraft
+         group: minecraft
+         mode: 0644
+      with_items:
+       - ops
+       - whitelist
+      when:
+       - restore_permissions == "true"
+       - update_server == "false"
 
     - name: Creating the Geyser plugin directories
       file:
