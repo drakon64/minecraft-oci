@@ -127,11 +127,14 @@
 
     - name: Configuring the Paper server
       copy:
-         src: files/java/spigot.yml
+         src: files/java/{{ item }}.yml
          dest: /home/minecraft/{{ edition }}/
          owner: minecraft
          group: minecraft
          mode: 0644
+      with_items:
+       - spigot
+       - paper
       when:
        - new_server == "true" or update_server == "true"
        - restore_backup == "false"
