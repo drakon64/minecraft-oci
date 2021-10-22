@@ -1,10 +1,10 @@
 [Unit]
-Description=Apt Upgrade
+Description=DNF Upgrade
 After=network.target
 
 [Service]
 Type=oneshot
-ExecStart=/home/minecraft/apt-reboot.sh
+ExecStart=/home/minecraft/dnf-reboot.sh
 
 [Install]
 WantedBy=multi-user.target

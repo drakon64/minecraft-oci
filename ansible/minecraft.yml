@@ -8,30 +8,10 @@
       timezone:
          name: "{{ timezone }}"
 
-    - name: Removing the Oracle Cloud iptables rules
-      lineinfile:
-         path: /etc/iptables/rules.v4
-         search_string: "-A INPUT -j REJECT --reject-with icmp-host-prohibited"
-         line: "#-A INPUT -j REJECT --reject-with icmp-host-prohibited"
-      register: iptables
-
-    - name: Reloading iptables
-      shell: iptables-restore < /etc/iptables/rules.v4
-      when: iptables.changed
-
-    - name: Removing packages
-      apt:
-         name:
-          - snapd
-          - unattended-upgrades
-         state: absent
-         autoremove: yes
-         purge: yes
-
     - name: Installing packages
-      apt:
+      dnf:
          name:
-          - openjdk-17-jre-headless
+          - java-17-openjdk-headless
           - python3-pip
           - jq
          state: present

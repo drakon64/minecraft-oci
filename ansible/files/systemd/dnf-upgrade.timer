@@ -1,5 +1,5 @@
 [Unit]
-Description=Apt Upgrade
+Description=DNF Upgrade
 
 [Timer]
 OnCalendar=Tue 7:00
