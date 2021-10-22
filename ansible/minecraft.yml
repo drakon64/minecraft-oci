@@ -260,32 +260,23 @@
        - stop
        - backup
 
-    - name: Copying the OS scripts
-      copy:
-         src: files/{{ item }}.sh
-         dest: /home/minecraft/
-         owner: minecraft
-         group: minecraft
-         mode: 0755
-      with_items:
-       - apt-reboot
-       - disk-utilization
-
-    - name: Copying the systemd units
+    - name: Copying scripts and systemd units
       template:
-         src: "{{ item.type }}/systemd/{{ item.src }}"
-         dest: /etc/systemd/system/{{ item.dest }}
-         owner: root
-         group: root
-         mode: 0644
+         src: "{{ item.src }}"
+         dest: "{{ item.dest }}"
+         owner: "{{ item.owner }}"
+         group: "{{ item.owner }}"
+         mode: "{{ item.mode }}"
       with_items:
-       - { src: "minecraft.service.j2", dest: "minecraft-{{ edition }}.service", type: "templates" }
-       - { src: "minecraft-backup.service.j2", dest: "minecraft-{{ edition }}-backup.service", type: "templates" }
-       - { src: "minecraft-backup.timer.j2", dest: "minecraft-{{ edition }}-backup.timer", type: "templates" }
-       - { src: "apt-upgrade.service", dest: "apt-upgrade.service", type: "files" }
-       - { src: "apt-upgrade.timer", dest: "apt-upgrade.timer", type: "files" }
-       - { src: "oci-disk-utilization.service", dest: "oci-disk-utilization.service", type: "files" }
-       - { src: "oci-disk-utilization.timer", dest: "oci-disk-utilization.timer", type: "files" }
+       - { src: "templates/apt-reboot.sh.j2", dest: "/home/minecraft/apt-reboot.sh", owner: "minecraft", mode: "0755" }
+       - { src: "files/disk-utilization.sh", dest: "/home/minecraft/", owner: "minecraft", mode: "0755" }
+       - { src: "templates/systemd/minecraft.service.j2", dest: "/etc/systemd/system/minecraft-{{ edition }}.service", owner: "root", mode: "0644" }
+       - { src: "templates/systemd/minecraft-backup.service.j2", dest: "/etc/systemd/system/minecraft-{{ edition }}-backup.service", owner: "root", mode: "0644" }
+       - { src: "templates/systemd/minecraft-backup.timer.j2", dest: "/etc/systemd/system/minecraft-{{ edition }}-backup.timer", owner: "root", mode: "0644" }
+       - { src: "files/systemd/apt-upgrade.service", dest: "/etc/systemd/system/apt-upgrade.service", owner: "root", mode: "0644" }
+       - { src: "files/systemd/apt-upgrade.timer", dest: "/etc/systemd/system/apt-upgrade.timer", owner: "root", mode: "0644" }
+       - { src: "files/systemd/oci-disk-utilization.service", dest: "/etc/systemd/system/oci-disk-utilization.service", owner: "root", mode: "0644" }
+       - { src: "files/systemd/oci-disk-utilization.timer", dest: "/etc/systemd/system/oci-disk-utilization.timer", owner: "root", mode: "0644" }
 
     - name: Accepting the Minecraft Server EULA
       copy:
