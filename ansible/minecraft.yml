@@ -19,6 +19,15 @@
       shell: iptables-restore < /etc/iptables/rules.v4
       when: iptables.changed
 
+    - name: Removing packages
+      apt:
+         name:
+          - snapd
+          - unattended-upgrades
+         state: absent
+         autoremove: yes
+         purge: yes
+
     - name: Installing packages
       apt:
          name:
