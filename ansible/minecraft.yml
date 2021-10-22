@@ -21,9 +21,7 @@
 
     - name: Removing packages
       apt:
-         name:
-          - snapd
-          - unattended-upgrades
+         name: unattended-upgrades
          state: absent
          autoremove: yes
          purge: yes
