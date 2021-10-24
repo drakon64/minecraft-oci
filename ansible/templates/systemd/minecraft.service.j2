@@ -3,7 +3,7 @@ Description=Minecraft {{ edition | capitalize }} Server
 After=network.target
 
 [Service]
-Type={{ service_type }}
+Type=forking
 {% if edition != "bedrockconnect" %}
 {% if ansible_memtotal_mb < (12397.76611328 - 2048) %}
 ExecStart=/usr/bin/tmux new-session -s minecraft-{{ edition }} -d '{{ command }}'
