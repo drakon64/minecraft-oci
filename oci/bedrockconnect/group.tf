@@ -10,6 +10,6 @@ resource "oci_identity_policy" "bedrockconnect_monitoring" {
 	description = "BedrockConnect monitoring"
 	name = "bedrockconnect-monitoring"
 	statements = [
-		"Allow dynamic-group ${oci_identity_dynamic_group.bedrockconnect.name} to use metrics in compartment id ${oci_identity_compartment.tf-compartment.id} where target.metrics.namespace='minecraft'"
+		"Allow dynamic-group ${oci_identity_dynamic_group.bedrockconnect.name} to use metrics in compartment id ${oci_identity_compartment.tf-compartment.id} where target.metrics.namespace='bedrockconnect'"
 	]
 }
