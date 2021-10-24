@@ -84,27 +84,17 @@
        - new_server == "true" or update_server == "true"
        - restore_backup == "false"
 
-    - name: Copying the server.properties file
+    - name: Configuring the Minecraft server
       copy:
-         src: files/java/server.properties
-         dest: /home/minecraft/{{ edition }}/
-         owner: minecraft
-         group: minecraft
-         mode: 0644
-      when:
-       - new_server == "true" or update_server == "true"
-       - restore_backup == "false"
-
-    - name: Configuring the Paper server
-      copy:
-         src: files/java/{{ item }}.yml
+         src: files/java/{{ item }}
          dest: /home/minecraft/{{ edition }}/
          owner: minecraft
          group: minecraft
          mode: 0644
       with_items:
-       - spigot
-       - paper
+       - server.properties
+       - spigot.yml
+       - paper.yml
       when:
        - new_server == "true" or update_server == "true"
        - restore_backup == "false"
