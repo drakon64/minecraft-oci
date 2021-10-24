@@ -1,5 +1,0 @@
-<service>
-	<short>Minecraft</short>
-	<description>Minecraft</description>
-	<port protocol="tcp" port="25565"/>
-</service>
