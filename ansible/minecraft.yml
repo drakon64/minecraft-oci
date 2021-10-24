@@ -8,30 +8,22 @@
       timezone:
          name: "{{ timezone }}"
 
-    - name: Removing the Oracle Cloud iptables rules
-      lineinfile:
-         path: /etc/iptables/rules.v4
-         search_string: "-A INPUT -j REJECT --reject-with icmp-host-prohibited"
-         line: "#-A INPUT -j REJECT --reject-with icmp-host-prohibited"
-      register: iptables
-
-    - name: Reloading iptables
-      shell: iptables-restore < /etc/iptables/rules.v4
-      when: iptables.changed
-
-    - name: Removing packages
-      apt:
-         name: unattended-upgrades
-         state: absent
-         autoremove: yes
-         purge: yes
+    - name: Enabling EPEL
+      yum_repository:
+         name: ol8_developer_EPEL
+         description: Oracle Linux $releasever EPEL Packages for Development ($basearch)
+         baseurl: https://yum$ociregion.$ocidomain/repo/OracleLinux/OL8/developer/EPEL/$basearch/
+         gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-oracle
+         gpgcheck: 1
+         file: oracle-epel-ol8
+         enabled: true
 
     - name: Installing packages
-      apt:
+      dnf:
          name:
-          - openjdk-17-jre-headless
-          - python3-pip
+          - java-latest-openjdk-headless
           - jq
+          - tmux
          state: present
          update_cache: yes
 
@@ -220,10 +212,6 @@
        - new_server == "true" or update_server == "true"
        - restore_backup == "false"
 
-    - name: Installing the OCI client
-      pip:
-         name: oci-cli
-
     - name: Downloading the latest server backup
       command: oci os object get --auth instance_principal --bucket-name {{ bucket_name }} --file {{ edition }}.tar.gz --name {{ edition }}.tar.gz
       args:
@@ -267,7 +255,7 @@
        - stop
        - backup
 
-    - name: Copying scripts and systemd units
+    - name: Copying firewall rule, scripts, and systemd units
       template:
          src: "{{ item.src }}"
          dest: "{{ item.dest }}"
@@ -275,13 +263,14 @@
          group: "{{ item.owner }}"
          mode: "{{ item.mode }}"
       with_items:
-       - { src: "templates/apt-reboot.sh.j2", dest: "/home/minecraft/apt-reboot.sh", owner: "minecraft", mode: "0755" }
+       - { src: "files/firewalld/minecraft.xml", dest: "/etc/firewalld/services/", owner: "root", mode: "0644" }
+       - { src: "templates/dnf-reboot.sh.j2", dest: "/home/minecraft/dnf-reboot.sh", owner: "minecraft", mode: "0755" }
        - { src: "files/disk-utilization.sh", dest: "/home/minecraft/", owner: "minecraft", mode: "0755" }
        - { src: "templates/systemd/minecraft.service.j2", dest: "/etc/systemd/system/minecraft-{{ edition }}.service", owner: "root", mode: "0644" }
        - { src: "templates/systemd/minecraft-backup.service.j2", dest: "/etc/systemd/system/minecraft-{{ edition }}-backup.service", owner: "root", mode: "0644" }
        - { src: "templates/systemd/minecraft-backup.timer.j2", dest: "/etc/systemd/system/minecraft-{{ edition }}-backup.timer", owner: "root", mode: "0644" }
-       - { src: "files/systemd/apt-upgrade.service", dest: "/etc/systemd/system/apt-upgrade.service", owner: "root", mode: "0644" }
-       - { src: "files/systemd/apt-upgrade.timer", dest: "/etc/systemd/system/apt-upgrade.timer", owner: "root", mode: "0644" }
+       - { src: "files/systemd/dnf-upgrade.service", dest: "/etc/systemd/system/dnf-upgrade.service", owner: "root", mode: "0644" }
+       - { src: "files/systemd/dnf-upgrade.timer", dest: "/etc/systemd/system/dnf-upgrade.timer", owner: "root", mode: "0644" }
        - { src: "files/systemd/oci-disk-utilization.service", dest: "/etc/systemd/system/oci-disk-utilization.service", owner: "root", mode: "0644" }
        - { src: "files/systemd/oci-disk-utilization.timer", dest: "/etc/systemd/system/oci-disk-utilization.timer", owner: "root", mode: "0644" }
 
@@ -297,6 +286,18 @@
        - restore_backup == "false"
        - eula == "true"
 
+    - name: Setting SELinux to permissive (will fix)
+      selinux:
+         policy: targeted
+         state: permissive
+
+    - name: Allowing Minecraft through the firewall
+      firewalld:
+         service: minecraft
+         state: enabled
+         permanent: yes
+         immediate: yes
+
     - name: Starting the systemd units
       systemd:
          name: "{{ item }}"
@@ -306,5 +307,5 @@
       with_items:
        - minecraft-{{ edition }}.service
        - minecraft-{{ edition }}-backup.timer
-       - apt-upgrade.timer
+       - dnf-upgrade.timer
        - oci-disk-utilization.timer
