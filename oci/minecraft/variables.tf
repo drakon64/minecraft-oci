@@ -22,7 +22,7 @@ variable "oci_compute_shape" {
 
 variable "oci_compute_memory" {
 	type = number
-	default = 1
+	default = 6
 }
 
 variable "oci_compute_ocpus" {
