@@ -291,6 +291,9 @@
          policy: targeted
          state: permissive
 
+    - name: Reloading firewalld
+      command: firewall-cmd --reload
+
     - name: Allowing Minecraft through the firewall
       firewalld:
          service: minecraft
