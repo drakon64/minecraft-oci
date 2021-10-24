@@ -213,10 +213,6 @@
        - new_server == "true" or update_server == "true"
        - restore_backup == "false"
 
-    - name: Installing the OCI client
-      pip:
-         name: oci-cli
-
     - name: Downloading the latest server backup
       command: oci os object get --auth instance_principal --bucket-name {{ bucket_name }} --file {{ edition }}.tar.gz --name {{ edition }}.tar.gz
       args:
