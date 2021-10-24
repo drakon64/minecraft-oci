@@ -23,7 +23,6 @@
          name:
           - java-latest-openjdk-headless
           - jq
-          - python3-pip
           - tmux
          state: present
          update_cache: yes
