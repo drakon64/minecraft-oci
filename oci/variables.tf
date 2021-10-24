@@ -27,7 +27,7 @@ variable "oci_compute_memory" {
 
 variable "oci_compute_ocpus" {
 	type = number
-	default = 1
+	default = 2
 }
 
 variable "oci_compute_display_name" {
