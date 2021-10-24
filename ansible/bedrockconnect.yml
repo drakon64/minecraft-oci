@@ -32,23 +32,11 @@
       timezone:
          name: "{{ timezone }}"
 
-    - name: Removing the Oracle Cloud iptables rules
-      lineinfile:
-         path: /etc/iptables/rules.v4
-         search_string: "-A INPUT -j REJECT --reject-with icmp-host-prohibited"
-         line: "#-A INPUT -j REJECT --reject-with icmp-host-prohibited"
-      register: iptables
-
-    - name: Reloading iptables
-      shell: iptables-restore < /etc/iptables/rules.v4
-      when: iptables.changed
-
-    - name: Installing the BedrockConnect packages
-      apt:
+    - name: Installing packages
+      dnf:
          name:
-          - default-jre-headless
-          - bind9
-          - python3-pip
+          - bind
+          - java-11-openjdk-headless
           - jq
          state: present
          update_cache: yes
@@ -66,13 +54,27 @@
          group: minecraft
          mode: 0755
 
+    - name: Gathering Facts about services
+      service_facts:
+
+    - name: Stopping the existing server
+      systemd:
+         name: bedrockconnect
+         state: stopped
+      when:
+       - ansible_facts.services['minecraft-' + edition + '.service'] is defined
+
+    - name: Getting the latest BedrockConnect release
+      shell: curl --silent "https://api.github.com/repos/Pugmatt/BedrockConnect/releases/latest" | jq -r '.assets[] | select(.name == "BedrockConnect-1.0-SNAPSHOT.jar").browser_download_url'
+      register: bedrockconnect_latest
+
     - name: Downloading BedrockConnect
       get_url:
-         url: https://github.com/Pugmatt/BedrockConnect/releases/download/1.7/BedrockConnect-1.0-SNAPSHOT.jar
+         url: "{{ bedrockconnect_latest.stdout }}"
          dest: /home/minecraft/bedrockconnect/BedrockConnect.jar
          owner: minecraft
          group: minecraft
-         mode: 0755
+         mode: 0644
 
     - name: Copying the BedrockConnect custom server list
       template:
@@ -84,58 +86,45 @@
 
     - name: Copying the BIND9 zones
       template:
-        src: templates/bedrockconnect/db.j2
-        dest: /var/cache/bind/db.{{ item.domain }}
-        owner: root
-        group: root
-        mode: 0644
+         src: templates/bedrockconnect/db.j2
+         dest: /var/named/db.{{ item.domain }}
+         owner: root
+         group: root
+         mode: 0644
       with_items: "{{ domains }}"
 
     - name: Copying the BIND9 configuration
       copy:
-        src: files/bedrockconnect/named.conf.local
-        dest: /etc/bind/
-        owner: root
-        group: root
-        mode: 0644
-
-    - name: Installing the OCI client
-      pip:
-         name: oci-cli
-
-    - name: Copying the OS scripts
-      copy:
-         src: files/{{ item }}.sh
-         dest: /home/minecraft/
-         owner: minecraft
-         group: minecraft
-         mode: 0755
-      with_items:
-       - apt-reboot
-       - disk-utilization
-
-    - name: Copying the systemd units
-      template:
-         src: "{{ item.type }}/systemd/{{ item.src }}"
-         dest: /etc/systemd/system/{{ item.dest }}
+         src: files/bedrockconnect/named.conf.local
+         dest: /etc/named/
          owner: root
          group: root
          mode: 0644
+
+    - name: Copying scripts and systemd units
+      template:
+         src: "{{ item.src }}"
+         dest: "{{ item.dest }}"
+         owner: "{{ item.owner }}"
+         group: "{{ item.owner }}"
+         mode: "{{ item.mode }}"
       with_items:
-       - { src: "minecraft.service.j2", dest: "bedrockconnect.service", type: "templates" }
-       - { src: "apt-upgrade.service", dest: "apt-upgrade.service", type: "files" }
-       - { src: "apt-upgrade.timer", dest: "apt-upgrade.timer", type: "files" }
-       - { src: "oci-disk-utilization.service", dest: "oci-disk-utilization.service", type: "files" }
-       - { src: "oci-disk-utilization.timer", dest: "oci-disk-utilization.timer", type: "files" }
+       - { src: "templates/dnf-reboot.sh.j2", dest: "/home/minecraft/dnf-reboot.sh", owner: "minecraft", mode: "0755" }
+       - { src: "files/disk-utilization.sh", dest: "/home/minecraft/", owner: "minecraft", mode: "0755" }
+       - { src: "templates/systemd/minecraft.service.j2", dest: "/etc/systemd/system/bedrockconnect.service", owner: "root", mode: "0644" }
+       - { src: "files/systemd/dnf-upgrade.service", dest: "/etc/systemd/system/dnf-upgrade.service", owner: "root", mode: "0644" }
+       - { src: "files/systemd/dnf-upgrade.timer", dest: "/etc/systemd/system/dnf-upgrade.timer", owner: "root", mode: "0644" }
+       - { src: "files/systemd/oci-disk-utilization.service", dest: "/etc/systemd/system/oci-disk-utilization.service", owner: "root", mode: "0644" }
+       - { src: "files/systemd/oci-disk-utilization.timer", dest: "/etc/systemd/system/oci-disk-utilization.timer", owner: "root", mode: "0644" }
 
     - name: Starting the systemd units
       systemd:
          name: "{{ item }}"
-         state: restarted
+         state: started
          enabled: yes
          daemon_reload: yes
       with_items:
        - bedrockconnect.service
-       - bind9.service
-       - apt-upgrade.timer
+       - named.service
+       - dnf-upgrade.timer
        - oci-disk-utilization.timer
