@@ -37,7 +37,7 @@ variable "oci_compute_display_name" {
 
 variable "oci_image_id" {
 	type = string
-	default = "ocid1.image.oc1.uk-london-1.aaaaaaaabs5halw76hevhsst3l2vmbtgth3jr3pqw5llgp7pqwjbxomvtgva"
+	default = "ocid1.image.oc1.uk-london-1.aaaaaaaaqxf2zi634v7pirstfzjku5seji5m5senrt7jhnfmbanj4swo2lqa"
 }
 
 variable "ssh_authorized_keys" {
