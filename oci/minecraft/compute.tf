@@ -18,7 +18,7 @@ resource "oci_core_instance" "minecraft_instance" {
 
 	display_name = var.oci_compute_display_name
 	create_vnic_details {
-		assign_public_ip = true
+		assign_public_ip = false
 		subnet_id = oci_core_subnet.vcn-subnet.id
 		nsg_ids = [
 			oci_core_network_security_group.minecraft.id
@@ -30,4 +30,33 @@ resource "oci_core_instance" "minecraft_instance" {
 	metadata = {
 		ssh_authorized_keys = var.ssh_authorized_keys
 	}
+
+	agent_config {
+		plugins_config {
+			desired_state = "ENABLED"
+			name = "Block Volume Management"
+		}
+		plugins_config {
+			desired_state = "ENABLED"
+			name = "Vulnerability Scanning"
+		}
+	}
+}
+
+data "oci_core_vnic_attachments" "minecraft_vnic_attachments" {
+	compartment_id = oci_identity_compartment.tf-compartment.id
+
+	instance_id = oci_core_instance.minecraft_instance.id
+}
+
+data "oci_core_private_ips" "minecraft_private_ip" {
+	vnic_id = data.oci_core_vnic_attachments.minecraft_vnic_attachments.vnic_attachments["0"].vnic_id
+}
+
+resource "oci_core_public_ip" "minecraft_public_ip" {
+	compartment_id = oci_identity_compartment.tf-compartment.id
+	lifetime = "RESERVED"
+
+	display_name = var.oci_compute_display_name
+	private_ip_id = data.oci_core_private_ips.minecraft_private_ip.private_ips["0"].id
 }

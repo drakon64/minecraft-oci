@@ -1,3 +1,3 @@
-output "public-ip-for-minecraft-server" {
-	value = oci_core_instance.minecraft_instance.public_ip
+output "minecraft_public_ip_address" {
+	value = oci_core_public_ip.minecraft_public_ip.ip_address
 }
