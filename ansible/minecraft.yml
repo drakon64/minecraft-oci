@@ -290,7 +290,7 @@
       command: openssl dgst -sha3-224 /etc/oracle-cloud-agent/agent.yml
       register: oca_old
 
-    - name: Configuring the Oracle Cloud Agent to enable the OS Management Service plugin
+    - name: Configuring the Oracle Cloud Agent to enable the OS Management Service plugin # Taken from https://docs.oracle.com/en-us/iaas/os-management/osms/osms-getstarted.htm#osms-manage-plugin-ol8
       command: |
          sed -i -e '/^  osms:/,/^  [a-z]*:/{
          s/\(.*disabled:.*\)true/\1false/
