@@ -1,5 +1,0 @@
-<service>
-	<short>Minecraft: Bedrock Edition</short>
-	<description>Minecraft: Bedrock Edition</description>
-	<port protocol="udp" port="19132"/>
-</service>
