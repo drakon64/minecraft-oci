@@ -1,5 +1,5 @@
 resource "oci_objectstorage_bucket" "minecraft_backup" {
-	compartment_id = oci_identity_compartment.tf-compartment.id
+	compartment_id = oci_identity_compartment.minecraft-compartment.id
 	name = var.backup_bucket_name
 	namespace = var.oci_namespace
 
