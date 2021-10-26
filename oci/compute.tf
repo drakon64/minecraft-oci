@@ -32,10 +32,8 @@ resource "oci_core_instance" "minecraft_instance" {
 	}
 
 	agent_config {
-		plugins_config {
-			desired_state = "ENABLED"
-			name = "Block Volume Management"
-		}
+		is_management_disabled = "false"
+		is_monitoring_disabled = "false"
 		plugins_config {
 			desired_state = "ENABLED"
 			name = "Vulnerability Scanning"

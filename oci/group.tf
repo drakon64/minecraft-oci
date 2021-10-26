@@ -2,7 +2,7 @@ resource "oci_identity_dynamic_group" "minecraft" {
 	compartment_id = var.oci_tenancy
 	description = "Minecraft"
 	name = var.oci_compartment_name
-	matching_rule = "instance.id = '${oci_core_instance.minecraft_instance.id}'"
+	matching_rule = "ANY {instance.compartment.id = '${oci_identity_compartment.tf-compartment.id}'}"
 }
 
 resource "oci_identity_policy" "minecraft_backup" {

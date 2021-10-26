@@ -286,6 +286,21 @@
        - java
        - bedrock
 
+    - name: Configuring the Oracle Cloud Agent to enable the OS Management Service plugin
+      command: |
+         sed -i -e '/^  osms:/,/^  [a-z]*:/{
+         s/\(.*disabled:.*\)true/\1false/
+         /^.*disableByOs:$/,/^  [a-z]*:/{
+         /^.*-.*Oracle Linux Server.*:$/d
+         /^.*-.*8.x/d}}' /etc/oracle-cloud-agent/agent.yml
+      register: osms
+
+    - name: Restarting the Oracle Cloud Agent
+      systemd:
+         name: oracle-cloud-agent
+         state: restarted
+      when: osms.changed
+
     - name: Starting the systemd units
       systemd:
          name: "{{ item }}"
