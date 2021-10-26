@@ -1,5 +1,0 @@
-<service>
-	<short>Minecraft: Java Edition</short>
-	<description>Minecraft: Java Edition</description>
-	<port protocol="tcp" port="25565"/>
-</service>
