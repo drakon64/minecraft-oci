@@ -1,6 +1,6 @@
 <service>
 	<short>Minecraft</short>
-	<description>Minecraft</description>
+	<description>Explore your own unique world, survive the night, and create anything you can imagine!</description>
 	<port protocol="tcp" port="25565"/>
 	<port protocol="udp" port="19132"/>
 </service>
