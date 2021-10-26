@@ -4,6 +4,45 @@
 
    tasks:
 
+    - name: Configuring sshd # Based on https://infosec.mozilla.org/guidelines/openssh and CIS Benchmarks
+      lineinfile:
+         path: /etc/ssh/sshd_config
+         regexp: "^({{ item.regexp }}|#{{ item.regexp }})"
+         line: "{{ item.line }}"
+      with_items:
+       - { regexp: "KexAlgorithms", line: "KexAlgorithms curve25519-sha256@libssh.org" }
+       - { regexp: "Ciphers", line: "Ciphers chacha20-poly1305@openssh.com" }
+       - { regexp: "MACs", line: "MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,umac-128-etm@openssh.com" }
+       - { regexp: "AuthenticationMethods", line: "AuthenticationMethods publickey" }
+       - { regexp: "LogLevel", line: "LogLevel VERBOSE" }
+       - { regexp: "Subsystem sftp", line: "Subsystem sftp /usr/libexec/openssh/sftp-server -f AUTHPRIV -l INFO" }
+       - { regexp: "PermitRootLogin", line: "PermitRootLogin no" }
+       - { regexp: "UsePrivilegeSeparation", line: "UsePrivilegeSeparation sandbox" }
+       - { regexp: "LoginGraceTime", line: "LoginGraceTime 1m" }
+       - { regexp: "AllowTcpForwarding", line: "AllowTcpForwarding no" }
+       - { regexp: "MaxSessions", line: "MaxSessions 4" }
+       - { regexp: "X11Forwarding", line: "X11Forwarding no" }
+       - { regexp: "MaxAuthTries", line: "MaxAuthTries 4" }
+      register: sshd
+
+    - name: Checking if SSH short moduli needs disabling
+      command: awk '{if ($5 < 3071) { exit 3 } else { exit 0 } }' /etc/ssh/moduli
+      changed_when: moduli.rc == 3
+      failed_when:
+       - moduli.rc != 0
+       - moduli.rc != 3
+      register: moduli
+
+    - name: Disabling SSH short moduli
+      command: awk -i inplace '$5 >= 3071' /etc/ssh/moduli
+      when: moduli.changed
+
+    - name: Restarting sshd
+      systemd:
+         name: sshd
+         state: restarted
+      when: sshd.changed or moduli.changed
+
     - name: Setting the timezone
       timezone:
          name: "{{ timezone }}"
