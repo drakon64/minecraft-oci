@@ -40,17 +40,6 @@ resource "oci_core_default_security_list" "default-security-list" {
 		destination_type = "CIDR_BLOCK"
 		protocol = "6"
 		tcp_options {
-			min = 80
-			max = 80
-		}
-	}
-
-	egress_security_rules {
-		stateless = false
-		destination = "0.0.0.0/0"
-		destination_type = "CIDR_BLOCK"
-		protocol = "6"
-		tcp_options {
 			min = 443
 			max = 443
 		}
