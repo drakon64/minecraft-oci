@@ -1,5 +1,5 @@
 resource "oci_core_network_security_group" "minecraft" {
-	compartment_id = oci_identity_compartment.minecraft-compartment.id
+	compartment_id = oci_identity_compartment.minecraft_compartment.id
 	vcn_id = oci_core_vcn.vcn.id
 
 	display_name = var.oci_compute_display_name

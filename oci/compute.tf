@@ -1,10 +1,10 @@
 data "oci_identity_availability_domains" "ads" {
-	compartment_id = oci_identity_compartment.minecraft-compartment.id
+	compartment_id = oci_identity_compartment.minecraft_compartment.id
 }
 
 resource "oci_core_instance" "minecraft_instance" {
 	availability_domain = data.oci_identity_availability_domains.ads.availability_domains[0].name
-	compartment_id = oci_identity_compartment.minecraft-compartment.id
+	compartment_id = oci_identity_compartment.minecraft_compartment.id
 	shape = var.oci_compute_shape
 	source_details {
 		boot_volume_size_in_gbs = 50
@@ -42,7 +42,7 @@ resource "oci_core_instance" "minecraft_instance" {
 }
 
 data "oci_core_vnic_attachments" "minecraft_vnic_attachments" {
-	compartment_id = oci_identity_compartment.minecraft-compartment.id
+	compartment_id = oci_identity_compartment.minecraft_compartment.id
 
 	instance_id = oci_core_instance.minecraft_instance.id
 }
@@ -52,7 +52,7 @@ data "oci_core_private_ips" "minecraft_private_ip" {
 }
 
 resource "oci_core_public_ip" "minecraft_public_ip" {
-	compartment_id = oci_identity_compartment.minecraft-compartment.id
+	compartment_id = oci_identity_compartment.minecraft_compartment.id
 	lifetime = "RESERVED"
 
 	display_name = var.oci_compute_display_name

@@ -1,13 +1,13 @@
 resource "oci_core_vcn" "vcn" {
 	cidr_blocks = [ "10.0.0.0/16" ]
-	compartment_id = oci_identity_compartment.minecraft-compartment.id
+	compartment_id = oci_identity_compartment.minecraft_compartment.id
 	dns_label = "minecraft"
 
 	display_name = var.oci_compute_display_name
 }
 
 resource "oci_core_internet_gateway" "internet_gateway" {
-	compartment_id = oci_identity_compartment.minecraft-compartment.id
+	compartment_id = oci_identity_compartment.minecraft_compartment.id
 	vcn_id = oci_core_vcn.vcn.id
 
 	display_name = var.oci_compute_display_name
