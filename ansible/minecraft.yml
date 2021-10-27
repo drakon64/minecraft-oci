@@ -59,8 +59,8 @@
          state: latest
          update_cache: yes
 
-    - name: Applying updates with KSplice
-      command: ksplice all upgrade -y
+    - name: Applying updates with Uptrack
+      command: uptrack-upgrade -y
 
     - name: Setting the timezone
       timezone:
