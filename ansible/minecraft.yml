@@ -43,10 +43,6 @@
          state: restarted
       when: sshd.changed or moduli.changed
 
-    - name: Setting the timezone
-      timezone:
-         name: "{{ timezone }}"
-
     - name: Enabling EPEL
       yum_repository:
          name: ol8_developer_EPEL
@@ -56,6 +52,19 @@
          gpgcheck: 1
          file: oracle-epel-ol8
          enabled: true
+
+    - name: Installing updates
+      dnf:
+         name: '*'
+         state: latest
+         update_cache: yes
+
+    - name: Applying updates with KSplice
+      command: ksplice all upgrade -y
+
+    - name: Setting the timezone
+      timezone:
+         name: "{{ timezone }}"
 
     - name: Installing packages
       dnf:
