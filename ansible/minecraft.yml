@@ -100,7 +100,7 @@
       when: new_server == "true"
 
     - name: Backing up the existing server
-      shell: tar cfO - {{ edition }} | gzip --best | oci os object put --auth instance_principal --bucket-name {{ bucket_name }} --file - --name "{{ edition }}.tar.gz" --force
+      shell: tar cfO - {{ edition }} | xz -zkce -T 1 | oci os object put --auth instance_principal --bucket-name {{ bucket_name }} --file - --name "{{ edition }}.tar.xz" --force
       args:
          chdir: /home/minecraft
       when: update_server == "true"
