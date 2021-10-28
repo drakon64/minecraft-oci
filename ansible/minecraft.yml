@@ -251,7 +251,7 @@
        - restore_backup == "false"
 
     - name: Downloading the latest server backup
-      command: oci os object get --auth instance_principal --bucket-name {{ bucket_name }} --file {{ edition }}.tar.gz --name {{ edition }}.tar.gz
+      command: oci os object get --auth instance_principal --bucket-name {{ bucket_name }} --file {{ edition }}.tar.gz --name {{ edition }}.tar.xz
       args:
          chdir: /home/minecraft
       when:
@@ -259,7 +259,7 @@
        - backup_version == ""
 
     - name: Downloading the server backup
-      command: oci os object get --auth instance_principal --bucket-name {{ bucket_name }} --file {{ edition }}.tar.gz --name {{ edition }}.tar.gz --version-id {{ backup_version }}
+      command: oci os object get --auth instance_principal --bucket-name {{ bucket_name }} --file {{ edition }}.tar.gz --name {{ edition }}.tar.xz --version-id {{ backup_version }}
       args:
          chdir: /home/minecraft
       when:
@@ -268,7 +268,7 @@
 
     - name: Restoring the server backup
       unarchive:
-         src: /home/minecraft/{{ edition }}.tar.gz
+         src: /home/minecraft/{{ edition }}.tar.xz
          dest: /home/minecraft/
          owner: minecraft
          group: minecraft
@@ -278,7 +278,7 @@
 
     - name: Removing the downloaded backup
       file:
-         path: /home/minecraft/{{ edition }}.tar.gz
+         path: /home/minecraft/{{ edition }}.tar.xz
          state: absent
       when: restore_backup == "true"
 
@@ -299,6 +299,8 @@
        - { src: "templates/systemd/minecraft-backup.timer.j2", dest: "/etc/systemd/system/minecraft-{{ edition }}-backup.timer", owner: "root", mode: "0644" }
        - { src: "files/systemd/dnf-upgrade.service", dest: "/etc/systemd/system/dnf-upgrade.service", owner: "root", mode: "0644" }
        - { src: "files/systemd/dnf-upgrade.timer", dest: "/etc/systemd/system/dnf-upgrade.timer", owner: "root", mode: "0644" }
+       - { src: "files/systemd/uptrack-upgrade.service", dest: "/etc/systemd/system/uptrack-upgrade.service", owner: "root", mode: "0644" }
+       - { src: "files/systemd/uptrack-upgrade.timer", dest: "/etc/systemd/system/uptrack-upgrade.timer", owner: "root", mode: "0644" }
        - { src: "files/systemd/oci-disk-utilization.service", dest: "/etc/systemd/system/oci-disk-utilization.service", owner: "root", mode: "0644" }
        - { src: "files/systemd/oci-disk-utilization.timer", dest: "/etc/systemd/system/oci-disk-utilization.timer", owner: "root", mode: "0644" }
 
@@ -371,4 +373,5 @@
        - minecraft-{{ edition }}.service
        - minecraft-{{ edition }}-backup.timer
        - dnf-upgrade.timer
+       - uptrack-upgrade.timer
        - oci-disk-utilization.timer
