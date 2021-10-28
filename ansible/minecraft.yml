@@ -93,6 +93,12 @@
        - new_server == "true" or update_server == "true"
        - ansible_facts.services['minecraft-' + edition + '.service'] is defined
 
+    - name: Backing up the existing server
+      shell: tar cfO - {{ edition }} | xz -zkce -T 1 | oci os object put --auth instance_principal --bucket-name {{ bucket_name }} --file - --name "{{ edition }}.tar.xz" --force
+      args:
+         chdir: /home/minecraft
+      when: update_server == "true" or (new_server == "true" and skip_backup == "false")
+
     - name: Removing the existing server
       file:
          path: /home/minecraft/{{ edition }}
@@ -107,12 +113,6 @@
          group: minecraft
          mode: 0755
       when: new_server == "true"
-
-    - name: Backing up the existing server
-      shell: tar cfO - {{ edition }} | xz -zkce -T 1 | oci os object put --auth instance_principal --bucket-name {{ bucket_name }} --file - --name "{{ edition }}.tar.xz" --force
-      args:
-         chdir: /home/minecraft
-      when: update_server == "true"
 
     - name: Getting the latest Paper build
       shell: curl --silent https://papermc.io/api/v2/projects/paper/versions/{{ version }} | jq ".builds | max"
