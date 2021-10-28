@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 Type=oneshot
-ExecStart=uptrack-upgrade -y
+ExecStart=/sbin/uptrack-upgrade -y
 
 [Install]
 WantedBy=multi-user.target
