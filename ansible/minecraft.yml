@@ -53,14 +53,14 @@
          file: oracle-epel-ol8
          enabled: true
 
+    - name: Applying updates with Uptrack
+      command: uptrack-upgrade -y
+
     - name: Installing updates
       dnf:
          name: '*'
          state: latest
          update_cache: yes
-
-    - name: Applying updates with Uptrack
-      command: uptrack-upgrade -y
 
     - name: Setting the timezone
       timezone:
@@ -199,7 +199,6 @@
          mode: 0644
       when:
        - edition == "geyser"
-       - new_server == "true" or update_server == "true"
        - restore_backup == "false"
 
     - name: Downloading the Floodgate plugin
@@ -235,7 +234,6 @@
          mode: 0644
       when:
        - edition == "geyser"
-       - new_server == "true" or update_server == "true"
        - restore_backup == "false"
 
     - name: Downloading the GeyserOptionalPack resource pack
