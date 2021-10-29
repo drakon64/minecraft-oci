@@ -8,6 +8,10 @@ if [ "$?" = "100" ] ; then
 	if [ ! "$(dnf needs-restarting -r)" ] ; then
 		reboot
 	else
+		SERVICES=$(dnf needs-restarting -s)
+		if $SERVICES ; then
+			systemctl restart "$SERVICES"
+		fi
 		systemctl start minecraft-{{ edition }}
 	fi
 else
