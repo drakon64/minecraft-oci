@@ -2,6 +2,9 @@
 
  - hosts: java
 
+   vars:
+      memtotal_b: "{{ ansible_memtotal_mb * 1048576 }}"
+
    tasks:
 
     - name: Configuring sshd # Based on https://infosec.mozilla.org/guidelines/openssh and CIS Benchmarks
@@ -53,6 +56,22 @@
          file: oracle-epel-ol8
          enabled: true
 
+    - name: Gathering Facts about services
+      service_facts:
+
+    - name: Stopping the existing server
+      systemd:
+         name: minecraft-{{ edition }}
+         state: stopped
+      when:
+       - ansible_facts.services['minecraft-' + edition + '.service'] is defined
+
+    - name: Backing up the existing server
+      shell: tar cfO - {{ edition }} | xz -zkce -T 1 | oci os object put --auth instance_principal --bucket-name {{ bucket_name }} --file - --name "{{ edition }}.tar.xz" --force
+      args:
+         chdir: /home/minecraft
+      when: update_server == "true" or (new_server == "true" and skip_backup == "false")
+
     - name: Applying updates with Uptrack
       command: uptrack-upgrade -y
 
@@ -80,24 +99,31 @@
          name: minecraft
          shell: /bin/bash
 
-    - name: Gathering Facts about services
-      service_facts:
-      when:
-       - new_server == "true" or update_server == "true"
+    - name: Checking the size of the swapfile
+      stat:
+         path: /.swapfile
+      register: swapfile
 
-    - name: Stopping the existing server
-      systemd:
-         name: minecraft-{{ edition }}
-         state: stopped
-      when:
-       - new_server == "true" or update_server == "true"
-       - ansible_facts.services['minecraft-' + edition + '.service'] is defined
+    - name: Turning off swapfile
+      command: swapoff /.swapfile
+      changed_when: swapoff.rc == 255
+      failed_when:
+       - swapoff.rc != 0
+       - swapoff.rc != 255
+      when: swapfile.stat.size != memtotal_b
+      register: swapoff
 
-    - name: Backing up the existing server
-      shell: tar cfO - {{ edition }} | xz -zkce -T 1 | oci os object put --auth instance_principal --bucket-name {{ bucket_name }} --file - --name "{{ edition }}.tar.xz" --force
-      args:
-         chdir: /home/minecraft
-      when: update_server == "true" or (new_server == "true" and skip_backup == "false")
+    - name: Extending swapfile to match system memory
+      command: fallocate -l {{ memtotal_b }} /.swapfile
+      when: swapfile.stat.size != memtotal_b
+
+    - name: Formatting swapfile
+      command: mkswap /.swapfile
+      when: swapfile.stat.size != memtotal_b
+
+    - name: Turning on swapfile
+      command: swapon /.swapfile
+      when: swapfile.stat.size != memtotal_b
 
     - name: Removing the existing server
       file:
