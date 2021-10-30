@@ -106,7 +106,7 @@
 
     - name: Turning off swapfile
       command: swapoff /.swapfile
-      changed_when: swapoff.rc == 255
+      changed_when: swapoff.rc == 0
       failed_when:
        - swapoff.rc != 0
        - swapoff.rc != 255
