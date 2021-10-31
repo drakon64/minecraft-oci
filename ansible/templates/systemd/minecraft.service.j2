@@ -1,17 +1,17 @@
 [Unit]
-Description=Minecraft {{ edition | capitalize }} Server
+Description=Minecraft Geyser Server
 After=network.target
 
 [Service]
 Type=forking
 {% if (memtotal_b | int) < (12884901888 - 2147483648) %}
-ExecStart=/usr/bin/tmux new-session -s minecraft-{{ edition }} -d '{{ command }}'
+ExecStart=/usr/bin/tmux new-session -s minecraft-geyser -d '{{ command }}'
 {% else %}
-ExecStart=/usr/bin/tmux new-session -s minecraft-{{ edition }} -d '{{ high_ram_command }}'
+ExecStart=/usr/bin/tmux new-session -s minecraft-geyser -d '{{ high_ram_command }}'
 {% endif %}
-ExecStop=/home/minecraft/stop_{{ edition }}.sh
+ExecStop=/home/minecraft/stop_geyser.sh
 
-WorkingDirectory=/home/minecraft/{{ edition }}
+WorkingDirectory=/home/minecraft/geyser
 
 User=minecraft
 Group=minecraft

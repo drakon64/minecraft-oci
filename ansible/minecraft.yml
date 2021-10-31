@@ -61,13 +61,13 @@
 
     - name: Stopping the existing server
       systemd:
-         name: minecraft-{{ edition }}
+         name: minecraft-geyser
          state: stopped
       when:
-       - ansible_facts.services['minecraft-' + edition + '.service'] is defined
+       - ansible_facts.services['minecraft-geyser.service'] is defined
 
     - name: Backing up the existing server
-      shell: tar cfO - {{ edition }} | xz -zkce -T 1 | oci os object put --auth instance_principal --bucket-name {{ bucket_name }} --file - --name "{{ edition }}.tar.xz" --force
+      shell: tar cfO - geyser | xz -zkce -T 1 | oci os object put --auth instance_principal --bucket-name {{ bucket_name }} --file - --name "geyser.tar.xz" --force
       args:
          chdir: /home/minecraft
       when:
@@ -129,13 +129,13 @@
 
     - name: Removing the existing server
       file:
-         path: /home/minecraft/{{ edition }}
+         path: /home/minecraft/geyser
          state: absent
       when: new_server == "true"
 
     - name: Creating the server directory
       file:
-         path: /home/minecraft/{{ edition }}
+         path: /home/minecraft/geyser
          state: directory
          owner: minecraft
          group: minecraft
@@ -152,7 +152,7 @@
     - name: Downloading Minecraft Paper server
       get_url:
          url: https://papermc.io/api/v2/projects/paper/versions/{{ version }}/builds/{{ paper_latest.stdout }}/downloads/paper-{{ version }}-{{ paper_latest.stdout }}.jar
-         dest: /home/minecraft/{{ edition }}/server.jar
+         dest: /home/minecraft/geyser/server.jar
          owner: minecraft
          group: minecraft
          mode: 0644
@@ -163,7 +163,7 @@
     - name: Configuring the Minecraft server
       copy:
          src: files/java/{{ item }}
-         dest: /home/minecraft/{{ edition }}/
+         dest: /home/minecraft/geyser/
          owner: minecraft
          group: minecraft
          mode: 0644
@@ -177,7 +177,7 @@
     - name: Copying the server permissions files
       copy:
          src: files/java/{{ item }}.json
-         dest: /home/minecraft/{{ edition }}/
+         dest: /home/minecraft/geyser/
          owner: minecraft
          group: minecraft
          mode: 0644
@@ -201,7 +201,6 @@
        - floodgate
        - Geyser-Spigot/packs
       when:
-       - edition == "geyser"
        - new_server == "true"
        - restore_backup == "false"
 
@@ -213,7 +212,6 @@
          group: minecraft
          mode: 0644
       when:
-       - edition == "geyser"
        - new_server == "true" or update_server == "true"
        - restore_backup == "false"
 
@@ -225,7 +223,6 @@
          group: minecraft
          mode: 0644
       when:
-       - edition == "geyser"
        - restore_backup == "false"
 
     - name: Downloading the Floodgate plugin
@@ -236,7 +233,6 @@
          group: minecraft
          mode: 0644
       when:
-       - edition == "geyser"
        - new_server == "true" or update_server == "true"
        - restore_backup == "false"
 
@@ -248,7 +244,6 @@
          group: minecraft
          mode: 0644
       when:
-       - edition == "geyser"
        - new_server == "true" or update_server == "true"
        - restore_backup == "false"
 
@@ -260,7 +255,6 @@
          group: minecraft
          mode: 0644
       when:
-       - edition == "geyser"
        - restore_backup == "false"
 
     - name: Downloading the GeyserOptionalPack resource pack
@@ -271,12 +265,11 @@
          group: minecraft
          mode: 0644
       when:
-       - edition == "geyser"
        - new_server == "true" or update_server == "true"
        - restore_backup == "false"
 
     - name: Downloading the latest server backup
-      command: oci os object get --auth instance_principal --bucket-name {{ bucket_name }} --file {{ edition }}.tar.gz --name {{ edition }}.tar.xz
+      command: oci os object get --auth instance_principal --bucket-name {{ bucket_name }} --file geyser.tar.gz --name geyser.tar.xz
       args:
          chdir: /home/minecraft
       when:
@@ -284,7 +277,7 @@
        - backup_version == ""
 
     - name: Downloading the server backup
-      command: oci os object get --auth instance_principal --bucket-name {{ bucket_name }} --file {{ edition }}.tar.gz --name {{ edition }}.tar.xz --version-id {{ backup_version }}
+      command: oci os object get --auth instance_principal --bucket-name {{ bucket_name }} --file geyser.tar.gz --name geyser.tar.xz --version-id {{ backup_version }}
       args:
          chdir: /home/minecraft
       when:
@@ -293,7 +286,7 @@
 
     - name: Restoring the server backup
       unarchive:
-         src: /home/minecraft/{{ edition }}.tar.xz
+         src: /home/minecraft/geyser.tar.xz
          dest: /home/minecraft/
          owner: minecraft
          group: minecraft
@@ -303,7 +296,7 @@
 
     - name: Removing the downloaded backup
       file:
-         path: /home/minecraft/{{ edition }}.tar.xz
+         path: /home/minecraft/geyser.tar.xz
          state: absent
       when: restore_backup == "true"
 
@@ -316,12 +309,12 @@
          mode: "{{ item.mode }}"
       with_items:
        - { src: "templates/dnf-reboot.sh.j2", dest: "/home/minecraft/dnf-reboot.sh", owner: "minecraft", mode: "0755" }
-       - { src: "templates/stop.sh.j2", dest: "/home/minecraft/stop_{{ edition }}.sh", owner: "minecraft", mode: "0755" }
-       - { src: "templates/backup.sh.j2", dest: "/home/minecraft/backup_{{ edition }}.sh", owner: "minecraft", mode: "0755" }
+       - { src: "templates/stop.sh.j2", dest: "/home/minecraft/stop_geyser.sh", owner: "minecraft", mode: "0755" }
+       - { src: "templates/backup.sh.j2", dest: "/home/minecraft/backup_geyser.sh", owner: "minecraft", mode: "0755" }
        - { src: "files/disk-utilization.sh", dest: "/home/minecraft/", owner: "minecraft", mode: "0755" }
-       - { src: "templates/systemd/minecraft.service.j2", dest: "/etc/systemd/system/minecraft-{{ edition }}.service", owner: "root", mode: "0644" }
-       - { src: "templates/systemd/minecraft-backup.service.j2", dest: "/etc/systemd/system/minecraft-{{ edition }}-backup.service", owner: "root", mode: "0644" }
-       - { src: "templates/systemd/minecraft-backup.timer.j2", dest: "/etc/systemd/system/minecraft-{{ edition }}-backup.timer", owner: "root", mode: "0644" }
+       - { src: "templates/systemd/minecraft.service.j2", dest: "/etc/systemd/system/minecraft-geyser.service", owner: "root", mode: "0644" }
+       - { src: "templates/systemd/minecraft-backup.service.j2", dest: "/etc/systemd/system/minecraft-geyser-backup.service", owner: "root", mode: "0644" }
+       - { src: "templates/systemd/minecraft-backup.timer.j2", dest: "/etc/systemd/system/minecraft-geyser-backup.timer", owner: "root", mode: "0644" }
        - { src: "files/systemd/dnf-upgrade.service", dest: "/etc/systemd/system/dnf-upgrade.service", owner: "root", mode: "0644" }
        - { src: "files/systemd/dnf-upgrade.timer", dest: "/etc/systemd/system/dnf-upgrade.timer", owner: "root", mode: "0644" }
        - { src: "files/systemd/uptrack-upgrade.service", dest: "/etc/systemd/system/uptrack-upgrade.service", owner: "root", mode: "0644" }
@@ -332,7 +325,7 @@
     - name: Accepting the Minecraft Server EULA
       copy:
          content: eula=true
-         dest: /home/minecraft/{{ edition }}/eula.txt
+         dest: /home/minecraft/geyser/eula.txt
          owner: minecraft
          group: minecraft
          mode: 0644
@@ -395,8 +388,8 @@
          enabled: yes
          daemon_reload: yes
       with_items:
-       - minecraft-{{ edition }}.service
-       - minecraft-{{ edition }}-backup.timer
+       - minecraft-geyser.service
+       - minecraft-geyser-backup.timer
        - dnf-upgrade.timer
        - uptrack-upgrade.timer
        - oci-disk-utilization.timer
