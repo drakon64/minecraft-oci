@@ -70,7 +70,9 @@
       shell: tar cfO - {{ edition }} | xz -zkce -T 1 | oci os object put --auth instance_principal --bucket-name {{ bucket_name }} --file - --name "{{ edition }}.tar.xz" --force
       args:
          chdir: /home/minecraft
-      when: update_server == "true" or (new_server == "true" and skip_backup == "false")
+      when:
+       - update_server == "true" or new_server == "true"
+       - skip_backup == "false"
 
     - name: Applying updates with Uptrack
       command: uptrack-upgrade -y
@@ -170,7 +172,6 @@
        - spigot.yml
        - paper.yml
       when:
-       - new_server == "true" or update_server == "true"
        - restore_backup == "false"
 
     - name: Copying the server permissions files
