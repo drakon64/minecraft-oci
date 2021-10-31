@@ -1,6 +1,6 @@
 locals {
-	memory_warn = ((var.oci_compute_memory - 1) / var.oci_compute_memory) * 100
-	memory_critical = ((var.oci_compute_memory - 0.5) / var.oci_compute_memory) * 100
+	memory_warn = ((var.oci_compute_memory - 0.5) / var.oci_compute_memory) * 100
+	memory_critical = ((var.oci_compute_memory - 0.25) / var.oci_compute_memory) * 100
 }
 
 resource "oci_monitoring_alarm" "High-CPU-Utilization" {
