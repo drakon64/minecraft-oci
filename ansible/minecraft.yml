@@ -67,7 +67,7 @@
        - ansible_facts.services['minecraft-geyser.service'] is defined
 
     - name: Backing up the existing server
-      shell: tar cfO - geyser | xz -zkce -T 1 | oci os object put --auth instance_principal --bucket-name {{ bucket_name }} --file - --name "geyser.tar.xz" --force
+      shell: tar cfO - geyser | oci os object put --auth instance_principal --bucket-name {{ bucket_name }} --file - --name "geyser.tar" --force
       args:
          chdir: /home/minecraft
       when:
@@ -269,7 +269,7 @@
        - restore_backup == "false"
 
     - name: Downloading the latest server backup
-      command: oci os object get --auth instance_principal --bucket-name {{ bucket_name }} --file geyser.tar.gz --name geyser.tar.xz
+      command: oci os object get --auth instance_principal --bucket-name {{ bucket_name }} --file geyser.tar.gz --name geyser.tar
       args:
          chdir: /home/minecraft
       when:
@@ -277,7 +277,7 @@
        - backup_version == ""
 
     - name: Downloading the server backup
-      command: oci os object get --auth instance_principal --bucket-name {{ bucket_name }} --file geyser.tar.gz --name geyser.tar.xz --version-id {{ backup_version }}
+      command: oci os object get --auth instance_principal --bucket-name {{ bucket_name }} --file geyser.tar.gz --name geyser.tar --version-id {{ backup_version }}
       args:
          chdir: /home/minecraft
       when:
@@ -286,7 +286,7 @@
 
     - name: Restoring the server backup
       unarchive:
-         src: /home/minecraft/geyser.tar.xz
+         src: /home/minecraft/geyser.tar
          dest: /home/minecraft/
          owner: minecraft
          group: minecraft
@@ -296,7 +296,7 @@
 
     - name: Removing the downloaded backup
       file:
-         path: /home/minecraft/geyser.tar.xz
+         path: /home/minecraft/geyser.tar
          state: absent
       when: restore_backup == "true"
 
