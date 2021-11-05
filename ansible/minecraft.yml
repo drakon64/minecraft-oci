@@ -334,11 +334,6 @@
        - restore_backup == "false"
        - eula == "true"
 
-    - name: Setting SELinux to permissive (will fix)
-      selinux:
-         policy: targeted
-         state: permissive
-
     - name: Copying firewall rule
       template:
          src: files/minecraft.xml
@@ -380,6 +375,57 @@
 #         name: oracle-cloud-agent
 #         state: restarted
 #      when: oca_old.stdout != oca_new.stdout
+
+    - name: Creating directory for SELinux modules
+      file:
+         path: /home/minecraft/selinux
+         state: directory
+         owner: minecraft
+         group: minecraft
+         mode: 0755
+
+    - name: Copying SELinux modules
+      copy:
+         src: "{{ item }}"
+         dest: /home/minecraft/selinux/
+         owner: minecraft
+         group: minecraft
+         mode: 0644
+      with_items:
+       - files/selinux/my-diskutilizationsh.te
+       - files/selinux/my-stopgeysersh.te
+       - files/selinux/my-tmux.te
+      register: selinux
+
+    - name: Compiling SELinux modules
+      command: checkmodule -M -m -o my-{{ item }}.mod my-{{ item }}.te
+      args:
+         chdir: /home/minecraft/selinux
+      with_items:
+       - diskutilizationsh
+       - stopgeysersh
+       - tmux
+      when: selinux.changed
+
+    - name: Packaging SELinux modules
+      command: semodule_package -o my-{{ item }}.pp -m my-{{ item }}.mod
+      args:
+         chdir: /home/minecraft/selinux
+      with_items:
+       - diskutilizationsh
+       - stopgeysersh
+       - tmux
+      when: selinux.changed
+
+    - name: Loading SELinux modules
+      command: semodule -i my-{{ item }}.pp
+      args:
+         chdir: /home/minecraft/selinux
+      with_items:
+       - diskutilizationsh
+       - stopgeysersh
+       - tmux
+      when: selinux.changed
 
     - name: Starting the systemd units
       systemd:
