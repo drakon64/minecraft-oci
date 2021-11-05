@@ -334,11 +334,6 @@
        - restore_backup == "false"
        - eula == "true"
 
-    - name: Setting SELinux to permissive (will fix)
-      selinux:
-         policy: targeted
-         state: permissive
-
     - name: Copying firewall rule
       template:
          src: files/minecraft.xml
