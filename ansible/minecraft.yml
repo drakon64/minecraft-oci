@@ -300,7 +300,7 @@
          state: absent
       when: restore_backup == "true"
 
-    - name: Copying SELinux modules, scripts, and systemd units
+    - name: Copying scripts and systemd units
       template:
          src: "{{ item.src }}"
          dest: "{{ item.dest }}"
@@ -308,9 +308,6 @@
          group: "{{ item.owner }}"
          mode: "{{ item.mode }}"
       with_items:
-       - { src: "files/selinux/my-diskutilizationsh.te", dest: "/home/minecraft/", owner: "root", mode: "0644" }
-       - { src: "files/selinux/my-stopgeysersh.te", dest: "/home/minecraft/", owner: "root", mode: "0644" }
-       - { src: "files/selinux/my-tmux.te", dest: "/home/minecraft/", owner: "root", mode: "0644" }
        - { src: "templates/dnf-reboot.sh.j2", dest: "/home/minecraft/dnf-reboot.sh", owner: "minecraft", mode: "0755" }
        - { src: "templates/stop.sh.j2", dest: "/home/minecraft/stop_geyser.sh", owner: "minecraft", mode: "0755" }
        - { src: "templates/backup.sh.j2", dest: "/home/minecraft/backup_geyser.sh", owner: "minecraft", mode: "0755" }
@@ -379,47 +376,56 @@
 #         state: restarted
 #      when: oca_old.stdout != oca_new.stdout
 
+    - name: Creating directory for SELinux modules
+      file:
+         path: /home/minecraft/selinux
+         state: directory
+         owner: minecraft
+         group: minecraft
+         mode: 0755
+
+    - name: Copying SELinux modules
+      copy:
+         src: "{{ item }}"
+         dest: /home/minecraft/selinux/
+         owner: minecraft
+         group: minecraft
+         mode: 0644
+      with_items:
+       - files/selinux/my-diskutilizationsh.te
+       - files/selinux/my-stopgeysersh.te
+       - files/selinux/my-tmux.te
+      register: selinux
+
     - name: Compiling SELinux modules
       command: checkmodule -M -m -o my-{{ item }}.mod my-{{ item }}.te
       args:
-         chdir: /home/minecraft
+         chdir: /home/minecraft/selinux
       with_items:
        - diskutilizationsh
        - stopgeysersh
        - tmux
+      when: selinux.changed
 
     - name: Packaging SELinux modules
       command: semodule_package -o my-{{ item }}.pp -m my-{{ item }}.mod
       args:
-         chdir: /home/minecraft
+         chdir: /home/minecraft/selinux
       with_items:
        - diskutilizationsh
        - stopgeysersh
        - tmux
+      when: selinux.changed
 
     - name: Loading SELinux modules
       command: semodule -i my-{{ item }}.pp
       args:
-         chdir: /home/minecraft
+         chdir: /home/minecraft/selinux
       with_items:
        - diskutilizationsh
        - stopgeysersh
        - tmux
-
-    - name: Removing temporary SELinux files
-      file:
-         path: /home/minecraft/my-{{ item }}
-         state: absent
-      with_items:
-       - diskutilizationsh.te
-       - diskutilizationsh.mod
-       - diskutilizationsh.pp
-       - stopgeysersh.te
-       - stopgeysersh.mod
-       - stopgeysersh.pp
-       - tmux.te
-       - tmux.mod
-       - tmux.pp
+      when: selinux.changed
 
     - name: Starting the systemd units
       systemd:
