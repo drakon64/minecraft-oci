@@ -3,8 +3,8 @@ module my-sudo 1.0;
 require {
 	type init_t;
 	type sudo_exec_t;
-	class file execute;
+	class file { execute execute_no_trans open read };
 }
 
 #============= init_t ==============
-allow init_t sudo_exec_t:file execute;
+allow init_t sudo_exec_t:file { execute execute_no_trans open read };
