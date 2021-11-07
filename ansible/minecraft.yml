@@ -386,15 +386,16 @@
 
     - name: Copying SELinux modules
       copy:
-         src: "{{ item }}"
+         src: files/selinux/my-{{ item }}.te
          dest: /home/minecraft/selinux/
          owner: minecraft
          group: minecraft
          mode: 0644
       with_items:
-       - files/selinux/my-diskutilizationsh.te
-       - files/selinux/my-stopgeysersh.te
-       - files/selinux/my-tmux.te
+       - diskutilizationsh
+       - stopgeysersh
+       - sudo
+       - tmux
       register: selinux
 
     - name: Compiling SELinux modules
@@ -404,6 +405,7 @@
       with_items:
        - diskutilizationsh
        - stopgeysersh
+       - sudo
        - tmux
       when: selinux.changed
 
@@ -414,6 +416,7 @@
       with_items:
        - diskutilizationsh
        - stopgeysersh
+       - sudo
        - tmux
       when: selinux.changed
 
@@ -424,6 +427,7 @@
       with_items:
        - diskutilizationsh
        - stopgeysersh
+       - sudo
        - tmux
       when: selinux.changed
 
