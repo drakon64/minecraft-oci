@@ -431,6 +431,12 @@
        - tmux
       when: selinux.changed
 
+    - name: Allowing domain to mmap files
+      seboolean:
+         name: domain_can_mmap_files
+         state: yes
+         persistent: yes
+
     - name: Starting the systemd units
       systemd:
          name: "{{ item }}"
