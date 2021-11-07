@@ -376,7 +376,7 @@
 #         state: restarted
 #      when: oca_old.stdout != oca_new.stdout
 
-    - name: Creating directory for SELinux modules
+    - name: Creating directory for the SELinux module
       file:
          path: /home/minecraft/selinux
          state: directory
@@ -384,51 +384,31 @@
          group: minecraft
          mode: 0755
 
-    - name: Copying SELinux modules
+    - name: Copying SELinux module
       copy:
-         src: files/selinux/my-{{ item }}.te
+         src: files/my-minecraft.te
          dest: /home/minecraft/selinux/
          owner: minecraft
          group: minecraft
          mode: 0644
-      with_items:
-       - diskutilizationsh
-       - stopgeysersh
-       - sudo
-       - tmux
       register: selinux
 
-    - name: Compiling SELinux modules
-      command: checkmodule -M -m -o my-{{ item }}.mod my-{{ item }}.te
+    - name: Compiling SELinux module
+      command: checkmodule -M -m -o my-minecraft.mod my-minecraft.te
       args:
          chdir: /home/minecraft/selinux
-      with_items:
-       - diskutilizationsh
-       - stopgeysersh
-       - sudo
-       - tmux
       when: selinux.changed
 
-    - name: Packaging SELinux modules
-      command: semodule_package -o my-{{ item }}.pp -m my-{{ item }}.mod
+    - name: Packaging SELinux module
+      command: semodule_package -o my-minecraft.pp -m my-minecraft.mod
       args:
          chdir: /home/minecraft/selinux
-      with_items:
-       - diskutilizationsh
-       - stopgeysersh
-       - sudo
-       - tmux
       when: selinux.changed
 
-    - name: Loading SELinux modules
-      command: semodule -i my-{{ item }}.pp
+    - name: Loading SELinux module
+      command: semodule -i my-minecraft.pp
       args:
          chdir: /home/minecraft/selinux
-      with_items:
-       - diskutilizationsh
-       - stopgeysersh
-       - sudo
-       - tmux
       when: selinux.changed
 
     - name: Allowing domain to mmap files
