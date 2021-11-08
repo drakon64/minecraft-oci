@@ -3,7 +3,11 @@ resource "oci_load_balancer_load_balancer" "bluemap" {
 	display_name = "bluemap"
 	shape = "10Mbps-Micro"
 	subnet_ids = [
-		"oci_core_subnet.vcn-subnet.id"
+		"${oci_core_subnet.vcn-subnet.id}"
+	]
+
+	network_security_group_ids = [
+		"${oci_core_network_security_group.bluemap.id}"
 	]
 }
 
