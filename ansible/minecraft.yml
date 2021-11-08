@@ -340,6 +340,58 @@
        - restore_backup == "true"
        - backup_version == ""
 
+    - name: Creating the ViaVersion plugin directory
+      file:
+         path: /home/minecraft/geyser/plugins/ViaVersion
+         state: directory
+         owner: minecraft
+         group: minecraft
+         mode: 0755
+      when:
+       - new_server == "true" or update_server == "true"
+       - viaversion == "true"
+       - restore_backup == "false"
+
+    - name: Getting the latest ViaVersion release
+      shell: curl --silent "https://api.github.com/repos/ViaVersion/ViaVersion/releases/latest" | jq -r '.assets[].browser_download_url'
+      register: viaversion_latest
+      when:
+       - new_server == "true" or update_server == "true"
+       - viaversion == "true"
+       - restore_backup == "false"
+
+    - name: Downloading the ViaVersion plugin
+      get_url:
+         url: "{{ viaversion_latest.stdout }}"
+         dest: /home/minecraft/geyser/plugins/ViaVersion.jar
+         owner: minecraft
+         group: minecraft
+         mode: 0644
+      when:
+       - new_server == "true" or update_server == "true"
+       - viaversion == "true"
+       - restore_backup == "false"
+
+    - name: Configuring the ViaVersion plugin
+      copy:
+         src: files/java/ViaVersion/config.yml
+         dest: /home/minecraft/geyser/plugins/ViaVersion/
+         owner: minecraft
+         group: minecraft
+         mode: 0644
+      when:
+       - viaversion == "true"
+       - restore_backup == "false"
+
+    - name: Removing the ViaVersion plugin
+      file:
+         path: /home/minecraft/geyser/plugins/{{ item }}
+         state: absent
+      with_items:
+       - ViaVersion.jar
+       - ViaVersion/
+      when: viaversion == "false"
+
     - name: Downloading the server backup
       command: oci os object get --auth instance_principal --bucket-name {{ bucket_name }} --file geyser.tar --name geyser.tar --version-id {{ backup_version }}
       args:
