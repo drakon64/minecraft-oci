@@ -1,0 +1,5 @@
+chunky world world
+chunky spawn
+chunky radius 96c
+chunky shape circle
+chunky start
