@@ -197,6 +197,7 @@
          group: minecraft
          mode: 0755
       with_items:
+       - BlueMap
        - Chunky
        - CustomCommandPrefix
        - floodgate
@@ -289,6 +290,47 @@
          mode: 0644
       when:
        - new_server == "true"
+
+    - name: Downloading the BlueMap plugin
+      get_url:
+         url: https://github.com/BlueMap-Minecraft/BlueMap/releases/download/v1.6.3/BlueMap-1.6.3-spigot.jar
+         dest: /home/minecraft/geyser/plugins/BlueMap.jar
+         owner: minecraft
+         group: minecraft
+         mode: 0644
+      register: bluemap
+      when:
+       - new_server == "true" or update_server == "true"
+       - restore_backup == "false"
+
+    - name: Configuring the BlueMap plugin
+      copy:
+         src: files/java/BlueMap/{{ item }}.conf
+         dest: /home/minecraft/geyser/plugins/BlueMap/{{ item }}.conf
+         owner: minecraft
+         group: minecraft
+         mode: 0644
+      with_items:
+       - core
+       - plugin
+       - render
+       - webserver
+      when:
+       - restore_backup == "false"
+
+    - name: Downloading the BlueMap No Ore Texture Pack
+      copy:
+         src: files/BlueMapNoOreTexturePack.zip
+         dest: /home/minecraft/geyser/plugins/BlueMap/resourcepacks/
+         owner: minecraft
+         group: minecraft
+         mode: 0644
+
+    - name: Clearing BlueMap data
+      file:
+         path: /home/minecraft/geyser/bluemap/
+         state: absent
+      when: bluemap.changed
 
     - name: Downloading the latest server backup
       command: oci os object get --auth instance_principal --bucket-name {{ bucket_name }} --file geyser.tar --name geyser.tar
