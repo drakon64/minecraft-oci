@@ -27,3 +27,11 @@ resource "oci_load_balancer_backend" "bluemap" {
 	load_balancer_id = oci_load_balancer_load_balancer.bluemap.id
 	port = 8100
 }
+
+resource "oci_load_balancer_listener" "bluemap" {
+	default_backend_set_name = oci_load_balancer_backend_set.bluemap.name
+	load_balancer_id = oci_load_balancer_load_balancer.bluemap.id
+	name = "bluemap"
+	port = 80
+	protocol = "HTTP"
+}
