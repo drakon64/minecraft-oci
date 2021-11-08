@@ -352,9 +352,17 @@
        - viaversion == "true"
        - restore_backup == "false"
 
+    - name: Getting the latest ViaVersion release
+      shell: curl --silent "https://api.github.com/repos/ViaVersion/ViaVersion/releases/latest" | jq -r '.assets[].browser_download_url'
+      register: viaversion_latest
+      when:
+       - new_server == "true" or update_server == "true"
+       - viaversion == "true"
+       - restore_backup == "false"
+
     - name: Downloading the ViaVersion plugin
       get_url:
-         url: https://github.com/ViaVersion/ViaVersion/releases/download/4.0.1/ViaVersion-4.0.1.jar
+         url: "{{ viaversion_latest.stdout }}"
          dest: /home/minecraft/geyser/plugins/ViaVersion.jar
          owner: minecraft
          group: minecraft
