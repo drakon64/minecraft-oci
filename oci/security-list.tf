@@ -55,4 +55,37 @@ resource "oci_core_default_security_list" "default-security-list" {
 			max = 8100
 		}
 	}
+
+	ingress_security_rules {
+		stateless = false
+		source = "10.0.0.0/24"
+		source_type = "CIDR_BLOCK"
+		protocol = "6"
+		tcp_options {
+			min = 8100
+			max = 8100
+		}
+	}
+
+	egress_security_rules {
+		stateless = false
+		destination = "10.0.0.0/24"
+		destination_type = "CIDR_BLOCK"
+		protocol = "6"
+		tcp_options {
+			min = 8100
+			max = 8100
+		}
+	}
+
+	ingress_security_rules {
+		stateless = false
+		source = "0.0.0.0/0"
+		source_type = "CIDR_BLOCK"
+		protocol = "6"
+		tcp_options {
+			min = 80
+			max = 80
+		}
+	}
 }
