@@ -64,3 +64,55 @@ resource "oci_core_network_security_group_security_rule" "https" {
 		}
 	}
 }
+
+resource "oci_core_network_security_group_security_rule" "bluemap_management" {
+	network_security_group_id = oci_core_network_security_group.minecraft.id
+	direction = "INGRESS"
+	protocol = 6
+	source = var.management_ip
+	source_type = "CIDR_BLOCK"
+
+	tcp_options {
+		destination_port_range {
+			min = 8100
+			max = 8100
+		}
+	}
+}
+
+resource "oci_core_network_security_group_security_rule" "bluemap" {
+	network_security_group_id = oci_core_network_security_group.minecraft.id
+	direction = "INGRESS"
+	protocol = 6
+	source = oci_core_network_security_group.bluemap.id
+	source_type = "NETWORK_SECURITY_GROUP"
+
+	tcp_options {
+		destination_port_range {
+			min = 8100
+			max = 8100
+		}
+	}
+}
+
+resource "oci_core_network_security_group" "bluemap" {
+	compartment_id = oci_identity_compartment.minecraft_compartment.id
+	vcn_id = oci_core_vcn.vcn.id
+
+	display_name = "bluemap"
+}
+
+resource "oci_core_network_security_group_security_rule" "bluemap_lb" {
+	network_security_group_id = oci_core_network_security_group.bluemap.id
+	direction = "INGRESS"
+	protocol = 6
+	source = "0.0.0.0/0"
+	source_type = "CIDR_BLOCK"
+
+	tcp_options {
+		destination_port_range {
+			min = 80
+			max = 80
+		}
+	}
+}
