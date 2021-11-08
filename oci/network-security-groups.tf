@@ -64,3 +64,18 @@ resource "oci_core_network_security_group_security_rule" "https" {
 		}
 	}
 }
+
+resource "oci_core_network_security_group_security_rule" "bluemap_management" {
+	network_security_group_id = oci_core_network_security_group.minecraft.id
+	direction = "INGRESS"
+	protocol = 6
+	source = var.management_ip
+	source_type = "CIDR_BLOCK"
+
+	tcp_options {
+		destination_port_range {
+			min = 8100
+			max = 8100
+		}
+	}
+}
