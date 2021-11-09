@@ -1,7 +1,6 @@
 .DS_Store
 ansible/inventory.ini
+ansible/bluemap.yml
 
-ansible/files/bedrock/*
+ansible/files/bluemap_cli/*
 ansible/files/java/*
-
-ansible/files/bedrockconnect/custom_servers.json
