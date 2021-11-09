@@ -1,0 +1,22 @@
+module my-minecraft 1.0;
+
+require {
+	type devpts_t;
+	type init_t;
+	type ptmx_t;
+	type screen_exec_t;
+	type sudo_exec_t;
+	type tmp_t;
+	type user_home_t;
+	class file { execute execute_no_trans ioctl map open read };
+	class chr_file { ioctl open read write };
+	class sock_file { create setattr unlink write };
+}
+
+#============= init_t ==============
+allow init_t devpts_t:chr_file open;
+allow init_t ptmx_t:chr_file { ioctl open read write };
+allow init_t screen_exec_t:file { execute execute_no_trans map open read };
+allow init_t sudo_exec_t:file { execute execute_no_trans open read };
+allow init_t tmp_t:sock_file { create setattr unlink write };
+allow init_t user_home_t:file { execute execute_no_trans ioctl open read };
