@@ -424,7 +424,7 @@
          group: "{{ item.owner }}"
          mode: "{{ item.mode }}"
       with_items:
-       - { src: "templates/dnf-reboot.sh.j2", dest: "/home/minecraft/dnf-reboot.sh", owner: "minecraft", mode: "0755" }
+       - { src: "files/dnf-reboot.sh", dest: "/home/minecraft/dnf-reboot.sh", owner: "minecraft", mode: "0755" }
        - { src: "templates/stop.sh.j2", dest: "/home/minecraft/stop_geyser.sh", owner: "minecraft", mode: "0755" }
        - { src: "templates/backup.sh.j2", dest: "/home/minecraft/backup_geyser.sh", owner: "minecraft", mode: "0755" }
        - { src: "files/disk-utilization.sh", dest: "/home/minecraft/", owner: "minecraft", mode: "0755" }
