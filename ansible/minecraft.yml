@@ -169,8 +169,9 @@
          mode: 0644
       with_items:
        - server.properties
-       - spigot.yml
+       - bukkit.yml
        - paper.yml
+       - spigot.yml
       when:
        - restore_backup == "false"
 
