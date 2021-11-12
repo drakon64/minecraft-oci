@@ -270,9 +270,16 @@
        - new_server == "true" or update_server == "true"
        - restore_backup == "false"
 
+    - name: Getting the latest Chunky release
+      shell: curl --silent https://ci.codemc.io/job/pop4959/job/Chunky/lastSuccessfulBuild/api/json | jq -r '.artifacts[0].fileName'
+      register: chunky_latest
+      when:
+       - new_server == "true" or update_server == "true"
+       - restore_backup == "false"
+
     - name: Downloading the Chunky plugin
       get_url:
-         url: https://ci.codemc.io/view/Author/job/pop4959/job/Chunky/lastSuccessfulBuild/artifact/bukkit/build/libs/Chunky-1.2.140.jar
+         url: https://ci.codemc.io/view/Author/job/pop4959/job/Chunky/lastSuccessfulBuild/artifact/bukkit/build/libs/{{ chunky_latest.stdout }}
          dest: /home/minecraft/geyser/plugins/Chunky.jar
          owner: minecraft
          group: minecraft
@@ -291,9 +298,16 @@
       when:
        - new_server == "true"
 
+    - name: Getting the latest BlueMap release
+      shell: curl --silent "https://api.github.com/repos/BlueMap-Minecraft/BlueMap/releases/latest" | jq -r '.assets[].browser_download_url' | grep spigot
+      register: bluemap_latest
+      when:
+       - new_server == "true" or update_server == "true"
+       - restore_backup == "false"
+
     - name: Downloading the BlueMap plugin
       get_url:
-         url: https://github.com/BlueMap-Minecraft/BlueMap/releases/download/v1.6.3/BlueMap-1.6.3-spigot.jar
+         url: "{{ bluemap_latest.stdout }}"
          dest: /home/minecraft/geyser/plugins/BlueMap.jar
          owner: minecraft
          group: minecraft
