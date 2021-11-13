@@ -1,7 +1,7 @@
 resource "oci_load_balancer_load_balancer" "bluemap" {
 	compartment_id = oci_identity_compartment.minecraft_compartment.id
 	display_name = "bluemap"
-	shape = "10Mbps-Micro"
+	shape = var.oci_load_balancer_shape
 	subnet_ids = [
 		"${oci_core_subnet.vcn-subnet.id}"
 	]
