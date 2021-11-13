@@ -1,6 +1,4 @@
 .DS_Store
 ansible/inventory.ini
-ansible/bluemap.yml
 
-ansible/files/bluemap_cli/*
 ansible/files/java/*
