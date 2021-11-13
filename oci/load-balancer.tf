@@ -14,6 +14,7 @@ resource "oci_load_balancer_load_balancer" "bluemap" {
 resource "oci_load_balancer_backend_set" "bluemap" {
 	health_checker {
 		protocol = "HTTP"
+		url_path = "/"
 	}
 
 	load_balancer_id = oci_load_balancer_load_balancer.bluemap.id
