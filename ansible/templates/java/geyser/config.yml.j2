@@ -1,1 +1,5 @@
+{% if overrides.geyser is defined %}
+{{ geyser | combine(overrides.geyser, recursive=True) }}
+{% else %}
 {{ geyser }}
+{% endif %}

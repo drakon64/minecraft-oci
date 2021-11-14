@@ -1,1 +1,5 @@
+{% if overrides.chunky is defined %}
+{{ chunky | combine(overrides.chunky, recursive=True) }}
+{% else %}
 {{ chunky }}
+{% endif %}

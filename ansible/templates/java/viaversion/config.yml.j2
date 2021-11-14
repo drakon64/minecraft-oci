@@ -1,1 +1,5 @@
+{% if overrides.viaversion is defined %}
+{{ viaversion | combine(overrides.viaversion, recursive=True) }}
+{% else %}
 {{ viaversion }}
+{% endif %}

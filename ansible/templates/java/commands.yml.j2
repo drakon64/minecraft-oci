@@ -1,1 +1,5 @@
+{% if overrides.commands is defined %}
+{{ commands | combine(overrides.commands, recursive=True) }}
+{% else %}
 {{ commands }}
+{% endif %}
