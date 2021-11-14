@@ -1,0 +1,14 @@
+minecraft:
+  hosts:
+    {{ server_ip_address }}:
+      backup_version:
+      bucket_name: {{ bucket_name }}
+      eula: false
+      new_server: false
+      restore_backup: false
+      restore_permissions: false
+      skip_backup: false
+      timezone: {{ timezone }}
+      update_server: false
+      version: 1.17.1
+      viaversion: false

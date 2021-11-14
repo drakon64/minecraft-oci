@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=https://json.schemastore.org/ansible-playbook.json
 
- - hosts: java
+ - hosts: minecraft
 
    vars:
       memtotal_b: "{{ ansible_memtotal_mb * 1048576 }}"
@@ -161,19 +161,19 @@
        - restore_backup == "false"
 
     - name: Configuring the Minecraft server
-      copy:
-         src: files/java/{{ item }}
-         dest: /home/minecraft/geyser/
+      template:
+         src: templates/java/{{ item.src }}
+         dest: /home/minecraft/geyser/{{ item.dest }}
          owner: minecraft
          group: minecraft
          mode: 0644
       with_items:
-       - server.properties
-       - bukkit.yml
-       - paper.yml
-       - spigot.yml
+       - { src: "server.properties.j2", dest: "server.properties" }
+       - { src: "bukkit.yml.j2", dest: "bukkit.yml" }
+       - { src: "spigot.yml.j2", dest: "spigot" }
+       - { src: "paper.yml.j2", dest: "paper.yml" }
       when:
-       - restore_backup == "false"
+       - restore_backup == false
 
     - name: Copying the server permissions files
       copy:

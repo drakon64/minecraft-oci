@@ -1,4 +1,4 @@
 .DS_Store
-ansible/inventory.ini
+ansible/inventory.yml
 
 ansible/files/java/*
