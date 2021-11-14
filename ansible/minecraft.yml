@@ -71,8 +71,8 @@
       args:
          chdir: /home/minecraft
       when:
-       - update_server == "true" or new_server == "true"
-       - skip_backup == "false"
+       - update_server == true or new_server == true
+       - skip_backup == false
 
     - name: Applying updates with Uptrack
       command: uptrack-upgrade -y
@@ -131,7 +131,7 @@
       file:
          path: /home/minecraft/geyser
          state: absent
-      when: new_server == "true"
+      when: new_server == true
 
     - name: Creating the server directory
       file:
@@ -140,14 +140,14 @@
          owner: minecraft
          group: minecraft
          mode: 0755
-      when: new_server == "true"
+      when: new_server == true
 
     - name: Getting the latest Paper build
       shell: curl --silent https://papermc.io/api/v2/projects/paper/versions/{{ version }} | jq ".builds | max"
       register: paper_latest
       when:
-       - new_server == "true" or update_server == "true"
-       - restore_backup == "false"
+       - new_server == true or update_server == true
+       - restore_backup == false
 
     - name: Downloading Minecraft Paper server
       get_url:
@@ -157,8 +157,8 @@
          group: minecraft
          mode: 0644
       when:
-       - new_server == "true" or update_server == "true"
-       - restore_backup == "false"
+       - new_server == true or update_server == true
+       - restore_backup == false
 
     - name: Configuring the Minecraft server
       template:
@@ -170,6 +170,7 @@
       with_items:
        - { src: "server.properties.j2", dest: "server.properties" }
        - { src: "bukkit.yml.j2", dest: "bukkit.yml" }
+       - { src: "commands.yml.j2", dest: "commands.yml" }
        - { src: "spigot.yml.j2", dest: "spigot" }
        - { src: "paper.yml.j2", dest: "paper.yml" }
       when:
@@ -186,9 +187,9 @@
        - ops
        - whitelist
       when:
-       - restore_permissions == "true"
-       - update_server == "false"
-       - restore_backup == "false"
+       - restore_permissions == true
+       - update_server == false
+       - restore_backup == false
 
     - name: Creating the Geyser plugin directories
       file:
@@ -204,8 +205,8 @@
        - floodgate
        - Geyser-Spigot/packs
       when:
-       - new_server == "true"
-       - restore_backup == "false"
+       - new_server == true
+       - restore_backup == false
 
     - name: Downloading the Geyser plugin
       get_url:
@@ -215,18 +216,18 @@
          group: minecraft
          mode: 0644
       when:
-       - new_server == "true" or update_server == "true"
-       - restore_backup == "false"
+       - new_server == true or update_server == true
+       - restore_backup == false
 
     - name: Configuring the Geyser plugin
-      copy:
-         src: files/java/geyser/config.yml
+      template:
+         src: templates/java/geyser/config.yml.j2
          dest: /home/minecraft/geyser/plugins/Geyser-Spigot/config.yml
          owner: minecraft
          group: minecraft
          mode: 0644
       when:
-       - restore_backup == "false"
+       - restore_backup == false
 
     - name: Downloading the Floodgate plugin
       get_url:
@@ -236,8 +237,8 @@
          group: minecraft
          mode: 0644
       when:
-       - new_server == "true" or update_server == "true"
-       - restore_backup == "false"
+       - new_server == true or update_server == true
+       - restore_backup == false
 
     - name: Downloading the CustomCommandPrefix plugin
       copy:
@@ -247,8 +248,8 @@
          group: minecraft
          mode: 0644
       when:
-       - new_server == "true" or update_server == "true"
-       - restore_backup == "false"
+       - new_server == true or update_server == true
+       - restore_backup == false
 
     - name: Configuring the CustomCommandPrefix plugin
       copy:
@@ -258,7 +259,7 @@
          group: minecraft
          mode: 0644
       when:
-       - restore_backup == "false"
+       - restore_backup == false
 
     - name: Downloading the GeyserOptionalPack resource pack
       get_url:
@@ -268,15 +269,15 @@
          group: minecraft
          mode: 0644
       when:
-       - new_server == "true" or update_server == "true"
-       - restore_backup == "false"
+       - new_server == true or update_server == true
+       - restore_backup == false
 
     - name: Getting the latest Chunky release
       shell: curl --silent https://ci.codemc.io/job/pop4959/job/Chunky/lastSuccessfulBuild/api/json | jq -r '.artifacts[0].fileName'
       register: chunky_latest
       when:
-       - new_server == "true" or update_server == "true"
-       - restore_backup == "false"
+       - new_server == true or update_server == true
+       - restore_backup == false
 
     - name: Downloading the Chunky plugin
       get_url:
@@ -286,25 +287,25 @@
          group: minecraft
          mode: 0644
       when:
-       - new_server == "true" or update_server == "true"
-       - restore_backup == "false"
+       - new_server == true or update_server == true
+       - restore_backup == false
 
     - name: Configuring the Chunky plugin
-      copy:
-         src: files/java/chunky/config.yml
+      template:
+         src: templates/java/chunky/config.yml.j2
          dest: /home/minecraft/geyser/plugins/Chunky/config.yml
          owner: minecraft
          group: minecraft
          mode: 0644
       when:
-       - new_server == "true"
+       - new_server == true
 
     - name: Getting the latest BlueMap release
       shell: curl --silent "https://api.github.com/repos/BlueMap-Minecraft/BlueMap/releases/latest" | jq -r '.assets[].browser_download_url' | grep spigot
       register: bluemap_latest
       when:
-       - new_server == "true" or update_server == "true"
-       - restore_backup == "false"
+       - new_server == true or update_server == true
+       - restore_backup == false
 
     - name: Downloading the BlueMap plugin
       get_url:
@@ -315,12 +316,12 @@
          mode: 0644
       register: bluemap
       when:
-       - new_server == "true" or update_server == "true"
-       - restore_backup == "false"
+       - new_server == true or update_server == true
+       - restore_backup == false
 
     - name: Configuring the BlueMap plugin
-      copy:
-         src: files/java/BlueMap/{{ item }}.conf
+      template:
+         src: templates/java/BlueMap/{{ item }}.conf.j2
          dest: /home/minecraft/geyser/plugins/BlueMap/{{ item }}.conf
          owner: minecraft
          group: minecraft
@@ -331,7 +332,7 @@
        - render
        - webserver
       when:
-       - restore_backup == "false"
+       - restore_backup == false
 
     - name: Downloading the BlueMap No Ore Texture Pack
       copy:
@@ -355,17 +356,17 @@
          group: minecraft
          mode: 0755
       when:
-       - new_server == "true" or update_server == "true"
-       - viaversion == "true"
-       - restore_backup == "false"
+       - new_server == true or update_server == true
+       - use_viaversion == true
+       - restore_backup == false
 
     - name: Getting the latest ViaVersion release
       shell: curl --silent "https://api.github.com/repos/ViaVersion/ViaVersion/releases/latest" | jq -r '.assets[].browser_download_url'
       register: viaversion_latest
       when:
-       - new_server == "true" or update_server == "true"
-       - viaversion == "true"
-       - restore_backup == "false"
+       - new_server == true or update_server == true
+       - use_viaversion == true
+       - restore_backup == false
 
     - name: Downloading the ViaVersion plugin
       get_url:
@@ -375,20 +376,20 @@
          group: minecraft
          mode: 0644
       when:
-       - new_server == "true" or update_server == "true"
-       - viaversion == "true"
-       - restore_backup == "false"
+       - new_server == true or update_server == true
+       - use_viaversion == true
+       - restore_backup == false
 
     - name: Configuring the ViaVersion plugin
-      copy:
-         src: files/java/ViaVersion/config.yml
+      template:
+         src: templates/java/ViaVersion/config.yml.j2
          dest: /home/minecraft/geyser/plugins/ViaVersion/
          owner: minecraft
          group: minecraft
          mode: 0644
       when:
-       - viaversion == "true"
-       - restore_backup == "false"
+       - use_viaversion == true
+       - restore_backup == false
 
     - name: Removing the ViaVersion plugin
       file:
@@ -397,14 +398,14 @@
       with_items:
        - ViaVersion.jar
        - ViaVersion/
-      when: viaversion == "false"
+      when: use_viaversion == false
 
     - name: Downloading the latest server backup
       command: oci os object get --auth instance_principal --bucket-name {{ bucket_name }} --file geyser.tar --name geyser.tar
       args:
          chdir: /home/minecraft
       when:
-       - restore_backup == "true"
+       - restore_backup == true
        - backup_version == ""
 
     - name: Downloading the server backup
@@ -412,7 +413,7 @@
       args:
          chdir: /home/minecraft
       when:
-       - restore_backup == "true"
+       - restore_backup == true
        - backup_version | length > 0
 
     - name: Restoring the server backup
@@ -423,13 +424,13 @@
          group: minecraft
          mode: u=rwX,g=rX,o=rX
          remote_src: yes
-      when: restore_backup == "true"
+      when: restore_backup == true
 
     - name: Removing the downloaded backup
       file:
          path: /home/minecraft/geyser.tar
          state: absent
-      when: restore_backup == "true"
+      when: restore_backup == true
 
     - name: Copying scripts and systemd units
       template:
@@ -461,9 +462,9 @@
          group: minecraft
          mode: 0644
       when:
-       - new_server == "true"
-       - restore_backup == "false"
-       - eula == "true"
+       - new_server == true
+       - restore_backup == false
+       - eula == true
 
     - name: Copying firewall rule
       template:

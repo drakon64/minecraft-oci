@@ -1,14 +1,26 @@
 minecraft:
   hosts:
-    {{ server_ip_address }}:
+    minecraft-test:
       backup_version:
-      bucket_name: {{ bucket_name }}
-      eula: false
+      bucket_name: minecraft-test-backup
+      eula: true
+      new_server: true
+      restore_backup: false
+      restore_permissions: true
+      skip_backup: true
+      timezone: Europe/London
+      update_server: false
+      use_viaversion: false
+      version: 1.17.1
+    minecraft:
+      backup_version:
+      bucket_name: minecraft-backup
+      eula: true
       new_server: false
       restore_backup: false
-      restore_permissions: false
+      restore_permissions: true
       skip_backup: false
-      timezone: {{ timezone }}
-      update_server: false
-      version: 1.17.1
-      viaversion: false
+      timezone: Europe/London
+      update_server: true
+      use_viaversion: true
+      version: 1.16.5
