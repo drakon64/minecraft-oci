@@ -1,0 +1,5 @@
+{% if overrides.bukkit is defined %}
+{{ bukkit | combine(overrides.bukkit, recursive=True) }}
+{% else %}
+{{ bukkit }}
+{% endif %}

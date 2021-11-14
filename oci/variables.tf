@@ -30,11 +30,6 @@ variable "oci_compute_ocpus" {
 	default = 3
 }
 
-variable "oci_load_balancer_shape" {
-	type = string
-	default = "10Mbps"
-}
-
 variable "oci_compute_display_name" {
 	type = string
 	default = "minecraft"

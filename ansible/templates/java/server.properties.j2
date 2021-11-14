@@ -1,0 +1,97 @@
+allow-flight={% if overrides.server.allow_flight is defined %}{{ overrides.server.allow_flight }}{% else %}{{ server.allow_flight }}{% endif %}
+
+allow-nether={% if overrides.server.allow_nether is defined %}{{ overrides.server.allow_nether }}{% else %}{{ server.allow_nether }}{% endif %}
+
+broadcast-console-to-ops={% if overrides.server.broadcast_console_to_ops is defined %}{{ overrides.server.broadcast_console_to_ops }}{% else %}{{ server.broadcast_console_to_ops }}{% endif %}
+
+broadcast-rcon-to-ops={% if overrides.server.broadcast_rcon_to_ops is defined %}{{ overrides.server.broadcast_rcon_to_ops }}{% else %}{{ server.broadcast_rcon_to_ops }}{% endif %}
+
+debug={% if overrides.server.debug is defined %}{{ overrides.server.debug }}{% else %}{{ server.debug }}{% endif %}
+
+difficulty={% if overrides.server.difficulty is defined %}{{ overrides.server.difficulty }}{% else %}{{ server.difficulty }}{% endif %}
+
+enable-command-block={% if overrides.server.enable_command_block is defined %}{{ overrides.server.enable_command_block }}{% else %}{{ server.enable_command_block }}{% endif %}
+
+enable-jmx-monitoring={% if overrides.server.enable_jmx_monitoring is defined %}{{ overrides.server.enable_jmx_monitoring }}{% else %}{{ server.enable_jmx_monitoring }}{% endif %}
+
+enable-query={% if overrides.server.enable_query is defined %}{{ overrides.server.enable_query }}{% else %}{{ server.enable_query }}{% endif %}
+
+enable-rcon={% if overrides.server.enable_rcon is defined %}{{ overrides.server.enable_rcon }}{% else %}{{ server.enable_rcon }}{% endif %}
+
+enable-status={% if overrides.server.enable_status is defined %}{{ overrides.server.enable_status }}{% else %}{{ server.enable_status }}{% endif %}
+
+enforce-whitelist={% if overrides.server.enforce_whitelist is defined %}{{ overrides.server.enforce_whitelist }}{% else %}{{ server.enforce_whitelist }}{% endif %}
+
+entity-broadcast-range-percentage={% if overrides.server.entity_broadcast_range_percentage is defined %}{{ overrides.server.entity_broadcast_range_percentage }}{% else %}{{ server.entity_broadcast_range_percentage }}{% endif %}
+
+force-gamemode={% if overrides.server.force_gamemode is defined %}{{ overrides.server.force_gamemode }}{% else %}{{ server.force_gamemode }}{% endif %}
+
+function-permission-level={% if overrides.server.function_permission_level is defined %}{{ overrides.server.function_permission_level }}{% else %}{{ server.function_permission_level }}{% endif %}
+
+gamemode={% if overrides.server.gamemode is defined %}{{ overrides.server.gamemode }}{% else %}{{ server.gamemode }}{% endif %}
+
+hardcore={% if overrides.server.hardcore is defined %}{{ overrides.server.hardcore }}{% else %}{{ server.hardcore }}{% endif %}
+
+level-name={% if overrides.server.level_name is defined %}{{ overrides.server.level_name }}{% else %}{{ server.level_name }}{% endif %}
+
+level-seed={% if overrides.server.level_seed is defined %}{{ overrides.server.level_seed }}{% else %}{{ server.level_seed }}{% endif %}
+
+max-players={% if overrides.server.max_players is defined %}{{ overrides.server.max_players }}{% else %}{{ server.max_players }}{% endif %}
+
+max-tick-time={% if overrides.server.max_tick_time is defined %}{{ overrides.server.max_tick_time }}{% else %}{{ server.max_tick_time }}{% endif %}
+
+max-world-size={% if overrides.server.max_world_size is defined %}{{ overrides.server.max_world_size }}{% else %}{{ server.max_world_size }}{% endif %}
+
+motd={% if overrides.server.motd is defined %}{{ overrides.server.motd }}{% else %}{{ server.motd }}{% endif %}
+
+network-compression-threshold={% if overrides.server.network_compression_threshold is defined %}{{ overrides.server.network_compression_threshold }}{% else %}{{ server.network_compression_threshold }}{% endif %}
+
+online-mode={% if overrides.server.online_mode is defined %}{{ overrides.server.online_mode }}{% else %}{{ server.online_mode }}{% endif %}
+
+op-permission-level={% if overrides.server.op_permission_level is defined %}{{ overrides.server.op_permission_level }}{% else %}{{ server.op_permission_level }}{% endif %}
+
+player-idle-timeout={% if overrides.server.player_idle_timeout is defined %}{{ overrides.server.player_idle_timeout }}{% else %}{{ server.player_idle_timeout }}{% endif %}
+
+prevent-proxy-connections={% if overrides.server.prevent_proxy_connections is defined %}{{ overrides.server.prevent_proxy_connections }}{% else %}{{ server.prevent_proxy_connections }}{% endif %}
+
+pvp={% if overrides.server.pvp is defined %}{{ overrides.server.pvp }}{% else %}{{ server.pvp }}{% endif %}
+
+query.port={% if overrides.server.query_port is defined %}{{ overrides.server.query_port }}{% else %}{{ server.query_port }}{% endif %}
+
+rate-limit={% if overrides.server.rate_limit is defined %}{{ overrides.server.rate_limit }}{% else %}{{ server.rate_limit }}{% endif %}
+
+rcon.password={% if overrides.server.rcon_password is defined %}{{ overrides.server.rcon_password }}{% else %}{{ server.rcon_password }}{% endif %}
+
+rcon.port={% if overrides.server.rcon_port is defined %}{{ overrides.server.rcon_port }}{% else %}{{ server.rcon_port }}{% endif %}
+
+require-resource-pack={% if overrides.server.require_resource_pack is defined %}{{ overrides.server.require_resource_pack }}{% else %}{{ server.require_resource_pack }}{% endif %}
+
+resource-pack-prompt={% if overrides.server.resource_pack_prompt is defined %}{{ overrides.server.resource_pack_prompt }}{% else %}{{ server.resource_pack_prompt }}{% endif %}
+
+resource-pack-sha1={% if overrides.server.resource_pack_sha1 is defined %}{{ overrides.server.resource_pack_sha1 }}{% else %}{{ server.resource_pack_sha1 }}{% endif %}
+
+resource-pack={% if overrides.server.resource_pack is defined %}{{ overrides.server.resource_pack }}{% else %}{{ server.resource_pack }}{% endif %}
+
+server-ip={% if overrides.server.server_ip is defined %}{{ overrides.server.server_ip }}{% else %}{{ server.server_ip }}{% endif %}
+
+server-port={% if overrides.server.server_port is defined %}{{ overrides.server.server_port }}{% else %}{{ server.server_port }}{% endif %}
+
+snooper-enabled={% if overrides.server.snooper_enabled is defined %}{{ overrides.server.snooper_enabled }}{% else %}{{ server.snooper_enabled }}{% endif %}
+
+spawn-animals={% if overrides.server.spawn_animals is defined %}{{ overrides.server.spawn_animals }}{% else %}{{ server.spawn_animals }}{% endif %}
+
+spawn-monsters={% if overrides.server.spawn_monsters is defined %}{{ overrides.server.spawn_monsters }}{% else %}{{ server.spawn_monsters }}{% endif %}
+
+spawn-npcs={% if overrides.server.spawn_npcs is defined %}{{ overrides.server.spawn_npcs }}{% else %}{{ server.spawn_npcs }}{% endif %}
+
+spawn-protection={% if overrides.server.spawn_protection is defined %}{{ overrides.server.spawn_protection }}{% else %}{{ server.spawn_protection }}{% endif %}
+
+sync-chunk-writes={% if overrides.server.sync_chunk_writes is defined %}{{ overrides.server.sync_chunk_writes }}{% else %}{{ server.sync_chunk_writes }}{% endif %}
+
+text-filtering-config={% if overrides.server.text_filtering_config is defined %}{{ overrides.server.text_filtering_config }}{% else %}{{ server.text_filtering_config }}{% endif %}
+
+use-native-transport={% if overrides.server.use_native_transport is defined %}{{ overrides.server.use_native_transport }}{% else %}{{ server.use_native_transport }}{% endif %}
+
+view-distance={% if overrides.server.view_distance is defined %}{{ overrides.server.view_distance }}{% else %}{{ server.view_distance }}{% endif %}
+
+white-list={% if overrides.server.white_list is defined %}{{ overrides.server.white_list }}{% else %}{{ server.white_list }}{% endif %}
