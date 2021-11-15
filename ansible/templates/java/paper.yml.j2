@@ -1,4 +1,8 @@
-{% if overrides.paper is defined %}
+{% if global_overrides.paper is defined and overrides.paper is defined %}
+{{ paper | combine(global_overrides.paper, overrides.paper, recursive=True) }}
+{% elif global_overrides.paper is defined %}
+{{ paper | combine(global_overrides.paper, recursive=True) }}
+{% elif overrides.paper is defined %}
 {{ paper | combine(overrides.paper, recursive=True) }}
 {% else %}
 {{ paper }}

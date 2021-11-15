@@ -1,4 +1,8 @@
-{% if overrides.bukkit is defined %}
+{% if global_overrides.bukkit is defined and overrides.bukkit is defined %}
+{{ bukkit | combine(global_overrides.bukkit, overrides.bukkit, recursive=True) }}
+{% elif global_overrides.bukkit is defined %}
+{{ bukkit | combine(global_overrides.bukkit, recursive=True) }}
+{% elif overrides.bukkit is defined %}
 {{ bukkit | combine(overrides.bukkit, recursive=True) }}
 {% else %}
 {{ bukkit }}

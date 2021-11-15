@@ -1,4 +1,8 @@
-{% if overrides.floodgate is defined %}
+{% if global_overrides.floodgate is defined and overrides.floodgate is defined %}
+{{ floodgate | combine(global_overrides.floodgate, overrides.floodgate, recursive=True) }}
+{% elif global_overrides.floodgate is defined %}
+{{ floodgate | combine(global_overrides.floodgate, recursive=True) }}
+{% elif overrides.floodgate is defined %}
 {{ floodgate | combine(overrides.floodgate, recursive=True) }}
 {% else %}
 {{ floodgate }}

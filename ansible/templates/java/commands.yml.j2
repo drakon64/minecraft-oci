@@ -1,4 +1,8 @@
-{% if overrides.commands is defined %}
+{% if global_overrides.commands is defined and overrides.commands is defined %}
+{{ commands | combine(global_overrides.commands, overrides.commands, recursive=True) }}
+{% elif global_overrides.commands is defined %}
+{{ commands | combine(global_overrides.commands, recursive=True) }}
+{% elif overrides.commands is defined %}
 {{ commands | combine(overrides.commands, recursive=True) }}
 {% else %}
 {{ commands }}

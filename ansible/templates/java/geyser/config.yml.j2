@@ -1,4 +1,8 @@
-{% if overrides.geyser is defined %}
+{% if global_overrides.geyser is defined and overrides.geyser is defined %}
+{{ geyser | combine(global_overrides.geyser, overrides.geyser, recursive=True) }}
+{% elif global_overrides.geyser is defined %}
+{{ geyser | combine(global_overrides.geyser, recursive=True) }}
+{% elif overrides.geyser is defined %}
 {{ geyser | combine(overrides.geyser, recursive=True) }}
 {% else %}
 {{ geyser }}

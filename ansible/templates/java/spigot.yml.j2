@@ -1,4 +1,8 @@
-{% if overrides.spigot is defined %}
+{% if global_overrides.spigot is defined and overrides.spigot is defined %}
+{{ spigot | combine(global_overrides.spigot, overrides.spigot, recursive=True) }}
+{% elif global_overrides.spigot is defined %}
+{{ spigot | combine(global_overrides.spigot, recursive=True) }}
+{% elif overrides.spigot is defined %}
 {{ spigot | combine(overrides.spigot, recursive=True) }}
 {% else %}
 {{ spigot }}

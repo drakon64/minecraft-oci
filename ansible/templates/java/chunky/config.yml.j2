@@ -1,4 +1,8 @@
-{% if overrides.chunky is defined %}
+{% if global_overrides.chunky is defined and overrides.chunky is defined %}
+{{ chunky | combine(global_overrides.chunky, overrides.chunky, recursive=True) }}
+{% elif global_overrides.chunky is defined %}
+{{ chunky | combine(global_overrides.chunky, recursive=True) }}
+{% elif overrides.chunky is defined %}
 {{ chunky | combine(overrides.chunky, recursive=True) }}
 {% else %}
 {{ chunky }}

@@ -1,4 +1,8 @@
-{% if overrides.viaversion is defined %}
+{% if global_overrides.viaversion is defined and overrides.viaversion is defined %}
+{{ viaversion | combine(global_overrides.viaversion, overrides.viaversion, recursive=True) }}
+{% elif global_overrides.viaversion is defined %}
+{{ viaversion | combine(global_overrides.viaversion, recursive=True) }}
+{% elif overrides.viaversion is defined %}
 {{ viaversion | combine(overrides.viaversion, recursive=True) }}
 {% else %}
 {{ viaversion }}
