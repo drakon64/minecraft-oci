@@ -1,5 +1,9 @@
-{% if overrides.bukkit is defined %}
-{{ bukkit | combine(overrides.bukkit, recursive=True) }}
+{% if global_overrides.bukkit is defined and overrides.bukkit is defined %}
+{{ bukkit | combine(global_overrides.bukkit, overrides.bukkit, recursive=True) | to_nice_yaml(indent=2) }}
+{% elif global_overrides.bukkit is defined %}
+{{ bukkit | combine(global_overrides.bukkit, recursive=True) | to_nice_yaml(indent=2) }}
+{% elif overrides.bukkit is defined %}
+{{ bukkit | combine(overrides.bukkit, recursive=True) | to_nice_yaml(indent=2) }}
 {% else %}
-{{ bukkit }}
+{{ bukkit | to_nice_yaml(indent=2) }}
 {% endif %}
