@@ -1,9 +1,9 @@
 {% if global_overrides.paper is defined and overrides.paper is defined %}
-{{ paper | combine(global_overrides.paper, overrides.paper, recursive=True) }}
+{{ paper | combine(global_overrides.paper, overrides.paper, recursive=True) | to_nice_yaml(indent=2) }}
 {% elif global_overrides.paper is defined %}
-{{ paper | combine(global_overrides.paper, recursive=True) }}
+{{ paper | combine(global_overrides.paper, recursive=True) | to_nice_yaml(indent=2) }}
 {% elif overrides.paper is defined %}
-{{ paper | combine(overrides.paper, recursive=True) }}
+{{ paper | combine(overrides.paper, recursive=True) | to_nice_yaml(indent=2) }}
 {% else %}
-{{ paper }}
+{{ paper | to_nice_yaml(indent=2) }}
 {% endif %}

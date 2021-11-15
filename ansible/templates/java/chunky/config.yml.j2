@@ -1,9 +1,9 @@
 {% if global_overrides.chunky is defined and overrides.chunky is defined %}
-{{ chunky | combine(global_overrides.chunky, overrides.chunky, recursive=True) }}
+{{ chunky | combine(global_overrides.chunky, overrides.chunky, recursive=True) | to_nice_yaml(indent=2) }}
 {% elif global_overrides.chunky is defined %}
-{{ chunky | combine(global_overrides.chunky, recursive=True) }}
+{{ chunky | combine(global_overrides.chunky, recursive=True) | to_nice_yaml(indent=2) }}
 {% elif overrides.chunky is defined %}
-{{ chunky | combine(overrides.chunky, recursive=True) }}
+{{ chunky | combine(overrides.chunky, recursive=True) | to_nice_yaml(indent=2) }}
 {% else %}
-{{ chunky }}
+{{ chunky | to_nice_yaml(indent=2) }}
 {% endif %}

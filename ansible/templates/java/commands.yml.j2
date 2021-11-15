@@ -1,9 +1,9 @@
 {% if global_overrides.commands is defined and overrides.commands is defined %}
-{{ commands | combine(global_overrides.commands, overrides.commands, recursive=True) }}
+{{ commands | combine(global_overrides.commands, overrides.commands, recursive=True) | to_nice_yaml(indent=2) }}
 {% elif global_overrides.commands is defined %}
-{{ commands | combine(global_overrides.commands, recursive=True) }}
+{{ commands | combine(global_overrides.commands, recursive=True) | to_nice_yaml(indent=2) }}
 {% elif overrides.commands is defined %}
-{{ commands | combine(overrides.commands, recursive=True) }}
+{{ commands | combine(overrides.commands, recursive=True) | to_nice_yaml(indent=2) }}
 {% else %}
-{{ commands }}
+{{ commands | to_nice_yaml(indent=2) }}
 {% endif %}

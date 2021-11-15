@@ -1,9 +1,9 @@
 {% if global_overrides.spigot is defined and overrides.spigot is defined %}
-{{ spigot | combine(global_overrides.spigot, overrides.spigot, recursive=True) }}
+{{ spigot | combine(global_overrides.spigot, overrides.spigot, recursive=True) | to_nice_yaml(indent=2) }}
 {% elif global_overrides.spigot is defined %}
-{{ spigot | combine(global_overrides.spigot, recursive=True) }}
+{{ spigot | combine(global_overrides.spigot, recursive=True) | to_nice_yaml(indent=2) }}
 {% elif overrides.spigot is defined %}
-{{ spigot | combine(overrides.spigot, recursive=True) }}
+{{ spigot | combine(overrides.spigot, recursive=True) | to_nice_yaml(indent=2) }}
 {% else %}
-{{ spigot }}
+{{ spigot | to_nice_yaml(indent=2) }}
 {% endif %}
