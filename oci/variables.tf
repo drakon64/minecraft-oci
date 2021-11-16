@@ -30,6 +30,16 @@ variable "oci_compute_ocpus" {
 	default = 3
 }
 
+variable "minecraft_java_port" {
+	type = number
+	default = 25565
+}
+
+variable "minecraft_bedrock_port" {
+	type = number
+	default = 19132
+}
+
 variable "oci_compute_display_name" {
 	type = string
 	default = "minecraft"

@@ -29,8 +29,8 @@ resource "oci_core_network_security_group_security_rule" "java" {
 
 	tcp_options {
 		destination_port_range {
-			min = 25565
-			max = 25565
+			min = var.minecraft_java_port
+			max = var.minecraft_java_port
 		}
 	}
 }
@@ -44,8 +44,8 @@ resource "oci_core_network_security_group_security_rule" "bedrock" {
 
 	udp_options {
 		destination_port_range {
-			min = 19132
-			max = 19132
+			min = var.minecraft_bedrock_port
+			max = var.minecraft_bedrock_port
 		}
 	}
 }
