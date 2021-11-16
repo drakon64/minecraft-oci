@@ -1,3 +1,3 @@
-{% for (key,value) in final_server_overrides.items() %}
+{% for key, value in final_server_overrides | dictsort %}
 {{ key }}={{ value }}
 {% endfor %}
