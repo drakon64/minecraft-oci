@@ -4,6 +4,7 @@
 
    vars:
       memtotal_b: "{{ ansible_memtotal_mb * 1048576 }}"
+      final_server_overrides: "{% if global_overrides.server is defined and overrides.server is defined %}{{ server | combine(global_overrides.server, overrides.server, recursive=True) }}{% elif global_overrides.server is defined %}{{ server | combine(global_overrides.server, recursive=True) }}{% elif overrides.server is defined %}{{ server | combine(overrides.server, recursive=True) }}{% else %}{{ server }}{% endif %}"
 
    tasks:
 
