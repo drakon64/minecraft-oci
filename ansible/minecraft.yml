@@ -91,7 +91,7 @@
     - name: Installing packages
       dnf:
          name:
-          - java-latest-openjdk-headless
+          - java-17-openjdk-headless
           - jq
           - tmux
          state: present
