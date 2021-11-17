@@ -409,7 +409,7 @@
          chdir: /home/minecraft
       when:
        - restore_backup == true
-       - backup_version == ""
+       - backup_version is not defined
 
     - name: Downloading the server backup
       command: oci os object get --auth instance_principal --bucket-name {{ bucket_name }} --file geyser.tar --name geyser.tar --version-id {{ backup_version }}
@@ -417,7 +417,7 @@
          chdir: /home/minecraft
       when:
        - restore_backup == true
-       - backup_version | length > 0
+       - backup_version is defined
 
     - name: Restoring the server backup
       unarchive:
