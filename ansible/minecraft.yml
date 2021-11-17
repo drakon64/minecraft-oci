@@ -250,6 +250,7 @@
          mode: 0644
       when:
        - new_server == true
+       - restore_backup == false
 
     - name: Downloading the CustomCommandPrefix plugin
       copy:
@@ -310,6 +311,7 @@
          mode: 0644
       when:
        - new_server == true
+       - restore_backup == false
 
     - name: Creating the ViaVersion plugin directory
       file:
