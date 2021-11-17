@@ -149,6 +149,7 @@
       when:
        - new_server == true or update_server == true
        - restore_backup == false
+       - vanilla == false
 
     - name: Downloading Minecraft Paper server
       get_url:
@@ -160,6 +161,27 @@
       when:
        - new_server == true or update_server == true
        - restore_backup == false
+       - vanilla == false
+
+    - name: Getting the Minecraft server URL
+      shell: curl --silent https://launchermeta.mojang.com/mc/game/version_manifest.json | jq -r '.versions[] | select(.id == "{{ version }}") | .url' | xargs -n 1 curl --silent | jq -r .downloads.server.url
+      register: vanilla_url
+      when:
+       - new_server == true or update_server == true
+       - restore_backup == false
+       - vanilla == true
+
+    - name: Downloading Minecraft server
+      get_url:
+         url: "{{ vanilla_url.stdout }}"
+         dest: /home/minecraft/geyser/server.jar
+         owner: minecraft
+         group: minecraft
+         mode: 0644
+      when:
+       - new_server == true or update_server == true
+       - restore_backup == false
+       - vanilla == true
 
     - name: Configuring the Minecraft server
       template:
@@ -208,6 +230,7 @@
       when:
        - new_server == true
        - restore_backup == false
+       - vanilla == false
 
     - name: Downloading the Geyser plugin
       get_url:
@@ -219,6 +242,7 @@
       when:
        - new_server == true or update_server == true
        - restore_backup == false
+       - vanilla == false
 
     - name: Configuring the Geyser plugin
       template:
@@ -229,6 +253,7 @@
          mode: 0644
       when:
        - restore_backup == false
+       - vanilla == false
 
     - name: Downloading the Floodgate plugin
       get_url:
@@ -240,6 +265,7 @@
       when:
        - new_server == true or update_server == true
        - restore_backup == false
+       - vanilla == false
 
     - name: Configuring the Floodgate plugin
       template:
@@ -251,6 +277,7 @@
       when:
        - new_server == true
        - restore_backup == false
+       - vanilla == false
 
     - name: Downloading the CustomCommandPrefix plugin
       copy:
@@ -262,6 +289,7 @@
       when:
        - new_server == true or update_server == true
        - restore_backup == false
+       - vanilla == false
 
     - name: Configuring the CustomCommandPrefix plugin
       copy:
@@ -272,6 +300,7 @@
          mode: 0644
       when:
        - restore_backup == false
+       - vanilla == false
 
     - name: Downloading the GeyserOptionalPack resource pack
       get_url:
@@ -283,6 +312,7 @@
       when:
        - new_server == true or update_server == true
        - restore_backup == false
+       - vanilla == false
 
     - name: Getting the latest Chunky release
       shell: curl --silent https://ci.codemc.io/job/pop4959/job/Chunky/lastSuccessfulBuild/api/json | jq -r '.artifacts[0].fileName'
@@ -290,6 +320,7 @@
       when:
        - new_server == true or update_server == true
        - restore_backup == false
+       - vanilla == false
 
     - name: Downloading the Chunky plugin
       get_url:
@@ -301,6 +332,7 @@
       when:
        - new_server == true or update_server == true
        - restore_backup == false
+       - vanilla == false
 
     - name: Configuring the Chunky plugin
       template:
@@ -312,6 +344,7 @@
       when:
        - new_server == true
        - restore_backup == false
+       - vanilla == false
 
     - name: Creating the ViaVersion plugin directory
       file:
@@ -324,6 +357,7 @@
        - new_server == true or update_server == true
        - use_viaversion == true
        - restore_backup == false
+       - vanilla == false
 
     - name: Getting the latest ViaVersion release
       shell: curl --silent "https://api.github.com/repos/ViaVersion/ViaVersion/releases/latest" | jq -r '.assets[].browser_download_url'
@@ -332,6 +366,7 @@
        - new_server == true or update_server == true
        - use_viaversion == true
        - restore_backup == false
+       - vanilla == false
 
     - name: Downloading the ViaVersion plugin
       get_url:
@@ -344,6 +379,7 @@
        - new_server == true or update_server == true
        - use_viaversion == true
        - restore_backup == false
+       - vanilla == false
 
     - name: Configuring the ViaVersion plugin
       template:
@@ -355,6 +391,7 @@
       when:
        - use_viaversion == true
        - restore_backup == false
+       - vanilla == false
 
     - name: Removing the ViaVersion plugin
       file:

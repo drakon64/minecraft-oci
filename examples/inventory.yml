@@ -11,6 +11,7 @@ minecraft:
       timezone: Europe/London
       update_server: false
       use_viaversion: false
+      vanilla: false
       version: 1.17.1
     minecraft:
       backup_version:
@@ -23,4 +24,5 @@ minecraft:
       timezone: Europe/London
       update_server: true
       use_viaversion: true
+      vanilla: false
       version: 1.16.5
