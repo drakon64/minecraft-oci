@@ -1,6 +1,7 @@
 locals {
-	memory_warn = ((var.oci_compute_memory - 0.5) / var.oci_compute_memory) * 100
-	memory_critical = ((var.oci_compute_memory - 0.25) / var.oci_compute_memory) * 100
+	cpu_warn = 100 / var.oci_compute_ocpus
+	cpu_critical = 100 - (100 / var.oci_compute_ocpus) == 0 ? 99 : 100 - (100 / var.oci_compute_ocpus)
+	memory_critical = ((var.oci_compute_memory - 0.32) / var.oci_compute_memory) * 100
 }
 
 resource "oci_monitoring_alarm" "High-CPU-Utilization" {
@@ -14,7 +15,7 @@ resource "oci_monitoring_alarm" "High-CPU-Utilization" {
 	metric_compartment_id_in_subtree = "false"
 	namespace = "oci_computeagent"
 	pending_duration = "PT5M"
-	query = "CpuUtilization[1m]{resourceId = ${oci_core_instance.minecraft_instance.id}}.mean() > 75"
+	query = "CpuUtilization[1m]{resourceId = ${oci_core_instance.minecraft_instance.id}}.mean() > ${local.cpu_warn}"
 	resolution = "1m"
 	severity = "WARNING"
 }
@@ -51,22 +52,6 @@ resource "oci_monitoring_alarm" "High-Disk-Utilization-boot-efi" {
 	severity = "WARNING"
 }
 
-resource "oci_monitoring_alarm" "High-Memory-Utilization" {
-	compartment_id = oci_identity_compartment.minecraft_compartment.id
-	destinations = [
-		oci_ons_notification_topic.minecraft_monitoring.id
-	]
-	display_name = "High Memory Utilization on ${oci_core_instance.minecraft_instance.display_name}"
-	is_enabled = "true"
-	metric_compartment_id = oci_identity_compartment.minecraft_compartment.id
-	metric_compartment_id_in_subtree = "false"
-	namespace = "oci_computeagent"
-	pending_duration = "PT5M"
-	query = "MemoryUtilization[1m]{resourceId = ${oci_core_instance.minecraft_instance.id}}.mean() > ${local.memory_warn}"
-	resolution = "1m"
-	severity = "WARNING"
-}
-
 resource "oci_monitoring_alarm" "Critical-CPU-Utilization" {
 	compartment_id = oci_identity_compartment.minecraft_compartment.id
 	destinations = [
@@ -78,7 +63,7 @@ resource "oci_monitoring_alarm" "Critical-CPU-Utilization" {
 	metric_compartment_id_in_subtree = "false"
 	namespace = "oci_computeagent"
 	pending_duration = "PT5M"
-	query = "CpuUtilization[1m]{resourceId = ${oci_core_instance.minecraft_instance.id}}.mean() > 90"
+	query = "CpuUtilization[1m]{resourceId = ${oci_core_instance.minecraft_instance.id}}.mean() > ${local.cpu_critical}"
 	repeat_notification_duration = "PT1H"
 	resolution = "1m"
 	severity = "CRITICAL"
