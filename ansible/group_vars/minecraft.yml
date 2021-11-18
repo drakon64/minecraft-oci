@@ -47,6 +47,7 @@ floodgate:
   player-link:
     allowed: true
     enable-global-linking: true
+    enable-own-linking: false
     enabled: true
     link-code-timeout: 300
     require-link: false
