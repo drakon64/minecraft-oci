@@ -222,7 +222,6 @@
        - whitelist
       when:
        - restore_permissions == true
-       - update_server == false
        - restore_backup == false
 
     - name: Creating the Geyser plugin directories
@@ -286,7 +285,7 @@
          group: minecraft
          mode: 0644
       when:
-       - new_server == true
+       - new_server == true or update_server == true
        - restore_backup == false
        - vanilla == false
 
@@ -353,7 +352,7 @@
          group: minecraft
          mode: 0644
       when:
-       - new_server == true
+       - new_server == true or update_server == true
        - restore_backup == false
        - vanilla == false
 
