@@ -186,19 +186,29 @@
 
     - name: Configuring the Minecraft server
       template:
-         src: templates/java/{{ item.src }}
-         dest: /home/minecraft/geyser/{{ item.dest }}
+         src: templates/java/server.properties.j2
+         dest: /home/minecraft/geyser/server.properties
+         owner: minecraft
+         group: minecraft
+         mode: 0644
+      when:
+       - restore_backup == false
+
+    - name: Configuring the Paper server
+      template:
+         src: templates/java/{{ item }}.yml.j2
+         dest: /home/minecraft/geyser/{{ item }}.yml
          owner: minecraft
          group: minecraft
          mode: 0644
       with_items:
-       - { src: "server.properties.j2", dest: "server.properties" }
-       - { src: "bukkit.yml.j2", dest: "bukkit.yml" }
-       - { src: "commands.yml.j2", dest: "commands.yml" }
-       - { src: "spigot.yml.j2", dest: "spigot" }
-       - { src: "paper.yml.j2", dest: "paper.yml" }
+       - bukkit
+       - commands
+       - spigot
+       - paper
       when:
        - restore_backup == false
+       - vanilla == false
 
     - name: Copying the server permissions files
       copy:
