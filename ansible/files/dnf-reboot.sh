@@ -2,7 +2,7 @@
 
 dnf check-update
 if [ "$?" = "100" ] ; then
-	systemctl stop minecraft-geyser
+	systemctl stop minecraft
 	dnf -y update
 
 	if [ ! "$(dnf needs-restarting -r)" ] ; then
@@ -12,6 +12,6 @@ if [ "$?" = "100" ] ; then
 		if $SERVICES ; then
 			systemctl restart "$SERVICES"
 		fi
-		systemctl start minecraft-geyser
+		systemctl start minecraft
 	fi
 fi

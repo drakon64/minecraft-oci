@@ -1,7 +1,7 @@
 #!/bin/sh
 
-tmux send-keys -t minecraft-geyser stop ENTER
+tmux send-keys -t minecraft stop ENTER
 
-while tmux list-sessions | grep --quiet minecraft-geyser ; do
+while tmux list-sessions | grep --quiet minecraft ; do
 	sleep 1
 done

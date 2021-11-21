@@ -1,12 +1,12 @@
 [Unit]
-Description=Minecraft Geyser Server Backup
+Description=Minecraft Server Backup
 After=network.target
 
 [Service]
 Type=oneshot
-ExecStart=/usr/bin/systemctl stop minecraft-geyser
+ExecStart=/usr/bin/systemctl stop minecraft
 ExecStart=/usr/bin/sudo -u minecraft /home/minecraft/backup_geyser.sh
-ExecStart=/usr/bin/systemctl start minecraft-geyser
+ExecStart=/usr/bin/systemctl start minecraft
 
 WorkingDirectory=/home/minecraft
 

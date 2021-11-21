@@ -62,13 +62,13 @@
 
     - name: Stopping the existing server
       systemd:
-         name: minecraft-geyser
+         name: minecraft
          state: stopped
       when:
-       - ansible_facts.services['minecraft-geyser.service'] is defined
+       - ansible_facts.services['minecraft.service'] is defined
 
     - name: Backing up the existing server
-      shell: tar cfO - geyser | oci os object put --auth instance_principal --bucket-name {{ bucket_name }} --file - --name "geyser.tar" --force
+      shell: tar cfO - minecraft | oci os object put --auth instance_principal --bucket-name {{ bucket_name }} --file - --name "minecraft.tar" --force
       args:
          chdir: /home/minecraft
       when:
@@ -131,13 +131,13 @@
 
     - name: Removing the existing server
       file:
-         path: /home/minecraft/geyser
+         path: /home/minecraft/server
          state: absent
       when: new_server == true
 
     - name: Creating the server directory
       file:
-         path: /home/minecraft/geyser
+         path: /home/minecraft/server
          state: directory
          owner: minecraft
          group: minecraft
@@ -155,7 +155,7 @@
     - name: Downloading Minecraft Paper server
       get_url:
          url: https://papermc.io/api/v2/projects/paper/versions/{{ version }}/builds/{{ paper_latest.stdout }}/downloads/paper-{{ version }}-{{ paper_latest.stdout }}.jar
-         dest: /home/minecraft/geyser/server.jar
+         dest: /home/minecraft/server/server.jar
          owner: minecraft
          group: minecraft
          mode: 0644
@@ -175,7 +175,7 @@
     - name: Downloading Minecraft server
       get_url:
          url: "{{ vanilla_url.stdout }}"
-         dest: /home/minecraft/geyser/server.jar
+         dest: /home/minecraft/server/server.jar
          owner: minecraft
          group: minecraft
          mode: 0644
@@ -187,7 +187,7 @@
     - name: Configuring the Minecraft server
       template:
          src: templates/java/server.properties.j2
-         dest: /home/minecraft/geyser/server.properties
+         dest: /home/minecraft/server/server.properties
          owner: minecraft
          group: minecraft
          mode: 0644
@@ -197,7 +197,7 @@
     - name: Configuring the Paper server
       template:
          src: templates/java/{{ item }}.yml.j2
-         dest: /home/minecraft/geyser/{{ item }}.yml
+         dest: /home/minecraft/server/{{ item }}.yml
          owner: minecraft
          group: minecraft
          mode: 0644
@@ -213,7 +213,7 @@
     - name: Copying the server permissions files
       copy:
          src: files/java/{{ item }}.json
-         dest: /home/minecraft/geyser/
+         dest: /home/minecraft/server/
          owner: minecraft
          group: minecraft
          mode: 0644
@@ -226,7 +226,7 @@
 
     - name: Creating the Geyser plugin directories
       file:
-         path: /home/minecraft/geyser/plugins/{{ item }}
+         path: /home/minecraft/server/plugins/{{ item }}
          state: directory
          owner: minecraft
          group: minecraft
@@ -245,7 +245,7 @@
     - name: Downloading the Geyser plugin
       get_url:
          url: https://ci.opencollab.dev/job/GeyserMC/job/Geyser/job/master/lastSuccessfulBuild/artifact/bootstrap/spigot/target/Geyser-Spigot.jar
-         dest: /home/minecraft/geyser/plugins/
+         dest: /home/minecraft/server/plugins/
          owner: minecraft
          group: minecraft
          mode: 0644
@@ -257,7 +257,7 @@
     - name: Configuring the Geyser plugin
       template:
          src: templates/java/geyser/config.yml.j2
-         dest: /home/minecraft/geyser/plugins/Geyser-Spigot/config.yml
+         dest: /home/minecraft/server/plugins/Geyser-Spigot/config.yml
          owner: minecraft
          group: minecraft
          mode: 0644
@@ -268,7 +268,7 @@
     - name: Downloading the Floodgate plugin
       get_url:
          url: https://ci.opencollab.dev/job/GeyserMC/job/Floodgate/job/master/lastSuccessfulBuild/artifact/spigot/target/floodgate-spigot.jar
-         dest: /home/minecraft/geyser/plugins/
+         dest: /home/minecraft/server/plugins/
          owner: minecraft
          group: minecraft
          mode: 0644
@@ -280,7 +280,7 @@
     - name: Configuring the Floodgate plugin
       template:
          src: templates/java/floodgate/config.yml.j2
-         dest: /home/minecraft/geyser/plugins/floodgate/config.yml
+         dest: /home/minecraft/server/plugins/floodgate/config.yml
          owner: minecraft
          group: minecraft
          mode: 0644
@@ -292,7 +292,7 @@
     - name: Downloading the CustomCommandPrefix plugin
       copy:
          src: files/CustomCommandPrefix-1.0.jar
-         dest: /home/minecraft/geyser/plugins/CustomCommandPrefix.jar
+         dest: /home/minecraft/server/plugins/CustomCommandPrefix.jar
          owner: minecraft
          group: minecraft
          mode: 0644
@@ -304,7 +304,7 @@
     - name: Configuring the CustomCommandPrefix plugin
       copy:
          content: "prefix: '?'"
-         dest: /home/minecraft/geyser/plugins/CustomCommandPrefix/config.yml
+         dest: /home/minecraft/server/plugins/CustomCommandPrefix/config.yml
          owner: minecraft
          group: minecraft
          mode: 0644
@@ -315,7 +315,7 @@
     - name: Downloading the GeyserOptionalPack resource pack
       get_url:
          url: https://ci.opencollab.dev/job/GeyserMC/job/GeyserOptionalPack/job/master/lastSuccessfulBuild/artifact/GeyserOptionalPack.mcpack
-         dest: /home/minecraft/geyser/plugins/Geyser-Spigot/packs/
+         dest: /home/minecraft/server/plugins/Geyser-Spigot/packs/
          owner: minecraft
          group: minecraft
          mode: 0644
@@ -335,7 +335,7 @@
     - name: Downloading the Chunky plugin
       get_url:
          url: https://ci.codemc.io/view/Author/job/pop4959/job/Chunky/lastSuccessfulBuild/artifact/bukkit/build/libs/{{ chunky_latest.stdout }}
-         dest: /home/minecraft/geyser/plugins/Chunky.jar
+         dest: /home/minecraft/server/plugins/Chunky.jar
          owner: minecraft
          group: minecraft
          mode: 0644
@@ -347,7 +347,7 @@
     - name: Configuring the Chunky plugin
       template:
          src: templates/java/chunky/config.yml.j2
-         dest: /home/minecraft/geyser/plugins/Chunky/config.yml
+         dest: /home/minecraft/server/plugins/Chunky/config.yml
          owner: minecraft
          group: minecraft
          mode: 0644
@@ -358,7 +358,7 @@
 
     - name: Creating the ViaVersion plugin directory
       file:
-         path: /home/minecraft/geyser/plugins/ViaVersion
+         path: /home/minecraft/server/plugins/ViaVersion
          state: directory
          owner: minecraft
          group: minecraft
@@ -381,7 +381,7 @@
     - name: Downloading the ViaVersion plugin
       get_url:
          url: "{{ viaversion_latest.stdout }}"
-         dest: /home/minecraft/geyser/plugins/ViaVersion.jar
+         dest: /home/minecraft/server/plugins/ViaVersion.jar
          owner: minecraft
          group: minecraft
          mode: 0644
@@ -394,7 +394,7 @@
     - name: Configuring the ViaVersion plugin
       template:
          src: templates/java/ViaVersion/config.yml.j2
-         dest: /home/minecraft/geyser/plugins/ViaVersion/
+         dest: /home/minecraft/server/plugins/ViaVersion/
          owner: minecraft
          group: minecraft
          mode: 0644
@@ -405,7 +405,7 @@
 
     - name: Removing the ViaVersion plugin
       file:
-         path: /home/minecraft/geyser/plugins/{{ item }}
+         path: /home/minecraft/server/plugins/{{ item }}
          state: absent
       with_items:
        - ViaVersion.jar
@@ -413,7 +413,7 @@
       when: use_viaversion == false
 
     - name: Downloading the latest server backup
-      command: oci os object get --auth instance_principal --bucket-name {{ bucket_name }} --file geyser.tar --name geyser.tar
+      command: oci os object get --auth instance_principal --bucket-name {{ bucket_name }} --file minecraft.tar --name minecraft.tar
       args:
          chdir: /home/minecraft
       when:
@@ -421,7 +421,7 @@
        - backup_version is not defined
 
     - name: Downloading the server backup
-      command: oci os object get --auth instance_principal --bucket-name {{ bucket_name }} --file geyser.tar --name geyser.tar --version-id {{ backup_version }}
+      command: oci os object get --auth instance_principal --bucket-name {{ bucket_name }} --file minecraft.tar --name minecraft.tar --version-id {{ backup_version }}
       args:
          chdir: /home/minecraft
       when:
@@ -430,7 +430,7 @@
 
     - name: Restoring the server backup
       unarchive:
-         src: /home/minecraft/geyser.tar
+         src: /home/minecraft/minecraft.tar
          dest: /home/minecraft/
          owner: minecraft
          group: minecraft
@@ -440,7 +440,7 @@
 
     - name: Removing the downloaded backup
       file:
-         path: /home/minecraft/geyser.tar
+         path: /home/minecraft/server.tar
          state: absent
       when: restore_backup == true
 
@@ -453,12 +453,12 @@
          mode: "{{ item.mode }}"
       with_items:
        - { src: "files/dnf-reboot.sh", dest: "/home/minecraft/dnf-reboot.sh", owner: "minecraft", mode: "0755" }
-       - { src: "templates/stop.sh.j2", dest: "/home/minecraft/stop_geyser.sh", owner: "minecraft", mode: "0755" }
+       - { src: "templates/stop.sh.j2", dest: "/home/minecraft/stop_minecraft.sh", owner: "minecraft", mode: "0755" }
        - { src: "templates/backup.sh.j2", dest: "/home/minecraft/backup_geyser.sh", owner: "minecraft", mode: "0755" }
        - { src: "files/disk-utilization.sh", dest: "/home/minecraft/", owner: "minecraft", mode: "0755" }
-       - { src: "templates/systemd/minecraft.service.j2", dest: "/etc/systemd/system/minecraft-geyser.service", owner: "root", mode: "0644" }
-       - { src: "templates/systemd/minecraft-backup.service.j2", dest: "/etc/systemd/system/minecraft-geyser-backup.service", owner: "root", mode: "0644" }
-       - { src: "templates/systemd/minecraft-backup.timer.j2", dest: "/etc/systemd/system/minecraft-geyser-backup.timer", owner: "root", mode: "0644" }
+       - { src: "templates/systemd/minecraft.service.j2", dest: "/etc/systemd/system/minecraft.service", owner: "root", mode: "0644" }
+       - { src: "templates/systemd/minecraft-backup.service.j2", dest: "/etc/systemd/system/minecraft-backup.service", owner: "root", mode: "0644" }
+       - { src: "templates/systemd/minecraft-backup.timer.j2", dest: "/etc/systemd/system/minecraft-backup.timer", owner: "root", mode: "0644" }
        - { src: "files/systemd/dnf-upgrade.service", dest: "/etc/systemd/system/dnf-upgrade.service", owner: "root", mode: "0644" }
        - { src: "files/systemd/dnf-upgrade.timer", dest: "/etc/systemd/system/dnf-upgrade.timer", owner: "root", mode: "0644" }
        - { src: "files/systemd/uptrack-upgrade.service", dest: "/etc/systemd/system/uptrack-upgrade.service", owner: "root", mode: "0644" }
@@ -469,7 +469,7 @@
     - name: Accepting the Minecraft Server EULA
       copy:
          content: eula=true
-         dest: /home/minecraft/geyser/eula.txt
+         dest: /home/minecraft/server/eula.txt
          owner: minecraft
          group: minecraft
          mode: 0644
@@ -568,8 +568,8 @@
          enabled: yes
          daemon_reload: yes
       with_items:
-       - minecraft-geyser.service
-       - minecraft-geyser-backup.timer
+       - minecraft.service
+       - minecraft-backup.timer
        - dnf-upgrade.timer
        - uptrack-upgrade.timer
        - oci-disk-utilization.timer
