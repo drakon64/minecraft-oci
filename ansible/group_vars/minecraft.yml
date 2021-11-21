@@ -341,6 +341,7 @@ paper:
       hopper:
         cooldown-when-full: true
         disable-move-event: false
+        ignore-occluding-blocks: true
       iron-golems-can-spawn-in-air: false
       keep-spawn-loaded: true
       keep-spawn-loaded-range: 10
