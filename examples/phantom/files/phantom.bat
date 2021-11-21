@@ -1,0 +1,1 @@
+.\phantom-windows.exe -server {{ server }}
