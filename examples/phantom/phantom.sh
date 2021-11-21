@@ -13,6 +13,11 @@ curl "$MAC_ARM" -o "$TEMP"/phantom-macos-arm8
 curl "$MAC" -o "$TEMP"/phantom-macos
 curl "$WINDOWS" -o "$TEMP"/phantom-windows.exe
 
+for i in "$TEMP"/phantom-linux "$TEMP"/phantom-macos-arm8 "$TEMP"/phantom-macos
+do
+	chmod +x "$i"
+done
+
 zip -j9 phantom "$TEMP"/phantom-linux "$TEMP"/phantom-macos-arm8 "$TEMP"/phantom-macos "$TEMP"/phantom-windows.exe "$(dirname $0)"/files/*
 
 rm "$TEMP"/phantom-linux "$TEMP"/phantom-macos-arm8 "$TEMP"/phantom-macos "$TEMP"/phantom-windows.exe
