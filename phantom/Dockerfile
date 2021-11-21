@@ -14,5 +14,7 @@ RUN chmod 0755 phantom_docker.sh
 RUN ./phantom_docker.sh
 RUN rm phantom_docker.sh
 USER root
+RUN microdnf remove jq
+#RUN microdnf autoremove
 RUN microdnf clean all
 ENTRYPOINT [ "/phantom/phantom-linux", "-server" ]
