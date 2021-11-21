@@ -1,6 +1,7 @@
 If ([System.Environment]::Is64BitOperatingSystem) {
 	$Phantom = "phantom-windows.exe"
-} Else {
+}
+Else {
 	$Phantom = "phantom-windows-32bit.exe"
 }
 
