@@ -1,9 +1,9 @@
-#!/bin/sh
+#!/bin/bash
 
 UNAME=$(uname)
 ARCHITECTURE=$(uname -m)
 
-SERVER={{ server }}
+SERVER=$(< phantom.txt)
 
 if [ "$UNAME" = "Darwin" ] && [ "$ARCHITECTURE" = "arm64" ]
 then
