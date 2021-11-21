@@ -1,6 +1,6 @@
 FROM oraclelinux:8-slim AS base
 
-RUN useradd phantom
+RUN useradd -r phantom
 
 RUN mkdir /phantom
 RUN chown phantom:phantom /phantom
