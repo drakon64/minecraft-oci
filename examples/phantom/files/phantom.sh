@@ -1,13 +1,19 @@
 #!/bin/sh
 
 UNAME=$(uname)
+ARCHITECTURE=$(uname -m)
 
-if [ "$UNAME" = "Darwin" ]
+SERVER={{ server }}
+
+if [ "$UNAME" = "Darwin" ] && [ "$ARCHITECTURE" = "arm64" ]
 then
-	./phantom-macos -server {{ server }}
+	./phantom-macos-arm8 -server "$SERVER"
+elif [ "$UNAME" = "Darwin" ] && [ "$ARCHITECTURE" = "x86_64" ]
+then
+	./phantom-macos -server "$SERVER"
 elif [ "$UNAME" = "Linux" ]
 then
-	./phantom-linux -server {{ server }}
+	./phantom-linux -server "$SERVER"
 else
 	echo "Unknown uname"
 	exit 1
