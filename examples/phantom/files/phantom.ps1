@@ -1,0 +1,1 @@
+Start-Process -FilePath phantom-windows.exe -ArgumentList "-server $(Get-Content -Path phantom.txt)" -NoNewWindow -Wait
