@@ -18,4 +18,4 @@ RUN curl -L "$AMD64" -o /phantom/phantom-linux
 
 FROM build-${TARGETARCH} AS final
 RUN chmod +x /phantom/phantom-linux
-ENTRYPOINT [ "/phantom/phantom-linux", "-server" ]
+ENTRYPOINT [ "/phantom/phantom-linux" ]
