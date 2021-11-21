@@ -12,6 +12,7 @@ WORKDIR /phantom
 USER phantom
 RUN chmod 0755 phantom_docker.sh
 RUN ./phantom_docker.sh
+RUN chmod +x /phantom/phantom-linux
 RUN rm phantom_docker.sh
 USER root
 RUN microdnf remove jq

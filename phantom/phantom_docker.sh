@@ -13,5 +13,3 @@ else
 	echo "Unknown uname"
 	exit 1
 fi
-
-chmod +x /phantom/phantom-linux
