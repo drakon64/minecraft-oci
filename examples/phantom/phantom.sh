@@ -8,10 +8,10 @@ MAC=$(echo "$RELEASES" | jq -r 'select(.name == "phantom-macos") | .browser_down
 WINDOWS=$(echo "$RELEASES" | jq -r 'select(.name == "phantom-windows.exe") | .browser_download_url')
 
 curl "$MAC" -o "$TEMP"/phantom-macos
-curl "$LINUX" -o "$TEMP"/phanton-linux
+curl "$LINUX" -o "$TEMP"/phantom-linux
 curl "$WINDOWS" -o "$TEMP"/phantom-windows.exe
 
-zip -j9 phantom "$TEMP"/phanton-linux "$TEMP"/phantom-macos "$TEMP"/phantom-windows.exe "$(dirname $0)"/files/*
+zip -j9 phantom "$TEMP"/phantom-linux "$TEMP"/phantom-macos "$TEMP"/phantom-windows.exe "$(dirname $0)"/files/*
 
-rm "$TEMP"/phanton-linux "$TEMP"/phantom-macos "$TEMP"/phantom-windows.exe
+rm "$TEMP"/phantom-linux "$TEMP"/phantom-macos "$TEMP"/phantom-windows.exe
 rmdir "$TEMP"
