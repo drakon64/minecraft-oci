@@ -1,40 +1,78 @@
 # yaml-language-server: $schema=https://json.schemastore.org/ansible-playbook.json
 
- - hosts: minecraft
+- hosts: minecraft
 
-   vars:
-      memtotal_b: "{{ ansible_memtotal_mb * 1048576 }}"
-      final_server_overrides: "{% if global_overrides.server is defined and overrides.server is defined %}{{ server | combine(global_overrides.server, overrides.server, recursive=True) }}{% elif global_overrides.server is defined %}{{ server | combine(global_overrides.server, recursive=True) }}{% elif overrides.server is defined %}{{ server | combine(overrides.server, recursive=True) }}{% else %}{{ server }}{% endif %}"
+  vars:
+    memtotal_b: "{{ ansible_memtotal_mb * 1048576 }}"
+    final_server_overrides: "{% if global_overrides.server is defined and overrides.server is defined %}{{ server | combine(global_overrides.server, overrides.server, recursive=True) }}{% elif global_overrides.server is defined %}{{ server | combine(global_overrides.server, recursive=True) }}{% elif overrides.server is defined %}{{ server | combine(overrides.server, recursive=True) }}{% else %}{{ server }}{% endif %}"
 
-   tasks:
-
+  tasks:
     - name: Configuring sshd # Based on https://infosec.mozilla.org/guidelines/openssh and CIS Benchmarks
       lineinfile:
-         path: /etc/ssh/sshd_config
-         regexp: "^({{ item.regexp }}|#{{ item.regexp }})"
-         line: "{{ item.line }}"
+        path: /etc/ssh/sshd_config
+        regexp: "^({{ item.regexp }}|#{{ item.regexp }})"
+        line: "{{ item.line }}"
       with_items:
-       - { regexp: "KexAlgorithms", line: "KexAlgorithms curve25519-sha256@libssh.org" }
-       - { regexp: "Ciphers", line: "Ciphers chacha20-poly1305@openssh.com" }
-       - { regexp: "MACs", line: "MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,umac-128-etm@openssh.com" }
-       - { regexp: "AuthenticationMethods", line: "AuthenticationMethods publickey" }
-       - { regexp: "LogLevel", line: "LogLevel VERBOSE" }
-       - { regexp: "Subsystem sftp", line: "Subsystem sftp /usr/libexec/openssh/sftp-server -f AUTHPRIV -l INFO" }
-       - { regexp: "PermitRootLogin", line: "PermitRootLogin no" }
-       - { regexp: "UsePrivilegeSeparation", line: "UsePrivilegeSeparation sandbox" }
-       - { regexp: "LoginGraceTime", line: "LoginGraceTime 1m" }
-       - { regexp: "AllowTcpForwarding", line: "AllowTcpForwarding no" }
-       - { regexp: "MaxSessions", line: "MaxSessions 4" }
-       - { regexp: "X11Forwarding", line: "X11Forwarding no" }
-       - { regexp: "MaxAuthTries", line: "MaxAuthTries 4" }
+        - {
+            regexp: "KexAlgorithms",
+            line: "KexAlgorithms curve25519-sha256@libssh.org",
+          }
+        - {
+            regexp: "Ciphers",
+            line: "Ciphers chacha20-poly1305@openssh.com"
+          }
+        - {
+            regexp: "MACs",
+            line: "MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,umac-128-etm@openssh.com",
+          }
+        - {
+            regexp: "AuthenticationMethods",
+            line: "AuthenticationMethods publickey",
+          }
+        - {
+            regexp: "LogLevel",
+            line: "LogLevel VERBOSE"
+          }
+        - {
+            regexp: "Subsystem sftp",
+            line: "Subsystem sftp /usr/libexec/openssh/sftp-server -f AUTHPRIV -l INFO",
+          }
+        - {
+            regexp: "PermitRootLogin",
+            line: "PermitRootLogin no"
+          }
+        - {
+            regexp: "UsePrivilegeSeparation",
+            line: "UsePrivilegeSeparation sandbox",
+          }
+        - {
+            regexp: "LoginGraceTime",
+            line: "LoginGraceTime 1m"
+          }
+        - {
+            regexp: "AllowTcpForwarding",
+            line: "AllowTcpForwarding no"
+          }
+        - {
+            regexp: "MaxSessions",
+            line: "MaxSessions 4"
+          }
+        - {
+            regexp: "X11Forwarding",
+            line: "X11Forwarding no"
+          }
+        - {
+            regexp: "MaxAuthTries",
+            line: "MaxAuthTries 4"
+          }
       register: sshd
 
     - name: Checking if SSH short moduli needs disabling
       command: awk '{ if ($5 < 3071) { exit 3 } else { exit 0 } }' /etc/ssh/moduli
       changed_when: moduli.rc == 3
       failed_when:
-       - moduli.rc != 0
-       - moduli.rc != 3
+        - moduli.rc != 0
+        - moduli.rc != 3
       register: moduli
 
     - name: Disabling SSH short moduli
@@ -43,77 +81,77 @@
 
     - name: Restarting sshd
       systemd:
-         name: sshd
-         state: restarted
+        name: sshd
+        state: restarted
       when: sshd.changed or moduli.changed
 
     - name: Enabling EPEL
       yum_repository:
-         name: ol8_developer_EPEL
-         description: Oracle Linux $releasever EPEL Packages for Development ($basearch)
-         baseurl: https://yum$ociregion.$ocidomain/repo/OracleLinux/OL8/developer/EPEL/$basearch/
-         gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-oracle
-         gpgcheck: 1
-         file: oracle-epel-ol8
-         enabled: true
+        name: ol8_developer_EPEL
+        description: Oracle Linux $releasever EPEL Packages for Development ($basearch)
+        baseurl: https://yum$ociregion.$ocidomain/repo/OracleLinux/OL8/developer/EPEL/$basearch/
+        gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-oracle
+        gpgcheck: 1
+        file: oracle-epel-ol8
+        enabled: true
 
     - name: Gathering Facts about services
       service_facts:
 
     - name: Stopping the existing server
       systemd:
-         name: minecraft
-         state: stopped
+        name: minecraft
+        state: stopped
       when:
-       - ansible_facts.services['minecraft.service'] is defined
+        - ansible_facts.services['minecraft.service'] is defined
 
     - name: Backing up the existing server
       shell: tar cfO - minecraft | oci os object put --auth instance_principal --bucket-name {{ bucket_name }} --file - --name "minecraft.tar" --force
       args:
-         chdir: /home/minecraft
+        chdir: /home/minecraft
       when:
-       - update_server == true or new_server == true
-       - skip_backup == false
+        - update_server == true or new_server == true
+        - skip_backup == false
 
     - name: Applying updates with Uptrack
       command: uptrack-upgrade -y
 
     - name: Installing updates
       dnf:
-         name: '*'
-         state: latest
-         update_cache: yes
+        name: "*"
+        state: latest
+        update_cache: yes
 
     - name: Setting the timezone
       timezone:
-         name: "{{ timezone }}"
+        name: "{{ timezone }}"
 
     - name: Installing packages
       dnf:
-         name:
+        name:
           - java-17-openjdk-headless
           - jq
           - python36-oci-cli
           - tmux
-         state: present
-         update_cache: yes
+        state: present
+        update_cache: yes
 
     - name: Creating the minecraft user
       user:
-         name: minecraft
-         shell: /bin/bash
+        name: minecraft
+        shell: /bin/bash
 
     - name: Checking the size of the swapfile
       stat:
-         path: /.swapfile
+        path: /.swapfile
       register: swapfile
 
     - name: Turning off swapfile
       command: swapoff /.swapfile
       changed_when: swapoff.rc == 0
       failed_when:
-       - swapoff.rc != 0
-       - swapoff.rc != 255
+        - swapoff.rc != 0
+        - swapoff.rc != 255
       when: swapfile.stat.size != memtotal_b
       register: swapoff
 
@@ -131,360 +169,425 @@
 
     - name: Removing the existing server
       file:
-         path: /home/minecraft/server
-         state: absent
+        path: /home/minecraft/server
+        state: absent
       when: new_server == true
 
     - name: Creating the server directory
       file:
-         path: /home/minecraft/server
-         state: directory
-         owner: minecraft
-         group: minecraft
-         mode: 0755
+        path: /home/minecraft/server
+        state: directory
+        owner: minecraft
+        group: minecraft
+        mode: 0755
       when: new_server == true
 
     - name: Getting the latest Paper build
       shell: curl --silent https://papermc.io/api/v2/projects/paper/versions/{{ version }} | jq ".builds | max"
       register: paper_latest
       when:
-       - new_server == true or update_server == true
-       - restore_backup == false
-       - vanilla == false
+        - new_server == true or update_server == true
+        - restore_backup == false
+        - vanilla == false
 
     - name: Downloading Minecraft Paper server
       get_url:
-         url: https://papermc.io/api/v2/projects/paper/versions/{{ version }}/builds/{{ paper_latest.stdout }}/downloads/paper-{{ version }}-{{ paper_latest.stdout }}.jar
-         dest: /home/minecraft/server/server.jar
-         owner: minecraft
-         group: minecraft
-         mode: 0644
+        url: https://papermc.io/api/v2/projects/paper/versions/{{ version }}/builds/{{ paper_latest.stdout }}/downloads/paper-{{ version }}-{{ paper_latest.stdout }}.jar
+        dest: /home/minecraft/server/server.jar
+        owner: minecraft
+        group: minecraft
+        mode: 0644
       when:
-       - new_server == true or update_server == true
-       - restore_backup == false
-       - vanilla == false
+        - new_server == true or update_server == true
+        - restore_backup == false
+        - vanilla == false
 
     - name: Getting the Minecraft server URL
       shell: curl --silent https://launchermeta.mojang.com/mc/game/version_manifest.json | jq -r '.versions[] | select(.id == "{{ version }}") | .url' | xargs -n 1 curl --silent | jq -r .downloads.server.url
       register: vanilla_url
       when:
-       - new_server == true or update_server == true
-       - restore_backup == false
-       - vanilla == true
+        - new_server == true or update_server == true
+        - restore_backup == false
+        - vanilla == true
 
     - name: Downloading Minecraft server
       get_url:
-         url: "{{ vanilla_url.stdout }}"
-         dest: /home/minecraft/server/server.jar
-         owner: minecraft
-         group: minecraft
-         mode: 0644
+        url: "{{ vanilla_url.stdout }}"
+        dest: /home/minecraft/server/server.jar
+        owner: minecraft
+        group: minecraft
+        mode: 0644
       when:
-       - new_server == true or update_server == true
-       - restore_backup == false
-       - vanilla == true
+        - new_server == true or update_server == true
+        - restore_backup == false
+        - vanilla == true
 
     - name: Configuring the Minecraft server
       template:
-         src: templates/java/server.properties.j2
-         dest: /home/minecraft/server/server.properties
-         owner: minecraft
-         group: minecraft
-         mode: 0644
+        src: templates/java/server.properties.j2
+        dest: /home/minecraft/server/server.properties
+        owner: minecraft
+        group: minecraft
+        mode: 0644
       when:
-       - restore_backup == false
+        - restore_backup == false
 
     - name: Configuring the Paper server
       template:
-         src: templates/java/{{ item }}.yml.j2
-         dest: /home/minecraft/server/{{ item }}.yml
-         owner: minecraft
-         group: minecraft
-         mode: 0644
+        src: templates/java/{{ item }}.yml.j2
+        dest: /home/minecraft/server/{{ item }}.yml
+        owner: minecraft
+        group: minecraft
+        mode: 0644
       with_items:
-       - bukkit
-       - commands
-       - spigot
-       - paper
+        - bukkit
+        - commands
+        - spigot
+        - paper
       when:
-       - restore_backup == false
-       - vanilla == false
+        - restore_backup == false
+        - vanilla == false
 
     - name: Copying the server permissions files
       copy:
-         src: files/java/{{ item }}.json
-         dest: /home/minecraft/server/
-         owner: minecraft
-         group: minecraft
-         mode: 0644
+        src: files/java/{{ item }}.json
+        dest: /home/minecraft/server/
+        owner: minecraft
+        group: minecraft
+        mode: 0644
       with_items:
-       - ops
-       - whitelist
+        - ops
+        - whitelist
       when:
-       - restore_permissions == true
-       - restore_backup == false
+        - restore_permissions == true
+        - restore_backup == false
 
     - name: Creating the Geyser plugin directories
       file:
-         path: /home/minecraft/server/plugins/{{ item }}
-         state: directory
-         owner: minecraft
-         group: minecraft
-         mode: 0755
+        path: /home/minecraft/server/plugins/{{ item }}
+        state: directory
+        owner: minecraft
+        group: minecraft
+        mode: 0755
       with_items:
-       - BlueMap
-       - Chunky
-       - CustomCommandPrefix
-       - floodgate
-       - Geyser-Spigot/packs
+        - BlueMap
+        - Chunky
+        - CustomCommandPrefix
+        - floodgate
+        - Geyser-Spigot/packs
       when:
-       - new_server == true
-       - restore_backup == false
-       - vanilla == false
+        - new_server == true
+        - restore_backup == false
+        - vanilla == false
 
     - name: Downloading the Geyser plugin
       get_url:
-         url: https://ci.opencollab.dev/job/GeyserMC/job/Geyser/job/master/lastSuccessfulBuild/artifact/bootstrap/spigot/target/Geyser-Spigot.jar
-         dest: /home/minecraft/server/plugins/
-         owner: minecraft
-         group: minecraft
-         mode: 0644
+        url: https://ci.opencollab.dev/job/GeyserMC/job/Geyser/job/master/lastSuccessfulBuild/artifact/bootstrap/spigot/target/Geyser-Spigot.jar
+        dest: /home/minecraft/server/plugins/
+        owner: minecraft
+        group: minecraft
+        mode: 0644
       when:
-       - new_server == true or update_server == true
-       - restore_backup == false
-       - vanilla == false
+        - new_server == true or update_server == true
+        - restore_backup == false
+        - vanilla == false
 
     - name: Configuring the Geyser plugin
       template:
-         src: templates/java/geyser/config.yml.j2
-         dest: /home/minecraft/server/plugins/Geyser-Spigot/config.yml
-         owner: minecraft
-         group: minecraft
-         mode: 0644
+        src: templates/java/geyser/config.yml.j2
+        dest: /home/minecraft/server/plugins/Geyser-Spigot/config.yml
+        owner: minecraft
+        group: minecraft
+        mode: 0644
       when:
-       - restore_backup == false
-       - vanilla == false
+        - restore_backup == false
+        - vanilla == false
 
     - name: Downloading the Floodgate plugin
       get_url:
-         url: https://ci.opencollab.dev/job/GeyserMC/job/Floodgate/job/master/lastSuccessfulBuild/artifact/spigot/target/floodgate-spigot.jar
-         dest: /home/minecraft/server/plugins/
-         owner: minecraft
-         group: minecraft
-         mode: 0644
+        url: https://ci.opencollab.dev/job/GeyserMC/job/Floodgate/job/master/lastSuccessfulBuild/artifact/spigot/target/floodgate-spigot.jar
+        dest: /home/minecraft/server/plugins/
+        owner: minecraft
+        group: minecraft
+        mode: 0644
       when:
-       - new_server == true or update_server == true
-       - restore_backup == false
-       - vanilla == false
+        - new_server == true or update_server == true
+        - restore_backup == false
+        - vanilla == false
 
     - name: Configuring the Floodgate plugin
       template:
-         src: templates/java/floodgate/config.yml.j2
-         dest: /home/minecraft/server/plugins/floodgate/config.yml
-         owner: minecraft
-         group: minecraft
-         mode: 0644
+        src: templates/java/floodgate/config.yml.j2
+        dest: /home/minecraft/server/plugins/floodgate/config.yml
+        owner: minecraft
+        group: minecraft
+        mode: 0644
       when:
-       - new_server == true or update_server == true
-       - restore_backup == false
-       - vanilla == false
+        - new_server == true or update_server == true
+        - restore_backup == false
+        - vanilla == false
 
     - name: Downloading the CustomCommandPrefix plugin
       copy:
-         src: files/CustomCommandPrefix-1.0.jar
-         dest: /home/minecraft/server/plugins/CustomCommandPrefix.jar
-         owner: minecraft
-         group: minecraft
-         mode: 0644
+        src: files/CustomCommandPrefix-1.0.jar
+        dest: /home/minecraft/server/plugins/CustomCommandPrefix.jar
+        owner: minecraft
+        group: minecraft
+        mode: 0644
       when:
-       - new_server == true or update_server == true
-       - restore_backup == false
-       - vanilla == false
+        - new_server == true or update_server == true
+        - restore_backup == false
+        - vanilla == false
 
     - name: Configuring the CustomCommandPrefix plugin
       copy:
-         content: "prefix: '?'"
-         dest: /home/minecraft/server/plugins/CustomCommandPrefix/config.yml
-         owner: minecraft
-         group: minecraft
-         mode: 0644
+        content: "prefix: '?'"
+        dest: /home/minecraft/server/plugins/CustomCommandPrefix/config.yml
+        owner: minecraft
+        group: minecraft
+        mode: 0644
       when:
-       - restore_backup == false
-       - vanilla == false
+        - restore_backup == false
+        - vanilla == false
 
     - name: Downloading the GeyserOptionalPack resource pack
       get_url:
-         url: https://ci.opencollab.dev/job/GeyserMC/job/GeyserOptionalPack/job/master/lastSuccessfulBuild/artifact/GeyserOptionalPack.mcpack
-         dest: /home/minecraft/server/plugins/Geyser-Spigot/packs/
-         owner: minecraft
-         group: minecraft
-         mode: 0644
+        url: https://ci.opencollab.dev/job/GeyserMC/job/GeyserOptionalPack/job/master/lastSuccessfulBuild/artifact/GeyserOptionalPack.mcpack
+        dest: /home/minecraft/server/plugins/Geyser-Spigot/packs/
+        owner: minecraft
+        group: minecraft
+        mode: 0644
       when:
-       - new_server == true or update_server == true
-       - restore_backup == false
-       - vanilla == false
+        - new_server == true or update_server == true
+        - restore_backup == false
+        - vanilla == false
 
     - name: Getting the latest Chunky release
       shell: curl --silent https://ci.codemc.io/job/pop4959/job/Chunky/lastSuccessfulBuild/api/json | jq -r '.artifacts[0].fileName'
       register: chunky_latest
       when:
-       - new_server == true or update_server == true
-       - restore_backup == false
-       - vanilla == false
+        - new_server == true or update_server == true
+        - restore_backup == false
+        - vanilla == false
 
     - name: Downloading the Chunky plugin
       get_url:
-         url: https://ci.codemc.io/view/Author/job/pop4959/job/Chunky/lastSuccessfulBuild/artifact/bukkit/build/libs/{{ chunky_latest.stdout }}
-         dest: /home/minecraft/server/plugins/Chunky.jar
-         owner: minecraft
-         group: minecraft
-         mode: 0644
+        url: https://ci.codemc.io/view/Author/job/pop4959/job/Chunky/lastSuccessfulBuild/artifact/bukkit/build/libs/{{ chunky_latest.stdout }}
+        dest: /home/minecraft/server/plugins/Chunky.jar
+        owner: minecraft
+        group: minecraft
+        mode: 0644
       when:
-       - new_server == true or update_server == true
-       - restore_backup == false
-       - vanilla == false
+        - new_server == true or update_server == true
+        - restore_backup == false
+        - vanilla == false
 
     - name: Configuring the Chunky plugin
       template:
-         src: templates/java/chunky/config.yml.j2
-         dest: /home/minecraft/server/plugins/Chunky/config.yml
-         owner: minecraft
-         group: minecraft
-         mode: 0644
+        src: templates/java/chunky/config.yml.j2
+        dest: /home/minecraft/server/plugins/Chunky/config.yml
+        owner: minecraft
+        group: minecraft
+        mode: 0644
       when:
-       - new_server == true or update_server == true
-       - restore_backup == false
-       - vanilla == false
+        - new_server == true or update_server == true
+        - restore_backup == false
+        - vanilla == false
 
     - name: Creating the ViaVersion plugin directory
       file:
-         path: /home/minecraft/server/plugins/ViaVersion
-         state: directory
-         owner: minecraft
-         group: minecraft
-         mode: 0755
+        path: /home/minecraft/server/plugins/ViaVersion
+        state: directory
+        owner: minecraft
+        group: minecraft
+        mode: 0755
       when:
-       - new_server == true or update_server == true
-       - use_viaversion == true
-       - restore_backup == false
-       - vanilla == false
+        - new_server == true or update_server == true
+        - use_viaversion == true
+        - restore_backup == false
+        - vanilla == false
 
     - name: Getting the latest ViaVersion release
       shell: curl --silent "https://api.github.com/repos/ViaVersion/ViaVersion/releases/latest" | jq -r '.assets[].browser_download_url'
       register: viaversion_latest
       when:
-       - new_server == true or update_server == true
-       - use_viaversion == true
-       - restore_backup == false
-       - vanilla == false
+        - new_server == true or update_server == true
+        - use_viaversion == true
+        - restore_backup == false
+        - vanilla == false
 
     - name: Downloading the ViaVersion plugin
       get_url:
-         url: "{{ viaversion_latest.stdout }}"
-         dest: /home/minecraft/server/plugins/ViaVersion.jar
-         owner: minecraft
-         group: minecraft
-         mode: 0644
+        url: "{{ viaversion_latest.stdout }}"
+        dest: /home/minecraft/server/plugins/ViaVersion.jar
+        owner: minecraft
+        group: minecraft
+        mode: 0644
       when:
-       - new_server == true or update_server == true
-       - use_viaversion == true
-       - restore_backup == false
-       - vanilla == false
+        - new_server == true or update_server == true
+        - use_viaversion == true
+        - restore_backup == false
+        - vanilla == false
 
     - name: Configuring the ViaVersion plugin
       template:
-         src: templates/java/ViaVersion/config.yml.j2
-         dest: /home/minecraft/server/plugins/ViaVersion/
-         owner: minecraft
-         group: minecraft
-         mode: 0644
+        src: templates/java/ViaVersion/config.yml.j2
+        dest: /home/minecraft/server/plugins/ViaVersion/
+        owner: minecraft
+        group: minecraft
+        mode: 0644
       when:
-       - use_viaversion == true
-       - restore_backup == false
-       - vanilla == false
+        - use_viaversion == true
+        - restore_backup == false
+        - vanilla == false
 
     - name: Removing the ViaVersion plugin
       file:
-         path: /home/minecraft/server/plugins/{{ item }}
-         state: absent
+        path: /home/minecraft/server/plugins/{{ item }}
+        state: absent
       with_items:
-       - ViaVersion.jar
-       - ViaVersion/
+        - ViaVersion.jar
+        - ViaVersion/
       when: use_viaversion == false
 
     - name: Downloading the latest server backup
       command: oci os object get --auth instance_principal --bucket-name {{ bucket_name }} --file minecraft.tar --name minecraft.tar
       args:
-         chdir: /home/minecraft
+        chdir: /home/minecraft
       when:
-       - restore_backup == true
-       - backup_version is not defined
+        - restore_backup == true
+        - backup_version is not defined
 
     - name: Downloading the server backup
       command: oci os object get --auth instance_principal --bucket-name {{ bucket_name }} --file minecraft.tar --name minecraft.tar --version-id {{ backup_version }}
       args:
-         chdir: /home/minecraft
+        chdir: /home/minecraft
       when:
-       - restore_backup == true
-       - backup_version is defined
+        - restore_backup == true
+        - backup_version is defined
 
     - name: Restoring the server backup
       unarchive:
-         src: /home/minecraft/minecraft.tar
-         dest: /home/minecraft/
-         owner: minecraft
-         group: minecraft
-         mode: u=rwX,g=rX,o=rX
-         remote_src: yes
+        src: /home/minecraft/minecraft.tar
+        dest: /home/minecraft/
+        owner: minecraft
+        group: minecraft
+        mode: u=rwX,g=rX,o=rX
+        remote_src: yes
       when: restore_backup == true
 
     - name: Removing the downloaded backup
       file:
-         path: /home/minecraft/server.tar
-         state: absent
+        path: /home/minecraft/server.tar
+        state: absent
       when: restore_backup == true
 
     - name: Copying scripts and systemd units
       template:
-         src: "{{ item.src }}"
-         dest: "{{ item.dest }}"
-         owner: "{{ item.owner }}"
-         group: "{{ item.owner }}"
-         mode: "{{ item.mode }}"
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        owner: "{{ item.owner }}"
+        group: "{{ item.owner }}"
+        mode: "{{ item.mode }}"
       with_items:
-       - { src: "files/dnf-reboot.sh", dest: "/home/minecraft/dnf-reboot.sh", owner: "minecraft", mode: "0755" }
-       - { src: "templates/stop.sh.j2", dest: "/home/minecraft/stop_minecraft.sh", owner: "minecraft", mode: "0755" }
-       - { src: "templates/backup.sh.j2", dest: "/home/minecraft/backup_geyser.sh", owner: "minecraft", mode: "0755" }
-       - { src: "files/disk-utilization.sh", dest: "/home/minecraft/", owner: "minecraft", mode: "0755" }
-       - { src: "templates/systemd/minecraft.service.j2", dest: "/etc/systemd/system/minecraft.service", owner: "root", mode: "0644" }
-       - { src: "templates/systemd/minecraft-backup.service.j2", dest: "/etc/systemd/system/minecraft-backup.service", owner: "root", mode: "0644" }
-       - { src: "templates/systemd/minecraft-backup.timer.j2", dest: "/etc/systemd/system/minecraft-backup.timer", owner: "root", mode: "0644" }
-       - { src: "files/systemd/dnf-upgrade.service", dest: "/etc/systemd/system/dnf-upgrade.service", owner: "root", mode: "0644" }
-       - { src: "files/systemd/dnf-upgrade.timer", dest: "/etc/systemd/system/dnf-upgrade.timer", owner: "root", mode: "0644" }
-       - { src: "files/systemd/uptrack-upgrade.service", dest: "/etc/systemd/system/uptrack-upgrade.service", owner: "root", mode: "0644" }
-       - { src: "files/systemd/uptrack-upgrade.timer", dest: "/etc/systemd/system/uptrack-upgrade.timer", owner: "root", mode: "0644" }
-       - { src: "files/systemd/oci-disk-utilization.service", dest: "/etc/systemd/system/oci-disk-utilization.service", owner: "root", mode: "0644" }
-       - { src: "files/systemd/oci-disk-utilization.timer", dest: "/etc/systemd/system/oci-disk-utilization.timer", owner: "root", mode: "0644" }
+        - {
+            src: "files/dnf-reboot.sh",
+            dest: "/home/minecraft/dnf-reboot.sh",
+            owner: "minecraft",
+            mode: "0755",
+          }
+        - {
+            src: "templates/stop.sh.j2",
+            dest: "/home/minecraft/stop_minecraft.sh",
+            owner: "minecraft",
+            mode: "0755",
+          }
+        - {
+            src: "templates/backup.sh.j2",
+            dest: "/home/minecraft/backup_geyser.sh",
+            owner: "minecraft",
+            mode: "0755",
+          }
+        - {
+            src: "files/disk-utilization.sh",
+            dest: "/home/minecraft/",
+            owner: "minecraft",
+            mode: "0755",
+          }
+        - {
+            src: "templates/systemd/minecraft.service.j2",
+            dest: "/etc/systemd/system/minecraft.service",
+            owner: "root",
+            mode: "0644",
+          }
+        - {
+            src: "templates/systemd/minecraft-backup.service.j2",
+            dest: "/etc/systemd/system/minecraft-backup.service",
+            owner: "root",
+            mode: "0644",
+          }
+        - {
+            src: "templates/systemd/minecraft-backup.timer.j2",
+            dest: "/etc/systemd/system/minecraft-backup.timer",
+            owner: "root",
+            mode: "0644",
+          }
+        - {
+            src: "files/systemd/dnf-upgrade.service",
+            dest: "/etc/systemd/system/dnf-upgrade.service",
+            owner: "root",
+            mode: "0644",
+          }
+        - {
+            src: "files/systemd/dnf-upgrade.timer",
+            dest: "/etc/systemd/system/dnf-upgrade.timer",
+            owner: "root",
+            mode: "0644",
+          }
+        - {
+            src: "files/systemd/uptrack-upgrade.service",
+            dest: "/etc/systemd/system/uptrack-upgrade.service",
+            owner: "root",
+            mode: "0644",
+          }
+        - {
+            src: "files/systemd/uptrack-upgrade.timer",
+            dest: "/etc/systemd/system/uptrack-upgrade.timer",
+            owner: "root",
+            mode: "0644",
+          }
+        - {
+            src: "files/systemd/oci-disk-utilization.service",
+            dest: "/etc/systemd/system/oci-disk-utilization.service",
+            owner: "root",
+            mode: "0644",
+          }
+        - {
+            src: "files/systemd/oci-disk-utilization.timer",
+            dest: "/etc/systemd/system/oci-disk-utilization.timer",
+            owner: "root",
+            mode: "0644",
+          }
 
     - name: Accepting the Minecraft Server EULA
       copy:
-         content: eula=true
-         dest: /home/minecraft/server/eula.txt
-         owner: minecraft
-         group: minecraft
-         mode: 0644
+        content: eula=true
+        dest: /home/minecraft/server/eula.txt
+        owner: minecraft
+        group: minecraft
+        mode: 0644
       when:
-       - new_server == true
-       - restore_backup == false
-       - eula == true
+        - new_server == true
+        - restore_backup == false
+        - eula == true
 
     - name: Copying firewall rule
       template:
-         src: files/minecraft.xml
-         dest: /etc/firewalld/services/
-         owner: root
-         group: root
-         mode: 0644
+        src: files/minecraft.xml
+        dest: /etc/firewalld/services/
+        owner: root
+        group: root
+        mode: 0644
       register: firewall
 
     - name: Reloading firewalld
@@ -493,83 +596,83 @@
 
     - name: Allowing Minecraft through the firewall
       firewalld:
-         service: minecraft
-         state: enabled
-         permanent: yes
-         immediate: yes
+        service: minecraft
+        state: enabled
+        permanent: yes
+        immediate: yes
 
-#    - name: Checksumming the Oracle Cloud Agent configuration file before modifying it
-#      command: openssl dgst -sha3-224 /etc/oracle-cloud-agent/agent.yml
-#      register: oca_old
+    #    - name: Checksumming the Oracle Cloud Agent configuration file before modifying it
+    #      command: openssl dgst -sha3-224 /etc/oracle-cloud-agent/agent.yml
+    #      register: oca_old
 
-#    - name: Configuring the Oracle Cloud Agent to enable the OS Management Service plugin # Taken from https://docs.oracle.com/en-us/iaas/os-management/osms/osms-getstarted.htm#osms-manage-plugin-ol8
-#      command: |
-#         sed -i -e '/^  osms:/,/^  [a-z]*:/{
-#         s/\(.*disabled:.*\)true/\1false/
-#         /^.*disableByOs:$/,/^  [a-z]*:/{
-#         /^.*-.*Oracle Linux Server.*:$/d
-#         /^.*-.*8.x/d}}' /etc/oracle-cloud-agent/agent.yml
+    #    - name: Configuring the Oracle Cloud Agent to enable the OS Management Service plugin # Taken from https://docs.oracle.com/en-us/iaas/os-management/osms/osms-getstarted.htm#osms-manage-plugin-ol8
+    #      command: |
+    #         sed -i -e '/^  osms:/,/^  [a-z]*:/{
+    #         s/\(.*disabled:.*\)true/\1false/
+    #         /^.*disableByOs:$/,/^  [a-z]*:/{
+    #         /^.*-.*Oracle Linux Server.*:$/d
+    #         /^.*-.*8.x/d}}' /etc/oracle-cloud-agent/agent.yml
 
-#    - name: Checksumming the Oracle Cloud Agent configuration file after modifying it
-#      command: openssl dgst -sha3-224 /etc/oracle-cloud-agent/agent.yml
-#      register: oca_new
+    #    - name: Checksumming the Oracle Cloud Agent configuration file after modifying it
+    #      command: openssl dgst -sha3-224 /etc/oracle-cloud-agent/agent.yml
+    #      register: oca_new
 
-#    - name: Restarting the Oracle Cloud Agent
-#      systemd:
-#         name: oracle-cloud-agent
-#         state: restarted
-#      when: oca_old.stdout != oca_new.stdout
+    #    - name: Restarting the Oracle Cloud Agent
+    #      systemd:
+    #         name: oracle-cloud-agent
+    #         state: restarted
+    #      when: oca_old.stdout != oca_new.stdout
 
     - name: Creating directory for the SELinux module
       file:
-         path: /home/minecraft/selinux
-         state: directory
-         owner: minecraft
-         group: minecraft
-         mode: 0755
+        path: /home/minecraft/selinux
+        state: directory
+        owner: minecraft
+        group: minecraft
+        mode: 0755
 
     - name: Copying SELinux module
       copy:
-         src: files/my-minecraft.te
-         dest: /home/minecraft/selinux/
-         owner: minecraft
-         group: minecraft
-         mode: 0644
+        src: files/my-minecraft.te
+        dest: /home/minecraft/selinux/
+        owner: minecraft
+        group: minecraft
+        mode: 0644
       register: selinux
 
     - name: Compiling SELinux module
       command: checkmodule -M -m -o my-minecraft.mod my-minecraft.te
       args:
-         chdir: /home/minecraft/selinux
+        chdir: /home/minecraft/selinux
       when: selinux.changed
 
     - name: Packaging SELinux module
       command: semodule_package -o my-minecraft.pp -m my-minecraft.mod
       args:
-         chdir: /home/minecraft/selinux
+        chdir: /home/minecraft/selinux
       when: selinux.changed
 
     - name: Loading SELinux module
       command: semodule -i my-minecraft.pp
       args:
-         chdir: /home/minecraft/selinux
+        chdir: /home/minecraft/selinux
       when: selinux.changed
 
     - name: Allowing domain to mmap files
       seboolean:
-         name: domain_can_mmap_files
-         state: yes
-         persistent: yes
+        name: domain_can_mmap_files
+        state: yes
+        persistent: yes
 
     - name: Starting the systemd units
       systemd:
-         name: "{{ item }}"
-         state: started
-         enabled: yes
-         daemon_reload: yes
+        name: "{{ item }}"
+        state: started
+        enabled: yes
+        daemon_reload: yes
       with_items:
-       - minecraft.service
-       - minecraft-backup.timer
-       - dnf-upgrade.timer
-       - uptrack-upgrade.timer
-       - oci-disk-utilization.timer
+        - minecraft.service
+        - minecraft-backup.timer
+        - dnf-upgrade.timer
+        - uptrack-upgrade.timer
+        - oci-disk-utilization.timer
