@@ -19,7 +19,7 @@
           }
         - {
             regexp: "Ciphers",
-            line: "Ciphers chacha20-poly1305@openssh.com"
+            line: "Ciphers chacha20-poly1305@openssh.com",
           }
         - {
             regexp: "MACs",
@@ -31,7 +31,7 @@
           }
         - {
             regexp: "LogLevel",
-            line: "LogLevel VERBOSE"
+            line: "LogLevel VERBOSE",
           }
         - {
             regexp: "Subsystem sftp",
@@ -39,7 +39,7 @@
           }
         - {
             regexp: "PermitRootLogin",
-            line: "PermitRootLogin no"
+            line: "PermitRootLogin no",
           }
         - {
             regexp: "UsePrivilegeSeparation",
@@ -47,23 +47,23 @@
           }
         - {
             regexp: "LoginGraceTime",
-            line: "LoginGraceTime 1m"
+            line: "LoginGraceTime 1m",
           }
         - {
             regexp: "AllowTcpForwarding",
-            line: "AllowTcpForwarding no"
+            line: "AllowTcpForwarding no",
           }
         - {
             regexp: "MaxSessions",
-            line: "MaxSessions 4"
+            line: "MaxSessions 4",
           }
         - {
             regexp: "X11Forwarding",
-            line: "X11Forwarding no"
+            line: "X11Forwarding no",
           }
         - {
             regexp: "MaxAuthTries",
-            line: "MaxAuthTries 4"
+            line: "MaxAuthTries 4",
           }
       register: sshd
 
