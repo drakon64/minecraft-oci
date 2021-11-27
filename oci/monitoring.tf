@@ -1,7 +1,5 @@
 locals {
-	cpu_warn = 100 / var.oci_compute_ocpus
-	cpu_critical = 100 - (100 / var.oci_compute_ocpus) == 0 ? 99 : 100 - (100 / var.oci_compute_ocpus)
-	memory_critical = ((var.oci_compute_memory - 0.32) / var.oci_compute_memory) * 100
+	memory_critical = ((var.oci_compute_memory - (1 / 3)) / var.oci_compute_memory) * 100
 }
 
 resource "oci_monitoring_alarm" "High-CPU-Utilization" {
@@ -15,7 +13,7 @@ resource "oci_monitoring_alarm" "High-CPU-Utilization" {
 	metric_compartment_id_in_subtree = "false"
 	namespace = "oci_computeagent"
 	pending_duration = "PT5M"
-	query = "CpuUtilization[1m]{resourceId = ${oci_core_instance.minecraft_instance.id}}.mean() > ${local.cpu_warn}"
+	query = "CpuUtilization[1m]{resourceId = ${oci_core_instance.minecraft_instance.id}}.mean() > 75"
 	resolution = "1m"
 	severity = "WARNING"
 }
@@ -63,7 +61,7 @@ resource "oci_monitoring_alarm" "Critical-CPU-Utilization" {
 	metric_compartment_id_in_subtree = "false"
 	namespace = "oci_computeagent"
 	pending_duration = "PT5M"
-	query = "CpuUtilization[1m]{resourceId = ${oci_core_instance.minecraft_instance.id}}.mean() > ${local.cpu_critical}"
+	query = "CpuUtilization[1m]{resourceId = ${oci_core_instance.minecraft_instance.id}}.mean() > 90"
 	repeat_notification_duration = "PT1H"
 	resolution = "1m"
 	severity = "CRITICAL"
