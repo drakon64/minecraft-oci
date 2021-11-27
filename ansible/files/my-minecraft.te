@@ -19,4 +19,4 @@ allow init_t ptmx_t:chr_file { ioctl open read write };
 allow init_t screen_exec_t:file { execute execute_no_trans map open read };
 allow init_t sudo_exec_t:file { execute execute_no_trans open read };
 allow init_t tmp_t:sock_file { create setattr unlink write };
-allow init_t user_home_t:file { execute execute_no_trans ioctl open read };
+allow init_t user_home_t:file { execute execute_no_trans ioctl map open read };
