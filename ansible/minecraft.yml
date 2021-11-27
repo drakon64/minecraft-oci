@@ -497,7 +497,7 @@
             mode: "0755",
           }
         - {
-            src: "templates/stop.sh.j2",
+            src: "files/stop.sh",
             dest: "/home/minecraft/stop_minecraft.sh",
             owner: "minecraft",
             mode: "0755",
