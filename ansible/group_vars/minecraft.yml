@@ -256,6 +256,9 @@ paper:
         ambient:
           hard: 128
           soft: 32
+        axolotls:
+          hard: 128
+          soft: 32
         creature:
           hard: 128
           soft: 32
@@ -396,6 +399,7 @@ paper:
       skeleton-horse-thunder-spawn-chance: 0.01
       spawn-limits:
         ambient: -1
+        axolotls: -1
         creature: -1
         monster: -1
         underground_water_creature: -1
@@ -535,6 +539,7 @@ spigot:
   world-settings:
     default:
       arrow-despawn-rate: 1200
+      below-zero-generation-in-existing-chunks: true
       dragon-death-sound-radius: 0
       enable-zombie-pigmen-portal-spawns: true
       end-portal-sound-radius: 0
@@ -623,6 +628,7 @@ spigot:
       seed-slime: 987234911
       seed-swamp: 14357620
       seed-village: 10387312
+      simulation-distance: default
       squid-spawn-range:
         min: 45.0
       thunder-chance: 100000
