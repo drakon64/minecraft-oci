@@ -262,7 +262,7 @@
         - restore_permissions == true
         - restore_backup == false
 
-    - name: Creating the Geyser plugin directories
+    - name: Creating the plugin directories
       file:
         path: /home/minecraft/server/plugins/{{ item }}
         state: directory
@@ -270,7 +270,6 @@
         group: minecraft
         mode: 0755
       with_items:
-        - BlueMap
         - Chunky
         - CustomCommandPrefix
         - floodgate
