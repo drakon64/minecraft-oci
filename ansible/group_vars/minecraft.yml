@@ -47,7 +47,6 @@ floodgate:
   player-link:
     allowed: true
     enable-global-linking: true
-    enable-own-linking: false
     enabled: true
     link-code-timeout: 300
     require-link: false
@@ -75,16 +74,13 @@ geyser:
   debug-mode: false
   emote-offhand-workaround: "disabled"
   enable-proxy-connections: false
-  extended-world-height: false
   floodgate-key-file: key.pem
   force-resource-packs: true
   forward-player-ping: false
-  general-thread-pool: 32
   legacy-ping-passthrough: false
   max-players: 100
   metrics:
     enabled: true
-    uuid:
   mtu: 1400
   passthrough-motd: false
   passthrough-player-counts: false
@@ -118,16 +114,6 @@ paper:
       page-max: 2560
       total-multiplier: 0.98
     bungee-online-mode: true
-    chunk-loading:
-      autoconfig-send-distance: true
-      enable-frustum-priority: false
-      global-max-chunk-load-rate: -1.0
-      global-max-chunk-send-rate: -1.0
-      global-max-concurrent-loads: 500.0
-      max-concurrent-sends: 2
-      min-load-radius: 2
-      player-max-concurrent-loads: 4.0
-      target-player-chunk-send-rate: 100.0
     console:
       enable-brigadier-completions: true
       enable-brigadier-highlighting: true
@@ -310,7 +296,6 @@ paper:
         MinimumTicks: 100
       fix-climbing-bypassing-cramming-rule: false
       fix-items-merging-through-walls: false
-      fix-wither-targeting-bug: false
       fixed-chunk-inhabited-time: -1
       frosted-ice:
         delay:
@@ -338,8 +323,6 @@ paper:
             per-player: false
         scan-for-legacy-ender-dragon: true
         shield-blocking-delay: 5
-      generator-settings:
-        flat-bedrock: false
       grass-spread-tick-rate: 1
       hopper:
         cooldown-when-full: true
@@ -392,8 +375,6 @@ paper:
       prevent-moving-into-unloaded-chunks: false
       prevent-tnt-from-moving-in-water: false
       remove-corrupt-tile-entities: false
-      seed-based-feature-search: true
-      seed-based-feature-search-loads-chunks: true
       should-remove-dragon: false
       show-sign-click-command-failure-msgs-to-player: false
       skeleton-horse-thunder-spawn-chance: 0.01
@@ -407,8 +388,6 @@ paper:
         water_creature: -1
       spawner-nerfed-mobs-should-jump: false
       split-overstacked-loot: true
-      squid-spawn-height:
-        maximum: 0.0
       tick-rates:
         behavior:
           villager:
@@ -423,8 +402,6 @@ paper:
       update-pathfinding-on-block-update: true
       use-faster-eigencraft-redstone: false
       use-vanilla-world-scoreboard-name-coloring: false
-      viewdistances:
-        no-tick-view-distance: -1
       wandering-trader:
         spawn-chance-failure-increment: 25
         spawn-chance-max: 75
@@ -629,8 +606,6 @@ spigot:
       seed-swamp: 14357620
       seed-village: 10387312
       simulation-distance: default
-      squid-spawn-range:
-        min: 45.0
       thunder-chance: 100000
       ticks-per:
         hopper-check: 1
