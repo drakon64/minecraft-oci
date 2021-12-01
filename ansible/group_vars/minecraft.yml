@@ -102,11 +102,11 @@ paper:
   config-version: 24
   messages:
     kick:
-      authentication-servers-down: ''
+      authentication-servers-down: ""
       connection-throttle: Connection throttled! Please wait before reconnecting.
       flying-player: Flying is not enabled on this server
       flying-vehicle: Flying is not enabled on this server
-    no-permission: '&cI''m sorry, but you do not have permission to perform this command. Please contact the server administrators if you believe that this is in error.'
+    no-permission: "&cI'm sorry, but you do not have permission to perform this command. Please contact the server administrators if you believe that this is in error."
   settings:
     async-chunks:
       threads: -1
@@ -137,7 +137,7 @@ paper:
     max-joins-per-tick: 3
     max-player-auto-save-per-tick: -1
     packet-limiter:
-      kick-message: '&cSent too many packets'
+      kick-message: "&cSent too many packets"
       limits:
         PacketPlayInAutoRecipe:
           action: DROP
@@ -169,7 +169,7 @@ paper:
     velocity-support:
       enabled: false
       online-mode: false
-      secret: ''
+      secret: ""
     watchdog:
       early-warning-delay: 10000
       early-warning-every: 5000
@@ -660,7 +660,7 @@ viaversion:
   reload-disconnect-msg: Server reload, please rejoin!
   replace-pistons: false
   replacement-piston-id: 0
-  resource-pack-1_17-prompt: ''
+  resource-pack-1_17-prompt: ""
   send-supported-versions: false
   serverside-blockconnections: true
   shield-blocking: true
