@@ -78,6 +78,11 @@ variable "topic_name" {
 	default = "minecraft"
 }
 
+variable "enable_monitoring_emails" {
+	type = bool
+	default = true
+}
+
 variable "management_email" {
 	type = string
 	default = ""
