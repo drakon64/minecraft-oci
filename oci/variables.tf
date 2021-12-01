@@ -35,6 +35,11 @@ variable "minecraft_java_port" {
 	default = 25565
 }
 
+variable "vanilla" {
+	type = bool
+	default = false
+}
+
 variable "minecraft_bedrock_port" {
 	type = number
 	default = 19132
@@ -73,6 +78,12 @@ variable "topic_name" {
 	default = "minecraft"
 }
 
+variable "enable_monitoring_emails" {
+	type = bool
+	default = true
+}
+
 variable "management_email" {
 	type = string
+	default = ""
 }

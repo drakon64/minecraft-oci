@@ -48,6 +48,8 @@ resource "oci_core_network_security_group_security_rule" "bedrock" {
 			max = var.minecraft_bedrock_port
 		}
 	}
+
+	count = var.vanilla ? 0 : 1
 }
 
 resource "oci_core_network_security_group_security_rule" "https" {

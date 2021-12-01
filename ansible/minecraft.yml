@@ -572,8 +572,8 @@
 
     - name: Copying firewall rule
       template:
-        src: files/minecraft.xml
-        dest: /etc/firewalld/services/
+        src: templates/minecraft.xml.j2
+        dest: /etc/firewalld/services/minecraft.xml
         owner: root
         group: root
         mode: 0644
