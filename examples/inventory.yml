@@ -11,8 +11,8 @@ minecraft:
       timezone: Europe/London
       update_server: false
       use_viaversion: false
-      vanilla: true
-      version: 1.18-rc3
+      vanilla: false
+      version: 1.18
     minecraft:
       backup_version:
       bucket_name: minecraft-backup
