@@ -621,13 +621,16 @@ viaversion:
   auto-team: true
   block-disconnect-msg: You are using an unsupported Minecraft version!
   block-protocols: []
+  block-versions: []
   blockconnection-method: packet
   bossbar-anti-flicker: false
   bossbar-patch: true
+  cache-1_17-light: true
   change-1_14-hitbox: false
   change-1_9-hitbox: false
   chat-nbt-fix: true
   checkforupdates: true
+  chunk-border-fix: false
   disable-1_13-auto-complete: false
   fix-1_14-health-nan: true
   fix-infested-block-breaking: true
@@ -641,6 +644,10 @@ viaversion:
   ignore-long-1_16-channel-names: true
   item-cache: true
   left-handed-handling: true
+  map-1_16-world-names:
+    end: minecraft:the_end
+    nether: minecraft:the_nether
+    overworld: minecraft:overworld
   max-pps: 800
   max-pps-kick-msg: You are sending too many packets!
   minimize-cooldown: true

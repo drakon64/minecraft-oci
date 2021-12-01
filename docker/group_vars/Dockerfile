@@ -20,7 +20,10 @@ RUN curl https://ci.opencollab.dev/job/GeyserMC/job/Geyser/job/master/lastSucces
 
 RUN curl https://ci.opencollab.dev/job/GeyserMC/job/Floodgate/job/master/lastSuccessfulBuild/artifact/spigot/target/floodgate-spigot.jar -o floodgate-spigot.jar
 
+COPY viaversion_latest.sh viaversion_latest.sh
+RUN sh -ex viaversion_latest.sh
+
 WORKDIR /home/minecraft
 RUN echo "eula=true" > eula.txt
 
-ENTRYPOINT [ "/usr/bin/java", "-jar", "server.jar" ]
+ENTRYPOINT [ "/usr/bin/java", "-Xmx1024M", "-Xms1024M", "-jar", "server.jar" ]
