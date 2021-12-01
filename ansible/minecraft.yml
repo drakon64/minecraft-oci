@@ -590,27 +590,27 @@
         permanent: yes
         immediate: yes
 
-    # - name: Checksumming the Oracle Cloud Agent configuration file before modifying it
-    #   command: openssl dgst -sha3-224 /etc/oracle-cloud-agent/agent.yml
-    #   register: oca_old
+    - name: Checksumming the Oracle Cloud Agent configuration file before modifying it
+      command: openssl dgst -sha3-224 /etc/oracle-cloud-agent/agent.yml
+      register: oca_old
 
-    # - name: Configuring the Oracle Cloud Agent to enable the OS Management Service plugin # Taken from https://docs.oracle.com/en-us/iaas/os-management/osms/osms-getstarted.htm#osms-manage-plugin-ol8
-    #   command: |
-    #     sed -i -e '/^  osms:/,/^  [a-z]*:/{
-    #     s/\(.*disabled:.*\)true/\1false/
-    #     /^.*disableByOs:$/,/^  [a-z]*:/{
-    #     /^.*-.*Oracle Linux Server.*:$/d
-    #     /^.*-.*8.x/d}}' /etc/oracle-cloud-agent/agent.yml
+    - name: Configuring the Oracle Cloud Agent to enable the OS Management Service plugin # Taken from https://docs.oracle.com/en-us/iaas/os-management/osms/osms-getstarted.htm#osms-manage-plugin-ol8
+      command: |
+        sed -i -e '/^  osms:/,/^  [a-z]*:/{
+        s/\(.*disabled:.*\)true/\1false/
+        /^.*disableByOs:$/,/^  [a-z]*:/{
+        /^.*-.*Oracle Linux Server.*:$/d
+        /^.*-.*8.x/d}}' /etc/oracle-cloud-agent/agent.yml
 
-    # - name: Checksumming the Oracle Cloud Agent configuration file after modifying it
-    #   command: openssl dgst -sha3-224 /etc/oracle-cloud-agent/agent.yml
-    #   register: oca_new
+    - name: Checksumming the Oracle Cloud Agent configuration file after modifying it
+      command: openssl dgst -sha3-224 /etc/oracle-cloud-agent/agent.yml
+      register: oca_new
 
-    # - name: Restarting the Oracle Cloud Agent
-    #   systemd:
-    #     name: oracle-cloud-agent
-    #     state: restarted
-    #   when: oca_old.stdout != oca_new.stdout
+    - name: Restarting the Oracle Cloud Agent
+      systemd:
+        name: oracle-cloud-agent
+        state: restarted
+      when: oca_old.stdout != oca_new.stdout
 
     - name: Creating directory for the SELinux module
       file:
