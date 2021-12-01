@@ -32,7 +32,7 @@ resource "oci_core_instance" "minecraft_instance" {
 	}
 
 	agent_config {
-		is_management_disabled = "true"
+		is_management_disabled = "false"
 		is_monitoring_disabled = "false"
 		plugins_config {
 			desired_state = "ENABLED"
