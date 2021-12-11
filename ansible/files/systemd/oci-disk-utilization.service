@@ -4,8 +4,8 @@ After=network.target
 
 [Service]
 Type=oneshot
-ExecStart=/home/minecraft/disk-utilization.sh
-WorkingDirectory=/home/minecraft
+ExecStart=/opt/minecraft/disk-utilization.sh
+WorkingDirectory=/opt/minecraft
 
 [Install]
 WantedBy=multi-user.target
