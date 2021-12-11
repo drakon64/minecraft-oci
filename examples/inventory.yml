@@ -12,7 +12,7 @@ minecraft:
       update_server: false
       use_viaversion: false
       vanilla: false
-      version: 1.18
+      version: 1.18.1
     minecraft:
       backup_version:
       bucket_name: minecraft-backup
