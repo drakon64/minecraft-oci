@@ -9,9 +9,9 @@ ExecStart=/usr/bin/tmux new-session -s minecraft -d '{{ command }}'
 {% else %}
 ExecStart=/usr/bin/tmux new-session -s minecraft -d '{{ high_ram_command }}'
 {% endif %}
-ExecStop=/home/minecraft/stop_minecraft.sh
+ExecStop=/opt/minecraft/stop_minecraft.sh
 
-WorkingDirectory=/home/minecraft/server
+WorkingDirectory=/opt/minecraft/server
 
 User=minecraft
 Group=minecraft

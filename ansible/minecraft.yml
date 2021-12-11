@@ -98,7 +98,7 @@
     - name: Backing up the existing server
       shell: tar cfO - minecraft | oci os object put --auth instance_principal --bucket-name {{ bucket_name }} --file - --name "minecraft.tar" --force
       args:
-        chdir: /home/minecraft
+        chdir: /opt/minecraft
       when:
         - update_server == true or new_server == true
         - skip_backup == false
@@ -129,6 +129,8 @@
     - name: Creating the minecraft user
       user:
         name: minecraft
+        create_home: yes
+        home: /opt/minecraft
         shell: /bin/bash
 
     - name: Checking the size of the swapfile
@@ -159,13 +161,13 @@
 
     - name: Removing the existing server
       file:
-        path: /home/minecraft/server
+        path: /opt/minecraft/server
         state: absent
       when: new_server == true
 
     - name: Creating the server directory
       file:
-        path: /home/minecraft/server
+        path: /opt/minecraft/server
         state: directory
         owner: minecraft
         group: minecraft
@@ -183,7 +185,7 @@
     - name: Downloading Minecraft Paper server
       get_url:
         url: https://papermc.io/api/v2/projects/paper/versions/{{ version }}/builds/{{ paper_latest.stdout }}/downloads/paper-{{ version }}-{{ paper_latest.stdout }}.jar
-        dest: /home/minecraft/server/server.jar
+        dest: /opt/minecraft/server/server.jar
         owner: minecraft
         group: minecraft
         mode: 0644
@@ -203,7 +205,7 @@
     - name: Downloading Minecraft server
       get_url:
         url: "{{ vanilla_url.stdout }}"
-        dest: /home/minecraft/server/server.jar
+        dest: /opt/minecraft/server/server.jar
         owner: minecraft
         group: minecraft
         mode: 0644
@@ -215,7 +217,7 @@
     - name: Configuring the Minecraft server
       template:
         src: templates/java/server.properties.j2
-        dest: /home/minecraft/server/server.properties
+        dest: /opt/minecraft/server/server.properties
         owner: minecraft
         group: minecraft
         mode: 0644
@@ -225,7 +227,7 @@
     - name: Configuring the Paper server
       template:
         src: templates/java/{{ item }}.yml.j2
-        dest: /home/minecraft/server/{{ item }}.yml
+        dest: /opt/minecraft/server/{{ item }}.yml
         owner: minecraft
         group: minecraft
         mode: 0644
@@ -241,7 +243,7 @@
     - name: Copying the server permissions files
       copy:
         src: files/java/{{ item }}.json
-        dest: /home/minecraft/server/
+        dest: /opt/minecraft/server/
         owner: minecraft
         group: minecraft
         mode: 0644
@@ -254,7 +256,7 @@
 
     - name: Creating the plugin directories
       file:
-        path: /home/minecraft/server/plugins/{{ item }}
+        path: /opt/minecraft/server/plugins/{{ item }}
         state: directory
         owner: minecraft
         group: minecraft
@@ -272,7 +274,7 @@
     - name: Downloading the Geyser plugin
       get_url:
         url: https://ci.opencollab.dev/job/GeyserMC/job/Geyser/job/master/lastSuccessfulBuild/artifact/bootstrap/spigot/target/Geyser-Spigot.jar
-        dest: /home/minecraft/server/plugins/
+        dest: /opt/minecraft/server/plugins/
         owner: minecraft
         group: minecraft
         mode: 0644
@@ -284,7 +286,7 @@
     - name: Configuring the Geyser plugin
       template:
         src: templates/java/geyser/config.yml.j2
-        dest: /home/minecraft/server/plugins/Geyser-Spigot/config.yml
+        dest: /opt/minecraft/server/plugins/Geyser-Spigot/config.yml
         owner: minecraft
         group: minecraft
         mode: 0644
@@ -295,7 +297,7 @@
     - name: Downloading the Floodgate plugin
       get_url:
         url: https://ci.opencollab.dev/job/GeyserMC/job/Floodgate/job/master/lastSuccessfulBuild/artifact/spigot/target/floodgate-spigot.jar
-        dest: /home/minecraft/server/plugins/
+        dest: /opt/minecraft/server/plugins/
         owner: minecraft
         group: minecraft
         mode: 0644
@@ -307,7 +309,7 @@
     - name: Configuring the Floodgate plugin
       template:
         src: templates/java/floodgate/config.yml.j2
-        dest: /home/minecraft/server/plugins/floodgate/config.yml
+        dest: /opt/minecraft/server/plugins/floodgate/config.yml
         owner: minecraft
         group: minecraft
         mode: 0644
@@ -319,7 +321,7 @@
     - name: Downloading the CustomCommandPrefix plugin
       copy:
         src: files/CustomCommandPrefix-1.0.jar
-        dest: /home/minecraft/server/plugins/CustomCommandPrefix.jar
+        dest: /opt/minecraft/server/plugins/CustomCommandPrefix.jar
         owner: minecraft
         group: minecraft
         mode: 0644
@@ -331,7 +333,7 @@
     - name: Configuring the CustomCommandPrefix plugin
       copy:
         content: "prefix: '?'"
-        dest: /home/minecraft/server/plugins/CustomCommandPrefix/config.yml
+        dest: /opt/minecraft/server/plugins/CustomCommandPrefix/config.yml
         owner: minecraft
         group: minecraft
         mode: 0644
@@ -342,7 +344,7 @@
     - name: Downloading the GeyserOptionalPack resource pack
       get_url:
         url: https://ci.opencollab.dev/job/GeyserMC/job/GeyserOptionalPack/job/master/lastSuccessfulBuild/artifact/GeyserOptionalPack.mcpack
-        dest: /home/minecraft/server/plugins/Geyser-Spigot/packs/
+        dest: /opt/minecraft/server/plugins/Geyser-Spigot/packs/
         owner: minecraft
         group: minecraft
         mode: 0644
@@ -362,7 +364,7 @@
     - name: Downloading the Chunky plugin
       get_url:
         url: https://ci.codemc.io/view/Author/job/pop4959/job/Chunky/lastSuccessfulBuild/artifact/bukkit/build/libs/{{ chunky_latest.stdout }}
-        dest: /home/minecraft/server/plugins/Chunky.jar
+        dest: /opt/minecraft/server/plugins/Chunky.jar
         owner: minecraft
         group: minecraft
         mode: 0644
@@ -374,7 +376,7 @@
     - name: Configuring the Chunky plugin
       template:
         src: templates/java/chunky/config.yml.j2
-        dest: /home/minecraft/server/plugins/Chunky/config.yml
+        dest: /opt/minecraft/server/plugins/Chunky/config.yml
         owner: minecraft
         group: minecraft
         mode: 0644
@@ -385,7 +387,7 @@
 
     - name: Creating the ViaVersion plugin directory
       file:
-        path: /home/minecraft/server/plugins/ViaVersion
+        path: /opt/minecraft/server/plugins/ViaVersion
         state: directory
         owner: minecraft
         group: minecraft
@@ -408,7 +410,7 @@
     - name: Downloading the ViaVersion plugin
       get_url:
         url: "{{ viaversion_latest.stdout }}"
-        dest: /home/minecraft/server/plugins/ViaVersion.jar
+        dest: /opt/minecraft/server/plugins/ViaVersion.jar
         owner: minecraft
         group: minecraft
         mode: 0644
@@ -421,7 +423,7 @@
     - name: Configuring the ViaVersion plugin
       template:
         src: templates/java/ViaVersion/config.yml.j2
-        dest: /home/minecraft/server/plugins/ViaVersion/
+        dest: /opt/minecraft/server/plugins/ViaVersion/
         owner: minecraft
         group: minecraft
         mode: 0644
@@ -432,7 +434,7 @@
 
     - name: Removing the ViaVersion plugin
       file:
-        path: /home/minecraft/server/plugins/{{ item }}
+        path: /opt/minecraft/server/plugins/{{ item }}
         state: absent
       with_items:
         - ViaVersion.jar
@@ -442,7 +444,7 @@
     - name: Downloading the latest server backup
       command: oci os object get --auth instance_principal --bucket-name {{ bucket_name }} --file minecraft.tar --name minecraft.tar
       args:
-        chdir: /home/minecraft
+        chdir: /opt/minecraft
       when:
         - restore_backup == true
         - backup_version is not defined
@@ -450,15 +452,15 @@
     - name: Downloading the server backup
       command: oci os object get --auth instance_principal --bucket-name {{ bucket_name }} --file minecraft.tar --name minecraft.tar --version-id {{ backup_version }}
       args:
-        chdir: /home/minecraft
+        chdir: /opt/minecraft
       when:
         - restore_backup == true
         - backup_version is defined
 
     - name: Restoring the server backup
       unarchive:
-        src: /home/minecraft/minecraft.tar
-        dest: /home/minecraft/
+        src: /opt/minecraft/minecraft.tar
+        dest: /opt/minecraft/
         owner: minecraft
         group: minecraft
         mode: u=rwX,g=rX,o=rX
@@ -467,7 +469,7 @@
 
     - name: Removing the downloaded backup
       file:
-        path: /home/minecraft/server.tar
+        path: /opt/minecraft/server.tar
         state: absent
       when: restore_backup == true
 
@@ -481,25 +483,25 @@
       with_items:
         - {
             src: "files/dnf-reboot.sh",
-            dest: "/home/minecraft/dnf-reboot.sh",
+            dest: "/opt/minecraft/dnf-reboot.sh",
             owner: "minecraft",
             mode: "0755",
           }
         - {
             src: "files/stop.sh",
-            dest: "/home/minecraft/stop_minecraft.sh",
+            dest: "/opt/minecraft/stop_minecraft.sh",
             owner: "minecraft",
             mode: "0755",
           }
         - {
             src: "templates/backup.sh.j2",
-            dest: "/home/minecraft/backup_geyser.sh",
+            dest: "/opt/minecraft/backup_geyser.sh",
             owner: "minecraft",
             mode: "0755",
           }
         - {
             src: "files/disk-utilization.sh",
-            dest: "/home/minecraft/",
+            dest: "/opt/minecraft/",
             owner: "minecraft",
             mode: "0755",
           }
@@ -561,7 +563,7 @@
     - name: Accepting the Minecraft Server EULA
       copy:
         content: eula=true
-        dest: /home/minecraft/server/eula.txt
+        dest: /opt/minecraft/server/eula.txt
         owner: minecraft
         group: minecraft
         mode: 0644
@@ -592,7 +594,7 @@
 
     - name: Creating directory for the SELinux module
       file:
-        path: /home/minecraft/selinux
+        path: /opt/minecraft/selinux
         state: directory
         owner: minecraft
         group: minecraft
@@ -600,29 +602,29 @@
 
     - name: Copying SELinux module
       copy:
-        src: files/my-minecraft.te
-        dest: /home/minecraft/selinux/
+        src: files/minecraft.te
+        dest: /opt/minecraft/selinux/
         owner: minecraft
         group: minecraft
         mode: 0644
       register: selinux
 
     - name: Compiling SELinux module
-      command: checkmodule -M -m -o my-minecraft.mod my-minecraft.te
+      command: checkmodule -M -m -o minecraft.mod minecraft.te
       args:
-        chdir: /home/minecraft/selinux
+        chdir: /opt/minecraft/selinux
       when: selinux.changed
 
     - name: Packaging SELinux module
-      command: semodule_package -o my-minecraft.pp -m my-minecraft.mod
+      command: semodule_package -o minecraft.pp -m minecraft.mod
       args:
-        chdir: /home/minecraft/selinux
+        chdir: /opt/minecraft/selinux
       when: selinux.changed
 
     - name: Loading SELinux module
-      command: semodule -i my-minecraft.pp
+      command: semodule -i minecraft.pp
       args:
-        chdir: /home/minecraft/selinux
+        chdir: /opt/minecraft/selinux
       when: selinux.changed
 
     - name: Starting the systemd units
