@@ -129,6 +129,8 @@
     - name: Creating the minecraft user
       user:
         name: minecraft
+        create_home: yes
+        home: /opt/minecraft
         shell: /bin/bash
 
     - name: Checking the size of the swapfile
