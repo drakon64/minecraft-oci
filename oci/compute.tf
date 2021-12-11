@@ -18,7 +18,7 @@ resource "oci_core_instance" "minecraft_instance" {
 
 	display_name = var.oci_compute_display_name
 	create_vnic_details {
-		assign_public_ip = false
+		assign_public_ip = var.static_ip ? false : true
 		subnet_id = oci_core_subnet.vcn-subnet.id
 		nsg_ids = [
 			oci_core_network_security_group.minecraft.id
@@ -45,10 +45,14 @@ data "oci_core_vnic_attachments" "minecraft_vnic_attachments" {
 	compartment_id = oci_identity_compartment.minecraft_compartment.id
 
 	instance_id = oci_core_instance.minecraft_instance.id
+
+	count = var.static_ip ? 1 : 0
 }
 
 data "oci_core_private_ips" "minecraft_private_ip" {
-	vnic_id = data.oci_core_vnic_attachments.minecraft_vnic_attachments.vnic_attachments["0"].vnic_id
+	vnic_id = data.oci_core_vnic_attachments.minecraft_vnic_attachments[0].vnic_attachments[0].vnic_id
+
+	count = var.static_ip ? 1 : 0
 }
 
 resource "oci_core_public_ip" "minecraft_public_ip" {
@@ -56,5 +60,7 @@ resource "oci_core_public_ip" "minecraft_public_ip" {
 	lifetime = "RESERVED"
 
 	display_name = var.oci_compute_display_name
-	private_ip_id = data.oci_core_private_ips.minecraft_private_ip.private_ips["0"].id
+	private_ip_id = data.oci_core_private_ips.minecraft_private_ip[0].private_ips[0].id
+
+	count = var.static_ip ? 1 : 0
 }

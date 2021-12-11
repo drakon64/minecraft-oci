@@ -59,6 +59,11 @@ variable "ssh_authorized_keys" {
 	type = string
 }
 
+variable "static_ip" {
+	type = bool
+	default = true
+}
+
 variable "management_ip" {
 	type = string
 }
