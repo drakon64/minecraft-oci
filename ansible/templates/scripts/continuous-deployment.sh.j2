@@ -1,0 +1,15 @@
+#!/bin/sh -e
+
+systemctl stop minecraft
+
+rm -fr /opt/minecraft/server
+mkdir /opt/minecraft/server
+
+oci os object get --auth instance_principal --bucket-name {{ cd_bucket_name }} --file minecraft.tar --name /opt/minecraft/minecraft.tar
+tar xf /opt/minecraft/minecraft.tar /opt/minecraft/
+rm /opt/minecraft/minecraft.tar
+
+PAPER=$(curl --silent https://papermc.io/api/v2/projects/paper/versions/{{ version }} | jq ".builds | max")
+curl "https://papermc.io/api/v2/projects/paper/versions/{{ version }}/builds/$PAPER/downloads/paper-{{ version }}-$PAPER.jar" -o /opt/minecraft/server/server.jar
+
+systemctl start minecraft
