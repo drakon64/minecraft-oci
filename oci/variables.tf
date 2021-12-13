@@ -20,6 +20,10 @@ variable "continuous_integration" {
 	default = false
 }
 
+variable "live_compartment_name" {
+	type = string
+}
+
 variable "live_backup_bucket_name" {
 	type = string
 }
