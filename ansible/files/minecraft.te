@@ -4,7 +4,7 @@ require {
 	class chr_file { ioctl open read write };
 	class file { create execute execute_no_trans map open read write };
 	class filesystem getattr;
-	class sock_file create;
+	class sock_file { create setattr unlink write };
 	type devpts_t;
 	type groupadd_t;
 	type init_t;
@@ -21,5 +21,5 @@ allow init_t devpts_t:chr_file open;
 allow init_t ptmx_t:chr_file { ioctl open read write };
 allow init_t screen_exec_t:file { execute execute_no_trans map open read };
 allow init_t sudo_exec_t:file { execute execute_no_trans map open read };
-allow init_t tmp_t:sock_file create;
+allow init_t tmp_t:sock_file { create setattr unlink write };
 allow init_t user_tmp_t:file { create write };
