@@ -560,6 +560,31 @@
             mode: "0644",
           }
 
+    - name: Copying continuous deployment script and systemd units
+      template:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        owner: root
+        group: root
+        mode: "{{ item.mode }}"
+      with_items:
+        - {
+            src: "templates/scripts/continuous-deployment.sh.j2",
+            dest: "/opt/minecraft/continuous-deployment.sh",
+            mode: "0744",
+          }
+        - {
+            src: "files/systemd/minecraft-continuous-deployment.service",
+            dest: "/etc/systemd/system/minecraft-continuous-deployment.service",
+            mode: "0644",
+          }
+        - {
+            src: "files/systemd/minecraft-continuous-deployment.timer",
+            dest: "/etc/systemd/system/minecraft-continuous-deployment.timer",
+            mode: "0644",
+          }
+      when: continuous_deployment == true
+
     - name: Accepting the Minecraft Server EULA
       copy:
         content: eula=true
@@ -639,3 +664,11 @@
         - dnf-upgrade.timer
         - uptrack-upgrade.timer
         - oci-disk-utilization.timer
+
+    - name: Starting the continuous deployment systemd unit
+      systemd:
+        name: minecraft-continuous-deployment.timer
+        state: started
+        enabled: yes
+        daemon_reload: yes
+      when: continuous_deployment == true
