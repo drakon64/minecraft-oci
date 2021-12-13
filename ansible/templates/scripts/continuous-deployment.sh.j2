@@ -5,8 +5,8 @@ systemctl stop minecraft
 rm -fr /opt/minecraft/server
 mkdir /opt/minecraft/server
 
-oci os object get --auth instance_principal --bucket-name {{ cd_bucket_name }} --file minecraft.tar --name /opt/minecraft/minecraft.tar
-tar xf /opt/minecraft/minecraft.tar /opt/minecraft/
+oci os object get --auth instance_principal --bucket-name {{ cd_bucket_name }} --file /opt/minecraft/minecraft.tar --name minecraft.tar
+tar xf /opt/minecraft/minecraft.tar -C /opt/minecraft/
 rm /opt/minecraft/minecraft.tar
 
 PAPER=$(curl --silent https://papermc.io/api/v2/projects/paper/versions/{{ version }} | jq ".builds | max")
