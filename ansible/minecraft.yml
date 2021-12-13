@@ -482,13 +482,13 @@
         mode: "{{ item.mode }}"
       with_items:
         - {
-            src: "files/dnf-reboot.sh",
+            src: "files/scripts/dnf-reboot.sh",
             dest: "/opt/minecraft/dnf-reboot.sh",
             owner: "minecraft",
             mode: "0755",
           }
         - {
-            src: "files/stop.sh",
+            src: "files/scripts/stop.sh",
             dest: "/opt/minecraft/stop_minecraft.sh",
             owner: "minecraft",
             mode: "0755",
@@ -500,7 +500,7 @@
             mode: "0755",
           }
         - {
-            src: "files/disk-utilization.sh",
+            src: "files/scripts/disk-utilization.sh",
             dest: "/opt/minecraft/",
             owner: "minecraft",
             mode: "0755",
