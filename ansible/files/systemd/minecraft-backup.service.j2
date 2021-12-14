@@ -4,9 +4,7 @@ After=network.target
 
 [Service]
 Type=oneshot
-ExecStart=/usr/bin/systemctl stop minecraft
 ExecStart=/usr/bin/sudo -u minecraft /opt/minecraft/backup.sh
-ExecStart=/usr/bin/systemctl start minecraft
 
 WorkingDirectory=/opt/minecraft
 

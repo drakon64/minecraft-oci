@@ -1,3 +1,7 @@
 #!/bin/sh
 
+tmux send-keys -t minecraft save-off ENTER save-all SPACE flush ENTER
+
 tar cf - --exclude=cache -S server | oci os object put --auth instance_principal --bucket-name {{ bucket_name }} --file - --name "minecraft.tar" --force
+
+tmux send-keys -t minecraft save-on ENTER
