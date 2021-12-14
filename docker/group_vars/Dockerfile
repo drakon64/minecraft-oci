@@ -20,6 +20,9 @@ RUN curl https://ci.opencollab.dev/job/GeyserMC/job/Geyser/job/master/lastSucces
 
 RUN curl https://ci.opencollab.dev/job/GeyserMC/job/Floodgate/job/master/lastSuccessfulBuild/artifact/spigot/target/floodgate-spigot.jar -o floodgate-spigot.jar
 
+COPY tabtps_latest.sh tabtps_latest.sh
+RUN sh -ex tabtps_latest.sh
+
 COPY viaversion_latest.sh viaversion_latest.sh
 RUN sh -ex viaversion_latest.sh
 
