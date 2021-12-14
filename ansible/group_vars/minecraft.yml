@@ -47,6 +47,7 @@ floodgate:
   player-link:
     allowed: true
     enable-global-linking: true
+    enable-own-linking: false
     enabled: true
     link-code-timeout: 300
     require-link: false
@@ -230,6 +231,11 @@ paper:
           - deepslate
         update-radius: 2
         use-permission: false
+      anticheat:
+        obfuscation:
+          items:
+            hide-durability: false
+            hide-itemmeta: false
       armor-stands-do-collision-entity-lookups: true
       armor-stands-tick: true
       auto-save-interval: -1
@@ -323,6 +329,8 @@ paper:
             per-player: false
         scan-for-legacy-ender-dragon: true
         shield-blocking-delay: 5
+      generator-settings:
+        flat-bedrock: false
       grass-spread-tick-rate: 1
       hopper:
         cooldown-when-full: true
@@ -557,7 +565,9 @@ spigot:
         cactus-modifier: 100
         cane-modifier: 100
         carrot-modifier: 100
+        cavevines-modifier: 100
         cocoa-modifier: 100
+        glowberry-modifier: 100
         kelp-modifier: 100
         melon-modifier: 100
         mushroom-modifier: 100
@@ -566,7 +576,9 @@ spigot:
         pumpkin-modifier: 100
         sapling-modifier: 100
         sweetberry-modifier: 100
+        twistingvines-modifier: 100
         vine-modifier: 100
+        weepingvines-modifier: 100
         wheat-modifier: 100
       hanging-tick-frequency: 100
       hopper-amount: 1
@@ -579,7 +591,6 @@ spigot:
         sprint-multiplier: 0.1
         swim-multiplier: 0.01
       item-despawn-rate: 6000
-      max-entity-collisions: 8
       max-tick-time:
         entity: 50
         tile: 50
