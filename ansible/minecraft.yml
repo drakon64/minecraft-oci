@@ -680,12 +680,27 @@
         daemon_reload: yes
       with_items:
         - minecraft.service
-        - minecraft-backup.timer
         - dnf-upgrade.timer
         - uptrack-upgrade.timer
         - oci-disk-utilization.timer
 
-    - name: Starting the continuous deployment systemd unit
+    - name: Starting the server backup systemd timer
+      systemd:
+        name: minecraft-backup.timer
+        state: started
+        enabled: yes
+        daemon_reload: yes
+      when: continuous_deployment == false
+
+    - name: Stopping the server backup systemd timer
+      systemd:
+        name: minecraft-backup.timer
+        state: stopped
+        enabled: no
+        daemon_reload: yes
+      when: continuous_deployment == true
+
+    - name: Starting the continuous deployment systemd timer
       systemd:
         name: minecraft-continuous-deployment.timer
         state: started
