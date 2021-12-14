@@ -101,7 +101,7 @@
         chdir: /opt/minecraft
       when:
         - update_server == true or new_server == true
-        - skip_backup == false
+        - skip_backup == false or continuous_deployment == false
 
     - name: Applying updates with Uptrack
       command: uptrack-upgrade -y
