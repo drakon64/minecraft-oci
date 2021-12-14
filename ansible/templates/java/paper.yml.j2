@@ -1,9 +1,13 @@
-{% if global_overrides.paper is defined and overrides.paper is defined %}
-{{ paper | combine(global_overrides.paper, overrides.paper, recursive=True) | to_nice_yaml(indent=2) }}
-{% elif global_overrides.paper is defined %}
-{{ paper | combine(global_overrides.paper, recursive=True) | to_nice_yaml(indent=2) }}
-{% elif overrides.paper is defined %}
-{{ paper | combine(overrides.paper, recursive=True) | to_nice_yaml(indent=2) }}
-{% else %}
-{{ paper | to_nice_yaml(indent=2) }}
-{% endif %}
+# This is the main configuration file for Paper.
+# As you can see, there's tons to configure. Some options may impact gameplay, so use
+# with caution, and make sure you know what each option does before configuring.
+#
+# If you need help with the configuration or have any questions related to Paper,
+# join us in our Discord or IRC channel.
+#
+# Discord: https://discord.gg/papermc
+# IRC: #paper @ irc.esper.net ( https://webchat.esper.net/?channels=paper )
+# Website: https://papermc.io/
+# Docs: https://paper.readthedocs.org/
+
+{% if global_overrides.paper is defined and overrides.paper is defined %}{{ paper | combine(global_overrides.paper, overrides.paper, recursive=True) | to_nice_yaml(indent=2) }}{% elif global_overrides.paper is defined %}{{ paper | combine(global_overrides.paper, recursive=True) | to_nice_yaml(indent=2) }}{% elif overrides.paper is defined %}{{ paper | combine(overrides.paper, recursive=True) | to_nice_yaml(indent=2) }}{% else %}{{ paper | to_nice_yaml(indent=2) }}{% endif %}

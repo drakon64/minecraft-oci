@@ -1,9 +1,14 @@
-{% if global_overrides.bukkit is defined and overrides.bukkit is defined %}
-{{ bukkit | combine(global_overrides.bukkit, overrides.bukkit, recursive=True) | to_nice_yaml(indent=2) }}
-{% elif global_overrides.bukkit is defined %}
-{{ bukkit | combine(global_overrides.bukkit, recursive=True) | to_nice_yaml(indent=2) }}
-{% elif overrides.bukkit is defined %}
-{{ bukkit | combine(overrides.bukkit, recursive=True) | to_nice_yaml(indent=2) }}
-{% else %}
-{{ bukkit | to_nice_yaml(indent=2) }}
-{% endif %}
+# This is the main configuration file for Bukkit.
+# As you can see, there's actually not that much to configure without any plugins.
+# For a reference for any variable inside this file, check out the Bukkit Wiki at
+# https://www.spigotmc.org/go/bukkit-yml
+#
+# If you need help on this file, feel free to join us on irc or leave a message
+# on the forums asking for advice.
+#
+# IRC: #spigot @ irc.spi.gt
+#    (If this means nothing to you, just go to https://www.spigotmc.org/go/irc )
+# Forums: https://www.spigotmc.org/
+# Bug tracker: https://www.spigotmc.org/go/bugs
+
+{% if global_overrides.bukkit is defined and overrides.bukkit is defined %}{{ bukkit | combine(global_overrides.bukkit, overrides.bukkit, recursive=True) | to_nice_yaml(indent=2) }}{% elif global_overrides.bukkit is defined %}{{ bukkit | combine(global_overrides.bukkit, recursive=True) | to_nice_yaml(indent=2) }}{% elif overrides.bukkit is defined %}{{ bukkit | combine(overrides.bukkit, recursive=True) | to_nice_yaml(indent=2) }}{% else %}{{ bukkit | to_nice_yaml(indent=2) }}{% endif %}
