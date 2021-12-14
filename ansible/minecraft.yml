@@ -482,25 +482,25 @@
         mode: "{{ item.mode }}"
       with_items:
         - {
-            src: "files/dnf-reboot.sh",
+            src: "files/scripts/dnf-reboot.sh",
             dest: "/opt/minecraft/dnf-reboot.sh",
             owner: "minecraft",
             mode: "0755",
           }
         - {
-            src: "files/stop.sh",
+            src: "files/scripts/stop.sh",
             dest: "/opt/minecraft/stop_minecraft.sh",
             owner: "minecraft",
             mode: "0755",
           }
         - {
-            src: "templates/backup.sh.j2",
+            src: "templates/scripts/backup.sh.j2",
             dest: "/opt/minecraft/backup.sh",
             owner: "minecraft",
             mode: "0755",
           }
         - {
-            src: "files/disk-utilization.sh",
+            src: "files/scripts/disk-utilization.sh",
             dest: "/opt/minecraft/",
             owner: "minecraft",
             mode: "0755",
@@ -559,6 +559,31 @@
             owner: "root",
             mode: "0644",
           }
+
+    - name: Copying continuous deployment script and systemd units
+      template:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        owner: root
+        group: root
+        mode: "{{ item.mode }}"
+      with_items:
+        - {
+            src: "templates/scripts/continuous-deployment.sh.j2",
+            dest: "/opt/minecraft/continuous-deployment.sh",
+            mode: "0744",
+          }
+        - {
+            src: "files/systemd/minecraft-continuous-deployment.service",
+            dest: "/etc/systemd/system/minecraft-continuous-deployment.service",
+            mode: "0644",
+          }
+        - {
+            src: "files/systemd/minecraft-continuous-deployment.timer",
+            dest: "/etc/systemd/system/minecraft-continuous-deployment.timer",
+            mode: "0644",
+          }
+      when: continuous_deployment == true
 
     - name: Accepting the Minecraft Server EULA
       copy:
@@ -639,3 +664,11 @@
         - dnf-upgrade.timer
         - uptrack-upgrade.timer
         - oci-disk-utilization.timer
+
+    - name: Starting the continuous deployment systemd unit
+      systemd:
+        name: minecraft-continuous-deployment.timer
+        state: started
+        enabled: yes
+        daemon_reload: yes
+      when: continuous_deployment == true

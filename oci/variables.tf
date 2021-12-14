@@ -15,6 +15,19 @@ variable "oci_namespace" {
 	type = string
 }
 
+variable "continuous_integration" {
+	type = bool
+	default = false
+}
+
+variable "live_compartment_name" {
+	type = string
+}
+
+variable "live_backup_bucket_name" {
+	type = string
+}
+
 variable "oci_compute_shape" {
 	type = string
 	default = "VM.Standard.A1.Flex"
