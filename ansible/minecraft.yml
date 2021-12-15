@@ -390,8 +390,7 @@
       command: oci os object get --auth instance_principal --bucket-name {{ bucket_name }} --file minecraft.tar --name minecraft.tar{%if backup_version is defined %} --version-id {{ backup_version }}{% endif %}
       args:
         chdir: /opt/minecraft
-      when:
-        - restore_backup == true
+      when: restore_backup == true
 
     - name: Restoring the server backup
       unarchive:
