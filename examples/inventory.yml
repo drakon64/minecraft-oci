@@ -3,6 +3,8 @@ minecraft:
     minecraft-test:
       backup_version:
       bucket_name: minecraft-test-backup
+      cd_bucket_name: minecraft-backup
+      continuous_deployment: true
       eula: true
       graalvm: true
       new_server: true
@@ -17,6 +19,8 @@ minecraft:
     minecraft:
       backup_version:
       bucket_name: minecraft-backup
+      cd_bucket_name:
+      continuous_deployment: false
       eula: true
       graalvm: false
       new_server: false
