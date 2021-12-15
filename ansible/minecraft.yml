@@ -283,33 +283,10 @@
         - restore_backup == false
         - vanilla == false
 
-    - name: Configuring the Geyser plugin
-      template:
-        src: templates/java/geyser/config.yml.j2
-        dest: /opt/minecraft/server/plugins/Geyser-Spigot/config.yml
-        owner: minecraft
-        group: minecraft
-        mode: 0644
-      when:
-        - restore_backup == false
-        - vanilla == false
-
     - name: Downloading the Floodgate plugin
       get_url:
         url: https://ci.opencollab.dev/job/GeyserMC/job/Floodgate/job/master/lastSuccessfulBuild/artifact/spigot/target/floodgate-spigot.jar
         dest: /opt/minecraft/server/plugins/
-        owner: minecraft
-        group: minecraft
-        mode: 0644
-      when:
-        - new_server == true or update_server == true
-        - restore_backup == false
-        - vanilla == false
-
-    - name: Configuring the Floodgate plugin
-      template:
-        src: templates/java/floodgate/config.yml.j2
-        dest: /opt/minecraft/server/plugins/floodgate/config.yml
         owner: minecraft
         group: minecraft
         mode: 0644
@@ -327,17 +304,6 @@
         mode: 0644
       when:
         - new_server == true or update_server == true
-        - restore_backup == false
-        - vanilla == false
-
-    - name: Configuring the CustomCommandPrefix plugin
-      copy:
-        content: "prefix: '?'"
-        dest: /opt/minecraft/server/plugins/CustomCommandPrefix/config.yml
-        owner: minecraft
-        group: minecraft
-        mode: 0644
-      when:
         - restore_backup == false
         - vanilla == false
 
@@ -373,18 +339,6 @@
         - restore_backup == false
         - vanilla == false
 
-    - name: Configuring the Chunky plugin
-      template:
-        src: templates/java/chunky/config.yml.j2
-        dest: /opt/minecraft/server/plugins/Chunky/config.yml
-        owner: minecraft
-        group: minecraft
-        mode: 0644
-      when:
-        - new_server == true or update_server == true
-        - restore_backup == false
-        - vanilla == false
-
     - name: Getting the latest TabTPS release
       shell: curl --silent "https://api.github.com/repos/jpenilla/TabTPS/releases/latest" | jq -r '.assets[].browser_download_url' | grep spigot
       register: tabtps_latest
@@ -402,6 +356,33 @@
         mode: 0644
       when:
         - new_server == true or update_server == true
+        - restore_backup == false
+        - vanilla == false
+
+    - name: Configuring plugins
+      template:
+        src: templates/java/{{ item }}/config.yml.j2
+        dest: /opt/minecraft/server/plugins/{{ item }}/config.yml
+        owner: minecraft
+        group: minecraft
+        mode: 0644
+      with_items:
+       - Chunky
+       - floodgate
+       - Geyser-Spigot
+      when:
+        - new_server == true or update_server == true
+        - restore_backup == false
+        - vanilla == false
+
+    - name: Configuring the CustomCommandPrefix plugin
+      copy:
+        content: "prefix: '?'"
+        dest: /opt/minecraft/server/plugins/CustomCommandPrefix/config.yml
+        owner: minecraft
+        group: minecraft
+        mode: 0644
+      when:
         - restore_backup == false
         - vanilla == false
 
