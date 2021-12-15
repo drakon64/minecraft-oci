@@ -4,6 +4,7 @@ minecraft:
       backup_version:
       bucket_name: minecraft-test-backup
       eula: true
+      graalvm: true
       new_server: true
       restore_backup: false
       restore_permissions: true
@@ -17,6 +18,7 @@ minecraft:
       backup_version:
       bucket_name: minecraft-backup
       eula: true
+      graalvm: false
       new_server: false
       restore_backup: false
       restore_permissions: true
