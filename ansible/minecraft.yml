@@ -271,25 +271,35 @@
         - restore_backup == false
         - vanilla == false
 
-    - name: Downloading the Geyser plugin
-      get_url:
-        url: https://ci.opencollab.dev/job/GeyserMC/job/Geyser/job/master/lastSuccessfulBuild/artifact/bootstrap/spigot/target/Geyser-Spigot.jar
-        dest: /opt/minecraft/server/plugins/
-        owner: minecraft
-        group: minecraft
-        mode: 0644
+    - name: Getting the latest Chunky release
+      shell: curl --silent https://ci.codemc.io/job/pop4959/job/Chunky/lastSuccessfulBuild/api/json | jq -r '.artifacts[0].fileName'
+      register: chunky_latest
       when:
         - new_server == true or update_server == true
         - restore_backup == false
         - vanilla == false
 
-    - name: Downloading the Floodgate plugin
+    - name: Getting the latest TabTPS release
+      shell: curl --silent https://api.github.com/repos/jpenilla/TabTPS/releases/latest | jq -r '.assets[].browser_download_url | select(contains("spigot"))'
+      register: tabtps_latest
+      when:
+        - new_server == true or update_server == true
+        - restore_backup == false
+        - vanilla == false
+
+    - name: Downloading plugins
       get_url:
-        url: https://ci.opencollab.dev/job/GeyserMC/job/Floodgate/job/master/lastSuccessfulBuild/artifact/spigot/target/floodgate-spigot.jar
-        dest: /opt/minecraft/server/plugins/
+        url: "{{ item.url }}"
+        dest: /opt/minecraft/server/plugins/{{ item.dest }}
         owner: minecraft
         group: minecraft
         mode: 0644
+      with_items:
+       - { url: https://ci.opencollab.dev/job/GeyserMC/job/Geyser/job/master/lastSuccessfulBuild/artifact/bootstrap/spigot/target/Geyser-Spigot.jar, dest: Geyser-Spigot.jar }
+       - { url: https://ci.opencollab.dev/job/GeyserMC/job/Floodgate/job/master/lastSuccessfulBuild/artifact/spigot/target/floodgate-spigot.jar, dest: floodgate-spigot.jar }
+       - { url: https://ci.opencollab.dev/job/GeyserMC/job/GeyserOptionalPack/job/master/lastSuccessfulBuild/artifact/GeyserOptionalPack.mcpack, dest: Geyser-Spigot/packs/ }
+       - { url: "https://ci.codemc.io/view/Author/job/pop4959/job/Chunky/lastSuccessfulBuild/artifact/bukkit/build/libs/{{ chunky_latest.stdout }}", dest: "Chunky.jar" }
+       - { url: "{{ tabtps_latest.stdout }}", dest: TabTPS.jar }
       when:
         - new_server == true or update_server == true
         - restore_backup == false
@@ -299,58 +309,6 @@
       copy:
         src: files/CustomCommandPrefix-1.0.jar
         dest: /opt/minecraft/server/plugins/CustomCommandPrefix.jar
-        owner: minecraft
-        group: minecraft
-        mode: 0644
-      when:
-        - new_server == true or update_server == true
-        - restore_backup == false
-        - vanilla == false
-
-    - name: Downloading the GeyserOptionalPack resource pack
-      get_url:
-        url: https://ci.opencollab.dev/job/GeyserMC/job/GeyserOptionalPack/job/master/lastSuccessfulBuild/artifact/GeyserOptionalPack.mcpack
-        dest: /opt/minecraft/server/plugins/Geyser-Spigot/packs/
-        owner: minecraft
-        group: minecraft
-        mode: 0644
-      when:
-        - new_server == true or update_server == true
-        - restore_backup == false
-        - vanilla == false
-
-    - name: Getting the latest Chunky release
-      shell: curl --silent https://ci.codemc.io/job/pop4959/job/Chunky/lastSuccessfulBuild/api/json | jq -r '.artifacts[0].fileName'
-      register: chunky_latest
-      when:
-        - new_server == true or update_server == true
-        - restore_backup == false
-        - vanilla == false
-
-    - name: Downloading the Chunky plugin
-      get_url:
-        url: https://ci.codemc.io/view/Author/job/pop4959/job/Chunky/lastSuccessfulBuild/artifact/bukkit/build/libs/{{ chunky_latest.stdout }}
-        dest: /opt/minecraft/server/plugins/Chunky.jar
-        owner: minecraft
-        group: minecraft
-        mode: 0644
-      when:
-        - new_server == true or update_server == true
-        - restore_backup == false
-        - vanilla == false
-
-    - name: Getting the latest TabTPS release
-      shell: curl --silent "https://api.github.com/repos/jpenilla/TabTPS/releases/latest" | jq -r '.assets[].browser_download_url' | grep spigot
-      register: tabtps_latest
-      when:
-        - new_server == true or update_server == true
-        - restore_backup == false
-        - vanilla == false
-
-    - name: Downloading the TabTPS plugin
-      get_url:
-        url: "{{ tabtps_latest.stdout }}"
-        dest: /opt/minecraft/server/plugins/TabTPS.jar
         owner: minecraft
         group: minecraft
         mode: 0644
