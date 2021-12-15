@@ -9,8 +9,8 @@ oci os object get --auth instance_principal --bucket-name {{ cd_bucket_name }} -
 tar xf /opt/minecraft/minecraft.tar -C /opt/minecraft/
 rm /opt/minecraft/minecraft.tar
 
-PAPER=$(curl --silent https://papermc.io/api/v2/projects/paper/versions/{{ version }} | jq ".builds | max")
-curl "https://papermc.io/api/v2/projects/paper/versions/{{ version }}/builds/$PAPER/downloads/paper-{{ version }}-$PAPER.jar" -o /opt/minecraft/server/server.jar
+PAPER=$(curl --silent https://papermc.io/api/v2/projects/paper/versions/1.18.1 | jq ".builds | max")
+curl "https://papermc.io/api/v2/projects/paper/versions/1.18.1/builds/$PAPER/downloads/paper-1.18.1-$PAPER.jar" -o /opt/minecraft/server/server.jar
 
 curl https://ci.opencollab.dev/job/GeyserMC/job/Geyser/job/master/lastSuccessfulBuild/artifact/bootstrap/spigot/target/Geyser-Spigot.jar -o /opt/minecraft/server/plugins/Geyser-Spigot.jar
 
@@ -19,10 +19,10 @@ curl https://ci.opencollab.dev/job/GeyserMC/job/Floodgate/job/master/lastSuccess
 curl https://ci.opencollab.dev/job/GeyserMC/job/GeyserOptionalPack/job/master/lastSuccessfulBuild/artifact/GeyserOptionalPack.mcpack -o /opt/minecraft/server/plugins/Geyser-Spigot/packs/GeyserOptionalPack.mcpack
 
 CHUNKY=$(curl --silent https://ci.codemc.io/job/pop4959/job/Chunky/lastSuccessfulBuild/api/json | jq -r '.artifacts[0].fileName')
-curl https://ci.codemc.io/view/Author/job/pop4959/job/Chunky/lastSuccessfulBuild/artifact/bukkit/build/libs/$CHUNKY -o /opt/minecraft/server/plugins/Chunky.jar
+curl https://ci.codemc.io/view/Author/job/pop4959/job/Chunky/lastSuccessfulBuild/artifact/bukkit/build/libs/"$CHUNKY" -o /opt/minecraft/server/plugins/Chunky.jar
 
 TABTPS=$(curl --silent "https://api.github.com/repos/jpenilla/TabTPS/releases/latest" | jq -r '.assets[].browser_download_url' | grep spigot)
-curl -L $TABTPS -o /opt/minecraft/server/plugins/tabtps.jar
+curl -L "$TABTPS" -o /opt/minecraft/server/plugins/tabtps.jar
 
 {% if use_viaversion == true %}
 VIAVERSION=$(curl --silent "https://api.github.com/repos/ViaVersion/ViaVersion/releases/latest" | jq -r '.assets[].browser_download_url')
