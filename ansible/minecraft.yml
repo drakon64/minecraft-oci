@@ -118,13 +118,16 @@
 
     - name: Installing packages
       dnf:
-        name:
-          - "{% if graalvm == true %}graalvm21-ee-17{% else %} java-17-openjdk-headless{% endif %}"
-          - jq
-          - python36-oci-cli
-          - tmux
-        state: present
+        name: "{{ item.name }}"
+        state: "{{ item.state }}"
         update_cache: yes
+        autoremove: "{{ item.autoremove }}"
+      with_items:
+       - { name: java-17-openjdk-headless, state: "{% if graalvm == false %}present{% else %}absent{% endif %}", autoremove: yes }
+       - { name: graalvm21-ee-17, state: "{% if graalvm == true %}present{% else %}absent{% endif %}", autoremove: yes }
+       - { name: jq, state: "present", autoremove: no }
+       - { name: python36-oci-cli, state: "present", autoremove: no }
+       - { name: tmux, state: "present", autoremove: no }
 
     - name: Creating the minecraft user
       user:
