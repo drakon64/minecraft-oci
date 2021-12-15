@@ -26,7 +26,7 @@ curl -L "$TABTPS" -o /opt/minecraft/server/plugins/tabtps.jar
 
 {% if use_viaversion == true %}
 VIAVERSION=$(curl --silent "https://api.github.com/repos/ViaVersion/ViaVersion/releases/latest" | jq -r '.assets[].browser_download_url')
-curl -L $BUILD -o ViaVersion.jar
+curl -L "$VIAVERSION" -o ViaVersion.jar
 {% else %}
 rm -fr /opt/minecraft/server/plugins/ViaVersion.jar /opt/minecraft/server/plugins/ViaVersion/
 {% endif %}
