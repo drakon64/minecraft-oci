@@ -674,31 +674,16 @@
 
     - name: Starting the systemd units
       systemd:
-        name: "{{ item }}"
-        state: started
-        enabled: yes
+        name: "{{ item.name }}"
+        state: "{{ item.state }}"
+        enabled: "{{ item.enabled }}"
         daemon_reload: yes
       with_items:
-        - minecraft.service
-        - dnf-upgrade.timer
-        - uptrack-upgrade.timer
-        - oci-disk-utilization.timer
-
-    - name: Starting the server backup systemd timer
-      systemd:
-        name: minecraft-backup.timer
-        state: started
-        enabled: yes
-        daemon_reload: yes
-      when: continuous_deployment == false
-
-    - name: Stopping the server backup systemd timer
-      systemd:
-        name: minecraft-backup.timer
-        state: stopped
-        enabled: no
-        daemon_reload: yes
-      when: continuous_deployment == true
+        - { name: "minecraft.service", state: "started", enabled: "yes" }
+        - { name: "minecraft-backup.timer", state: "{% if continuous_deployment == false %}started{% else %}stopped{% endif %}", enabled: "{% if continuous_deployment == false %}true{% else %}false{% endif %}" }
+        - { name: "dnf-upgrade.timer", state: "started", enabled: "yes" }
+        - { name: "uptrack-upgrade.timer", state: "started", enabled: "yes" }
+        - { name: "oci-disk-utilization.timer", state: "started", enabled: "yes" }
 
     - name: Starting the continuous deployment systemd timer
       systemd:
