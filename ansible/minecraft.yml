@@ -119,7 +119,7 @@
     - name: Installing packages
       dnf:
         name:
-          - java-17-openjdk-headless
+          - graalvm21-ee-17
           - jq
           - python36-oci-cli
           - tmux
