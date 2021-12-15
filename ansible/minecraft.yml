@@ -304,7 +304,7 @@
        - { url: https://ci.opencollab.dev/job/GeyserMC/job/Floodgate/job/master/lastSuccessfulBuild/artifact/spigot/target/floodgate-spigot.jar, dest: floodgate-spigot.jar }
        - { url: https://ci.opencollab.dev/job/GeyserMC/job/GeyserOptionalPack/job/master/lastSuccessfulBuild/artifact/GeyserOptionalPack.mcpack, dest: Geyser-Spigot/packs/ }
        - { url: "https://ci.codemc.io/view/Author/job/pop4959/job/Chunky/lastSuccessfulBuild/artifact/bukkit/build/libs/{{ chunky_latest.stdout }}", dest: "Chunky.jar" }
-       - { url: "{{ tabtps_latest.stdout }}", dest: TabTPS.jar }
+       - { url: "{{ tabtps_latest.stdout }}", dest: tabtps.jar }
       when:
         - new_server == true or update_server == true
         - restore_backup == false
