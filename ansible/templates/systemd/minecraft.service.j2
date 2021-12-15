@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 Type=forking
-{% if (memtotal_b | int) < (12884901888 + 1073741824) %}
+{% if ansible_memtotal_mb < (12288 + 1024) %}
 ExecStart=/usr/bin/tmux new-session -s minecraft -d '{{ command }}'
 {% else %}
 ExecStart=/usr/bin/tmux new-session -s minecraft -d '{{ high_ram_command }}'
