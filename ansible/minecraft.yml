@@ -237,7 +237,6 @@
         - floodgate
         - Geyser-Spigot/packs
       when:
-        - new_server == true
         - restore_backup == false
         - vanilla == false
 
