@@ -12,4 +12,25 @@ rm /opt/minecraft/minecraft.tar
 PAPER=$(curl --silent https://papermc.io/api/v2/projects/paper/versions/{{ version }} | jq ".builds | max")
 curl "https://papermc.io/api/v2/projects/paper/versions/{{ version }}/builds/$PAPER/downloads/paper-{{ version }}-$PAPER.jar" -o /opt/minecraft/server/server.jar
 
+curl https://ci.opencollab.dev/job/GeyserMC/job/Geyser/job/master/lastSuccessfulBuild/artifact/bootstrap/spigot/target/Geyser-Spigot.jar -o /opt/minecraft/server/plugins/Geyser-Spigot.jar
+
+curl https://ci.opencollab.dev/job/GeyserMC/job/Floodgate/job/master/lastSuccessfulBuild/artifact/spigot/target/floodgate-spigot.jar -o /opt/minecraft/server/plugins/floodgate-spigot.jar
+
+curl https://ci.opencollab.dev/job/GeyserMC/job/GeyserOptionalPack/job/master/lastSuccessfulBuild/artifact/GeyserOptionalPack.mcpack -o /opt/minecraft/server/plugins/Geyser-Spigot/packs/GeyserOptionalPack.mcpack
+
+CHUNKY=$(curl --silent https://ci.codemc.io/job/pop4959/job/Chunky/lastSuccessfulBuild/api/json | jq -r '.artifacts[0].fileName')
+curl https://ci.codemc.io/view/Author/job/pop4959/job/Chunky/lastSuccessfulBuild/artifact/bukkit/build/libs/$CHUNKY -o /opt/minecraft/server/plugins/Chunky.jar
+
+TABTPS=$(curl --silent "https://api.github.com/repos/jpenilla/TabTPS/releases/latest" | jq -r '.assets[].browser_download_url' | grep spigot)
+curl -L $TABTPS -o /opt/minecraft/server/plugins/tabtps.jar
+
+{% if use_viaversion == true %}
+VIAVERSION=$(curl --silent "https://api.github.com/repos/ViaVersion/ViaVersion/releases/latest" | jq -r '.assets[].browser_download_url')
+curl -L $BUILD -o ViaVersion.jar
+{% else %}
+rm -fr /opt/minecraft/server/plugins/ViaVersion.jar /opt/minecraft/server/plugins/ViaVersion/
+{% endif %}
+
+chown -R minecraft:minecraft /opt/minecraft/server
+
 systemctl start minecraft
