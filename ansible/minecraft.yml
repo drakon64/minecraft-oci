@@ -224,18 +224,38 @@
       when:
         - restore_backup == false
 
+    - name: Creating the plugin directories
+      file:
+        path: /opt/minecraft/server/plugins/{{ item }}
+        state: directory
+        owner: minecraft
+        group: minecraft
+        mode: 0755
+      with_items:
+        - Chunky
+        - CustomCommandPrefix
+        - floodgate
+        - Geyser-Spigot/packs
+      when:
+        - new_server == true
+        - restore_backup == false
+        - vanilla == false
+
     - name: Configuring the Paper server
       template:
-        src: templates/java/{{ item }}.yml.j2
-        dest: /opt/minecraft/server/{{ item }}.yml
+        src: templates/java/{{ item }}.j2
+        dest: /opt/minecraft/server/{{ item }}
         owner: minecraft
         group: minecraft
         mode: 0644
       with_items:
-        - bukkit
-        - commands
-        - spigot
-        - paper
+        - bukkit.yml
+        - commands.yml
+        - spigot.yml
+        - paper.yml
+        - plugins/Chunky/config.yml
+        - plugins/floodgate/config.yml
+        - plugins/Geyser-Spigot/config.yml
       when:
         - restore_backup == false
         - vanilla == false
@@ -253,23 +273,6 @@
       when:
         - restore_permissions == true
         - restore_backup == false
-
-    - name: Creating the plugin directories
-      file:
-        path: /opt/minecraft/server/plugins/{{ item }}
-        state: directory
-        owner: minecraft
-        group: minecraft
-        mode: 0755
-      with_items:
-        - Chunky
-        - CustomCommandPrefix
-        - floodgate
-        - Geyser-Spigot/packs
-      when:
-        - new_server == true
-        - restore_backup == false
-        - vanilla == false
 
     - name: Getting the latest Chunky release
       shell: curl --silent https://ci.codemc.io/job/pop4959/job/Chunky/lastSuccessfulBuild/api/json | jq -r '.artifacts[0].fileName'
@@ -312,22 +315,6 @@
         owner: minecraft
         group: minecraft
         mode: 0644
-      when:
-        - new_server == true or update_server == true
-        - restore_backup == false
-        - vanilla == false
-
-    - name: Configuring plugins
-      template:
-        src: templates/java/{{ item }}/config.yml.j2
-        dest: /opt/minecraft/server/plugins/{{ item }}/config.yml
-        owner: minecraft
-        group: minecraft
-        mode: 0644
-      with_items:
-       - Chunky
-       - floodgate
-       - Geyser-Spigot
       when:
         - new_server == true or update_server == true
         - restore_backup == false
@@ -381,7 +368,7 @@
 
     - name: Configuring the ViaVersion plugin
       template:
-        src: templates/java/ViaVersion/config.yml.j2
+        src: templates/java/plugins/ViaVersion/config.yml.j2
         dest: /opt/minecraft/server/plugins/ViaVersion/
         owner: minecraft
         group: minecraft
