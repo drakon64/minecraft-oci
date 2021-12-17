@@ -128,7 +128,6 @@ resource "oci_monitoring_alarm" "High-Heap-Utilization" {
 	namespace = "minecraft"
 	pending_duration = "PT5M"
 	query = "heapUsage[1m]{resourceId = ${oci_core_instance.minecraft_instance.id}}.mean() > 75"
-	repeat_notification_duration = "PT1H"
 	resolution = "1m"
 	severity = "WARNING"
 }
