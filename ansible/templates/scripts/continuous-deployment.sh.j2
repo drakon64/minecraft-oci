@@ -11,8 +11,8 @@ oci os object get --auth instance_principal --bucket-name {{ cd_bucket_name }} -
 tar xf /opt/minecraft/minecraft.tar -C /opt/minecraft/
 rm /opt/minecraft/minecraft.tar
 
-PAPER=$(curl --silent https://papermc.io/api/v2/projects/paper/versions/1.18.1 | jq ".builds | max")
-curl "https://papermc.io/api/v2/projects/paper/versions/1.18.1/builds/$PAPER/downloads/paper-1.18.1-$PAPER.jar" -o $PAPERDIR/server.jar
+PAPER=$(curl --silent https://papermc.io/api/v2/projects/paper/versions/{{ version }} | jq ".builds | max")
+curl "https://papermc.io/api/v2/projects/paper/versions/{{ version }}/builds/$PAPER/downloads/paper-{{ version }}-$PAPER.jar" -o $PAPERDIR/server.jar
 
 curl https://ci.opencollab.dev/job/GeyserMC/job/Geyser/job/master/lastSuccessfulBuild/artifact/bootstrap/spigot/target/Geyser-Spigot.jar -o $PAPERDIR/plugins/Geyser-Spigot.jar
 
