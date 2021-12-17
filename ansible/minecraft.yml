@@ -480,6 +480,18 @@
             mode: "0644",
           }
         - {
+            src: "files/systemd/heap-monitor.service",
+            dest: "/etc/systemd/system/heap-monitor.service",
+            owner: "root",
+            mode: "0644",
+          }
+        - {
+            src: "files/systemd/heap-monitor.timer",
+            dest: "/etc/systemd/system/heap-monitor.timer",
+            owner: "root",
+            mode: "0644",
+          }
+        - {
             src: "files/systemd/oci-disk-utilization.service",
             dest: "/etc/systemd/system/oci-disk-utilization.service",
             owner: "root",
@@ -595,6 +607,7 @@
         - { name: "minecraft-backup.timer", state: "{% if continuous_deployment == false %}started{% else %}stopped{% endif %}", enabled: "{% if continuous_deployment == false %}true{% else %}false{% endif %}" }
         - { name: "dnf-upgrade.timer", state: "started", enabled: "yes" }
         - { name: "uptrack-upgrade.timer", state: "started", enabled: "yes" }
+        - { name: "heap-monitor.timer", state: "started", enabled: "yes" }
         - { name: "oci-disk-utilization.timer", state: "started", enabled: "yes" }
 
     - name: Starting the continuous deployment systemd timer
