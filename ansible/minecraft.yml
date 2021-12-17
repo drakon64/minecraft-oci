@@ -136,7 +136,7 @@
         home: /opt/minecraft
         shell: /bin/bash
 
-    - name: Checking the size of the swapfile
+    - name: Checking if the swapfile exists
       stat:
         path: /.swapfile
       register: swapfile
@@ -147,20 +147,14 @@
       failed_when:
         - swapoff.rc != 0
         - swapoff.rc != 255
-      when: swapfile.stat.size != memtotal_b
+      when: swapfile.stat.exists
       register: swapoff
 
-    - name: Extending swapfile to match system memory
-      command: fallocate -l {{ memtotal_b }} /.swapfile
-      when: swapfile.stat.size != memtotal_b
-
-    - name: Formatting swapfile
-      command: mkswap /.swapfile
-      when: swapfile.stat.size != memtotal_b
-
-    - name: Turning on swapfile
-      command: swapon /.swapfile
-      when: swapfile.stat.size != memtotal_b
+    - name: Removing swapfile
+      file:
+        path: /.swapfile
+        state: absent
+      when: swapfile.stat.exists
 
     - name: Removing the existing server
       file:
