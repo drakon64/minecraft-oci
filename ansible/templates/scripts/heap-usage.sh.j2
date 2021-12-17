@@ -11,9 +11,18 @@ RESOURCE_DISPLAY_NAME=$(echo "$METADATA" | jq --raw-output .displayName)
 RESOURCE_ID=$(echo "$METADATA" | jq --raw-output .id)
 SHAPE=$(echo "$METADATA" | jq --raw-output .shape)
 
-JHSDB={% if graalvm == true %}/usr/lib64/graalvm/graalvm21-ee-java17/bin/jhsdb{% endif %}
+JHSDB={% if graalvm == true %}
+/usr/lib64/graalvm/graalvm21-ee-java17/bin/jhsdb
+{% else %}
+jhsdb
+{% endif %}
+JPS={% if graalvm == true %}
+jps
+{% else %}
+/usr/lib/jvm/jre/bin/jps
+{% endif %}
 
-HEAP=$("$JHSDB" jmap --heap --pid "$(jps | grep server.jar | grep  -Eo '.*[0-9]')" | grep "%" | head -n 1 | sed 's/^[[:space:]]*//g' | sed 's/% used//')
+HEAP=$("$JHSDB" jmap --heap --pid "$($JPS | grep server.jar | grep  -Eo '.*[0-9]')" | grep "%" | head -n 1 | sed 's/^[[:space:]]*//g' | sed 's/% used//')
 
 oci --auth instance_principal monitoring metric-data post --metric-data "[
 	{
