@@ -16,17 +16,16 @@ oci --auth instance_principal monitoring metric-data post --metric-data "[
 			}
 		],
 		\"dimensions\": {
-			\"mount\": \"/\",
 			\"resourceDisplayName\": \"$RESOURCE_DISPLAY_NAME\",
 			\"resourceId\": \"$RESOURCE_ID\"
 		},
 		\"metadata\": {
-			\"displayName\": \"Disk Utilization\",
+			\"displayName\": \"Root Disk Utilization\",
 			\"maxRange\": \"100\",
 			\"minRange\": \"0\",
 			\"unit\": \"Percent\"
 		},
-		\"name\": \"diskUtilization\",
+		\"name\": \"rootDiskUtilization\",
 		\"namespace\": \"minecraft\"
 	},
 	{
@@ -38,17 +37,16 @@ oci --auth instance_principal monitoring metric-data post --metric-data "[
 			}
 		],
 		\"dimensions\": {
-			\"mount\": \"/boot/efi\",
 			\"resourceDisplayName\": \"$RESOURCE_DISPLAY_NAME\",
 			\"resourceId\": \"$RESOURCE_ID\"
 		},
 		\"metadata\": {
-			\"displayName\": \"Disk Utilization\",
+			\"displayName\": \"EFI Disk Utilization\",
 			\"maxRange\": \"100\",
 			\"minRange\": \"0\",
 			\"unit\": \"Percent\"
 		},
-		\"name\": \"diskUtilization\",
+		\"name\": \"efiDiskUtilization\",
 		\"namespace\": \"minecraft\"
 	}
 ]" --endpoint https://telemetry-ingestion.$REGION.oraclecloud.com
