@@ -420,12 +420,6 @@
             mode: "0755",
           }
         - {
-            src: "files/scripts/stop.sh",
-            dest: "/opt/minecraft/stop_minecraft.sh",
-            owner: "minecraft",
-            mode: "0755",
-          }
-        - {
             src: "templates/scripts/backup.sh.j2",
             dest: "/opt/minecraft/backup.sh",
             owner: "minecraft",
