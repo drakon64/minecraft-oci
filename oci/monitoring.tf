@@ -15,7 +15,7 @@ resource "oci_monitoring_alarm" "High-CPU-Utilization" {
 	metric_compartment_id_in_subtree = "false"
 	namespace = "oci_computeagent"
 	pending_duration = "PT5M"
-	query = "CpuUtilization[1m]{resourceId = ${oci_core_instance.minecraft_instance.id}}.mean() > ${local.cpu_warn}"
+	query = "CpuUtilization[5m]{resourceId = ${oci_core_instance.minecraft_instance.id}}.mean() > ${local.cpu_warn}"
 	resolution = "1m"
 	severity = "WARNING"
 }
@@ -31,7 +31,7 @@ resource "oci_monitoring_alarm" "High-Disk-Utilization-root" {
 	metric_compartment_id_in_subtree = "false"
 	namespace = "minecraft"
 	pending_duration = "PT5M"
-	query = "DiskUtilization[1m]{resourceId = ${oci_core_instance.minecraft_instance.id}, mount = \"/\"}.mean() > 75"
+	query = "DiskUtilization[5m]{resourceId = ${oci_core_instance.minecraft_instance.id}, mount = \"/\"}.mean() > 75"
 	resolution = "1m"
 	severity = "WARNING"
 }
@@ -47,7 +47,7 @@ resource "oci_monitoring_alarm" "High-Disk-Utilization-boot-efi" {
 	metric_compartment_id_in_subtree = "false"
 	namespace = "minecraft"
 	pending_duration = "PT5M"
-	query = "DiskUtilization[1m]{resourceId = ${oci_core_instance.minecraft_instance.id}, mount = \"/boot/efi\"}.mean() > 75"
+	query = "DiskUtilization[5m]{resourceId = ${oci_core_instance.minecraft_instance.id}, mount = \"/boot/efi\"}.mean() > 75"
 	resolution = "1m"
 	severity = "WARNING"
 }
@@ -63,7 +63,7 @@ resource "oci_monitoring_alarm" "Critical-CPU-Utilization" {
 	metric_compartment_id_in_subtree = "false"
 	namespace = "oci_computeagent"
 	pending_duration = "PT5M"
-	query = "CpuUtilization[1m]{resourceId = ${oci_core_instance.minecraft_instance.id}}.mean() > 90"
+	query = "CpuUtilization[5m]{resourceId = ${oci_core_instance.minecraft_instance.id}}.mean() > 90"
 	repeat_notification_duration = "PT1H"
 	resolution = "1m"
 	severity = "CRITICAL"
@@ -80,7 +80,7 @@ resource "oci_monitoring_alarm" "Critical-Disk-Utilization-root" {
 	metric_compartment_id_in_subtree = "false"
 	namespace = "minecraft"
 	pending_duration = "PT5M"
-	query = "DiskUtilization[1m]{resourceId = ${oci_core_instance.minecraft_instance.id}, mount = \"/\"}.mean() > 90"
+	query = "DiskUtilization[5m]{resourceId = ${oci_core_instance.minecraft_instance.id}, mount = \"/\"}.mean() > 90"
 	resolution = "1m"
 	severity = "CRITICAL"
 }
@@ -96,7 +96,7 @@ resource "oci_monitoring_alarm" "Critical-Disk-Utilization-boot-efi" {
 	metric_compartment_id_in_subtree = "false"
 	namespace = "minecraft"
 	pending_duration = "PT5M"
-	query = "DiskUtilization[1m]{resourceId = ${oci_core_instance.minecraft_instance.id}, mount = \"/boot/efi\"}.mean() > 90"
+	query = "DiskUtilization[5m]{resourceId = ${oci_core_instance.minecraft_instance.id}, mount = \"/boot/efi\"}.mean() > 90"
 	resolution = "1m"
 	severity = "CRITICAL"
 }
@@ -112,7 +112,7 @@ resource "oci_monitoring_alarm" "Critical-Memory-Utilization" {
 	metric_compartment_id_in_subtree = "false"
 	namespace = "oci_computeagent"
 	pending_duration = "PT5M"
-	query = "MemoryUtilization[1m]{resourceId = ${oci_core_instance.minecraft_instance.id}}.mean() > ${local.memory_critical}"
+	query = "MemoryUtilization[5m]{resourceId = ${oci_core_instance.minecraft_instance.id}}.mean() > ${local.memory_critical}"
 	repeat_notification_duration = "PT1H"
 	resolution = "1m"
 	severity = "CRITICAL"
