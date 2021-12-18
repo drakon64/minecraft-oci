@@ -2,7 +2,7 @@
 Description=Heap Usage Monitor
 
 [Timer]
-OnCalendar=*-*-* *:*:*
+OnCalendar=*:*:*
 AccuracySec=1s
 
 [Install]
