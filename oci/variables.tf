@@ -15,7 +15,7 @@ variable "oci_namespace" {
 	type = string
 }
 
-variable "continious_deployment" {
+variable "continuous_deployment" {
 	type = bool
 	default = false
 }
