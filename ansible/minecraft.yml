@@ -568,7 +568,7 @@
             src: "templates/systemd/monitor.service.j2",
             dest: "/etc/systemd/system/disk-utilization-monitor.service",
             description: "Disk Utilization Monitor",
-            execstart: "/opt/minecraft/disk-utilization.sh"
+            execstart: "disk-utilization.sh"
          }
        - {
             src: "templates/systemd/monitor.timer.j2",
@@ -580,7 +580,7 @@
             src: "templates/systemd/monitor.service.j2",
             dest: "/etc/systemd/system/heap-utilization-monitor.service",
             description: "Heap Utilization Monitor",
-            execstart: "/opt/minecraft/heap-utilization.sh"
+            execstart: "heap-utilization.sh"
          }
        - {
             src: "templates/systemd/monitor.timer.j2",
@@ -592,7 +592,7 @@
             src: "templates/systemd/monitor.service.j2",
             dest: "/etc/systemd/system/tick-rate-monitor.service",
             description: "Tick Rate Monitor",
-            execstart: "/opt/minecraft/ticks.sh"
+            execstart: "ticks.sh"
          }
        - {
             src: "templates/systemd/monitor.timer.j2",
@@ -604,7 +604,7 @@
             src: "templates/systemd/monitor.service.j2",
             dest: "/etc/systemd/system/query-monitor.service",
             description: "Query Monitor",
-            execstart: "/opt/minecraft/query.sh"
+            execstart: "query.sh"
          }
        - {
             src: "templates/systemd/monitor.timer.j2",
