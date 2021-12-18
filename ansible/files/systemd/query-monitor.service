@@ -1,0 +1,11 @@
+[Unit]
+Description=Minecraft Server Status
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/opt/minecraft/query.sh
+WorkingDirectory=/opt/minecraft
+
+[Install]
+WantedBy=multi-user.target

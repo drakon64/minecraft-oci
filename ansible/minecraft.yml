@@ -481,6 +481,12 @@
             mode: "0755",
           }
         - {
+            src: "files/scripts/query.sh",
+            dest: "/opt/minecraft/",
+            owner: "minecraft",
+            mode: "0744",
+          }
+        - {
             src: "files/scripts/disk-utilization.sh",
             dest: "/opt/minecraft/",
             owner: "minecraft",
@@ -549,6 +555,18 @@
         - {
             src: "files/systemd/oci-disk-utilization.timer",
             dest: "/etc/systemd/system/oci-disk-utilization.timer",
+            owner: "root",
+            mode: "0644",
+          }
+        - {
+            src: "files/systemd/query-monitor.service",
+            dest: "/etc/systemd/system/query-monitor.service",
+            owner: "root",
+            mode: "0644",
+          }
+        - {
+            src: "files/systemd/query-monitor.timer",
+            dest: "/etc/systemd/system/query-monitor.timer",
             owner: "root",
             mode: "0644",
           }
@@ -657,6 +675,7 @@
         - { name: "dnf-upgrade.timer", state: "started", enabled: "yes" }
         - { name: "uptrack-upgrade.timer", state: "started", enabled: "yes" }
         - { name: "heap-utilization-monitor.timer", state: "started", enabled: "yes" }
+        - { name: "query-monitor.timer", state: "started", enabled: "yes" }
         - { name: "oci-disk-utilization.timer", state: "started", enabled: "yes" }
 
     - name: Starting the continuous deployment systemd timer

@@ -22,7 +22,8 @@ resource "oci_identity_policy" "minecraft_monitoring" {
 	description = "Minecraft monitoring"
 	name = "${var.oci_compute_display_name}-monitoring"
 	statements = [
-		"Allow dynamic-group ${oci_identity_dynamic_group.minecraft.name} to use metrics in compartment id ${oci_identity_compartment.minecraft_compartment.id} where target.metrics.namespace='minecraft'"
+		"Allow dynamic-group ${oci_identity_dynamic_group.minecraft.name} to use metrics in compartment id ${oci_identity_compartment.minecraft_compartment.id} where target.metrics.namespace='minecraft'",
+		"Allow dynamic-group ${oci_identity_dynamic_group.minecraft.name} to read all-resources in compartment id ${oci_identity_compartment.minecraft_compartment.id}"
 	]
 }
 
