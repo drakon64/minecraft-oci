@@ -1,4 +1,5 @@
 locals {
+	cpu_warn = var.oci_compute_ocpus > 1 ? 100 - (100 / var.oci_compute_ocpus) : 75
 	memory_critical = ((var.oci_compute_memory - (1 / 3)) / var.oci_compute_memory) * 100
 	heap_critical = (((var.oci_compute_memory - 3) - (1 / 3)) / (var.oci_compute_memory - 3)) * 100
 }
@@ -14,7 +15,7 @@ resource "oci_monitoring_alarm" "High-CPU-Utilization" {
 	metric_compartment_id_in_subtree = "false"
 	namespace = "oci_computeagent"
 	pending_duration = "PT5M"
-	query = "CpuUtilization[1m]{resourceId = ${oci_core_instance.minecraft_instance.id}}.mean() > 75"
+	query = "CpuUtilization[1m]{resourceId = ${oci_core_instance.minecraft_instance.id}}.mean() > ${local.cpu_warn}"
 	resolution = "1m"
 	severity = "WARNING"
 }
