@@ -490,7 +490,7 @@
             mode: "0755",
           }
         - {
-            src: "files/scripts/ticks.sh",
+            src: "files/scripts/tick-rate.sh",
             dest: "/opt/minecraft/",
             owner: "minecraft",
             mode: "0744",
@@ -592,7 +592,7 @@
             src: "service",
             dest: "tick-rate-monitor.service",
             description: "Tick Rate",
-            execstart: "ticks.sh"
+            execstart: "tick-rate.sh"
          }
        - {
             src: "timer",
