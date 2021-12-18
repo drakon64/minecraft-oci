@@ -2,7 +2,7 @@
 Description=Minecraft Server Status
 
 [Timer]
-OnCalendar=*-*-* *:10:00
+OnCalendar=*:0/10:0
 AccuracySec=1m
 
 [Install]
