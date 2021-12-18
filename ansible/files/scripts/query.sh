@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -e
 
 METADATA=$(curl -H "Authorization: Bearer Oracle" -L http://169.254.169.254/opc/v2/instance)
 COMPARTMENT_ID=$(echo "$METADATA" | jq -r .compartmentId)
