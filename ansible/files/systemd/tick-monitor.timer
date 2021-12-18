@@ -1,0 +1,9 @@
+[Unit]
+Description=Minecraft MSPT
+
+[Timer]
+OnCalendar=*:*:*
+AccuracySec=1m
+
+[Install]
+WantedBy=timers.target

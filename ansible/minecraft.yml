@@ -432,6 +432,15 @@
         - ViaVersion/
       when: use_viaversion == false
 
+    - name: Downloading Jolokia
+      maven_artifact:
+        group_id: org.jolokia
+        artifact_id: jolokia-jvm
+        dest: /opt/minecraft/server/jolokia-jvm.jar
+        owner: minecraft
+        group: minecraft
+        mode: 0644
+
     - name: Downloading the server backup
       command: oci os object get --auth instance_principal --bucket-name {{ bucket_name }} --file minecraft.tar --name minecraft.tar{%if backup_version is defined %} --version-id {{ backup_version }}{% endif %}
       args:
@@ -479,6 +488,12 @@
             dest: "/opt/minecraft/heap-utilization.sh",
             owner: "minecraft",
             mode: "0755",
+          }
+        - {
+            src: "files/scripts/ticks.sh",
+            dest: "/opt/minecraft/",
+            owner: "minecraft",
+            mode: "0744",
           }
         - {
             src: "files/scripts/query.sh",
@@ -567,6 +582,18 @@
         - {
             src: "files/systemd/query-monitor.timer",
             dest: "/etc/systemd/system/query-monitor.timer",
+            owner: "root",
+            mode: "0644",
+          }
+        - {
+            src: "files/systemd/tick-monitor.service",
+            dest: "/etc/systemd/system/",
+            owner: "root",
+            mode: "0644",
+          }
+        - {
+            src: "files/systemd/tick-monitor.timer",
+            dest: "/etc/systemd/system/",
             owner: "root",
             mode: "0644",
           }
@@ -675,6 +702,7 @@
         - { name: "dnf-upgrade.timer", state: "started", enabled: "yes" }
         - { name: "uptrack-upgrade.timer", state: "started", enabled: "yes" }
         - { name: "heap-utilization-monitor.timer", state: "started", enabled: "yes" }
+        - { name: "tick-monitor.timer", state: "started", enabled: "yes" }
         - { name: "query-monitor.timer", state: "started", enabled: "yes" }
         - { name: "oci-disk-utilization.timer", state: "started", enabled: "yes" }
 
