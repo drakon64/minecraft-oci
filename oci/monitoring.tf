@@ -127,7 +127,7 @@ resource "oci_monitoring_alarm" "High-Heap-Utilization" {
 	metric_compartment_id_in_subtree = "false"
 	namespace = "minecraft"
 	pending_duration = "PT5M"
-	query = "heapUsage[5m]{resourceId = ${oci_core_instance.minecraft_instance.id}}.mean() > 75"
+	query = "heapUtilization[5m]{resourceId = ${oci_core_instance.minecraft_instance.id}}.mean() > 75"
 	resolution = "1m"
 	severity = "WARNING"
 }
@@ -143,7 +143,7 @@ resource "oci_monitoring_alarm" "Critical-Heap-Utilization" {
 	metric_compartment_id_in_subtree = "false"
 	namespace = "minecraft"
 	pending_duration = "PT5M"
-	query = "heapUsage[5m]{resourceId = ${oci_core_instance.minecraft_instance.id}}.mean() > 90"
+	query = "heapUtilization[5m]{resourceId = ${oci_core_instance.minecraft_instance.id}}.mean() > 90"
 	repeat_notification_duration = "PT1H"
 	resolution = "1m"
 	severity = "CRITICAL"

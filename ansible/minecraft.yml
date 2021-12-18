@@ -432,8 +432,8 @@
             mode: "0755",
           }
         - {
-            src: "templates/scripts/heap-usage.sh.j2",
-            dest: "/opt/minecraft/heap-usage.sh",
+            src: "templates/scripts/heap-utilization.sh.j2",
+            dest: "/opt/minecraft/heap-utilization.sh",
             owner: "minecraft",
             mode: "0755",
           }
@@ -486,14 +486,14 @@
             mode: "0644",
           }
         - {
-            src: "files/systemd/heap-usage-monitor.service",
-            dest: "/etc/systemd/system/heap-usage-monitor.service",
+            src: "files/systemd/heap-utilization-monitor.service",
+            dest: "/etc/systemd/system/heap-utilization-monitor.service",
             owner: "root",
             mode: "0644",
           }
         - {
-            src: "files/systemd/heap-usage-monitor.timer",
-            dest: "/etc/systemd/system/heap-usage-monitor.timer",
+            src: "files/systemd/heap-utilization-monitor.timer",
+            dest: "/etc/systemd/system/heap-utilization-monitor.timer",
             owner: "root",
             mode: "0644",
           }
@@ -613,7 +613,7 @@
         - { name: "minecraft-backup.timer", state: "{% if continuous_deployment == false %}started{% else %}stopped{% endif %}", enabled: "{% if continuous_deployment == false %}true{% else %}false{% endif %}" }
         - { name: "dnf-upgrade.timer", state: "started", enabled: "yes" }
         - { name: "uptrack-upgrade.timer", state: "started", enabled: "yes" }
-        - { name: "heap-usage-monitor.timer", state: "started", enabled: "yes" }
+        - { name: "heap-utilization-monitor.timer", state: "started", enabled: "yes" }
         - { name: "oci-disk-utilization.timer", state: "started", enabled: "yes" }
 
     - name: Starting the continuous deployment systemd timer
