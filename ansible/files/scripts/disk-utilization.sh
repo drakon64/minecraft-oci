@@ -2,14 +2,9 @@
 
 METADATA=$(curl -H "Authorization: Bearer Oracle" -L http://169.254.169.254/opc/v2/instance)
 COMPARTMENT_ID=$(echo $METADATA | jq --raw-output .compartmentId)
-AVAILABILITY_DOMAIN=$(echo $METADATA | jq --raw-output .availabilityDomain)
-FAULT_DOMAIN=$(echo $METADATA | jq --raw-output .faultDomain)
-IMAGE_ID=$(echo $METADATA | jq --raw-output .image)
-INSTANCE_POOL_ID=$(echo $METADATA | jq --raw-output .instancePoolId)
 REGION=$(echo $METADATA | jq --raw-output .region)
 RESOURCE_DISPLAY_NAME=$(echo $METADATA | jq --raw-output .displayName)
 RESOURCE_ID=$(echo $METADATA | jq --raw-output .id)
-SHAPE=$(echo $METADATA | jq --raw-output .shape)
 
 oci --auth instance_principal monitoring metric-data post --metric-data "[
 	{
