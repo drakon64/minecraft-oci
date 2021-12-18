@@ -1,5 +1,6 @@
 locals {
 	memory_critical = ((var.oci_compute_memory - (1 / 3)) / var.oci_compute_memory) * 100
+	heap_critical = (((var.oci_compute_memory - 3) - (1 / 3)) / (var.oci_compute_memory - 3)) * 100
 }
 
 resource "oci_monitoring_alarm" "High-CPU-Utilization" {
@@ -127,7 +128,7 @@ resource "oci_monitoring_alarm" "Critical-Heap-Utilization" {
 	metric_compartment_id_in_subtree = "false"
 	namespace = "minecraft"
 	pending_duration = "PT5M"
-	query = "heapUtilization[5m]{resourceId = ${oci_core_instance.minecraft_instance.id}}.mean() > 90"
+	query = "heapUtilization[5m]{resourceId = ${oci_core_instance.minecraft_instance.id}}.mean() > ${local.heap_critical}"
 	repeat_notification_duration = "PT1H"
 	resolution = "1m"
 	severity = "CRITICAL"
