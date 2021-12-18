@@ -558,58 +558,58 @@
 
     - name: Copying monitoring systemd units
       template:
-        src: "{{ item.src }}"
-        dest: "{{ item.dest }}"
+        src: "templates/systemd/monitor.{{ item.src }}.j2"
+        dest: "/etc/systemd/system/{{ item.dest }}"
         owner: root
         group: root
         mode: 0644
       with_items:
        - {
-            src: "templates/systemd/monitor.service.j2",
-            dest: "/etc/systemd/system/disk-utilization-monitor.service",
-            description: "Disk Utilization Monitor",
+            src: "service",
+            dest: "disk-utilization-monitor.service",
+            description: "Disk Utilization",
             execstart: "disk-utilization.sh"
          }
        - {
-            src: "templates/systemd/monitor.timer.j2",
-            dest: "/etc/systemd/system/disk-utilization-monitor.timer",
-            description: "Disk Utilization Monitor",
+            src: "timer",
+            dest: "disk-utilization-monitor.timer",
+            description: "Disk Utilization",
             timer: "*:*:0",
          }
        - {
-            src: "templates/systemd/monitor.service.j2",
-            dest: "/etc/systemd/system/heap-utilization-monitor.service",
-            description: "Heap Utilization Monitor",
+            src: "service",
+            dest: "heap-utilization-monitor.service",
+            description: "Heap Utilization",
             execstart: "heap-utilization.sh"
          }
        - {
-            src: "templates/systemd/monitor.timer.j2",
-            dest: "/etc/systemd/system/heap-utilization-monitor.timer",
-            description: "Heap Utilization Monitor",
+            src: "timer",
+            dest: "heap-utilization-monitor.timer",
+            description: "Heap Utilization",
             timer: "*:*:*"
          }
        - {
-            src: "templates/systemd/monitor.service.j2",
-            dest: "/etc/systemd/system/tick-rate-monitor.service",
-            description: "Tick Rate Monitor",
+            src: "service",
+            dest: "tick-rate-monitor.service",
+            description: "Tick Rate",
             execstart: "ticks.sh"
          }
        - {
-            src: "templates/systemd/monitor.timer.j2",
-            dest: "/etc/systemd/system/tick-rate-monitor.timer",
-            description: "Tick Rate Monitor",
+            src: "timer",
+            dest: "tick-rate-monitor.timer",
+            description: "Tick Rate",
             timer: "*:*:*"
          }
        - {
-            src: "templates/systemd/monitor.service.j2",
-            dest: "/etc/systemd/system/query-monitor.service",
-            description: "Query Monitor",
+            src: "service",
+            dest: "query-monitor.service",
+            description: "Query",
             execstart: "query.sh"
          }
        - {
-            src: "templates/systemd/monitor.timer.j2",
-            dest: "/etc/systemd/system/query-monitor.timer",
-            description: "Query Monitor",
+            src: "timer",
+            dest: "query-monitor.timer",
+            description: "Query",
             timer: "*:0/10:0",
          }
 
@@ -718,7 +718,7 @@
         - { name: "uptrack-upgrade.timer", state: "started", enabled: "yes" }
         - { name: "disk-utilization-monitor.timer", state: "started", enabled: "yes" }
         - { name: "heap-utilization-monitor.timer", state: "started", enabled: "yes" }
-        - { name: "tick-monitor.timer", state: "started", enabled: "yes" }
+        - { name: "tick-rate-monitor.timer", state: "started", enabled: "yes" }
         - { name: "query-monitor.timer", state: "started", enabled: "yes" }
 
     - name: Starting the continuous deployment systemd timer
