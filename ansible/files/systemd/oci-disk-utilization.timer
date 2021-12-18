@@ -3,7 +3,6 @@ Description=OCI Disk Utilization Monitor
 
 [Timer]
 OnCalendar=*-*-* *:*:00
-Persistent=true
 AccuracySec=1s
 
 [Install]

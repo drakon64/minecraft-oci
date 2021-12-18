@@ -2,8 +2,7 @@
 Description=Heap Usage Monitor
 
 [Timer]
-OnCalendar=*-*-* *:*:00
-Persistent=true
+OnCalendar=*-*-* *:*:*
 AccuracySec=1s
 
 [Install]
