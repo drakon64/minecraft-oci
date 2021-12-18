@@ -21,15 +21,9 @@ oci --auth instance_principal monitoring metric-data post --metric-data "[
 			}
 		],
 		\"dimensions\": {
-			\"availabilityDomain\": \"$AVAILABILITY_DOMAIN\",
-			\"faultDomain\": \"$FAULT_DOMAIN\",
-			\"imageId\": \"$IMAGE_ID\",
-			\"instancePoolId\": \"$INSTANCE_POOL_ID\",
 			\"mount\": \"/\",
-			\"region\": \"$REGION\",
 			\"resourceDisplayName\": \"$RESOURCE_DISPLAY_NAME\",
-			\"resourceId\": \"$RESOURCE_ID\",
-			\"shape\": \"$SHAPE\"
+			\"resourceId\": \"$RESOURCE_ID\"
 		},
 		\"metadata\": {
 			\"displayName\": \"Disk Utilization\",
@@ -49,15 +43,9 @@ oci --auth instance_principal monitoring metric-data post --metric-data "[
 			}
 		],
 		\"dimensions\": {
-			\"availabilityDomain\": \"$AVAILABILITY_DOMAIN\",
-			\"faultDomain\": \"$FAULT_DOMAIN\",
-			\"imageId\": \"$IMAGE_ID\",
-			\"instancePoolId\": \"$INSTANCE_POOL_ID\",
 			\"mount\": \"/boot/efi\",
-			\"region\": \"$REGION\",
 			\"resourceDisplayName\": \"$RESOURCE_DISPLAY_NAME\",
-			\"resourceId\": \"$RESOURCE_ID\",
-			\"shape\": \"$SHAPE\"
+			\"resourceId\": \"$RESOURCE_ID\"
 		},
 		\"metadata\": {
 			\"displayName\": \"Disk Utilization\",
