@@ -689,3 +689,21 @@ viaversion:
   use-new-deathmessages: true
   use-new-effect-indicator: true
   vine-climb-fix: false
+permissionsex:
+  version: 0
+  debug: false
+  backends:
+      default-file:
+          file: permissions.json
+          type: file
+          alphabetize-entries: false
+          auto-reload: true
+      default:
+          type: sql
+          url: jdbc:h2:permissions
+          prefix: pex
+          aliases: {}
+  server-tags: []
+  default-backend: default-file
+  platform:
+      fallback-op: true

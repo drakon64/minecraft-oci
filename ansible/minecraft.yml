@@ -249,6 +249,7 @@
         - plugins/Chunky/config.yml
         - plugins/floodgate/config.yml
         - plugins/Geyser-Spigot/config.yml
+        - plugins/PermissionsEx/config.yml
       when:
         - restore_backup == false
         - vanilla == false
@@ -332,6 +333,18 @@
       when:
         - restore_backup == false
         - vanilla == false
+
+    - name: Configuring the PermissionsEx plugin
+      copy:
+        src: files/java/permissions.json
+        dest: /opt/minecraft/server/permissions.json
+        owner: minecraft
+        group: minecraft
+        mode: 0644
+      when:
+       - restore_backup == false
+       - restore_permissions == true
+       - vanilla == false
 
     - name: Creating the ViaVersion plugin directory
       file:
