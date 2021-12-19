@@ -230,6 +230,7 @@
         - CustomCommandPrefix
         - floodgate
         - Geyser-Spigot/packs
+        - LuckPerms
       when:
         - restore_backup == false
         - vanilla == false
@@ -249,6 +250,7 @@
         - plugins/Chunky/config.yml
         - plugins/floodgate/config.yml
         - plugins/Geyser-Spigot/config.yml
+        - plugins/LuckPerms/config.yml
       when:
         - restore_backup == false
         - vanilla == false
