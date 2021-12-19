@@ -5,13 +5,14 @@ COMPARTMENT_ID=$(echo $METADATA | jq --raw-output .compartmentId)
 REGION=$(echo $METADATA | jq --raw-output .region)
 RESOURCE_DISPLAY_NAME=$(echo $METADATA | jq --raw-output .displayName)
 RESOURCE_ID=$(echo $METADATA | jq --raw-output .id)
+DATE=$(date --iso-8601=seconds)
 
 oci --auth instance_principal monitoring metric-data post --metric-data "[
 	{
 		\"compartmentId\": \"$COMPARTMENT_ID\",
 		\"datapoints\": [
 			{
-				\"timestamp\": \"$(date --iso-8601=seconds)\",
+				\"timestamp\": \"$DATE\",
 				\"value\": $(df --output=pcent / | grep -v 'Use%' | awk '{print $1}' | tr -d \%)
 			}
 		],
@@ -32,7 +33,7 @@ oci --auth instance_principal monitoring metric-data post --metric-data "[
 		\"compartmentId\": \"$COMPARTMENT_ID\",
 		\"datapoints\": [
 			{
-				\"timestamp\": \"$(date --iso-8601=seconds)\",
+				\"timestamp\": \"$DATE\",
 				\"value\": $(df --output=pcent /boot/efi | grep -v 'Use%' | awk '{print $1}' | tr -d \%)
 			}
 		],
