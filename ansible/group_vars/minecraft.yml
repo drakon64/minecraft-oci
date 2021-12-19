@@ -419,6 +419,24 @@ paper:
       water-over-lava-flow-speed: 5
       zombie-villager-infection-chance: -1.0
       zombies-target-turtle-eggs: true
+permissionsex:
+  backends:
+    default:
+      aliases: {}
+      prefix: pex
+      type: sql
+      url: jdbc:h2:permissions
+    default-file:
+      alphabetize-entries: false
+      auto-reload: true
+      file: permissions.json
+      type: file
+  debug: false
+  default-backend: default-file
+  platform:
+    fallback-op: true
+  server-tags: []
+  version: 0
 server:
   allow-flight: "false"
   allow-nether: "true"
@@ -689,21 +707,3 @@ viaversion:
   use-new-deathmessages: true
   use-new-effect-indicator: true
   vine-climb-fix: false
-permissionsex:
-  version: 0
-  debug: false
-  backends:
-      default-file:
-          file: permissions.json
-          type: file
-          alphabetize-entries: false
-          auto-reload: true
-      default:
-          type: sql
-          url: jdbc:h2:permissions
-          prefix: pex
-          aliases: {}
-  server-tags: []
-  default-backend: default-file
-  platform:
-      fallback-op: true
