@@ -490,12 +490,6 @@
             mode: "0755",
           }
         - {
-            src: "files/scripts/tick-rate.sh",
-            dest: "/opt/minecraft/",
-            owner: "minecraft",
-            mode: "0744",
-          }
-        - {
             src: "files/scripts/query.sh",
             dest: "/opt/minecraft/",
             owner: "minecraft",
@@ -586,18 +580,6 @@
             src: "timer",
             dest: "heap-utilization-monitor.timer",
             description: "Heap Utilization",
-            timer: "*:*:*"
-         }
-       - {
-            src: "service",
-            dest: "tick-rate-monitor.service",
-            description: "Tick Rate",
-            execstart: "tick-rate.sh"
-         }
-       - {
-            src: "timer",
-            dest: "tick-rate-monitor.timer",
-            description: "Tick Rate",
             timer: "*:*:*"
          }
        - {
@@ -718,7 +700,6 @@
         - { name: "uptrack-upgrade.timer", state: "started", enabled: "yes" }
         - { name: "disk-utilization-monitor.timer", state: "started", enabled: "yes" }
         - { name: "heap-utilization-monitor.timer", state: "started", enabled: "yes" }
-        - { name: "tick-rate-monitor.timer", state: "started", enabled: "yes" }
         - { name: "query-monitor.timer", state: "started", enabled: "yes" }
 
     - name: Starting the continuous deployment systemd timer
