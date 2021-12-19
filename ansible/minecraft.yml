@@ -275,6 +275,14 @@
         - restore_backup == false
         - vanilla == false
 
+    - name: Getting the latest PermissionsEx release
+      shell: curl --silent https://jenkins.addstar.com.au/job/PermissionsEx/lastSuccessfulBuild/api/json | jq -r '.artifacts[0].fileName'
+      register: permissionsex_latest
+      when:
+        - new_server == true or update_server == true
+        - restore_backup == false
+        - vanilla == false
+
     - name: Getting the latest TabTPS release
       shell: curl --silent https://api.github.com/repos/jpenilla/TabTPS/releases/latest | jq -r '.assets[].browser_download_url | select(contains("spigot"))'
       register: tabtps_latest
@@ -295,6 +303,7 @@
        - { url: https://ci.opencollab.dev/job/GeyserMC/job/Floodgate/job/master/lastSuccessfulBuild/artifact/spigot/target/floodgate-spigot.jar, dest: floodgate-spigot.jar }
        - { url: https://ci.opencollab.dev/job/GeyserMC/job/GeyserOptionalPack/job/master/lastSuccessfulBuild/artifact/GeyserOptionalPack.mcpack, dest: Geyser-Spigot/packs/ }
        - { url: "https://ci.codemc.io/view/Author/job/pop4959/job/Chunky/lastSuccessfulBuild/artifact/bukkit/build/libs/{{ chunky_latest.stdout }}", dest: "Chunky.jar" }
+       - { url: "https://jenkins.addstar.com.au/job/PermissionsEx/lastSuccessfulBuild/artifact/build/libs/{{ permissionsex_latest.stdout | urlencode }}", dest: "PermissionsEx.jar" }
        - { url: "{{ tabtps_latest.stdout }}", dest: tabtps.jar }
       when:
         - new_server == true or update_server == true
