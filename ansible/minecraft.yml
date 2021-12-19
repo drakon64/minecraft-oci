@@ -484,16 +484,10 @@
             mode: "0755",
           }
         - {
-            src: "templates/scripts/heap-utilization.sh.j2",
-            dest: "/opt/minecraft/heap-utilization.sh",
+            src: "templates/scripts/java-monitor.sh.j2",
+            dest: "/opt/minecraft/java-monitor.sh",
             owner: "minecraft",
             mode: "0755",
-          }
-        - {
-            src: "files/scripts/tick-rate.sh",
-            dest: "/opt/minecraft/",
-            owner: "minecraft",
-            mode: "0744",
           }
         - {
             src: "files/scripts/query.sh",
@@ -572,26 +566,14 @@
          }
        - {
             src: "service",
-            dest: "heap-utilization-monitor.service",
+            dest: "java-monitor.service",
             description: "Heap Utilization",
-            execstart: "heap-utilization.sh"
+            execstart: "java-monitor.sh"
          }
        - {
             src: "timer",
-            dest: "heap-utilization-monitor.timer",
-            description: "Heap Utilization",
-            timer: "*:*:*"
-         }
-       - {
-            src: "service",
-            dest: "tick-rate-monitor.service",
-            description: "Tick Rate",
-            execstart: "tick-rate.sh"
-         }
-       - {
-            src: "timer",
-            dest: "tick-rate-monitor.timer",
-            description: "Tick Rate",
+            dest: "java-monitor.timer",
+            description: "Java",
             timer: "*:*:*"
          }
        - {
@@ -711,8 +693,7 @@
         - { name: "dnf-upgrade.timer", state: "started", enabled: "yes" }
         - { name: "uptrack-upgrade.timer", state: "started", enabled: "yes" }
         - { name: "disk-utilization-monitor.timer", state: "started", enabled: "yes" }
-        - { name: "heap-utilization-monitor.timer", state: "started", enabled: "yes" }
-        - { name: "tick-rate-monitor.timer", state: "started", enabled: "yes" }
+        - { name: "java-monitor.timer", state: "started", enabled: "yes" }
         - { name: "query-monitor.timer", state: "started", enabled: "yes" }
 
     - name: Starting the continuous deployment systemd timer
