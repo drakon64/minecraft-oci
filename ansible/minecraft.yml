@@ -230,6 +230,7 @@
         - CustomCommandPrefix
         - floodgate
         - Geyser-Spigot/packs
+        - PermissionsEx
       when:
         - restore_backup == false
         - vanilla == false
