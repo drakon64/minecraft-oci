@@ -5,6 +5,9 @@
   vars:
     memtotal_b: "{{ ansible_memtotal_mb * 1048576 }}"
     final_server_overrides: "{% if global_overrides.server is defined and overrides.server is defined %}{{ server | combine(global_overrides.server, overrides.server, recursive=True) }}{% elif global_overrides.server is defined %}{{ server | combine(global_overrides.server, recursive=True) }}{% elif overrides.server is defined %}{{ server | combine(overrides.server, recursive=True) }}{% else %}{{ server }}{% endif %}"
+    final_luckperms_overrides: "{% if global_overrides.luckperms is defined and overrides.luckperms is defined %}{{ luckperms | combine(global_overrides.luckperms, overrides.luckperms, recursive=True) }}{% elif global_overrides.luckperms is defined %}{{ luckperms | combine(global_overrides.luckperms, recursive=True) }}{% elif overrides.luckperms is defined %}{{ luckperms | combine(overrides.luckperms, recursive=True) }}{% else %}{{ luckperms }}{% endif %}"
+    final_luckperms_groups: "{% if global_overrides.luckperms_groups is defined and overrides.luckperms_groups is defined %}{{ combine(global_overrides.luckperms_groups, overrides.luckperms_groups, recursive=True) }}{% elif global_overrides.luckperms_groups is defined %}{{ global_overrides.luckperms_groups }}{% elif overrides.luckperms_groups is defined %}{{ overrides.luckperms_groups }}{% endif %}"
+    final_luckperms_users: "{% if global_overrides.luckperms_users is defined and overrides.luckperms_users is defined %}{{ combine(global_overrides.luckperms_users, overrides.luckperms_users, recursive=True) }}{% elif global_overrides.luckperms_users is defined %}{{ global_overrides.luckperms_users }}{% elif overrides.luckperms_users is defined %}{{ overrides.luckperms_users }}{% endif %}"
 
   tasks:
     - name: Configuring sshd # Based on https://infosec.mozilla.org/guidelines/openssh and CIS Benchmarks
@@ -230,7 +233,7 @@
         - CustomCommandPrefix
         - floodgate
         - Geyser-Spigot/packs
-        - PermissionsEx
+        - LuckPerms
       when:
         - restore_backup == false
         - vanilla == false
@@ -250,7 +253,7 @@
         - plugins/Chunky/config.yml
         - plugins/floodgate/config.yml
         - plugins/Geyser-Spigot/config.yml
-        - plugins/PermissionsEx/config.yml
+        - plugins/LuckPerms/config.yml
       when:
         - restore_backup == false
         - vanilla == false
@@ -277,9 +280,9 @@
         - restore_backup == false
         - vanilla == false
 
-    - name: Getting the latest PermissionsEx release
-      shell: curl --silent https://jenkins.addstar.com.au/job/PermissionsEx/lastSuccessfulBuild/api/json | jq -r '.artifacts[0].fileName'
-      register: permissionsex_latest
+    - name: Getting the latest LuckPerms release
+      shell: curl --silent https://ci.lucko.me/job/LuckPerms/lastSuccessfulBuild/api/json | jq -r '.artifacts[0].fileName'
+      register: luckperms_latest
       when:
         - new_server == true or update_server == true
         - restore_backup == false
@@ -305,7 +308,7 @@
        - { url: https://ci.opencollab.dev/job/GeyserMC/job/Floodgate/job/master/lastSuccessfulBuild/artifact/spigot/target/floodgate-spigot.jar, dest: floodgate-spigot.jar }
        - { url: https://ci.opencollab.dev/job/GeyserMC/job/GeyserOptionalPack/job/master/lastSuccessfulBuild/artifact/GeyserOptionalPack.mcpack, dest: Geyser-Spigot/packs/ }
        - { url: "https://ci.codemc.io/view/Author/job/pop4959/job/Chunky/lastSuccessfulBuild/artifact/bukkit/build/libs/{{ chunky_latest.stdout }}", dest: "Chunky.jar" }
-       - { url: "https://jenkins.addstar.com.au/job/PermissionsEx/lastSuccessfulBuild/artifact/build/libs/{{ permissionsex_latest.stdout | urlencode }}", dest: "PermissionsEx.jar" }
+       - { url: "https://ci.lucko.me/job/LuckPerms/1389/artifact/bukkit/loader/build/libs/{{ luckperms_latest.stdout }}", dest: "LuckPerms.jar" }
        - { url: "{{ tabtps_latest.stdout }}", dest: tabtps.jar }
       when:
         - new_server == true or update_server == true
@@ -335,16 +338,42 @@
         - restore_backup == false
         - vanilla == false
 
-    - name: Configuring the PermissionsEx plugin
-      copy:
-        src: files/java/permissions.json
-        dest: /opt/minecraft/server/permissions.json
+    - name: Creating LuckPerms directories
+      file:
+        path: /opt/minecraft/server/plugins/LuckPerms/yaml-storage/{{ item }}
+        state: directory
         owner: minecraft
         group: minecraft
-        mode: 0644
+        mode: 0755
+      with_items:
+       - "{% if final_luckperms_groups is defined %}groups{% endif %}"
+       - "{% if final_luckperms_users is defined %}users{% endif %}"
       when:
+       - final_luckperms_groups is defined or final_luckperms_users is defined
+       - final_luckperms_overrides['storage-method'] == "yaml"
        - restore_backup == false
-       - restore_permissions == true
+       - vanilla == false
+
+    - name: Configuring the LuckPerms users
+      template:
+        src: templates/java/plugins/LuckPerms/luckperms.yml.j2
+        dest: /opt/minecraft/server/plugins/LuckPerms/yaml-storage/users/{{ item.uuid }}.yml
+      with_items: "{{ final_luckperms_users }}"
+      when:
+       - final_luckperms_users is defined
+       - final_luckperms_overrides['storage-method'] == "yaml"
+       - restore_backup == false
+       - vanilla == false
+
+    - name: Configuring the LuckPerms groups
+      template:
+        src: templates/java/plugins/LuckPerms/luckperms.yml.j2
+        dest: /opt/minecraft/server/plugins/LuckPerms/yaml-storage/groups/{{ item.name }}.yml
+      with_items: "{{ final_luckperms_groups }}"
+      when:
+       - final_luckperms_groups is defined
+       - final_luckperms_overrides['storage-method'] == "yaml"
+       - restore_backup == false
        - vanilla == false
 
     - name: Creating the ViaVersion plugin directory

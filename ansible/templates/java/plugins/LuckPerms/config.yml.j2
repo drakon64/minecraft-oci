@@ -1,0 +1,9 @@
+{% if global_overrides.luckperms is defined and overrides.luckperms is defined %}
+{{ luckperms | combine(global_overrides.luckperms, overrides.luckperms, recursive=True) | to_nice_yaml(indent=2) }}
+{% elif global_overrides.luckperms is defined %}
+{{ luckperms | combine(global_overrides.luckperms, recursive=True) | to_nice_yaml(indent=2) }}
+{% elif overrides.luckperms is defined %}
+{{ luckperms | combine(overrides.luckperms, recursive=True) | to_nice_yaml(indent=2) }}
+{% else %}
+{{ luckperms | to_nice_yaml(indent=2) }}
+{% endif %}
