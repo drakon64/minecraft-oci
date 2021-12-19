@@ -58,26 +58,5 @@ oci --auth instance_principal monitoring metric-data post --metric-data "[
 		},
 		\"name\": \"mspt\",
 		\"namespace\": \"minecraft\"
-	},
-	{
-		\"compartmentId\": \"$COMPARTMENT_ID\",
-		\"datapoints\": [
-			{
-				\"timestamp\": \"$DATE\",
-				\"value\": \"$TPS\"
-			}
-		],
-		\"dimensions\": {
-			\"resourceDisplayName\": \"$RESOURCE_DISPLAY_NAME\",
-			\"resourceId\": \"$RESOURCE_ID\"
-		},
-		\"metadata\": {
-			\"displayName\": \"TPS\",
-			\"maxRange\": \"20\",
-			\"minRange\": \"0\",
-			\"unit\": \"Ticks Per Second\"
-		},
-		\"name\": \"tps\",
-		\"namespace\": \"minecraft\"
 	}
 ]" --endpoint https://telemetry-ingestion."$REGION".oraclecloud.com
