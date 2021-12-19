@@ -8,6 +8,13 @@ RESOURCE_ID=$(echo "$METADATA" | jq -r .id)
 
 IP=$(oci --auth instance_principal compute instance list-vnics --instance-id "$RESOURCE_ID" --compartment-id "$COMPARTMENT_ID" | jq -r '.data[]."public-ip"')
 QUERY=$(curl --silent https://api.mcsrvstat.us/2/"$IP" | jq -r .)
+PLAYERS_ONLINE=$(echo "$QUERY" | jq -r .players.online)
+
+if [ "$PLAYERS_ONLINE" -gt 0 ] ; then
+	tmux send-keys -t minecraft chunky SPACE pause ENTER
+elif [ "$PLAYERS_ONLINE" -eq 0 ] ; then
+	tmux send-keys -t minecraft chunky SPACE continue ENTER
+fi
 
 oci --auth instance_principal monitoring metric-data post --metric-data "[
 	{
@@ -15,7 +22,7 @@ oci --auth instance_principal monitoring metric-data post --metric-data "[
 		\"datapoints\": [
 			{
 				\"timestamp\": \"$(date --iso-8601=seconds)\",
-				\"value\": $(echo "$QUERY" | jq -r .players.online)
+				\"value\": \"$PLAYERS_ONLINE\"
 			}
 		],
 		\"dimensions\": {
