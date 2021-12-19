@@ -6,7 +6,6 @@ minecraft:
       cd_bucket_name: minecraft-backup
       continuous_deployment: true
       eula: true
-      graalvm: true
       new_server: true
       restore_backup: false
       restore_permissions: true
@@ -22,7 +21,6 @@ minecraft:
       cd_bucket_name:
       continuous_deployment: false
       eula: true
-      graalvm: false
       new_server: false
       restore_backup: false
       restore_permissions: true
