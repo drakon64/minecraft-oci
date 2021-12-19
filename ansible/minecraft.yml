@@ -230,7 +230,6 @@
         - CustomCommandPrefix
         - floodgate
         - Geyser-Spigot/packs
-        - PermissionsEx
       when:
         - restore_backup == false
         - vanilla == false
@@ -250,7 +249,6 @@
         - plugins/Chunky/config.yml
         - plugins/floodgate/config.yml
         - plugins/Geyser-Spigot/config.yml
-        - plugins/PermissionsEx/config.yml
       when:
         - restore_backup == false
         - vanilla == false
@@ -277,9 +275,9 @@
         - restore_backup == false
         - vanilla == false
 
-    - name: Getting the latest PermissionsEx release
-      shell: curl --silent https://jenkins.addstar.com.au/job/PermissionsEx/lastSuccessfulBuild/api/json | jq -r '.artifacts[0].fileName'
-      register: permissionsex_latest
+    - name: Getting the latest LuckPerms release
+      shell: curl --silent https://ci.lucko.me/job/LuckPerms/lastSuccessfulBuild/api/json | jq -r '.artifacts[0].fileName'
+      register: luckperms_latest
       when:
         - new_server == true or update_server == true
         - restore_backup == false
@@ -305,7 +303,7 @@
        - { url: https://ci.opencollab.dev/job/GeyserMC/job/Floodgate/job/master/lastSuccessfulBuild/artifact/spigot/target/floodgate-spigot.jar, dest: floodgate-spigot.jar }
        - { url: https://ci.opencollab.dev/job/GeyserMC/job/GeyserOptionalPack/job/master/lastSuccessfulBuild/artifact/GeyserOptionalPack.mcpack, dest: Geyser-Spigot/packs/ }
        - { url: "https://ci.codemc.io/view/Author/job/pop4959/job/Chunky/lastSuccessfulBuild/artifact/bukkit/build/libs/{{ chunky_latest.stdout }}", dest: "Chunky.jar" }
-       - { url: "https://jenkins.addstar.com.au/job/PermissionsEx/lastSuccessfulBuild/artifact/build/libs/{{ permissionsex_latest.stdout | urlencode }}", dest: "PermissionsEx.jar" }
+       - { url: "https://ci.lucko.me/job/LuckPerms/1389/artifact/bukkit/loader/build/libs/{{ luckperms_latest.stdout }}", dest: "LuckPerms.jar" }
        - { url: "{{ tabtps_latest.stdout }}", dest: tabtps.jar }
       when:
         - new_server == true or update_server == true
@@ -334,18 +332,6 @@
       when:
         - restore_backup == false
         - vanilla == false
-
-    - name: Configuring the PermissionsEx plugin
-      copy:
-        src: files/java/permissions.json
-        dest: /opt/minecraft/server/permissions.json
-        owner: minecraft
-        group: minecraft
-        mode: 0644
-      when:
-       - restore_backup == false
-       - restore_permissions == true
-       - vanilla == false
 
     - name: Creating the ViaVersion plugin directory
       file:
