@@ -6,7 +6,7 @@ REGION=$(echo "$METADATA" | jq -r .region)
 RESOURCE_DISPLAY_NAME=$(echo "$METADATA" | jq -r .displayName)
 RESOURCE_ID=$(echo "$METADATA" | jq -r .id)
 
-IP=$(oci --auth instance_principal compute instance list-vnics --instance-id "$RESOURCE_ID" | jq -r '.data[]."public-ip"')
+IP=$(oci --auth instance_principal compute instance list-vnics --instance-id "$RESOURCE_ID" --compartment-id "$COMPARTMENT_ID" | jq -r '.data[]."public-ip"')
 QUERY=$(curl --silent https://api.mcsrvstat.us/2/"$IP" | jq -r .)
 
 oci --auth instance_principal monitoring metric-data post --metric-data "[
