@@ -5,6 +5,9 @@
   vars:
     memtotal_b: "{{ ansible_memtotal_mb * 1048576 }}"
     final_server_overrides: "{% if global_overrides.server is defined and overrides.server is defined %}{{ server | combine(global_overrides.server, overrides.server, recursive=True) }}{% elif global_overrides.server is defined %}{{ server | combine(global_overrides.server, recursive=True) }}{% elif overrides.server is defined %}{{ server | combine(overrides.server, recursive=True) }}{% else %}{{ server }}{% endif %}"
+    final_luckperms_overrides: "{% if global_overrides.luckperms is defined and overrides.luckperms is defined %}{{ luckperms | combine(global_overrides.luckperms, overrides.luckperms, recursive=True) }}{% elif global_overrides.luckperms is defined %}{{ luckperms | combine(global_overrides.luckperms, recursive=True) }}{% elif overrides.luckperms is defined %}{{ luckperms | combine(overrides.luckperms, recursive=True) }}{% else %}{{ luckperms }}{% endif %}"
+    final_luckperms_groups: "{% if global_overrides.luckperms_groups is defined and overrides.luckperms_groups is defined %}{{ combine(global_overrides.luckperms_groups, overrides.luckperms_groups, recursive=True) }}{% elif global_overrides.luckperms_groups is defined %}{{ global_overrides.luckperms_groups }}{% elif overrides.luckperms_groups is defined %}{{ overrides.luckperms_groups }}{% endif %}"
+    final_luckperms_users: "{% if global_overrides.luckperms_users is defined and overrides.luckperms_users is defined %}{{ combine(global_overrides.luckperms_users, overrides.luckperms_users, recursive=True) }}{% elif global_overrides.luckperms_users is defined %}{{ global_overrides.luckperms_users }}{% elif overrides.luckperms_users is defined %}{{ overrides.luckperms_users }}{% endif %}"
 
   tasks:
     - name: Configuring sshd # Based on https://infosec.mozilla.org/guidelines/openssh and CIS Benchmarks
@@ -334,6 +337,44 @@
       when:
         - restore_backup == false
         - vanilla == false
+
+    - name: Creating LuckPerms directories
+      file:
+        path: /opt/minecraft/server/plugins/LuckPerms/yaml-storage/{{ item }}
+        state: directory
+        owner: minecraft
+        group: minecraft
+        mode: 0755
+      with_items:
+       - "{% if final_luckperms_groups is defined %}groups{% endif %}"
+       - "{% if final_luckperms_users is defined %}users{% endif %}"
+      when:
+       - final_luckperms_groups is defined or final_luckperms_users is defined
+       - final_luckperms_overrides['storage-method'] == "yaml"
+       - restore_backup == false
+       - vanilla == false
+
+    - name: Configuring the LuckPerms users
+      template:
+        src: templates/java/plugins/LuckPerms/luckperms.yml.j2
+        dest: /opt/minecraft/server/plugins/LuckPerms/yaml-storage/users/{{ item.uuid }}.yml
+      with_items: "{{ final_luckperms_users }}"
+      when:
+       - final_luckperms_users is defined
+       - final_luckperms_overrides['storage-method'] == "yaml"
+       - restore_backup == false
+       - vanilla == false
+
+    - name: Configuring the LuckPerms groups
+      template:
+        src: templates/java/plugins/LuckPerms/luckperms.yml.j2
+        dest: /opt/minecraft/server/plugins/LuckPerms/yaml-storage/groups/{{ item.name }}.yml
+      with_items: "{{ final_luckperms_groups }}"
+      when:
+       - final_luckperms_groups is defined
+       - final_luckperms_overrides['storage-method'] == "yaml"
+       - restore_backup == false
+       - vanilla == false
 
     - name: Creating the ViaVersion plugin directory
       file:
