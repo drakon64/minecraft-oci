@@ -5,50 +5,49 @@ COMPARTMENT_ID=$(echo $METADATA | jq --raw-output .compartmentId)
 REGION=$(echo $METADATA | jq --raw-output .region)
 RESOURCE_DISPLAY_NAME=$(echo $METADATA | jq --raw-output .displayName)
 RESOURCE_ID=$(echo $METADATA | jq --raw-output .id)
+DATE=$(date --iso-8601=seconds)
 
 oci --auth instance_principal monitoring metric-data post --metric-data "[
 	{
 		\"compartmentId\": \"$COMPARTMENT_ID\",
 		\"datapoints\": [
 			{
-				\"timestamp\": \"$(date --iso-8601=seconds)\",
+				\"timestamp\": \"$DATE\",
 				\"value\": $(df --output=pcent / | grep -v 'Use%' | awk '{print $1}' | tr -d \%)
 			}
 		],
 		\"dimensions\": {
-			\"mount\": \"/\",
 			\"resourceDisplayName\": \"$RESOURCE_DISPLAY_NAME\",
 			\"resourceId\": \"$RESOURCE_ID\"
 		},
 		\"metadata\": {
-			\"displayName\": \"Disk Utilization\",
+			\"displayName\": \"Root Disk Utilization\",
 			\"maxRange\": \"100\",
 			\"minRange\": \"0\",
 			\"unit\": \"Percent\"
 		},
-		\"name\": \"diskUtilization\",
+		\"name\": \"rootDiskUtilization\",
 		\"namespace\": \"minecraft\"
 	},
 	{
 		\"compartmentId\": \"$COMPARTMENT_ID\",
 		\"datapoints\": [
 			{
-				\"timestamp\": \"$(date --iso-8601=seconds)\",
+				\"timestamp\": \"$DATE\",
 				\"value\": $(df --output=pcent /boot/efi | grep -v 'Use%' | awk '{print $1}' | tr -d \%)
 			}
 		],
 		\"dimensions\": {
-			\"mount\": \"/boot/efi\",
 			\"resourceDisplayName\": \"$RESOURCE_DISPLAY_NAME\",
 			\"resourceId\": \"$RESOURCE_ID\"
 		},
 		\"metadata\": {
-			\"displayName\": \"Disk Utilization\",
+			\"displayName\": \"EFI Disk Utilization\",
 			\"maxRange\": \"100\",
 			\"minRange\": \"0\",
 			\"unit\": \"Percent\"
 		},
-		\"name\": \"diskUtilization\",
+		\"name\": \"efiDiskUtilization\",
 		\"namespace\": \"minecraft\"
 	}
 ]" --endpoint https://telemetry-ingestion.$REGION.oraclecloud.com

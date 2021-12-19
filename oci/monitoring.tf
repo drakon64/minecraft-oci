@@ -134,3 +134,36 @@ resource "oci_monitoring_alarm" "Critical-Heap-Utilization" {
 	resolution = "1m"
 	severity = "CRITICAL"
 }
+
+resource "oci_monitoring_alarm" "High-MSPT" {
+	compartment_id = oci_identity_compartment.minecraft_compartment.id
+	destinations = [
+		oci_ons_notification_topic.minecraft_monitoring.id
+	]
+	display_name = "High MSPT on ${oci_core_instance.minecraft_instance.display_name}"
+	is_enabled = "true"
+	metric_compartment_id = oci_identity_compartment.minecraft_compartment.id
+	metric_compartment_id_in_subtree = "false"
+	namespace = "minecraft"
+	pending_duration = "PT5M"
+	query = "mspt[5m]{resourceId = ${oci_core_instance.minecraft_instance.id}}.mean() > 25"
+	resolution = "1m"
+	severity = "WARNING"
+}
+
+resource "oci_monitoring_alarm" "Critical-MSPT" {
+	compartment_id = oci_identity_compartment.minecraft_compartment.id
+	destinations = [
+		oci_ons_notification_topic.minecraft_monitoring.id
+	]
+	display_name = "Critical MSPT on ${oci_core_instance.minecraft_instance.display_name}"
+	is_enabled = "true"
+	metric_compartment_id = oci_identity_compartment.minecraft_compartment.id
+	metric_compartment_id_in_subtree = "false"
+	namespace = "minecraft"
+	pending_duration = "PT5M"
+	query = "mspt[5m]{resourceId = ${oci_core_instance.minecraft_instance.id}}.mean() > 50"
+	repeat_notification_duration = "PT1H"
+	resolution = "1m"
+	severity = "CRITICAL"
+}

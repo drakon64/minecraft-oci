@@ -1,9 +1,0 @@
-[Unit]
-Description=OCI Disk Utilization Monitor
-
-[Timer]
-OnCalendar=*-*-* *:*:00
-AccuracySec=1s
-
-[Install]
-WantedBy=timers.target

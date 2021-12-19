@@ -9,7 +9,7 @@ ExecStart=/usr/bin/tmux new-session -s minecraft -d '{{ command }}'
 {% else %}
 ExecStart=/usr/bin/tmux new-session -s minecraft -d '{{ high_ram_command }}'
 {% endif %}
-ExecStop=/usr/bin/tmux send-keys -t minecraft C-c
+ExecStop=/usr/bin/tmux send-keys -t minecraft stop ENTER
 
 WorkingDirectory=/opt/minecraft/server
 
