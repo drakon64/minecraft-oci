@@ -7,5 +7,10 @@ Type=oneshot
 ExecStart=/opt/minecraft/{{ item.execstart }}
 WorkingDirectory=/opt/minecraft
 
+{%if item.user is defined %}
+User={{ item.user }}
+Group={{ item.user }}
+{% endif %}
+
 [Install]
 WantedBy=multi-user.target

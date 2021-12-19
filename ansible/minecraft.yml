@@ -580,7 +580,8 @@
             src: "service",
             dest: "query-monitor.service",
             description: "Query",
-            execstart: "query.sh"
+            execstart: "query.sh",
+            user: minecraft
          }
        - {
             src: "timer",
