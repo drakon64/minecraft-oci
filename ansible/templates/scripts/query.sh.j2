@@ -10,12 +10,14 @@ IP=$(oci --auth instance_principal compute instance list-vnics --instance-id "$R
 QUERY=$(curl --silent https://api.mcsrvstat.us/2/"$IP" | jq -r .)
 PLAYERS_ONLINE=$(echo "$QUERY" | jq -r .players.online)
 
+{% if continuous_deployment == false %}
 if [ "$PLAYERS_ONLINE" -gt 0 ] ; then
 	tmux send-keys -t minecraft chunky SPACE pause ENTER
 elif [ "$PLAYERS_ONLINE" -eq 0 ] ; then
 	tmux send-keys -t minecraft chunky SPACE continue ENTER
 fi
 
+{% endif %}
 oci --auth instance_principal monitoring metric-data post --metric-data "[
 	{
 		\"compartmentId\": \"$COMPARTMENT_ID\",

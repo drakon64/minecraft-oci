@@ -490,8 +490,8 @@
             mode: "0755",
           }
         - {
-            src: "files/scripts/query.sh",
-            dest: "/opt/minecraft/",
+            src: "templates/scripts/query.sh.j2",
+            dest: "/opt/minecraft/query.sh",
             owner: "minecraft",
             mode: "0744",
           }
