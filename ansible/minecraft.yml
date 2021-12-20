@@ -690,17 +690,17 @@
         daemon_reload: yes
       with_items:
         - { name: "minecraft.service", state: "started", enabled: "yes" }
-        - { name: "minecraft-backup.timer", state: "{% if continuous_deployment == false %}started{% else %}stopped{% endif %}", enabled: "{% if continuous_deployment == false %}true{% else %}false{% endif %}" }
-        - { name: "dnf-upgrade.timer", state: "started", enabled: "yes" }
-        - { name: "uptrack-upgrade.timer", state: "started", enabled: "yes" }
-        - { name: "disk-utilization-monitor.timer", state: "started", enabled: "yes" }
-        - { name: "java-monitor.timer", state: "started", enabled: "yes" }
-        - { name: "query-monitor.timer", state: "started", enabled: "yes" }
+        - { name: "minecraft-backup.timer", state: "{% if continuous_deployment == false %}restarted{% else %}stopped{% endif %}", enabled: "{% if continuous_deployment == false %}true{% else %}false{% endif %}" }
+        - { name: "dnf-upgrade.timer", state: "restarted", enabled: "yes" }
+        - { name: "uptrack-upgrade.timer", state: "restarted", enabled: "yes" }
+        - { name: "disk-utilization-monitor.timer", state: "restarted", enabled: "yes" }
+        - { name: "java-monitor.timer", state: "restarted", enabled: "yes" }
+        - { name: "query-monitor.timer", state: "restarted", enabled: "yes" }
 
     - name: Starting the continuous deployment systemd timer
       systemd:
         name: minecraft-continuous-deployment.timer
-        state: started
+        state: restarted
         enabled: yes
         daemon_reload: yes
       when: continuous_deployment == true
