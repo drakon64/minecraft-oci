@@ -23,6 +23,9 @@ curl https://ci.opencollab.dev/job/GeyserMC/job/GeyserOptionalPack/job/master/la
 CHUNKY=$(curl --silent https://ci.codemc.io/job/pop4959/job/Chunky/lastSuccessfulBuild/api/json | jq -r '.artifacts[0].fileName')
 curl https://ci.codemc.io/view/Author/job/pop4959/job/Chunky/lastSuccessfulBuild/artifact/bukkit/build/libs/"$CHUNKY" -o $PAPERDIR/plugins/Chunky.jar
 
+LUCKPERMS=$(curl --silent https://ci.lucko.me/job/LuckPerms/lastSuccessfulBuild/api/json | jq -r '.artifacts[0].fileName')
+curl https://ci.lucko.me/job/LuckPerms/1389/artifact/bukkit/loader/build/libs/"$LUCKPERMS" -o $PAPERDIR/plugins/LuckPerms.jar
+
 TABTPS=$(curl --silent "https://api.github.com/repos/jpenilla/TabTPS/releases/latest" | jq -r '.assets[].browser_download_url' | grep spigot)
 curl -L "$TABTPS" -o $PAPERDIR/plugins/tabtps.jar
 
