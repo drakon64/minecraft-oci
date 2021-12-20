@@ -1,7 +1,8 @@
 locals {
 	cpu_warn = var.oci_compute_ocpus > 1 ? 100 - (100 / var.oci_compute_ocpus) : 75
-	memory_critical = ((var.oci_compute_memory - (1 / 3)) / var.oci_compute_memory) * 100
-	heap_critical = (((var.oci_compute_memory - 3) - (1 / 3)) / (var.oci_compute_memory - 3)) * 100
+	heap = 2
+	heap_warn = ((var.oci_compute_memory - (1 / local.heap)) / var.oci_compute_memory) * 100
+	memory_critical = 100 - local.heap
 }
 
 resource "oci_monitoring_alarm" "High-CPU-Utilization" {
@@ -16,6 +17,22 @@ resource "oci_monitoring_alarm" "High-CPU-Utilization" {
 	namespace = "oci_computeagent"
 	pending_duration = "PT5M"
 	query = "CpuUtilization[5m]{resourceId = ${oci_core_instance.minecraft_instance.id}}.mean() > ${local.cpu_warn}"
+	resolution = "1m"
+	severity = "WARNING"
+}
+
+resource "oci_monitoring_alarm" "High-Heap-Utilization" {
+	compartment_id = oci_identity_compartment.minecraft_compartment.id
+	destinations = [
+		oci_ons_notification_topic.minecraft_monitoring.id
+	]
+	display_name = "High Heap Utilization on ${oci_core_instance.minecraft_instance.display_name}"
+	is_enabled = "true"
+	metric_compartment_id = oci_identity_compartment.minecraft_compartment.id
+	metric_compartment_id_in_subtree = "false"
+	namespace = "minecraft"
+	pending_duration = "PT5M"
+	query = "heapUtilization[5m]{resourceId = ${oci_core_instance.minecraft_instance.id}}.mean() > ${local.heap_warn}"
 	resolution = "1m"
 	severity = "WARNING"
 }
@@ -129,7 +146,7 @@ resource "oci_monitoring_alarm" "Critical-Heap-Utilization" {
 	metric_compartment_id_in_subtree = "false"
 	namespace = "minecraft"
 	pending_duration = "PT5M"
-	query = "heapUtilization[5m]{resourceId = ${oci_core_instance.minecraft_instance.id}}.mean() > ${local.heap_critical}"
+	query = "heapUtilization[5m]{resourceId = ${oci_core_instance.minecraft_instance.id}}.mean() > ${local.memory_critical}"
 	repeat_notification_duration = "PT1H"
 	resolution = "1m"
 	severity = "CRITICAL"
