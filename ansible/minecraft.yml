@@ -123,7 +123,6 @@
          - jq
          - python36-oci-cli
          - tmux
-         - jolokia-jvm-agent
         state: present
         update_cache: yes
 
@@ -385,6 +384,15 @@
         - ViaVersion.jar
         - ViaVersion/
       when: use_viaversion == false
+
+    - name: Downloading Jolokia
+      maven_artifact:
+        group_id: org.jolokia
+        artifact_id: jolokia-jvm
+        dest: /opt/minecraft/server/jolokia-jvm.jar
+        owner: minecraft
+        group: minecraft
+        mode: 0644
 
     - name: Downloading the server backup
       command: oci os object get --auth instance_principal --bucket-name {{ bucket_name }} --file minecraft.tar --name minecraft.tar{%if backup_version is defined %} --version-id {{ backup_version }}{% endif %}
