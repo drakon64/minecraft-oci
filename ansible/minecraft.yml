@@ -646,7 +646,7 @@
         - { name: "uptrack-upgrade.timer", state: "restarted", enabled: "yes" }
         - { name: "disk-utilization-monitor.timer", state: "restarted", enabled: "yes" }
         - { name: "minecraft-monitor.service", state: "restarted", enabled: "yes" }
-        - { name: "chunky-monitor.service", state: "{% if continuous_deployment == false %}restarted{% else %}stopped{% endif %}", enabled: "{% if continuous_deployment == false %}true{% else %}false{% endif %}" }
+        - { name: "chunky-monitor.timer", state: "{% if continuous_deployment == false %}restarted{% else %}stopped{% endif %}", enabled: "{% if continuous_deployment == false %}true{% else %}false{% endif %}" }
 
     - name: Starting the continuous deployment systemd timer
       systemd:
