@@ -5,6 +5,7 @@ After=network.target
 [Service]
 Type={{ item.type }}
 ExecStart=/opt/minecraft/{{ item.execstart }}
+{%if item.restart is defined %}Restart={{ item.restart }}{% endif %}
 WorkingDirectory=/opt/minecraft
 
 {%if item.user is defined %}

@@ -523,6 +523,7 @@
             dest: "minecraft-monitor.service",
             description: "Minecraft Monitor",
             execstart: "monitor",
+            restart: "on-failure",
             user: "minecraft",
             type: "simple"
          }
