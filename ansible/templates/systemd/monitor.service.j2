@@ -3,7 +3,7 @@ Description={{ item.description }} Monitor
 After=network.target
 
 [Service]
-Type=oneshot
+Type={{ item.type }}
 ExecStart=/opt/minecraft/{{ item.execstart }}
 WorkingDirectory=/opt/minecraft
 

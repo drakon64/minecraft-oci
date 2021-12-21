@@ -1,0 +1,101 @@
+#!/usr/bin/env python3
+
+import oci
+import json
+import os
+from mcstatus import MinecraftServer
+from datetime import datetime
+import time
+{% if continuous_deployment == false %}
+import yaml
+{% endif %}
+
+signer = oci.auth.signers.InstancePrincipalsSecurityTokenSigner()
+identity_client = oci.identity.IdentityClient(config={}, signer=signer)
+
+metadata = json.loads(os.popen('curl -sH \'Authorization: Bearer Oracle\' http://169.254.169.254/opc/v2/instance | jq -c .').readline().strip())
+compartment_id = metadata['compartmentId']
+region = metadata['region']
+resource_display_name = metadata['displayName']
+resource_id = metadata['id']
+
+monitoring_client = oci.monitoring.MonitoringClient(
+config={}, signer=signer, service_endpoint="https://telemetry-ingestion." + region + ".oraclecloud.com")
+
+while True:
+    heap = json.loads(os.popen('curl http://localhost:8778/jolokia/read/java.lang:type=Memory/HeapMemoryUsage | jq -cr .value').readline().strip())
+    heap_percentage = (heap['used'] / heap['init']) * 100
+    mspt = float(os.popen('curl http://127.0.0.1:8778/jolokia/read/net.minecraft.server:type=Server/averageTickTime | jq -cr .value').readline().strip())
+    players = MinecraftServer('127.0.0.1', {{ final_server_overrides['server-port'] }}).status().players
+
+    date_time = datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+
+    post_metric_data_response = monitoring_client.post_metric_data(
+        post_metric_data_details=oci.monitoring.models.PostMetricDataDetails(
+            metric_data=[
+                oci.monitoring.models.MetricDataDetails(
+                    namespace="minecraft",
+                    compartment_id=compartment_id,
+                    name='heapUtilization',
+                    dimensions={
+                        'resourceDisplayName': resource_display_name,
+                        'resourceId': resource_id
+                    },
+                    datapoints=[
+                        oci.monitoring.models.Datapoint(
+                            timestamp=date_time,
+                            value=heap_percentage
+                        )
+                    ],
+                    metadata={
+                        'displayName': 'Heap Utilization',
+                        'minRange': '0',
+                        'maxRange': '100',
+                        'unit': 'Percent'
+                    }
+                ),
+                oci.monitoring.models.MetricDataDetails(
+                    namespace="minecraft",
+                    compartment_id=compartment_id,
+                    name='mspt',
+                    dimensions={
+                        'resourceDisplayName': resource_display_name,
+                        'resourceId': resource_id
+                    },
+                    datapoints=[
+                        oci.monitoring.models.Datapoint(
+                            timestamp=date_time,
+                            value=mspt
+                        )
+                    ],
+                    metadata={
+                        'displayName': 'Milliseconds Per Tick',
+                        'minRange': '0',
+                        'unit': 'MSPT'
+                    }
+                ),
+                oci.monitoring.models.MetricDataDetails(
+                    namespace="minecraft",
+                    compartment_id=compartment_id,
+                    name='playerCount',
+                    dimensions={
+                        'resourceDisplayName': resource_display_name,
+                        'resourceId': resource_id
+                    },
+                    datapoints=[
+                        oci.monitoring.models.Datapoint(
+                            timestamp=date_time,
+                            value=players.online
+                        )
+                    ],
+                    metadata={
+                        'displayName': 'Players Online',
+                        'minRange': '0',
+                        'unit': 'Players'
+                    }
+                )
+            ],
+            batch_atomicity="ATOMIC")
+    )
+
+    time.sleep(1)

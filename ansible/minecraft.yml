@@ -437,14 +437,14 @@
             mode: "0755",
           }
         - {
-            src: "templates/scripts/java-monitor.sh.j2",
-            dest: "/opt/minecraft/java-monitor.sh",
+            src: "templates/scripts/monitor.py.j2",
+            dest: "/opt/minecraft/monitor",
             owner: "minecraft",
-            mode: "0755",
+            mode: "0744",
           }
         - {
-            src: "templates/scripts/query.sh.j2",
-            dest: "/opt/minecraft/query.sh",
+            src: "templates/scripts/chunky-monitor.py.j2",
+            dest: "/opt/minecraft/chunky-monitor",
             owner: "minecraft",
             mode: "0744",
           }
@@ -509,7 +509,8 @@
             src: "service",
             dest: "disk-utilization-monitor.service",
             description: "Disk Utilization",
-            execstart: "disk-utilization.sh"
+            execstart: "disk-utilization.sh",
+            type: "oneshot"
          }
        - {
             src: "timer",
@@ -519,27 +520,24 @@
          }
        - {
             src: "service",
-            dest: "java-monitor.service",
-            description: "Heap Utilization",
-            execstart: "java-monitor.sh"
-         }
-       - {
-            src: "timer",
-            dest: "java-monitor.timer",
-            description: "Java",
-            timer: "*:*:*"
+            dest: "minecraft-monitor.service",
+            description: "Minecraft Monitor",
+            execstart: "monitor",
+            user: "minecraft",
+            type: "simple"
          }
        - {
             src: "service",
-            dest: "query-monitor.service",
-            description: "Query",
-            execstart: "query.sh",
-            user: minecraft
+            dest: "chunky-monitor.service",
+            description: "Chunky Monitor",
+            execstart: "chunky-monitor",
+            user: "minecraft",
+            type: "oneshot"
          }
        - {
             src: "timer",
-            dest: "query-monitor.timer",
-            description: "Query",
+            dest: "chunky-monitor.timer",
+            description: "Chunky Monitor",
             timer: "*:*:0"
          }
 
@@ -647,8 +645,8 @@
         - { name: "dnf-upgrade.timer", state: "restarted", enabled: "yes" }
         - { name: "uptrack-upgrade.timer", state: "restarted", enabled: "yes" }
         - { name: "disk-utilization-monitor.timer", state: "restarted", enabled: "yes" }
-        - { name: "java-monitor.timer", state: "restarted", enabled: "yes" }
-        - { name: "query-monitor.timer", state: "restarted", enabled: "yes" }
+        - { name: "minecraft-monitor.service", state: "restarted", enabled: "yes" }
+        - { name: "chunky-monitor.service", state: "{% if continuous_deployment == false %}restarted{% else %}stopped{% endif %}", enabled: "{% if continuous_deployment == false %}true{% else %}false{% endif %}" }
 
     - name: Starting the continuous deployment systemd timer
       systemd:
