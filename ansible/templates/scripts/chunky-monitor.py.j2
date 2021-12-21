@@ -5,7 +5,7 @@ from mcstatus import MinecraftServer
 import os
 
 chunky = yaml.safe_load(open('/opt/minecraft/server/plugins/Chunky/config.yml'))
-players = MinecraftServer('{{ inventory_hostname }}', {{ final_server_overrides['server-port'] }}).status().players
+players = MinecraftServer('127.0.0.1', {{ final_server_overrides['server-port'] }}).status().players
 
 if chunky['tasks']['world']['cancelled'] == False or chunky['tasks']['world_nether']['cancelled'] == False or chunky['tasks']['world_the_end']['cancelled'] == False:
     if players.online > 0:
