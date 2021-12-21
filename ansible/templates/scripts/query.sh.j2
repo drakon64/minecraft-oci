@@ -6,9 +6,8 @@ REGION=$(echo "$METADATA" | jq -r .region)
 RESOURCE_DISPLAY_NAME=$(echo "$METADATA" | jq -r .displayName)
 RESOURCE_ID=$(echo "$METADATA" | jq -r .id)
 
-IP=$(oci --auth instance_principal compute instance list-vnics --instance-id "$RESOURCE_ID" --compartment-id "$COMPARTMENT_ID" | jq -r '.data[]."public-ip"')
-QUERY=$(curl --silent https://api.mcsrvstat.us/2/"$IP" | jq -r .)
-PLAYERS_ONLINE=$(echo "$QUERY" | jq -r .players.online)
+MCSTATUS=$(mcstatus {{ inventory_hostname }}:{{ final_server_overrides['server-port'] }} json)
+PLAYERS_ONLINE=$(echo "$MCSTATUS" | jq -r .player_count)
 
 {% if continuous_deployment == false %}
 if [ "$PLAYERS_ONLINE" -gt 0 ] ; then
@@ -34,7 +33,7 @@ oci --auth instance_principal monitoring metric-data post --metric-data "[
 		},
 		\"metadata\": {
 			\"displayName\": \"Players\",
-			\"maxRange\": \"$(echo "$QUERY" | jq -r .players.max)\",
+			\"maxRange\": \"$(echo "$MCSTATUS" | jq -r .player_max)\",
 			\"minRange\": \"0\",
 			\"unit\": \"Percent\"
 		},
