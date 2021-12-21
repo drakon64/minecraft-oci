@@ -129,6 +129,11 @@
         state: present
         update_cache: yes
 
+    - name: Installing mcstatus
+      pip:
+        name: mcstatus
+        state: latest
+
     - name: Creating the minecraft user
       user:
         name: minecraft
@@ -587,7 +592,7 @@
             src: "timer",
             dest: "query-monitor.timer",
             description: "Query",
-            timer: "*:0/10:0"
+            timer: "*:*:0"
          }
 
     - name: Copying continuous deployment script and systemd units
