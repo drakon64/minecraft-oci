@@ -27,15 +27,6 @@ while True:
     heap_percentage = (heap['used'] / heap['init']) * 100
     mspt = float(os.popen('curl http://127.0.0.1:8778/jolokia/read/net.minecraft.server:type=Server/averageTickTime | jq -cr .value').readline().strip())
     players = MinecraftServer('{{ inventory_hostname }}', {{ final_server_overrides['server-port'] }}).status().players
-{% if continuous_deployment == false %}
-    chunky = yaml.safe_load(open('/opt/minecraft/server/plugins/Chunky/config.yml'))
-
-    if chunky['tasks']['world']['cancelled'] = False or chunky['tasks']['world_nether']['cancelled'] = False or chunky['tasks']['world_the_end']['cancelled'] = False
-        if players.online > 0:
-            os.popen('tmux send-keys -t minecraft chunky SPACE pause ENTER')
-        elif players.online == 0:
-            os.popen('tmux send-keys -t minecraft chunky SPACE continue ENTER')
-{% endif %}
 
     date_time = datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%fZ")
 

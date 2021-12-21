@@ -443,6 +443,12 @@
             mode: "0744",
           }
         - {
+            src: "templates/scripts/chunky-monitor.py.j2",
+            dest: "/opt/minecraft/chunky-monitor",
+            owner: "minecraft",
+            mode: "0744",
+          }
+        - {
             src: "files/scripts/disk-utilization.sh",
             dest: "/opt/minecraft/",
             owner: "minecraft",
@@ -519,6 +525,20 @@
             execstart: "monitor",
             user: "minecraft",
             type: "simple"
+         }
+       - {
+            src: "service",
+            dest: "chunky-monitor.service",
+            description: "Chunky Monitor",
+            execstart: "chunky-monitor",
+            user: "minecraft",
+            type: "oneshot"
+         }
+       - {
+            src: "timer",
+            dest: "chunky-monitor.timer",
+            description: "Chunky Monitor",
+            timer: "*:*:0"
          }
 
     - name: Copying continuous deployment script and systemd units
@@ -626,6 +646,7 @@
         - { name: "uptrack-upgrade.timer", state: "restarted", enabled: "yes" }
         - { name: "disk-utilization-monitor.timer", state: "restarted", enabled: "yes" }
         - { name: "minecraft-monitor.service", state: "restarted", enabled: "yes" }
+        - { name: "chunky-monitor.service", state: "{% if continuous_deployment == false %}restarted{% else %}stopped{% endif %}", enabled: "{% if continuous_deployment == false %}true{% else %}false{% endif %}" }
 
     - name: Starting the continuous deployment systemd timer
       systemd:
