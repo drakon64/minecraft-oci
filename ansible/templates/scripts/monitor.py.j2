@@ -6,9 +6,6 @@ import os
 from mcstatus import MinecraftServer
 from datetime import datetime
 import time
-{% if continuous_deployment == false %}
-import yaml
-{% endif %}
 
 signer = oci.auth.signers.InstancePrincipalsSecurityTokenSigner()
 identity_client = oci.identity.IdentityClient(config={}, signer=signer)
