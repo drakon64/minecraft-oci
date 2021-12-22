@@ -121,6 +121,7 @@ paper:
     console-has-all-permissions: false
     enable-player-collisions: true
     fix-entity-position-desync: true
+    fix-target-selector-tag-completion: true
     incoming-packet-spam-threshold: 300
     item-validation:
       book:
@@ -368,6 +369,7 @@ paper:
       mobs-can-always-pick-up-loot:
         skeletons: false
         zombies: false
+      monster-spawn-max-light-level: -1
       nether-ceiling-void-damage-height: 0
       non-player-arrow-despawn-rate: -1
       only-players-collide: false
