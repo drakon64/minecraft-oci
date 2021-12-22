@@ -7,7 +7,7 @@ resource "oci_core_instance" "minecraft_instance" {
 	compartment_id = oci_identity_compartment.minecraft_compartment.id
 	shape = var.oci_compute_shape
 	source_details {
-		boot_volume_size_in_gbs = 50
+		boot_volume_size_in_gbs = var.oci_volume_size
 		source_id = var.oci_image_id
 		source_type = "image"
 	}

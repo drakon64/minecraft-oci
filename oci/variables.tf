@@ -43,6 +43,11 @@ variable "oci_compute_ocpus" {
 	default = 3
 }
 
+variable "oci_volume_size" {
+	type = number
+	default = 50
+}
+
 variable "minecraft_java_port" {
 	type = number
 	default = 25565
