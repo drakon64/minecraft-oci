@@ -2,7 +2,7 @@
 
 import oci
 import json
-import os
+import requests
 from mcstatus import MinecraftServer
 import shutil
 from datetime import datetime
@@ -11,38 +11,37 @@ import time
 signer = oci.auth.signers.InstancePrincipalsSecurityTokenSigner()
 identity_client = oci.identity.IdentityClient(config={}, signer=signer)
 
-metadata = json.loads(os.popen(
-    'curl -sH \'Authorization: Bearer Oracle\' http://169.254.169.254/opc/v2/instance | jq -cr .').readline().strip())
+metadata = requests.get('http://169.254.169.254/opc/v2/instance/',
+                        headers={'Authorization': 'Bearer Oracle'}).json()
 compartment_id = metadata['compartmentId']
 region = metadata['region']
 resource_display_name = metadata['displayName']
 resource_id = metadata['id']
 
 monitoring_client = oci.monitoring.MonitoringClient(
-    config={}, signer=signer, service_endpoint="https://telemetry-ingestion." + region + ".oraclecloud.com")
+    config={}, signer=signer, service_endpoint='https://telemetry-ingestion.' + region + '.oraclecloud.com')
 
 while True:
-    heap = json.loads(os.popen(
-        'curl http://localhost:8778/jolokia/read/java.lang:type=Memory/HeapMemoryUsage | jq -cr .value').readline().strip())
+    heap = requests.get(
+        'http://localhost:8778/jolokia/read/java.lang:type=Memory/HeapMemoryUsage').json()['value']
     heap_percentage = (heap['used'] / heap['init']) * 100
-    mspt = float(os.popen(
-        'curl http://127.0.0.1:8778/jolokia/read/net.minecraft.server:type=Server/averageTickTime | jq -cr .value').readline().strip())
+    mspt = float(requests.get(
+        'http://127.0.0.1:8778/jolokia/read/net.minecraft.server:type=Server/averageTickTime').json()['value'])
     players = MinecraftServer(
         '127.0.0.1', {{ final_server_overrides['server-port'] }}).status().players
-    root_disk_usage = shutil.disk_usage("/")
-    root_disk_usage_percent = (
-        root_disk_usage.used / root_disk_usage.total) * 100
-    efi_disk_usage = shutil.disk_usage("/boot/efi")
-    efi_disk_usage_percent = (
-        efi_disk_usage.used / efi_disk_usage.total) * 100
+    root_disk_usage = shutil.disk_usage('/')
+    root_disk_usage_percent = (root_disk_usage.used /
+                               root_disk_usage.total) * 100
+    efi_disk_usage = shutil.disk_usage('/boot/efi')
+    efi_disk_usage_percent = (efi_disk_usage.used / efi_disk_usage.total) * 100
 
-    date_time = datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+    date_time = datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%fZ')
 
     post_metric_data_response = monitoring_client.post_metric_data(
         post_metric_data_details=oci.monitoring.models.PostMetricDataDetails(
             metric_data=[
                 oci.monitoring.models.MetricDataDetails(
-                    namespace="minecraft",
+                    namespace='minecraft',
                     compartment_id=compartment_id,
                     name='heapUtilization',
                     dimensions={
@@ -63,7 +62,7 @@ while True:
                     }
                 ),
                 oci.monitoring.models.MetricDataDetails(
-                    namespace="minecraft",
+                    namespace='minecraft',
                     compartment_id=compartment_id,
                     name='mspt',
                     dimensions={
@@ -83,7 +82,7 @@ while True:
                     }
                 ),
                 oci.monitoring.models.MetricDataDetails(
-                    namespace="minecraft",
+                    namespace='minecraft',
                     compartment_id=compartment_id,
                     name='playerCount',
                     dimensions={
@@ -103,7 +102,7 @@ while True:
                     }
                 ),
                 oci.monitoring.models.MetricDataDetails(
-                    namespace="minecraft",
+                    namespace='minecraft',
                     compartment_id=compartment_id,
                     name='rootDiskUtilization',
                     dimensions={
@@ -124,7 +123,7 @@ while True:
                     }
                 ),
                 oci.monitoring.models.MetricDataDetails(
-                    namespace="minecraft",
+                    namespace='minecraft',
                     compartment_id=compartment_id,
                     name='efiDiskUtilization',
                     dimensions={
@@ -145,7 +144,7 @@ while True:
                     }
                 )
             ],
-            batch_atomicity="ATOMIC")
+            batch_atomicity='ATOMIC')
     )
 
     time.sleep(1)
