@@ -93,7 +93,7 @@
     - name: Installing packages
       dnf:
         name:
-          - java-17-openjdk-devel
+          - java-17-openjdk-headless
           - jq
           - python36-oci-cli
           - tmux
