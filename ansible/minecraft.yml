@@ -621,7 +621,7 @@
           }
         - {
             name: "minecraft-continuous-deployment.timer",
-            state: "started",
+            state: "restarted",
             enabled: "yes",
             when: "{{ continuous_deployment == true }}",
           }
