@@ -526,18 +526,8 @@
             mode: "0744",
             when: "{{ continuous_deployment == true }}",
           }
-      when: item.when == true
-
-    - name: Copying monitoring systemd units
-      template:
-        src: "templates/systemd/monitor.{{ item.src }}.j2"
-        dest: "/etc/systemd/system/{{ item.dest }}"
-        owner: root
-        group: root
-        mode: 0644
-      with_items:
-       - {
-            src: "service",
+        - {
+           src: "service",
             dest: "minecraft-monitor.service",
             description: "Minecraft Monitor",
             execstart: "monitor",
@@ -546,7 +536,7 @@
             type: "simple",
             when: true,
          }
-       - {
+        - {
             src: "service",
             dest: "chunky-monitor.service",
             description: "Chunky Monitor",
@@ -555,7 +545,7 @@
             type: "oneshot",
             when: "{{ use_chunky == true}}",
          }
-       - {
+        - {
             src: "timer",
             dest: "chunky-monitor.timer",
             description: "Chunky Monitor",
