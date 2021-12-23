@@ -61,9 +61,6 @@
         state: restarted
       when: sshd.changed or moduli.changed
 
-    - name: Gathering Facts about services
-      service_facts:
-
     - name: Stopping the existing server
       systemd:
         name: minecraft
