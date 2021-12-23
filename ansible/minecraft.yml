@@ -505,6 +505,27 @@
             mode: "0644",
             when: true,
           }
+        - {
+            src: "templates/scripts/continuous-deployment.sh.j2",
+            dest: "/opt/minecraft/continuous-deployment.sh",
+            owner: "root",
+            mode: "0744",
+            when: "{{ continuous_deployment == true }}",
+          }
+        - {
+            src: "files/systemd/minecraft-continuous-deployment.service",
+            dest: "/etc/systemd/system/minecraft-continuous-deployment.service",
+            owner: "root",
+            mode: "0744",
+            when: "{{ continuous_deployment == true }}",
+          }
+        - {
+            src: "files/systemd/minecraft-continuous-deployment.timer",
+            dest: "/etc/systemd/system/minecraft-continuous-deployment.timer",
+            owner: "root",
+            mode: "0744",
+            when: "{{ continuous_deployment == true }}",
+          }
       when: item.when == true
 
     - name: Copying monitoring systemd units
@@ -561,31 +582,6 @@
        - { path: chunky-monitor.timer, when: "{{ use_chunky == false }}" }
        - { path: chunky-monitor.service, when: "{{ use_chunky == false }}" }
       when: item.when == true
-
-    - name: Copying continuous deployment script and systemd units
-      template:
-        src: "{{ item.src }}"
-        dest: "{{ item.dest }}"
-        owner: root
-        group: root
-        mode: "{{ item.mode }}"
-      with_items:
-        - {
-            src: "templates/scripts/continuous-deployment.sh.j2",
-            dest: "/opt/minecraft/continuous-deployment.sh",
-            mode: "0744",
-          }
-        - {
-            src: "files/systemd/minecraft-continuous-deployment.service",
-            dest: "/etc/systemd/system/minecraft-continuous-deployment.service",
-            mode: "0644",
-          }
-        - {
-            src: "files/systemd/minecraft-continuous-deployment.timer",
-            dest: "/etc/systemd/system/minecraft-continuous-deployment.timer",
-            mode: "0644",
-          }
-      when: continuous_deployment == true
 
     - name: Accepting the Minecraft Server EULA
       copy:
