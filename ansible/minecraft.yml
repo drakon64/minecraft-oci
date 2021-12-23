@@ -492,8 +492,10 @@
             when: "{{ continuous_deployment == true }}",
           }
         - {
-            src: "service",
-            dest: "minecraft-monitor.service",
+            src: "templates/systemd/monitor.service.j2",
+            dest: "/etc/systemd/system/minecraft-monitor.service",
+            owner: "root",
+            mode: "0644",
             description: "Minecraft Monitor",
             execstart: "monitor",
             restart: "on-failure",
@@ -502,8 +504,10 @@
             when: true,
           }
         - {
-            src: "service",
-            dest: "chunky-monitor.service",
+            src: "templates/systemd/monitor.service.j2",
+            dest: "/etc/systemd/system/chunky-monitor.service",
+            owner: "root",
+            mode: "0644",
             description: "Chunky Monitor",
             execstart: "chunky-monitor",
             user: "minecraft",
@@ -511,8 +515,10 @@
             when: "{{ use_chunky == true}}",
           }
         - {
-            src: "timer",
-            dest: "chunky-monitor.timer",
+            src: "templates/systemd/monitor.timer.j2",
+            dest: "/etc/systemd/system/chunky-monitor.timer",
+            owner: "root",
+            mode: "0644",
             description: "Chunky Monitor",
             timer: "*:*:0",
             when: "{{ use_chunky == true}}",
