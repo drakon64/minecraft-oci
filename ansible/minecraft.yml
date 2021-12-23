@@ -450,12 +450,6 @@
             mode: "0744",
           }
         - {
-            src: "files/scripts/disk-utilization.sh",
-            dest: "/opt/minecraft/",
-            owner: "minecraft",
-            mode: "0755",
-          }
-        - {
             src: "templates/systemd/minecraft.service.j2",
             dest: "/etc/systemd/system/minecraft.service",
             owner: "root",
@@ -506,19 +500,6 @@
         group: root
         mode: 0644
       with_items:
-       - {
-            src: "service",
-            dest: "disk-utilization-monitor.service",
-            description: "Disk Utilization",
-            execstart: "disk-utilization.sh",
-            type: "oneshot"
-         }
-       - {
-            src: "timer",
-            dest: "disk-utilization-monitor.timer",
-            description: "Disk Utilization",
-            timer: "*:*:0"
-         }
        - {
             src: "service",
             dest: "minecraft-monitor.service",
@@ -646,7 +627,6 @@
         - { name: "minecraft-backup.timer", state: "{% if continuous_deployment == false %}restarted{% else %}stopped{% endif %}", enabled: "{% if continuous_deployment == false %}true{% else %}false{% endif %}" }
         - { name: "dnf-upgrade.timer", state: "restarted", enabled: "yes" }
         - { name: "uptrack-upgrade.timer", state: "restarted", enabled: "yes" }
-        - { name: "disk-utilization-monitor.timer", state: "restarted", enabled: "yes" }
         - { name: "minecraft-monitor.service", state: "restarted", enabled: "yes" }
         - { name: "chunky-monitor.timer", state: "{% if continuous_deployment == false %}restarted{% else %}stopped{% endif %}", enabled: "{% if continuous_deployment == false %}true{% else %}false{% endif %}" }
 
