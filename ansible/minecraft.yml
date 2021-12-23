@@ -199,9 +199,15 @@
         - { src: commands.yml, when: "{{ vanilla == false }}" }
         - { src: spigot.yml, when: "{{ vanilla == false }}" }
         - { src: paper.yml, when: "{{ vanilla == false }}" }
-        - { src: plugins/Chunky/config.yml, when: "{{ use_chunky == true and vanilla == false }}" }
+        - {
+            src: plugins/Chunky/config.yml,
+            when: "{{ use_chunky == true and vanilla == false }}",
+          }
         - { src: plugins/floodgate/config.yml, when: "{{ vanilla == false }}" }
-        - { src: plugins/Geyser-Spigot/config.yml, when: "{{ vanilla == false }}" }
+        - {
+            src: plugins/Geyser-Spigot/config.yml,
+            when: "{{ vanilla == false }}",
+          }
         - {
             src: plugins/ViaVersion/config.yml,
             when: "{{ use_viaversion == true and vanilla == false }}",
@@ -517,8 +523,14 @@
         state: stopped
         enabled: false
       with_items:
-        - { name: chunky-monitor.timer, when: "{{ use_chunky == false and ansible_facts.services['chunky-monitor.timer'] is defined }}" }
-        - { name: chunky-monitor.service, when: "{{ use_chunky == false }} and ansible_facts.services['chunky-monitor.service'] is defined" }
+        - {
+            name: chunky-monitor.timer,
+            when: "{{ use_chunky == false and ansible_facts.services['chunky-monitor.timer'] is defined }}",
+          }
+        - {
+            name: chunky-monitor.service,
+            when: "{{ use_chunky == false }} and ansible_facts.services['chunky-monitor.service'] is defined",
+          }
       when: item.when == true
 
     - name: Removing unneeded systemd units
