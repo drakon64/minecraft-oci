@@ -322,7 +322,7 @@
           }
         - {
             url: "{% if use_viaversion == true %}{{ viaversion_latest.stdout }}{% endif %}",
-            dest: "Chunky.jar",
+            dest: "ViaVersion.jar",
             when: "{{ use_viaversion == true }}",
           }
       when:
