@@ -520,8 +520,8 @@
         state: stopped
         enabled: false
       with_items:
-        - { name: chunky-monitor.timer, when: "{{ use_chunky == false }}" }
-        - { name: chunky-monitor.service, when: "{{ use_chunky == false }}" }
+        - { name: chunky-monitor.timer, when: "{{ use_chunky == false and ansible_facts.services['chunky-monitor.timer'] is defined }}" }
+        - { name: chunky-monitor.service, when: "{{ use_chunky == false }} and ansible_facts.services['chunky-monitor.service'] is defined" }
       when: item.when == true
 
     - name: Removing unneeded systemd units
