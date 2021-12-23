@@ -17,10 +17,7 @@
             regexp: "KexAlgorithms",
             line: "KexAlgorithms curve25519-sha256@libssh.org",
           }
-        - {
-            regexp: "Ciphers",
-            line: "Ciphers chacha20-poly1305@openssh.com",
-          }
+        - { regexp: "Ciphers", line: "Ciphers chacha20-poly1305@openssh.com" }
         - {
             regexp: "MACs",
             line: "MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,umac-128-etm@openssh.com",
@@ -29,42 +26,21 @@
             regexp: "AuthenticationMethods",
             line: "AuthenticationMethods publickey",
           }
-        - {
-            regexp: "LogLevel",
-            line: "LogLevel VERBOSE",
-          }
+        - { regexp: "LogLevel", line: "LogLevel VERBOSE" }
         - {
             regexp: "Subsystem sftp",
             line: "Subsystem sftp /usr/libexec/openssh/sftp-server -f AUTHPRIV -l INFO",
           }
-        - {
-            regexp: "PermitRootLogin",
-            line: "PermitRootLogin no",
-          }
+        - { regexp: "PermitRootLogin", line: "PermitRootLogin no" }
         - {
             regexp: "UsePrivilegeSeparation",
             line: "UsePrivilegeSeparation sandbox",
           }
-        - {
-            regexp: "LoginGraceTime",
-            line: "LoginGraceTime 1m",
-          }
-        - {
-            regexp: "AllowTcpForwarding",
-            line: "AllowTcpForwarding no",
-          }
-        - {
-            regexp: "MaxSessions",
-            line: "MaxSessions 4",
-          }
-        - {
-            regexp: "X11Forwarding",
-            line: "X11Forwarding no",
-          }
-        - {
-            regexp: "MaxAuthTries",
-            line: "MaxAuthTries 4",
-          }
+        - { regexp: "LoginGraceTime", line: "LoginGraceTime 1m" }
+        - { regexp: "AllowTcpForwarding", line: "AllowTcpForwarding no" }
+        - { regexp: "MaxSessions", line: "MaxSessions 4" }
+        - { regexp: "X11Forwarding", line: "X11Forwarding no" }
+        - { regexp: "MaxAuthTries", line: "MaxAuthTries 4" }
       register: sshd
 
     - name: Checking if SSH short moduli needs disabling
@@ -120,10 +96,10 @@
     - name: Installing packages
       dnf:
         name:
-         - java-17-openjdk-devel
-         - jq
-         - python36-oci-cli
-         - tmux
+          - java-17-openjdk-headless
+          - jq
+          - python36-oci-cli
+          - tmux
         state: present
         update_cache: yes
 
@@ -216,13 +192,33 @@
 
     - name: Configuring the Minecraft server
       template:
-        src: templates/java/server.properties.j2
-        dest: /opt/minecraft/server/server.properties
+        src: templates/java/{{ item.src }}.j2
+        dest: /opt/minecraft/server/{{ item.src }}
         owner: minecraft
         group: minecraft
         mode: 0644
+      with_items:
+        - { src: server.properties, when: "{{ true }}" }
+        - { src: bukkit.yml, when: "{{ vanilla == false }}" }
+        - { src: commands.yml, when: "{{ vanilla == false }}" }
+        - { src: spigot.yml, when: "{{ vanilla == false }}" }
+        - { src: paper.yml, when: "{{ vanilla == false }}" }
+        - {
+            src: plugins/Chunky/config.yml,
+            when: "{{ use_chunky == true and vanilla == false }}",
+          }
+        - { src: plugins/floodgate/config.yml, when: "{{ vanilla == false }}" }
+        - {
+            src: plugins/Geyser-Spigot/config.yml,
+            when: "{{ vanilla == false }}",
+          }
+        - {
+            src: plugins/ViaVersion/config.yml,
+            when: "{{ use_viaversion == true and vanilla == false }}",
+          }
       when:
         - restore_backup == false
+        - item.when == true
 
     - name: Creating the plugin directories
       file:
@@ -232,33 +228,20 @@
         group: minecraft
         mode: 0755
       with_items:
-        - { path: Chunky, state: "{% if use_chunky == true %}directory{% else %}absent{% endif %}" }
+        - {
+            path: Chunky,
+            state: "{% if use_chunky == true %}directory{% else %}absent{% endif %}",
+          }
         - { path: CustomCommandPrefix, state: directory }
         - { path: floodgate, state: directory }
         - { path: Geyser-Spigot/packs, state: directory }
+        - {
+            path: ViaVersion,
+            state: "{% if use_viaversion == true %}directory{% else %}absent{% endif %}",
+          }
       when:
         - restore_backup == false
         - vanilla == false
-
-    - name: Configuring the Paper server
-      template:
-        src: templates/java/{{ item.src }}.j2
-        dest: /opt/minecraft/server/{{ item.src }}
-        owner: minecraft
-        group: minecraft
-        mode: 0644
-      with_items:
-        - { src: bukkit.yml, when: "{{ true }}" }
-        - { src: commands.yml, when: "{{ true }}" }
-        - { src: spigot.yml, when: "{{ true }}" }
-        - { src: paper.yml, when: "{{ true }}" }
-        - { src: plugins/Chunky/config.yml, when: "{{ use_chunky == true }}" }
-        - { src: plugins/floodgate/config.yml, when: "{{ true }}" }
-        - { src: plugins/Geyser-Spigot/config.yml, when: "{{ true }}" }
-      when:
-        - restore_backup == false
-        - vanilla == false
-        - item.when == true
 
     - name: Copying the server permissions files
       copy:
@@ -283,6 +266,15 @@
         - vanilla == false
         - use_chunky == true
 
+    - name: Getting the latest ViaVersion release
+      shell: curl --silent "https://api.github.com/repos/ViaVersion/ViaVersion/releases/latest" | jq -r '.assets[].browser_download_url'
+      register: viaversion_latest
+      when:
+        - new_server == true or update_server == true
+        - use_viaversion == true
+        - restore_backup == false
+        - vanilla == false
+
     - name: Getting the latest TabTPS release
       shell: curl --silent https://api.github.com/repos/jpenilla/TabTPS/releases/latest | jq -r '.assets[].browser_download_url | select(contains("spigot"))'
       register: tabtps_latest
@@ -299,11 +291,36 @@
         group: minecraft
         mode: 0644
       with_items:
-       - { url: https://ci.opencollab.dev/job/GeyserMC/job/Geyser/job/master/lastSuccessfulBuild/artifact/bootstrap/spigot/target/Geyser-Spigot.jar, dest: Geyser-Spigot.jar, when: "{{ true }}" }
-       - { url: https://ci.opencollab.dev/job/GeyserMC/job/Floodgate/job/master/lastSuccessfulBuild/artifact/spigot/target/floodgate-spigot.jar, dest: floodgate-spigot.jar, when: "{{ true }}" }
-       - { url: https://ci.opencollab.dev/job/GeyserMC/job/GeyserOptionalPack/job/master/lastSuccessfulBuild/artifact/GeyserOptionalPack.mcpack, dest: Geyser-Spigot/packs/, when: "{{ true }}" }
-       - { url: "{% if use_chunky == true %}https://ci.codemc.io/view/Author/job/pop4959/job/Chunky/lastSuccessfulBuild/artifact/bukkit/build/libs/{{ chunky_latest.stdout }}{% endif %}", dest: "Chunky.jar", when: "{{ use_chunky == true }}" }
-       - { url: "{{ tabtps_latest.stdout }}", dest: tabtps.jar, when: "{{ true }}" }
+        - {
+            url: https://ci.opencollab.dev/job/GeyserMC/job/Geyser/job/master/lastSuccessfulBuild/artifact/bootstrap/spigot/target/Geyser-Spigot.jar,
+            dest: Geyser-Spigot.jar,
+            when: "{{ true }}",
+          }
+        - {
+            url: https://ci.opencollab.dev/job/GeyserMC/job/Floodgate/job/master/lastSuccessfulBuild/artifact/spigot/target/floodgate-spigot.jar,
+            dest: floodgate-spigot.jar,
+            when: "{{ true }}",
+          }
+        - {
+            url: https://ci.opencollab.dev/job/GeyserMC/job/GeyserOptionalPack/job/master/lastSuccessfulBuild/artifact/GeyserOptionalPack.mcpack,
+            dest: Geyser-Spigot/packs/,
+            when: "{{ true }}",
+          }
+        - {
+            url: "{% if use_chunky == true %}https://ci.codemc.io/view/Author/job/pop4959/job/Chunky/lastSuccessfulBuild/artifact/bukkit/build/libs/{{ chunky_latest.stdout }}{% endif %}",
+            dest: "Chunky.jar",
+            when: "{{ use_chunky == true }}",
+          }
+        - {
+            url: "{{ tabtps_latest.stdout }}",
+            dest: tabtps.jar,
+            when: "{{ true }}",
+          }
+        - {
+            url: "{% if use_viaversion == true %}{{ viaversion_latest.stdout }}{% endif %}",
+            dest: "ViaVersion.jar",
+            when: "{{ use_viaversion == true }}",
+          }
       when:
         - new_server == true or update_server == true
         - restore_backup == false
@@ -332,62 +349,6 @@
       when:
         - restore_backup == false
         - vanilla == false
-
-    - name: Creating the ViaVersion plugin directory
-      file:
-        path: /opt/minecraft/server/plugins/ViaVersion
-        state: directory
-        owner: minecraft
-        group: minecraft
-        mode: 0755
-      when:
-        - new_server == true or update_server == true
-        - use_viaversion == true
-        - restore_backup == false
-        - vanilla == false
-
-    - name: Getting the latest ViaVersion release
-      shell: curl --silent "https://api.github.com/repos/ViaVersion/ViaVersion/releases/latest" | jq -r '.assets[].browser_download_url'
-      register: viaversion_latest
-      when:
-        - new_server == true or update_server == true
-        - use_viaversion == true
-        - restore_backup == false
-        - vanilla == false
-
-    - name: Downloading the ViaVersion plugin
-      get_url:
-        url: "{{ viaversion_latest.stdout }}"
-        dest: /opt/minecraft/server/plugins/ViaVersion.jar
-        owner: minecraft
-        group: minecraft
-        mode: 0644
-      when:
-        - new_server == true or update_server == true
-        - use_viaversion == true
-        - restore_backup == false
-        - vanilla == false
-
-    - name: Configuring the ViaVersion plugin
-      template:
-        src: templates/java/plugins/ViaVersion/config.yml.j2
-        dest: /opt/minecraft/server/plugins/ViaVersion/
-        owner: minecraft
-        group: minecraft
-        mode: 0644
-      when:
-        - use_viaversion == true
-        - restore_backup == false
-        - vanilla == false
-
-    - name: Removing the ViaVersion plugin
-      file:
-        path: /opt/minecraft/server/plugins/{{ item }}
-        state: absent
-      with_items:
-        - ViaVersion.jar
-        - ViaVersion/
-      when: use_viaversion == false
 
     - name: Downloading Jolokia
       maven_artifact:
@@ -505,42 +466,59 @@
             mode: "0644",
             when: true,
           }
-      when: item.when == true
-
-    - name: Copying monitoring systemd units
-      template:
-        src: "templates/systemd/monitor.{{ item.src }}.j2"
-        dest: "/etc/systemd/system/{{ item.dest }}"
-        owner: root
-        group: root
-        mode: 0644
-      with_items:
-       - {
-            src: "service",
-            dest: "minecraft-monitor.service",
+        - {
+            src: "templates/scripts/continuous-deployment.sh.j2",
+            dest: "/opt/minecraft/continuous-deployment.sh",
+            owner: "root",
+            mode: "0744",
+            when: "{{ continuous_deployment == true }}",
+          }
+        - {
+            src: "files/systemd/minecraft-continuous-deployment.service",
+            dest: "/etc/systemd/system/minecraft-continuous-deployment.service",
+            owner: "root",
+            mode: "0744",
+            when: "{{ continuous_deployment == true }}",
+          }
+        - {
+            src: "files/systemd/minecraft-continuous-deployment.timer",
+            dest: "/etc/systemd/system/minecraft-continuous-deployment.timer",
+            owner: "root",
+            mode: "0744",
+            when: "{{ continuous_deployment == true }}",
+          }
+        - {
+            src: "templates/systemd/monitor.service.j2",
+            dest: "/etc/systemd/system/minecraft-monitor.service",
+            owner: "root",
+            mode: "0644",
             description: "Minecraft Monitor",
             execstart: "monitor",
             restart: "on-failure",
             user: "minecraft",
             type: "simple",
             when: true,
-         }
-       - {
-            src: "service",
-            dest: "chunky-monitor.service",
+          }
+        - {
+            src: "templates/systemd/monitor.service.j2",
+            dest: "/etc/systemd/system/chunky-monitor.service",
+            owner: "root",
+            mode: "0644",
             description: "Chunky Monitor",
             execstart: "chunky-monitor",
             user: "minecraft",
             type: "oneshot",
             when: "{{ use_chunky == true}}",
-         }
-       - {
-            src: "timer",
-            dest: "chunky-monitor.timer",
+          }
+        - {
+            src: "templates/systemd/monitor.timer.j2",
+            dest: "/etc/systemd/system/chunky-monitor.timer",
+            owner: "root",
+            mode: "0644",
             description: "Chunky Monitor",
             timer: "*:*:0",
             when: "{{ use_chunky == true}}",
-         }
+          }
       when: item.when == true
 
     - name: Stopping and disabling unneeded systemd units
@@ -549,8 +527,14 @@
         state: stopped
         enabled: false
       with_items:
-       - { name: chunky-monitor.timer, when: "{{ use_chunky == false }}" }
-       - { name: chunky-monitor.service, when: "{{ use_chunky == false }}" }
+        - {
+            name: chunky-monitor.timer,
+            when: "{{ use_chunky == false and ansible_facts.services['chunky-monitor.timer'] is defined }}",
+          }
+        - {
+            name: chunky-monitor.service,
+            when: "{{ use_chunky == false }} and ansible_facts.services['chunky-monitor.service'] is defined",
+          }
       when: item.when == true
 
     - name: Removing unneeded systemd units
@@ -558,34 +542,9 @@
         path: /etc/systemd/system/{{ item.path }}
         state: absent
       with_items:
-       - { path: chunky-monitor.timer, when: "{{ use_chunky == false }}" }
-       - { path: chunky-monitor.service, when: "{{ use_chunky == false }}" }
+        - { path: chunky-monitor.timer, when: "{{ use_chunky == false }}" }
+        - { path: chunky-monitor.service, when: "{{ use_chunky == false }}" }
       when: item.when == true
-
-    - name: Copying continuous deployment script and systemd units
-      template:
-        src: "{{ item.src }}"
-        dest: "{{ item.dest }}"
-        owner: root
-        group: root
-        mode: "{{ item.mode }}"
-      with_items:
-        - {
-            src: "templates/scripts/continuous-deployment.sh.j2",
-            dest: "/opt/minecraft/continuous-deployment.sh",
-            mode: "0744",
-          }
-        - {
-            src: "files/systemd/minecraft-continuous-deployment.service",
-            dest: "/etc/systemd/system/minecraft-continuous-deployment.service",
-            mode: "0644",
-          }
-        - {
-            src: "files/systemd/minecraft-continuous-deployment.timer",
-            dest: "/etc/systemd/system/minecraft-continuous-deployment.timer",
-            mode: "0644",
-          }
-      when: continuous_deployment == true
 
     - name: Accepting the Minecraft Server EULA
       copy:
@@ -661,18 +620,46 @@
         enabled: "{{ item.enabled }}"
         daemon_reload: yes
       with_items:
-        - { name: "minecraft.service", state: "started", enabled: "yes", when: "{{ true }}" }
-        - { name: "minecraft-backup.timer", state: "{% if continuous_deployment == false %}restarted{% else %}stopped{% endif %}", enabled: "{% if continuous_deployment == false %}true{% else %}false{% endif %}", when: "{{ true }}" }
-        - { name: "dnf-upgrade.timer", state: "restarted", enabled: "yes", when: "{{ true }}" }
-        - { name: "uptrack-upgrade.timer", state: "restarted", enabled: "yes", when: "{{ true }}" }
-        - { name: "minecraft-monitor.service", state: "restarted", enabled: "yes", when: "{{ true }}" }
-        - { name: "chunky-monitor.timer", state: "restarted", enabled: "true", when: "{{ use_chunky == true }}" }
+        - {
+            name: "minecraft.service",
+            state: "started",
+            enabled: "yes",
+            when: "{{ true }}",
+          }
+        - {
+            name: "minecraft-backup.timer",
+            state: "restarted",
+            enabled: "true",
+            when: "{{ continuous_deployment == false }}",
+          }
+        - {
+            name: "minecraft-continuous-deployment.timer",
+            state: "restarted",
+            enabled: "yes",
+            when: "{{ continuous_deployment == true }}",
+          }
+        - {
+            name: "dnf-upgrade.timer",
+            state: "restarted",
+            enabled: "yes",
+            when: "{{ true }}",
+          }
+        - {
+            name: "uptrack-upgrade.timer",
+            state: "restarted",
+            enabled: "yes",
+            when: "{{ true }}",
+          }
+        - {
+            name: "minecraft-monitor.service",
+            state: "restarted",
+            enabled: "yes",
+            when: "{{ true }}",
+          }
+        - {
+            name: "chunky-monitor.timer",
+            state: "restarted",
+            enabled: "true",
+            when: "{{ use_chunky == true }}",
+          }
       when: item.when == true
-
-    - name: Starting the continuous deployment systemd timer
-      systemd:
-        name: minecraft-continuous-deployment.timer
-        state: restarted
-        enabled: yes
-        daemon_reload: yes
-      when: continuous_deployment == true
