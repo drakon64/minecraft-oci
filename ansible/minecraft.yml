@@ -17,10 +17,7 @@
             regexp: "KexAlgorithms",
             line: "KexAlgorithms curve25519-sha256@libssh.org",
           }
-        - {
-            regexp: "Ciphers",
-            line: "Ciphers chacha20-poly1305@openssh.com",
-          }
+        - { regexp: "Ciphers", line: "Ciphers chacha20-poly1305@openssh.com" }
         - {
             regexp: "MACs",
             line: "MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,umac-128-etm@openssh.com",
@@ -29,42 +26,21 @@
             regexp: "AuthenticationMethods",
             line: "AuthenticationMethods publickey",
           }
-        - {
-            regexp: "LogLevel",
-            line: "LogLevel VERBOSE",
-          }
+        - { regexp: "LogLevel", line: "LogLevel VERBOSE" }
         - {
             regexp: "Subsystem sftp",
             line: "Subsystem sftp /usr/libexec/openssh/sftp-server -f AUTHPRIV -l INFO",
           }
-        - {
-            regexp: "PermitRootLogin",
-            line: "PermitRootLogin no",
-          }
+        - { regexp: "PermitRootLogin", line: "PermitRootLogin no" }
         - {
             regexp: "UsePrivilegeSeparation",
             line: "UsePrivilegeSeparation sandbox",
           }
-        - {
-            regexp: "LoginGraceTime",
-            line: "LoginGraceTime 1m",
-          }
-        - {
-            regexp: "AllowTcpForwarding",
-            line: "AllowTcpForwarding no",
-          }
-        - {
-            regexp: "MaxSessions",
-            line: "MaxSessions 4",
-          }
-        - {
-            regexp: "X11Forwarding",
-            line: "X11Forwarding no",
-          }
-        - {
-            regexp: "MaxAuthTries",
-            line: "MaxAuthTries 4",
-          }
+        - { regexp: "LoginGraceTime", line: "LoginGraceTime 1m" }
+        - { regexp: "AllowTcpForwarding", line: "AllowTcpForwarding no" }
+        - { regexp: "MaxSessions", line: "MaxSessions 4" }
+        - { regexp: "X11Forwarding", line: "X11Forwarding no" }
+        - { regexp: "MaxAuthTries", line: "MaxAuthTries 4" }
       register: sshd
 
     - name: Checking if SSH short moduli needs disabling
@@ -120,10 +96,10 @@
     - name: Installing packages
       dnf:
         name:
-         - java-17-openjdk-devel
-         - jq
-         - python36-oci-cli
-         - tmux
+          - java-17-openjdk-devel
+          - jq
+          - python36-oci-cli
+          - tmux
         state: present
         update_cache: yes
 
@@ -232,7 +208,10 @@
         group: minecraft
         mode: 0755
       with_items:
-        - { path: Chunky, state: "{% if use_chunky == true %}directory{% else %}absent{% endif %}" }
+        - {
+            path: Chunky,
+            state: "{% if use_chunky == true %}directory{% else %}absent{% endif %}",
+          }
         - { path: CustomCommandPrefix, state: directory }
         - { path: floodgate, state: directory }
         - { path: Geyser-Spigot/packs, state: directory }
@@ -299,11 +278,31 @@
         group: minecraft
         mode: 0644
       with_items:
-       - { url: https://ci.opencollab.dev/job/GeyserMC/job/Geyser/job/master/lastSuccessfulBuild/artifact/bootstrap/spigot/target/Geyser-Spigot.jar, dest: Geyser-Spigot.jar, when: "{{ true }}" }
-       - { url: https://ci.opencollab.dev/job/GeyserMC/job/Floodgate/job/master/lastSuccessfulBuild/artifact/spigot/target/floodgate-spigot.jar, dest: floodgate-spigot.jar, when: "{{ true }}" }
-       - { url: https://ci.opencollab.dev/job/GeyserMC/job/GeyserOptionalPack/job/master/lastSuccessfulBuild/artifact/GeyserOptionalPack.mcpack, dest: Geyser-Spigot/packs/, when: "{{ true }}" }
-       - { url: "{% if use_chunky == true %}https://ci.codemc.io/view/Author/job/pop4959/job/Chunky/lastSuccessfulBuild/artifact/bukkit/build/libs/{{ chunky_latest.stdout }}{% endif %}", dest: "Chunky.jar", when: "{{ use_chunky == true }}" }
-       - { url: "{{ tabtps_latest.stdout }}", dest: tabtps.jar, when: "{{ true }}" }
+        - {
+            url: https://ci.opencollab.dev/job/GeyserMC/job/Geyser/job/master/lastSuccessfulBuild/artifact/bootstrap/spigot/target/Geyser-Spigot.jar,
+            dest: Geyser-Spigot.jar,
+            when: "{{ true }}",
+          }
+        - {
+            url: https://ci.opencollab.dev/job/GeyserMC/job/Floodgate/job/master/lastSuccessfulBuild/artifact/spigot/target/floodgate-spigot.jar,
+            dest: floodgate-spigot.jar,
+            when: "{{ true }}",
+          }
+        - {
+            url: https://ci.opencollab.dev/job/GeyserMC/job/GeyserOptionalPack/job/master/lastSuccessfulBuild/artifact/GeyserOptionalPack.mcpack,
+            dest: Geyser-Spigot/packs/,
+            when: "{{ true }}",
+          }
+        - {
+            url: "{% if use_chunky == true %}https://ci.codemc.io/view/Author/job/pop4959/job/Chunky/lastSuccessfulBuild/artifact/bukkit/build/libs/{{ chunky_latest.stdout }}{% endif %}",
+            dest: "Chunky.jar",
+            when: "{{ use_chunky == true }}",
+          }
+        - {
+            url: "{{ tabtps_latest.stdout }}",
+            dest: tabtps.jar,
+            when: "{{ true }}",
+          }
       when:
         - new_server == true or update_server == true
         - restore_backup == false
@@ -527,7 +526,7 @@
             when: "{{ continuous_deployment == true }}",
           }
         - {
-           src: "service",
+            src: "service",
             dest: "minecraft-monitor.service",
             description: "Minecraft Monitor",
             execstart: "monitor",
@@ -535,7 +534,7 @@
             user: "minecraft",
             type: "simple",
             when: true,
-         }
+          }
         - {
             src: "service",
             dest: "chunky-monitor.service",
@@ -544,14 +543,14 @@
             user: "minecraft",
             type: "oneshot",
             when: "{{ use_chunky == true}}",
-         }
+          }
         - {
             src: "timer",
             dest: "chunky-monitor.timer",
             description: "Chunky Monitor",
             timer: "*:*:0",
             when: "{{ use_chunky == true}}",
-         }
+          }
       when: item.when == true
 
     - name: Stopping and disabling unneeded systemd units
@@ -560,8 +559,8 @@
         state: stopped
         enabled: false
       with_items:
-       - { name: chunky-monitor.timer, when: "{{ use_chunky == false }}" }
-       - { name: chunky-monitor.service, when: "{{ use_chunky == false }}" }
+        - { name: chunky-monitor.timer, when: "{{ use_chunky == false }}" }
+        - { name: chunky-monitor.service, when: "{{ use_chunky == false }}" }
       when: item.when == true
 
     - name: Removing unneeded systemd units
@@ -569,8 +568,8 @@
         path: /etc/systemd/system/{{ item.path }}
         state: absent
       with_items:
-       - { path: chunky-monitor.timer, when: "{{ use_chunky == false }}" }
-       - { path: chunky-monitor.service, when: "{{ use_chunky == false }}" }
+        - { path: chunky-monitor.timer, when: "{{ use_chunky == false }}" }
+        - { path: chunky-monitor.service, when: "{{ use_chunky == false }}" }
       when: item.when == true
 
     - name: Accepting the Minecraft Server EULA
@@ -647,11 +646,46 @@
         enabled: "{{ item.enabled }}"
         daemon_reload: yes
       with_items:
-        - { name: "minecraft.service", state: "started", enabled: "yes", when: "{{ true }}" }
-        - { name: "minecraft-backup.timer", state: "restarted", enabled: "true", when: "{{ continuous_deployment == false }}" }
-        - { name: "minecraft-continuous-deployment.timer", state: "started", enabled: "yes", when: "{{ continuous_deployment == true }}" }
-        - { name: "dnf-upgrade.timer", state: "restarted", enabled: "yes", when: "{{ true }}" }
-        - { name: "uptrack-upgrade.timer", state: "restarted", enabled: "yes", when: "{{ true }}" }
-        - { name: "minecraft-monitor.service", state: "restarted", enabled: "yes", when: "{{ true }}" }
-        - { name: "chunky-monitor.timer", state: "restarted", enabled: "true", when: "{{ use_chunky == true }}" }
+        - {
+            name: "minecraft.service",
+            state: "started",
+            enabled: "yes",
+            when: "{{ true }}",
+          }
+        - {
+            name: "minecraft-backup.timer",
+            state: "restarted",
+            enabled: "true",
+            when: "{{ continuous_deployment == false }}",
+          }
+        - {
+            name: "minecraft-continuous-deployment.timer",
+            state: "started",
+            enabled: "yes",
+            when: "{{ continuous_deployment == true }}",
+          }
+        - {
+            name: "dnf-upgrade.timer",
+            state: "restarted",
+            enabled: "yes",
+            when: "{{ true }}",
+          }
+        - {
+            name: "uptrack-upgrade.timer",
+            state: "restarted",
+            enabled: "yes",
+            when: "{{ true }}",
+          }
+        - {
+            name: "minecraft-monitor.service",
+            state: "restarted",
+            enabled: "yes",
+            when: "{{ true }}",
+          }
+        - {
+            name: "chunky-monitor.timer",
+            state: "restarted",
+            enabled: "true",
+            when: "{{ use_chunky == true }}",
+          }
       when: item.when == true
