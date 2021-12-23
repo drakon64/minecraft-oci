@@ -215,6 +215,10 @@
         - { path: CustomCommandPrefix, state: directory }
         - { path: floodgate, state: directory }
         - { path: Geyser-Spigot/packs, state: directory }
+        - {
+            path: ViaVersion,
+            state: "{% if use_viaversion == true %}directory{% else %}absent{% endif %}",
+          }
       when:
         - restore_backup == false
         - vanilla == false
@@ -234,6 +238,10 @@
         - { src: plugins/Chunky/config.yml, when: "{{ use_chunky == true }}" }
         - { src: plugins/floodgate/config.yml, when: "{{ true }}" }
         - { src: plugins/Geyser-Spigot/config.yml, when: "{{ true }}" }
+        - {
+            src: plugins/ViaVersion/config.yml,
+            when: "{{ use_viaversion == true }}",
+          }
       when:
         - restore_backup == false
         - vanilla == false
@@ -261,6 +269,15 @@
         - restore_backup == false
         - vanilla == false
         - use_chunky == true
+
+    - name: Getting the latest ViaVersion release
+      shell: curl --silent "https://api.github.com/repos/ViaVersion/ViaVersion/releases/latest" | jq -r '.assets[].browser_download_url'
+      register: viaversion_latest
+      when:
+        - new_server == true or update_server == true
+        - use_viaversion == true
+        - restore_backup == false
+        - vanilla == false
 
     - name: Getting the latest TabTPS release
       shell: curl --silent https://api.github.com/repos/jpenilla/TabTPS/releases/latest | jq -r '.assets[].browser_download_url | select(contains("spigot"))'
@@ -303,6 +320,11 @@
             dest: tabtps.jar,
             when: "{{ true }}",
           }
+        - {
+            url: "{% if use_viaversion == true %}{{ viaversion_latest.stdout }}{% endif %}",
+            dest: "Chunky.jar",
+            when: "{{ use_viaversion == true }}",
+          }
       when:
         - new_server == true or update_server == true
         - restore_backup == false
@@ -331,62 +353,6 @@
       when:
         - restore_backup == false
         - vanilla == false
-
-    - name: Creating the ViaVersion plugin directory
-      file:
-        path: /opt/minecraft/server/plugins/ViaVersion
-        state: directory
-        owner: minecraft
-        group: minecraft
-        mode: 0755
-      when:
-        - new_server == true or update_server == true
-        - use_viaversion == true
-        - restore_backup == false
-        - vanilla == false
-
-    - name: Getting the latest ViaVersion release
-      shell: curl --silent "https://api.github.com/repos/ViaVersion/ViaVersion/releases/latest" | jq -r '.assets[].browser_download_url'
-      register: viaversion_latest
-      when:
-        - new_server == true or update_server == true
-        - use_viaversion == true
-        - restore_backup == false
-        - vanilla == false
-
-    - name: Downloading the ViaVersion plugin
-      get_url:
-        url: "{{ viaversion_latest.stdout }}"
-        dest: /opt/minecraft/server/plugins/ViaVersion.jar
-        owner: minecraft
-        group: minecraft
-        mode: 0644
-      when:
-        - new_server == true or update_server == true
-        - use_viaversion == true
-        - restore_backup == false
-        - vanilla == false
-
-    - name: Configuring the ViaVersion plugin
-      template:
-        src: templates/java/plugins/ViaVersion/config.yml.j2
-        dest: /opt/minecraft/server/plugins/ViaVersion/
-        owner: minecraft
-        group: minecraft
-        mode: 0644
-      when:
-        - use_viaversion == true
-        - restore_backup == false
-        - vanilla == false
-
-    - name: Removing the ViaVersion plugin
-      file:
-        path: /opt/minecraft/server/plugins/{{ item }}
-        state: absent
-      with_items:
-        - ViaVersion.jar
-        - ViaVersion/
-      when: use_viaversion == false
 
     - name: Downloading Jolokia
       maven_artifact:
