@@ -226,38 +226,39 @@
 
     - name: Creating the plugin directories
       file:
-        path: /opt/minecraft/server/plugins/{{ item }}
-        state: directory
+        path: /opt/minecraft/server/plugins/{{ item.path }}
+        state: "{{ item.state }}"
         owner: minecraft
         group: minecraft
         mode: 0755
       with_items:
-        - Chunky
-        - CustomCommandPrefix
-        - floodgate
-        - Geyser-Spigot/packs
+        - { path: Chunky, state: "{% if use_chunky == true %}directory{% else %}absent{% endif %}" }
+        - { path: CustomCommandPrefix, state: directory }
+        - { path: floodgate, state: directory }
+        - { path: Geyser-Spigot/packs, state: directory }
       when:
         - restore_backup == false
         - vanilla == false
 
     - name: Configuring the Paper server
       template:
-        src: templates/java/{{ item }}.j2
-        dest: /opt/minecraft/server/{{ item }}
+        src: templates/java/{{ item.src }}.j2
+        dest: /opt/minecraft/server/{{ item.src }}
         owner: minecraft
         group: minecraft
         mode: 0644
       with_items:
-        - bukkit.yml
-        - commands.yml
-        - spigot.yml
-        - paper.yml
-        - plugins/Chunky/config.yml
-        - plugins/floodgate/config.yml
-        - plugins/Geyser-Spigot/config.yml
+        - { src: bukkit.yml, when: "{{ true }}" }
+        - { src: commands.yml, when: "{{ true }}" }
+        - { src: spigot.yml, when: "{{ true }}" }
+        - { src: paper.yml, when: "{{ true }}" }
+        - { src: plugins/Chunky/config.yml, when: "{{ use_chunky == true }}" }
+        - { src: plugins/floodgate/config.yml, when: "{{ true }}" }
+        - { src: plugins/Geyser-Spigot/config.yml, when: "{{ true }}" }
       when:
         - restore_backup == false
         - vanilla == false
+        - item.when == true
 
     - name: Copying the server permissions files
       copy:
@@ -280,6 +281,7 @@
         - new_server == true or update_server == true
         - restore_backup == false
         - vanilla == false
+        - use_chunky == true
 
     - name: Getting the latest TabTPS release
       shell: curl --silent https://api.github.com/repos/jpenilla/TabTPS/releases/latest | jq -r '.assets[].browser_download_url | select(contains("spigot"))'
@@ -297,15 +299,16 @@
         group: minecraft
         mode: 0644
       with_items:
-       - { url: https://ci.opencollab.dev/job/GeyserMC/job/Geyser/job/master/lastSuccessfulBuild/artifact/bootstrap/spigot/target/Geyser-Spigot.jar, dest: Geyser-Spigot.jar }
-       - { url: https://ci.opencollab.dev/job/GeyserMC/job/Floodgate/job/master/lastSuccessfulBuild/artifact/spigot/target/floodgate-spigot.jar, dest: floodgate-spigot.jar }
-       - { url: https://ci.opencollab.dev/job/GeyserMC/job/GeyserOptionalPack/job/master/lastSuccessfulBuild/artifact/GeyserOptionalPack.mcpack, dest: Geyser-Spigot/packs/ }
-       - { url: "https://ci.codemc.io/view/Author/job/pop4959/job/Chunky/lastSuccessfulBuild/artifact/bukkit/build/libs/{{ chunky_latest.stdout }}", dest: "Chunky.jar" }
-       - { url: "{{ tabtps_latest.stdout }}", dest: tabtps.jar }
+       - { url: https://ci.opencollab.dev/job/GeyserMC/job/Geyser/job/master/lastSuccessfulBuild/artifact/bootstrap/spigot/target/Geyser-Spigot.jar, dest: Geyser-Spigot.jar, when: "{{ true }}" }
+       - { url: https://ci.opencollab.dev/job/GeyserMC/job/Floodgate/job/master/lastSuccessfulBuild/artifact/spigot/target/floodgate-spigot.jar, dest: floodgate-spigot.jar, when: "{{ true }}" }
+       - { url: https://ci.opencollab.dev/job/GeyserMC/job/GeyserOptionalPack/job/master/lastSuccessfulBuild/artifact/GeyserOptionalPack.mcpack, dest: Geyser-Spigot/packs/, when: "{{ true }}" }
+       - { url: "{% if use_chunky == true %}https://ci.codemc.io/view/Author/job/pop4959/job/Chunky/lastSuccessfulBuild/artifact/bukkit/build/libs/{{ chunky_latest.stdout }}{% endif %}", dest: "Chunky.jar", when: "{{ use_chunky == true }}" }
+       - { url: "{{ tabtps_latest.stdout }}", dest: tabtps.jar, when: "{{ true }}" }
       when:
         - new_server == true or update_server == true
         - restore_backup == false
         - vanilla == false
+        - item.when == true
 
     - name: Downloading the CustomCommandPrefix plugin
       copy:
@@ -430,67 +433,79 @@
             dest: "/opt/minecraft/dnf-reboot.sh",
             owner: "minecraft",
             mode: "0755",
+            when: true,
           }
         - {
             src: "templates/scripts/backup.sh.j2",
             dest: "/opt/minecraft/backup.sh",
             owner: "minecraft",
             mode: "0755",
+            when: true,
           }
         - {
             src: "templates/scripts/monitor.py.j2",
             dest: "/opt/minecraft/monitor",
             owner: "minecraft",
             mode: "0744",
+            when: true,
           }
         - {
             src: "templates/scripts/chunky-monitor.py.j2",
             dest: "/opt/minecraft/chunky-monitor",
             owner: "minecraft",
             mode: "0744",
+            when: "{{ use_chunky == true }}",
           }
         - {
             src: "templates/systemd/minecraft.service.j2",
             dest: "/etc/systemd/system/minecraft.service",
             owner: "root",
             mode: "0644",
+            when: true,
           }
         - {
             src: "files/systemd/minecraft-backup.service.j2",
             dest: "/etc/systemd/system/minecraft-backup.service",
             owner: "root",
             mode: "0644",
+            when: true,
           }
         - {
             src: "files/systemd/minecraft-backup.timer.j2",
             dest: "/etc/systemd/system/minecraft-backup.timer",
             owner: "root",
             mode: "0644",
+            when: true,
           }
         - {
             src: "files/systemd/dnf-upgrade.service",
             dest: "/etc/systemd/system/dnf-upgrade.service",
             owner: "root",
             mode: "0644",
+            when: true,
           }
         - {
             src: "files/systemd/dnf-upgrade.timer",
             dest: "/etc/systemd/system/dnf-upgrade.timer",
             owner: "root",
             mode: "0644",
+            when: true,
           }
         - {
             src: "files/systemd/uptrack-upgrade.service",
             dest: "/etc/systemd/system/uptrack-upgrade.service",
             owner: "root",
             mode: "0644",
+            when: true,
           }
         - {
             src: "files/systemd/uptrack-upgrade.timer",
             dest: "/etc/systemd/system/uptrack-upgrade.timer",
             owner: "root",
             mode: "0644",
+            when: true,
           }
+      when: item.when == true
 
     - name: Copying monitoring systemd units
       template:
@@ -507,7 +522,8 @@
             execstart: "monitor",
             restart: "on-failure",
             user: "minecraft",
-            type: "simple"
+            type: "simple",
+            when: true,
          }
        - {
             src: "service",
@@ -515,14 +531,36 @@
             description: "Chunky Monitor",
             execstart: "chunky-monitor",
             user: "minecraft",
-            type: "oneshot"
+            type: "oneshot",
+            when: "{{ use_chunky == true}}",
          }
        - {
             src: "timer",
             dest: "chunky-monitor.timer",
             description: "Chunky Monitor",
-            timer: "*:*:0"
+            timer: "*:*:0",
+            when: "{{ use_chunky == true}}",
          }
+      when: item.when == true
+
+    - name: Stopping and disabling unneeded systemd units
+      systemd:
+        name: "{{ item.name }}"
+        state: stopped
+        enabled: false
+      with_items:
+       - { name: chunky-monitor.timer, when: "{{ use_chunky == false }}" }
+       - { name: chunky-monitor.service, when: "{{ use_chunky == false }}" }
+      when: item.when == true
+
+    - name: Removing unneeded systemd units
+      file:
+        path: /etc/systemd/system/{{ item.path }}
+        state: absent
+      with_items:
+       - { path: chunky-monitor.timer, when: "{{ use_chunky == false }}" }
+       - { path: chunky-monitor.service, when: "{{ use_chunky == false }}" }
+      when: item.when == true
 
     - name: Copying continuous deployment script and systemd units
       template:
@@ -623,12 +661,13 @@
         enabled: "{{ item.enabled }}"
         daemon_reload: yes
       with_items:
-        - { name: "minecraft.service", state: "started", enabled: "yes" }
-        - { name: "minecraft-backup.timer", state: "{% if continuous_deployment == false %}restarted{% else %}stopped{% endif %}", enabled: "{% if continuous_deployment == false %}true{% else %}false{% endif %}" }
-        - { name: "dnf-upgrade.timer", state: "restarted", enabled: "yes" }
-        - { name: "uptrack-upgrade.timer", state: "restarted", enabled: "yes" }
-        - { name: "minecraft-monitor.service", state: "restarted", enabled: "yes" }
-        - { name: "chunky-monitor.timer", state: "{% if continuous_deployment == false %}restarted{% else %}stopped{% endif %}", enabled: "{% if continuous_deployment == false %}true{% else %}false{% endif %}" }
+        - { name: "minecraft.service", state: "started", enabled: "yes", when: "{{ true }}" }
+        - { name: "minecraft-backup.timer", state: "{% if continuous_deployment == false %}restarted{% else %}stopped{% endif %}", enabled: "{% if continuous_deployment == false %}true{% else %}false{% endif %}", when: "{{ true }}" }
+        - { name: "dnf-upgrade.timer", state: "restarted", enabled: "yes", when: "{{ true }}" }
+        - { name: "uptrack-upgrade.timer", state: "restarted", enabled: "yes", when: "{{ true }}" }
+        - { name: "minecraft-monitor.service", state: "restarted", enabled: "yes", when: "{{ true }}" }
+        - { name: "chunky-monitor.timer", state: "restarted", enabled: "true", when: "{{ use_chunky == true }}" }
+      when: item.when == true
 
     - name: Starting the continuous deployment systemd timer
       systemd:
