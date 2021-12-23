@@ -197,8 +197,21 @@
         owner: minecraft
         group: minecraft
         mode: 0644
+      with_items:
+        - { src: bukkit.yml, when: "{{ vanilla == false }}" }
+        - { src: commands.yml, when: "{{ vanilla == false }}" }
+        - { src: spigot.yml, when: "{{ vanilla == false }}" }
+        - { src: paper.yml, when: "{{ vanilla == false }}" }
+        - { src: plugins/Chunky/config.yml, when: "{{ use_chunky == true and vanilla == false }}" }
+        - { src: plugins/floodgate/config.yml, when: "{{ vanilla == false }}" }
+        - { src: plugins/Geyser-Spigot/config.yml, when: "{{ vanilla == false }}" }
+        - {
+            src: plugins/ViaVersion/config.yml,
+            when: "{{ use_viaversion == true and vanilla == false }}",
+          }
       when:
         - restore_backup == false
+        - item.when == true
 
     - name: Creating the plugin directories
       file:
@@ -222,30 +235,6 @@
       when:
         - restore_backup == false
         - vanilla == false
-
-    - name: Configuring the Paper server
-      template:
-        src: templates/java/{{ item.src }}.j2
-        dest: /opt/minecraft/server/{{ item.src }}
-        owner: minecraft
-        group: minecraft
-        mode: 0644
-      with_items:
-        - { src: bukkit.yml, when: "{{ true }}" }
-        - { src: commands.yml, when: "{{ true }}" }
-        - { src: spigot.yml, when: "{{ true }}" }
-        - { src: paper.yml, when: "{{ true }}" }
-        - { src: plugins/Chunky/config.yml, when: "{{ use_chunky == true }}" }
-        - { src: plugins/floodgate/config.yml, when: "{{ true }}" }
-        - { src: plugins/Geyser-Spigot/config.yml, when: "{{ true }}" }
-        - {
-            src: plugins/ViaVersion/config.yml,
-            when: "{{ use_viaversion == true }}",
-          }
-      when:
-        - restore_backup == false
-        - vanilla == false
-        - item.when == true
 
     - name: Copying the server permissions files
       copy:
