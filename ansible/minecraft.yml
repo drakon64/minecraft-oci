@@ -362,6 +362,25 @@
         - restore_backup == false
         - vanilla == false
 
+    - name: Removing plugins
+      file:
+        path: /opt/minecraft/server/plugins/{{ item.src }}
+        state: absent
+      with_items:
+        - {
+            src: Chunky.jar,
+            when: "{{ use_chunky == false or vanilla == true }}",
+          }
+        - { src: CustomCommandPrefix.jar, when: "{{ vanilla == true }}" }
+        - { src: floodgate-spigot.jar, when: "{{ vanilla == true }}" }
+        - { src: Geyser-Spigot.jar, when: "{{ vanilla == true }}" }
+        - { src: tabtps.jar, when: "{{ vanilla == true }}" }
+        - {
+            src: ViaVersion.jar,
+            when: "{{ use_viaversion == false or vanilla == true }}",
+          }
+      when: item.when == true
+
     - name: Downloading Jolokia
       maven_artifact:
         group_id: org.jolokia
