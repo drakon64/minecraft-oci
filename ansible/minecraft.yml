@@ -137,6 +137,12 @@
       command: mkswap /.swapfile
       when: swapfile.stat.size != memtotal_b
 
+    - name: Changing vm.swappiness to 1 # Oracle Linux recommendation for SSD's
+      sysctl:
+        name: vm.swappiness
+        value: 1
+        reload: yes
+
     - name: Turning on swapfile
       command: swapon /.swapfile
       when: swapfile.stat.size != memtotal_b
