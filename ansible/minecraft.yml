@@ -190,6 +190,29 @@
         - restore_backup == false
         - vanilla == true
 
+    - name: Creating the plugin directories
+      file:
+        path: /opt/minecraft/server/plugins/{{ item.path }}
+        state: "{{ item.state }}"
+        owner: minecraft
+        group: minecraft
+        mode: 0755
+      with_items:
+        - {
+            path: Chunky,
+            state: "{% if use_chunky == true %}directory{% else %}absent{% endif %}",
+          }
+        - { path: CustomCommandPrefix, state: directory }
+        - { path: floodgate, state: directory }
+        - { path: Geyser-Spigot/packs, state: directory }
+        - {
+            path: ViaVersion,
+            state: "{% if use_viaversion == true %}directory{% else %}absent{% endif %}",
+          }
+      when:
+        - restore_backup == false
+        - vanilla == false
+
     - name: Configuring the Minecraft server
       template:
         src: templates/java/{{ item.src }}.j2
@@ -219,29 +242,6 @@
       when:
         - restore_backup == false
         - item.when == true
-
-    - name: Creating the plugin directories
-      file:
-        path: /opt/minecraft/server/plugins/{{ item.path }}
-        state: "{{ item.state }}"
-        owner: minecraft
-        group: minecraft
-        mode: 0755
-      with_items:
-        - {
-            path: Chunky,
-            state: "{% if use_chunky == true %}directory{% else %}absent{% endif %}",
-          }
-        - { path: CustomCommandPrefix, state: directory }
-        - { path: floodgate, state: directory }
-        - { path: Geyser-Spigot/packs, state: directory }
-        - {
-            path: ViaVersion,
-            state: "{% if use_viaversion == true %}directory{% else %}absent{% endif %}",
-          }
-      when:
-        - restore_backup == false
-        - vanilla == false
 
     - name: Copying the server permissions files
       copy:
