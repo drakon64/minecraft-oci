@@ -5,10 +5,10 @@ from mcstatus import MinecraftServer
 import os
 
 chunky = yaml.safe_load(open('/opt/minecraft/server/plugins/Chunky/config.yml'))
-players = MinecraftServer('127.0.0.1', {{ final_server_overrides['server-port'] }}).status().players
+players = MinecraftServer('127.0.0.1', {{ final_server_overrides['server-port'] }}).status().players.online
 
 if chunky['tasks']['world']['cancelled'] == False or chunky['tasks']['world_nether']['cancelled'] == False or chunky['tasks']['world_the_end']['cancelled'] == False:
-    if players.online > 0:
+    if players > 0:
         os.popen('tmux send-keys -t minecraft chunky SPACE pause ENTER')
-    elif players.online == 0:
+    elif players == 0:
         os.popen('tmux send-keys -t minecraft chunky SPACE continue ENTER')
