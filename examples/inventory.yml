@@ -1,20 +1,5 @@
 minecraft:
   hosts:
-    minecraft-test:
-      backup_version:
-      bucket_name: minecraft-test-backup
-      cd_bucket_name: minecraft-backup
-      continuous_deployment: true
-      eula: true
-      new_server: true
-      restore_backup: false
-      restore_permissions: true
-      skip_backup: true
-      timezone: Europe/London
-      update_server: false
-      use_viaversion: false
-      vanilla: false
-      version: 1.18.1
     minecraft:
       backup_version:
       bucket_name: minecraft-backup
@@ -27,6 +12,25 @@ minecraft:
       skip_backup: false
       timezone: Europe/London
       update_server: true
+      use_bluemap: true
+      use_chunky: true
       use_viaversion: true
       vanilla: false
       version: 1.17.1
+    minecraft-test:
+      backup_version:
+      bucket_name: minecraft-test-backup
+      cd_bucket_name: minecraft-backup
+      continuous_deployment: true
+      eula: true
+      new_server: true
+      restore_backup: false
+      restore_permissions: true
+      skip_backup: true
+      timezone: Europe/London
+      update_server: false
+      use_bluemap: false
+      use_chunky: false
+      use_viaversion: false
+      vanilla: false
+      version: 1.18.1
