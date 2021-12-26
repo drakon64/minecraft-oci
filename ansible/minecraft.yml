@@ -402,6 +402,14 @@
         state: absent
       with_items:
         - {
+            src: BlueMap.jar,
+            when: "{{ use_bluemap == false or vanilla == true }}",
+          }
+        - {
+            src: ../bluemap,
+            when: "{{ use_bluemap == false or vanilla == true }}",
+          }
+        - {
             src: Chunky.jar,
             when: "{{ use_chunky == false or vanilla == true }}",
           }
