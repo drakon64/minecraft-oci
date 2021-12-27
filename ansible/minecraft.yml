@@ -72,7 +72,7 @@
         - ansible_facts.services['minecraft.service'] is defined
 
     - name: Backing up the existing server
-      shell: tar cfO - minecraft | oci os object put --auth instance_principal --bucket-name {{ bucket_name }} --file - --name "minecraft.tar" --force
+      shell: tar cf - --exclude=bluemap --exclude=cache -S server | oci os object put --auth instance_principal --bucket-name {{ bucket_name }} --file - --name "minecraft.tar" --force
       args:
         chdir: /opt/minecraft
       when:
@@ -211,6 +211,10 @@
         mode: 0755
       with_items:
         - {
+            path: BlueMap,
+            state: "{% if use_bluemap == true %}directory{% else %}absent{% endif %}",
+          }
+        - {
             path: Chunky,
             state: "{% if use_chunky == true %}directory{% else %}absent{% endif %}",
           }
@@ -238,6 +242,22 @@
         - { src: commands.yml, when: "{{ vanilla == false }}" }
         - { src: spigot.yml, when: "{{ vanilla == false }}" }
         - { src: paper.yml, when: "{{ vanilla == false }}" }
+        - {
+            src: plugins/BlueMap/core.conf,
+            when: "{{ use_bluemap == true and vanilla == false }}",
+          }
+        - {
+            src: plugins/BlueMap/plugin.conf,
+            when: "{{ use_bluemap == true and vanilla == false }}",
+          }
+        - {
+            src: plugins/BlueMap/render.conf,
+            when: "{{ use_bluemap == true and vanilla == false }}",
+          }
+        - {
+            src: plugins/BlueMap/webserver.conf,
+            when: "{{ use_bluemap == true and vanilla == false }}",
+          }
         - {
             src: plugins/Chunky/config.yml,
             when: "{{ use_chunky == true and vanilla == false }}",
@@ -277,6 +297,15 @@
         - restore_backup == false
         - vanilla == false
         - use_chunky == true
+
+    - name: Getting the latest BlueMap release
+      shell: curl --silent "https://api.github.com/repos/BlueMap-Minecraft/BlueMap/releases/latest" | jq -r '.assets[].browser_download_url | select(contains("spigot"))'
+      register: bluemap_latest
+      when:
+        - new_server == true or update_server == true
+        - use_bluemap == true
+        - restore_backup == false
+        - vanilla == false
 
     - name: Getting the latest ViaVersion release
       shell: curl --silent "https://api.github.com/repos/ViaVersion/ViaVersion/releases/latest" | jq -r '.assets[].browser_download_url'
@@ -322,6 +351,11 @@
             url: "{% if use_chunky == true %}https://ci.codemc.io/view/Author/job/pop4959/job/Chunky/lastSuccessfulBuild/artifact/bukkit/build/libs/{{ chunky_latest.stdout }}{% endif %}",
             dest: "Chunky.jar",
             when: "{{ use_chunky == true }}",
+          }
+        - {
+            url: "{% if use_bluemap == true %}{{ bluemap_latest.stdout }}{% endif %}",
+            dest: BlueMap.jar,
+            when: "{{ use_bluemap == true }}",
           }
         - {
             url: "{{ tabtps_latest.stdout }}",
@@ -380,6 +414,14 @@
         path: /opt/minecraft/server/plugins/{{ item.src }}
         state: absent
       with_items:
+        - {
+            src: BlueMap.jar,
+            when: "{{ use_bluemap == false or vanilla == true }}",
+          }
+        - {
+            src: ../bluemap,
+            when: "{{ use_bluemap == false or vanilla == true }}",
+          }
         - {
             src: Chunky.jar,
             when: "{{ use_chunky == false or vanilla == true }}",
