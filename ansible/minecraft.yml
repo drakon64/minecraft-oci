@@ -362,6 +362,19 @@
         - restore_backup == false
         - vanilla == false
 
+    - name: Downloading Bedrock resource packs
+      get_url:
+        url: "{{ item }}"
+        dest: /opt/minecraft/server/plugins/Geyser-Spigot/packs/
+        owner: minecraft
+        group: minecraft
+        mode: 0644
+      with_items: "{{ bedrock_resource_packs }}"
+      when:
+        - bedrock_resource_packs is defined
+        - restore_backup == false
+        - vanilla == false
+
     - name: Removing plugins
       file:
         path: /opt/minecraft/server/plugins/{{ item.src }}
