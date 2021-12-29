@@ -169,10 +169,11 @@
         - new_server == true or update_server == true
         - restore_backup == false
         - vanilla == false
+        - paper_build is not defined
 
     - name: Downloading Minecraft Paper server
       get_url:
-        url: https://papermc.io/api/v2/projects/paper/versions/{{ version }}/builds/{{ paper_latest.stdout }}/downloads/paper-{{ version }}-{{ paper_latest.stdout }}.jar
+        url: https://papermc.io/api/v2/projects/paper/versions/{{ version }}/builds/{% if paper_build is not defined %}{{ paper_latest.stdout }}{% else %}{{ paper_build }}{% endif %}/downloads/paper-{{ version }}-{% if paper_build is not defined %}{{ paper_latest.stdout }}{% else %}{{ paper_build }}{% endif %}.jar
         dest: /opt/minecraft/server/server.jar
         owner: minecraft
         group: minecraft
