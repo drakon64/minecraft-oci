@@ -72,7 +72,7 @@
         - ansible_facts.services['minecraft.service'] is defined
 
     - name: Backing up the existing server
-      shell: tar cf - --exclude=bluemap --exclude=cache -S server | oci os object put --auth instance_principal --bucket-name {{ bucket_name }} --file - --name "minecraft.tar" --force
+      shell: tar cf - --exclude=bluemap --exclude=cache -S server | gzip --best --rsyncable -c | oci os object put --auth instance_principal --bucket-name {{ bucket_name }} --file - --name "minecraft.tar.gz" --force
       args:
         chdir: /opt/minecraft
       when:
@@ -447,14 +447,14 @@
         mode: 0644
 
     - name: Downloading the server backup
-      command: oci os object get --auth instance_principal --bucket-name {{ bucket_name }} --file minecraft.tar --name minecraft.tar{%if backup_version is defined %} --version-id {{ backup_version }}{% endif %}
+      command: oci os object get --auth instance_principal --bucket-name {{ bucket_name }} --file minecraft.tar.gz --name minecraft.tar.gz{%if backup_version is defined %} --version-id {{ backup_version }}{% endif %}
       args:
         chdir: /opt/minecraft
       when: restore_backup == true
 
     - name: Restoring the server backup
       unarchive:
-        src: /opt/minecraft/minecraft.tar
+        src: /opt/minecraft/minecraft.tar.gz
         dest: /opt/minecraft/
         owner: minecraft
         group: minecraft
@@ -464,7 +464,7 @@
 
     - name: Removing the downloaded backup
       file:
-        path: /opt/minecraft/server.tar
+        path: /opt/minecraft/minecraft.tar.gz
         state: absent
       when: restore_backup == true
 

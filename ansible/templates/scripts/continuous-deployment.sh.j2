@@ -7,9 +7,9 @@ PAPERDIR="/opt/minecraft/server"
 rm -fr $PAPERDIR
 mkdir $PAPERDIR
 
-oci os object get --auth instance_principal --bucket-name {{ cd_bucket_name }} --file /opt/minecraft/minecraft.tar --name minecraft.tar
-tar xf /opt/minecraft/minecraft.tar -C /opt/minecraft/
-rm /opt/minecraft/minecraft.tar
+oci os object get --auth instance_principal --bucket-name {{ cd_bucket_name }} --file /opt/minecraft/minecraft.tar.gz --name minecraft.tar.gz
+tar xf /opt/minecraft/minecraft.tar.gz -C /opt/minecraft/
+rm /opt/minecraft/minecraft.tar.gz
 
 PAPER=$(curl --silent https://papermc.io/api/v2/projects/paper/versions/{{ version }} | jq ".builds | max")
 curl "https://papermc.io/api/v2/projects/paper/versions/{{ version }}/builds/$PAPER/downloads/paper-{{ version }}-$PAPER.jar" -o $PAPERDIR/server.jar
