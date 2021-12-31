@@ -578,6 +578,13 @@
             when: "{{ use_bluemap == true and bluemap_certbot.ready == true }}"
           }
         - {
+            src: "files/scripts/oci-dns-clean.sh",
+            dest: "/opt/minecraft/",
+            owner: root,
+            mode: "0744",
+            when: "{{ use_bluemap == true and bluemap_certbot.ready == true }}"
+          }
+        - {
             src: "templates/scripts/oci-lb-cert.sh.j2",
             dest: "/opt/minecraft/oci-lb-cert.sh",
             owner: root,
@@ -591,7 +598,7 @@
             mode: "0644",
             description: "CertBot Renewal",
             type: oneshot,
-            execstart: "certbot certonly --manual --manual-auth-hook /opt/minecraft/oci-dns-auth.sh -d {{ bluemap_certbot.domain }} --deploy-hook /opt/minecraft/oci-lb-cert.sh --non-interactive",
+            execstart: "certbot certonly --manual --manual-auth-hook /opt/minecraft/oci-dns-auth.sh --manual-cleanup-hook /opt/minecraft/oci-dns-clean.sh -d {{ bluemap_certbot.domain }} --deploy-hook /opt/minecraft/oci-lb-cert.sh --non-interactive",
             when: "{{ use_bluemap == true and bluemap_certbot.ready == true }}"
           }
         - {

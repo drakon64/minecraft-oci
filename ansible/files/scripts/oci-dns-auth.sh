@@ -1,11 +1,18 @@
 #!/bin/sh
 
-oci dns record zone patch --auth instance_principal --zone-name-or-id "[
+oci dns record zone patch --auth instance_principal --zone-name-or-id "$CERTBOT_DOMAIN" --items "[
 	{
-		\"domain\": \"$CERTBOT_DOMAIN\",
+		\"domain\": \"_acme-challenge.$CERTBOT_DOMAIN\",
+		\"operation\": \"REMOVE\"
+	}
+]"
+
+oci dns record zone patch --auth instance_principal --zone-name-or-id "$CERTBOT_DOMAIN" --items "[
+	{
+		\"domain\": \"_acme-challenge.$CERTBOT_DOMAIN\",
 		\"rdata\": \"$CERTBOT_VALIDATION\",
 		\"rtype\": \"TXT\",
-		\"ttl\": 300
+		\"ttl\": 1
 	}
 ]"
 

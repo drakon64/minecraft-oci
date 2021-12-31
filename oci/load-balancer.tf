@@ -87,10 +87,13 @@ resource "oci_core_network_security_group_security_rule" "bluemap" {
 }
 
 resource "oci_identity_policy" "bluemap_certbot" {
-	compartment_id = oci_identity_compartment.minecraft_compartment.id
+	compartment_id = var.oci_tenancy
 	description = "BlueMap CertBot"
 	name = "${var.oci_compute_display_name}-bluemap-certbot"
 	statements = [
+		"Allow dynamic-group ${oci_identity_dynamic_group.minecraft.name} to use dns-zones in tenancy where all {target.dns-zone.name='${var.bluemap_domain_zone}'}",
+		#"Allow dynamic-group ${oci_identity_dynamic_group.minecraft.name} to use dns-records in tenancy where all {target.dns-domain.name='_acme-challenge.${var.bluemap_domain_name}', target.dns-zone.name='${var.bluemap_domain_zone}', target.dns-record.type='TXT'}", # Despite what Oracle's documentation says, you cannot restrict access based on a specific domain name or record type
+		"Allow dynamic-group ${oci_identity_dynamic_group.minecraft.name} to use dns-records in tenancy where target.dns-zone.name='${var.bluemap_domain_zone}'",
 		"Allow dynamic-group ${oci_identity_dynamic_group.minecraft.name} to use load-balancers in compartment id ${oci_identity_compartment.minecraft_compartment.id}"
 	]
 

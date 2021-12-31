@@ -68,6 +68,14 @@ variable "bluemap" {
 	default = true
 }
 
+variable "bluemap_domain_zone" {
+	type = string
+}
+
+variable "bluemap_domain_name" {
+	type = string
+}
+
 variable "bluemap_https" {
 	type = bool
 	default = false
