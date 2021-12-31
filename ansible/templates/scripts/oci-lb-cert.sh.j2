@@ -1,7 +1,5 @@
 #!/bin/sh
 
-RENEWED_LINEAGE="/etc/letsencrypt/live/bluemap.minecraft.drakon.cloud/"
-
 LOAD_BALANCER_ID="{{ bluemap_certbot.load_balancer_id }}"
 CERTIFICATES=$(oci lb certificate list --auth instance_principal --load-balancer-id "$LOAD_BALANCER_ID")
 DATE=$(date --iso-8601)
