@@ -50,7 +50,6 @@ resource "oci_load_balancer_listener" "bluemap" {
 	protocol = var.bluemap_https ? "HTTP2" : "HTTP"
 
 	ssl_configuration {
-		certificate_name = "bluemap"
 		# cipher_suite_name = "bluemap"
 		protocols = [ "TLSv1.2" ]
 		server_order_preference = "ENABLED"
