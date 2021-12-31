@@ -35,12 +35,27 @@ resource "oci_load_balancer_backend" "bluemap" {
 	count = var.bluemap ? 1 : 0
 }
 
+# resource "oci_load_balancer_ssl_cipher_suite" "bluemap" {
+# 	name = "bluemap"
+# 	ciphers = [ "ECDHE-ECDSA-AES128-GCM-SHA256", "ECDHE-RSA-AES128-GCM-SHA256", "ECDHE-ECDSA-AES256-GCM-SHA384", "ECDHE-RSA-AES256-GCM-SHA384", "ECDHE-ECDSA-CHACHA20-POLY1305", "ECDHE-RSA-CHACHA20-POLY1305", "DHE-RSA-AES128-GCM-SHA256", "DHE-RSA-AES256-GCM-SHA384" ]
+
+	# count = var.bluemap_https ? 1 : 0
+# }
+
 resource "oci_load_balancer_listener" "bluemap" {
 	default_backend_set_name = oci_load_balancer_backend_set.bluemap[0].name
 	load_balancer_id = oci_load_balancer_load_balancer.bluemap[0].id
 	name = "bluemap"
-	port = 80
-	protocol = "HTTP"
+	port = var.bluemap_https ? 443 : 80
+	protocol = var.bluemap_https ? "HTTP2" : "HTTP"
+
+	ssl_configuration {
+		certificate_name = "bluemap"
+		# cipher_suite_name = "bluemap"
+		protocols = [ "TLSv1.2" ]
+		server_order_preference = "ENABLED"
+		verify_peer_certificate = false
+	}
 
 	count = var.bluemap ? 1 : 0
 }
@@ -63,8 +78,8 @@ resource "oci_core_network_security_group_security_rule" "bluemap" {
 
 	tcp_options {
 		destination_port_range {
-			min = 80
-			max = 80
+			min = var.bluemap_https ? 443 : 80
+			max = var.bluemap_https ? 443 : 80
 		}
 	}
 
