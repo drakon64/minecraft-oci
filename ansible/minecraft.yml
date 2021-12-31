@@ -575,21 +575,21 @@
             dest: "/opt/minecraft/",
             owner: root,
             mode: "0744",
-            when: "{{ use_bluemap == true and bluemap_certbot.ready == true }}"
+            when: "{{ use_bluemap == true and bluemap_certbot.use == true }}"
           }
         - {
             src: "files/scripts/oci-dns-cleanup.sh",
             dest: "/opt/minecraft/",
             owner: root,
             mode: "0744",
-            when: "{{ use_bluemap == true and bluemap_certbot.ready == true }}"
+            when: "{{ use_bluemap == true and bluemap_certbot.use == true }}"
           }
         - {
             src: "templates/scripts/oci-lb-cert.sh.j2",
             dest: "/opt/minecraft/oci-lb-cert.sh",
             owner: root,
             mode: "0744",
-            when: "{{ use_bluemap == true and bluemap_certbot.ready == true }}"
+            when: "{{ use_bluemap == true and bluemap_certbot.use == true }}"
           }
         - {
             src: "templates/systemd/service.j2",
@@ -598,8 +598,8 @@
             mode: "0644",
             description: "CertBot Renewal",
             type: oneshot,
-            execstart: "certbot certonly --manual --manual-auth-hook /opt/minecraft/oci-dns-auth.sh --manual-cleanup-hook /opt/minecraft/oci-dns-cleanup.sh -d {{ bluemap_certbot.domain }} --deploy-hook /opt/minecraft/oci-lb-cert.sh --non-interactive",
-            when: "{{ use_bluemap == true and bluemap_certbot.ready == true }}"
+            execstart: "{% if bluemap_certbot.email is defined %}certbot certonly --manual --manual-auth-hook /opt/minecraft/oci-dns-auth.sh --manual-cleanup-hook /opt/minecraft/oci-dns-cleanup.sh -d {{ bluemap_certbot.domain }} --deploy-hook /opt/minecraft/oci-lb-cert.sh --non-interactive --email {{ bluemap_certbot.email }} --no-eff-email{% else %}ertbot certonly --manual --manual-auth-hook /opt/minecraft/oci-dns-auth.sh --manual-cleanup-hook /opt/minecraft/oci-dns-cleanup.sh -d {{ bluemap_certbot.domain }} --deploy-hook /opt/minecraft/oci-lb-cert.sh --non-interactive --register-unsafely-without-email{% endif %}",
+            when: "{{ use_bluemap == true and bluemap_certbot.use == true }}"
           }
         - {
             src: "templates/systemd/timer.j2",
@@ -608,7 +608,7 @@
             mode: "0644",
             description: "CertBot Renewal",
             timer: "*-*-01 00:00:00",
-            when: "{{ use_bluemap == true and bluemap_certbot.ready == true }}"
+            when: "{{ use_bluemap == true and bluemap_certbot.use == true }}"
           }
         - {
             src: "templates/scripts/continuous-deployment.sh.j2",
@@ -795,10 +795,16 @@
             when: "{{ true }}",
           }
         - {
+            name: "certbot-renew.service",
+            state: "started",
+            enabled: "yes",
+            when: "{{ use_bluemap == true and bluemap_certbot.use == true and bluemap_certbot.force == true }}"
+          }
+        - {
             name: "certbot-renew.timer",
             state: "restarted",
             enabled: "yes",
-            when: "{{ use_bluemap == true and bluemap_certbot.ready == true }}"
+            when: "{{ use_bluemap == true and bluemap_certbot.use == true }}"
           }
         - {
             name: "minecraft-monitor.service",
