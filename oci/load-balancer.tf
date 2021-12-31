@@ -49,7 +49,7 @@ resource "oci_core_network_security_group" "bluemap" {
 	compartment_id = oci_identity_compartment.minecraft_compartment.id
 	vcn_id = oci_core_vcn.vcn.id
 
-	display_name = var.oci_compute_display_name
+	display_name = "${var.oci_compute_display_name}_bluemap"
 
 	count = var.bluemap ? 1 : 0
 }
@@ -58,7 +58,7 @@ resource "oci_core_network_security_group_security_rule" "bluemap" {
 	network_security_group_id = oci_core_network_security_group.bluemap[0].id
 	direction = "INGRESS"
 	protocol = 6
-	source = var.management_ip
+	source = "0.0.0.0/0"
 	source_type = "CIDR_BLOCK"
 
 	tcp_options {
