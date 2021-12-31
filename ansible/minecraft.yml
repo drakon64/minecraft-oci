@@ -585,7 +585,7 @@
             when: "{{ use_bluemap == true and bluemap_certbot.ready == true }}"
           }
         - {
-            src: "templates/systemd/monitor.service.j2",
+            src: "templates/systemd/service.j2",
             dest: "/etc/systemd/system/certbot-renew.service",
             owner: root,
             mode: "0644",
@@ -595,7 +595,7 @@
             when: "{{ use_bluemap == true and bluemap_certbot.ready == true }}"
           }
         - {
-            src: "templates/systemd/monitor.timer.j2",
+            src: "templates/systemd/timer.j2",
             dest: "/etc/systemd/system/certbot-renew.timer",
             owner: root,
             mode: "0644",
@@ -625,7 +625,7 @@
             when: "{{ continuous_deployment == true }}",
           }
         - {
-            src: "templates/systemd/monitor.service.j2",
+            src: "templates/systemd/service.j2",
             dest: "/etc/systemd/system/minecraft-monitor.service",
             owner: "root",
             mode: "0644",
@@ -637,7 +637,7 @@
             when: true,
           }
         - {
-            src: "templates/systemd/monitor.service.j2",
+            src: "templates/systemd/service.j2",
             dest: "/etc/systemd/system/chunky-monitor.service",
             owner: "root",
             mode: "0644",
@@ -648,7 +648,7 @@
             when: "{{ use_chunky == true}}",
           }
         - {
-            src: "templates/systemd/monitor.timer.j2",
+            src: "templates/systemd/timer.j2",
             dest: "/etc/systemd/system/chunky-monitor.timer",
             owner: "root",
             mode: "0644",
