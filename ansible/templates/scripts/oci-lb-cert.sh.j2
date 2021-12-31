@@ -1,0 +1,11 @@
+#!/bin/sh
+
+RENEWED_LINEAGE="/etc/letsencrypt/live/bluemap.minecraft.drakon.cloud/"
+
+LOAD_BALANCER_ID="{{ bluemap_certbot.load_balancer_id }}"
+CERTIFICATES=$(oci lb certificate list --auth instance_principal --load-balancer-id "$LOAD_BALANCER_ID")
+DATE=$(date --iso-8601)
+
+oci lb certificate create --auth instance_principal --certificate-name "bluemap-$DATE" --load-balancer-id "$LOAD_BALANCER_ID" --private-key-file "$RENEWED_LINEAGE/fullchain.pem" --public-certificate-file "$RENEWED_LINEAGE/privkey.pem"
+
+oci lb listener update --auth instance_principal --default-backend-set-name bluemap --listener-name bluemap --load-balancer-id "$LOAD_BALANCER_ID" --port 443 --protocol HTTP2 --ssl-certificate-name "bluemap-$DATE" --wait-for-state SUCCEEDED --wait-for-state FAILED

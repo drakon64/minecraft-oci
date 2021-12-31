@@ -85,3 +85,14 @@ resource "oci_core_network_security_group_security_rule" "bluemap" {
 
 	count = var.bluemap ? 1 : 0
 }
+
+resource "oci_identity_policy" "bluemap_certbot" {
+	compartment_id = oci_identity_compartment.minecraft_compartment.id
+	description = "BlueMap CertBot"
+	name = "${var.oci_compute_display_name}-bluemap-certbot"
+	statements = [
+		"Allow dynamic-group ${oci_identity_dynamic_group.minecraft.name} to use load-balancers in compartment id ${oci_identity_compartment.minecraft_compartment.id}"
+	]
+
+	count = var.bluemap_https ? 1 : 0
+}
