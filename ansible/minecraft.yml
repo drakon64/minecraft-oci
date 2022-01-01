@@ -602,7 +602,7 @@
             mode: "0644",
             description: "CertBot Renewal",
             type: oneshot,
-            execstart: "{% if bluemap_certbot is defined %}{% if bluemap_certbot.email is defined %}certbot certonly --manual --manual-auth-hook /opt/minecraft/oci-dns-auth.sh --manual-cleanup-hook /opt/minecraft/oci-dns-cleanup.sh -d {{ bluemap_certbot.domain }} --deploy-hook /opt/minecraft/oci-lb-cert.sh --non-interactive --email {{ bluemap_certbot.email }} --no-eff-email{% else %}certbot certonly --manual --manual-auth-hook /opt/minecraft/oci-dns-auth.sh --manual-cleanup-hook /opt/minecraft/oci-dns-cleanup.sh -d {{ bluemap_certbot.domain }} --deploy-hook /opt/minecraft/oci-lb-cert.sh --non-interactive --register-unsafely-without-email{% endif %}{% endif %}",
+            execstart: "{% if bluemap_certbot is defined %}certbot certonly --manual --manual-auth-hook /opt/minecraft/oci-dns-auth.sh --manual-cleanup-hook /opt/minecraft/oci-dns-cleanup.sh -d {{ bluemap_certbot.domain }} --deploy-hook /opt/minecraft/oci-lb-cert.sh --non-interactive {% if bluemap_certbot.email is defined %}--email {{ bluemap_certbot.email }} --no-eff-email{% else %}--register-unsafely-without-email{% endif %}{% endif %}",
             when: "{{ use_bluemap == true and bluemap_certbot.use == true }}",
           }
         - {
