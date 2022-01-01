@@ -612,6 +612,7 @@
             mode: "0644",
             description: "CertBot Renewal",
             timer: "*-*-01 00:00:00",
+            persistent: true,
             when: "{{ use_bluemap == true and bluemap_certbot.use == true }}",
           }
         - {

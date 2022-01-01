@@ -3,6 +3,9 @@ Description={{ item.description }}
 
 [Timer]
 OnCalendar={{ item.timer }}
+{% if item.persistent %}
+Persistent=true
+{% endif %}
 
 [Install]
 WantedBy=timers.target
