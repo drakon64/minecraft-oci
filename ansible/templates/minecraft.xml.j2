@@ -2,10 +2,10 @@
 	<short>Minecraft</short>
 	<description>Explore your own unique world, survive the night, and create anything you can imagine!</description>
 	<port protocol="tcp" port="{{ final_server_overrides['server-port'] }}"/>
-{% if use_bluemap == true and vanilla == false %}
+{% if vanilla == false %}
+{% if use_bluemap == true %}
 	<port protocol="tcp" port="8100"/>
 {% endif %}
-{% if vanilla == false %}
 	<port protocol="udp" port="19132"/>
 {% endif %}
 </service>
