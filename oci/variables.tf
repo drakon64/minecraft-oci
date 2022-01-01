@@ -68,17 +68,22 @@ variable "bluemap" {
 	default = true
 }
 
+variable "bluemap_https_policies" {
+	type = bool
+	default = false
+}
+
+variable "bluemap_https" {
+	type = bool
+	default = false
+}
+
 variable "bluemap_domain_zone" {
 	type = string
 }
 
 variable "bluemap_domain_name" {
 	type = string
-}
-
-variable "bluemap_https" {
-	type = bool
-	default = false
 }
 
 variable "minecraft_bedrock_port" {
