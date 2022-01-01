@@ -598,7 +598,7 @@
             mode: "0644",
             description: "CertBot Renewal",
             type: oneshot,
-            execstart: "{% if bluemap_certbot.email is defined %}certbot certonly --manual --manual-auth-hook /opt/minecraft/oci-dns-auth.sh --manual-cleanup-hook /opt/minecraft/oci-dns-cleanup.sh -d {{ bluemap_certbot.domain }} --deploy-hook /opt/minecraft/oci-lb-cert.sh --non-interactive --email {{ bluemap_certbot.email }} --no-eff-email{% else %}ertbot certonly --manual --manual-auth-hook /opt/minecraft/oci-dns-auth.sh --manual-cleanup-hook /opt/minecraft/oci-dns-cleanup.sh -d {{ bluemap_certbot.domain }} --deploy-hook /opt/minecraft/oci-lb-cert.sh --non-interactive --register-unsafely-without-email{% endif %}",
+            execstart: "{% if bluemap_certbot.email is defined %}certbot certonly --manual --manual-auth-hook /opt/minecraft/oci-dns-auth.sh --manual-cleanup-hook /opt/minecraft/oci-dns-cleanup.sh -d {{ bluemap_certbot.domain }} --deploy-hook /opt/minecraft/oci-lb-cert.sh --non-interactive --email {{ bluemap_certbot.email }} --no-eff-email{% else %}certbot certonly --manual --manual-auth-hook /opt/minecraft/oci-dns-auth.sh --manual-cleanup-hook /opt/minecraft/oci-dns-cleanup.sh -d {{ bluemap_certbot.domain }} --deploy-hook /opt/minecraft/oci-lb-cert.sh --non-interactive --register-unsafely-without-email{% endif %}",
             when: "{{ use_bluemap == true and bluemap_certbot.use == true }}"
           }
         - {
