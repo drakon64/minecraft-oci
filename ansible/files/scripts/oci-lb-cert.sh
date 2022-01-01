@@ -1,6 +1,8 @@
 #!/bin/sh
 
-LOAD_BALANCER_ID="{{ bluemap_certbot.load_balancer_id }}"
+METADATA=$(curl -H "Authorization: Bearer Oracle" -L http://169.254.169.254/opc/v2/instance/)
+COMPARTMENT_ID=$(echo "$METADATA" | jq -r .compartmentId)
+LOAD_BALANCER_ID=$(oci lb load-balancer list --auth instance_principal --compartment-id "$COMPARTMENT_ID" --display-name bluemap | jq -r .data[].id)
 CERTIFICATES=$(oci lb certificate list --auth instance_principal --load-balancer-id "$LOAD_BALANCER_ID" | jq -r '.data[]."certificate-name"')
 DATE=$(date --iso-8601)
 

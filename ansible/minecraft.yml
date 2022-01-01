@@ -585,8 +585,8 @@
             when: "{{ use_bluemap == true and bluemap_certbot.use == true }}"
           }
         - {
-            src: "templates/scripts/oci-lb-cert.sh.j2",
-            dest: "/opt/minecraft/oci-lb-cert.sh",
+            src: "files/scripts/oci-lb-cert.sh",
+            dest: "/opt/minecraft/",
             owner: root,
             mode: "0744",
             when: "{{ use_bluemap == true and bluemap_certbot.use == true }}"

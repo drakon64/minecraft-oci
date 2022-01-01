@@ -25,7 +25,6 @@ minecraft:
         force: false
         use: true
         domain: bluemap.example.com
-        load_balancer_id:
         zone: example.com
       bucket_name: minecraft-test-backup
       cd_bucket_name: minecraft-backup
