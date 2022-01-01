@@ -86,11 +86,15 @@
     - name: Enabling EPEL
       yum_repository:
         name: ol8_developer_EPEL
+        baseurl: https://yum$ociregion.$ocidomain/repo/OracleLinux/OL8/developer/EPEL/$basearch/
+        description: Oracle Linux $releasever EPEL Packages for Development ($basearch)
+        gpgcheck: yes
+        gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-oracle
         enabled: yes
         file: oracle-epel-ol8
       when:
         - use_bluemap == true
-        - bluemap_certbot.install = true
+        - bluemap_certbot.use == true
 
     - name: Installing updates
       dnf:
@@ -123,7 +127,7 @@
         state: present
       when:
         - use_bluemap == true
-        - bluemap_certbot.install = true
+        - bluemap_certbot.use == true
 
     - name: Creating the minecraft user
       user:
@@ -598,7 +602,7 @@
             mode: "0644",
             description: "CertBot Renewal",
             type: oneshot,
-            execstart: "{% if bluemap_certbot.email is defined %}certbot certonly --manual --manual-auth-hook /opt/minecraft/oci-dns-auth.sh --manual-cleanup-hook /opt/minecraft/oci-dns-cleanup.sh -d {{ bluemap_certbot.domain }} --deploy-hook /opt/minecraft/oci-lb-cert.sh --non-interactive --email {{ bluemap_certbot.email }} --no-eff-email{% else %}certbot certonly --manual --manual-auth-hook /opt/minecraft/oci-dns-auth.sh --manual-cleanup-hook /opt/minecraft/oci-dns-cleanup.sh -d {{ bluemap_certbot.domain }} --deploy-hook /opt/minecraft/oci-lb-cert.sh --non-interactive --register-unsafely-without-email{% endif %}",
+            execstart: "{% if bluemap_certbot is defined %}{% if bluemap_certbot.email is defined %}certbot certonly --manual --manual-auth-hook /opt/minecraft/oci-dns-auth.sh --manual-cleanup-hook /opt/minecraft/oci-dns-cleanup.sh -d {{ bluemap_certbot.domain }} --deploy-hook /opt/minecraft/oci-lb-cert.sh --non-interactive --email {{ bluemap_certbot.email }} --no-eff-email{% else %}certbot certonly --manual --manual-auth-hook /opt/minecraft/oci-dns-auth.sh --manual-cleanup-hook /opt/minecraft/oci-dns-cleanup.sh -d {{ bluemap_certbot.domain }} --deploy-hook /opt/minecraft/oci-lb-cert.sh --non-interactive --register-unsafely-without-email{% endif %}{% endif %}",
             when: "{{ use_bluemap == true and bluemap_certbot.use == true }}",
           }
         - {
