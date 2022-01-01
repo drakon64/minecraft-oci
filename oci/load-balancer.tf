@@ -44,6 +44,8 @@ resource "oci_load_balancer_backend" "bluemap" {
 
 data "oci_load_balancer_certificates" "bluemap" {
 	load_balancer_id = oci_load_balancer_load_balancer.bluemap[0].id
+
+	count = var.bluemap_https ? 1 : 0
 }
 
 resource "oci_load_balancer_listener" "bluemap" {
@@ -56,7 +58,7 @@ resource "oci_load_balancer_listener" "bluemap" {
 	dynamic "ssl_configuration" {
 		for_each = var.bluemap_https ? [1] : []
 		content {
-			certificate_name = data.oci_load_balancer_certificates.bluemap.certificates[0].certificate_name
+			certificate_name = data.oci_load_balancer_certificates.bluemap[0].certificates[0].certificate_name
 			# cipher_suite_name = "bluemap"
 			cipher_suite_name = "oci-default-http2-ssl-cipher-suite-v1"
 			protocols = [ "TLSv1.2" ]
