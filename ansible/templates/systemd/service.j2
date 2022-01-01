@@ -1,10 +1,10 @@
 [Unit]
-Description={{ item.description }} Monitor
+Description={{ item.description }}
 After=network.target
 
 [Service]
 Type={{ item.type }}
-ExecStart=/opt/minecraft/{{ item.execstart }}
+ExecStart={{ item.execstart }}
 {%if item.restart is defined %}
 Restart={{ item.restart }}
 {% endif %}

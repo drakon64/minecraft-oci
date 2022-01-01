@@ -83,6 +83,15 @@
     - name: Applying updates with Uptrack
       command: uptrack-upgrade -y
 
+    - name: Enabling EPEL
+      yum_repository:
+        name: ol8_developer_EPEL
+        enabled: yes
+        file: oracle-epel-ol8
+      when:
+       - use_bluemap == true
+       - bluemap_certbot.install = true
+
     - name: Installing updates
       dnf:
         name: "*"
@@ -107,6 +116,14 @@
       pip:
         name: mcstatus
         state: latest
+
+    - name: Installing certbot
+      dnf:
+        name: certbot
+        state: present
+      when:
+       - use_bluemap == true
+       - bluemap_certbot.install = true
 
     - name: Creating the minecraft user
       user:
@@ -554,6 +571,46 @@
             when: true,
           }
         - {
+            src: "files/scripts/oci-dns-auth.sh",
+            dest: "/opt/minecraft/",
+            owner: root,
+            mode: "0744",
+            when: "{{ use_bluemap == true and bluemap_certbot.use == true }}"
+          }
+        - {
+            src: "files/scripts/oci-dns-cleanup.sh",
+            dest: "/opt/minecraft/",
+            owner: root,
+            mode: "0744",
+            when: "{{ use_bluemap == true and bluemap_certbot.use == true }}"
+          }
+        - {
+            src: "templates/scripts/oci-lb-cert.sh.j2",
+            dest: "/opt/minecraft/oci-lb-cert.sh",
+            owner: root,
+            mode: "0744",
+            when: "{{ use_bluemap == true and bluemap_certbot.use == true }}"
+          }
+        - {
+            src: "templates/systemd/service.j2",
+            dest: "/etc/systemd/system/certbot-renew.service",
+            owner: root,
+            mode: "0644",
+            description: "CertBot Renewal",
+            type: oneshot,
+            execstart: "{% if bluemap_certbot.email is defined %}certbot certonly --manual --manual-auth-hook /opt/minecraft/oci-dns-auth.sh --manual-cleanup-hook /opt/minecraft/oci-dns-cleanup.sh -d {{ bluemap_certbot.domain }} --deploy-hook /opt/minecraft/oci-lb-cert.sh --non-interactive --email {{ bluemap_certbot.email }} --no-eff-email{% else %}ertbot certonly --manual --manual-auth-hook /opt/minecraft/oci-dns-auth.sh --manual-cleanup-hook /opt/minecraft/oci-dns-cleanup.sh -d {{ bluemap_certbot.domain }} --deploy-hook /opt/minecraft/oci-lb-cert.sh --non-interactive --register-unsafely-without-email{% endif %}",
+            when: "{{ use_bluemap == true and bluemap_certbot.use == true }}"
+          }
+        - {
+            src: "templates/systemd/timer.j2",
+            dest: "/etc/systemd/system/certbot-renew.timer",
+            owner: root,
+            mode: "0644",
+            description: "CertBot Renewal",
+            timer: "*-*-01 00:00:00",
+            when: "{{ use_bluemap == true and bluemap_certbot.use == true }}"
+          }
+        - {
             src: "templates/scripts/continuous-deployment.sh.j2",
             dest: "/opt/minecraft/continuous-deployment.sh",
             owner: "root",
@@ -575,30 +632,30 @@
             when: "{{ continuous_deployment == true }}",
           }
         - {
-            src: "templates/systemd/monitor.service.j2",
+            src: "templates/systemd/service.j2",
             dest: "/etc/systemd/system/minecraft-monitor.service",
             owner: "root",
             mode: "0644",
             description: "Minecraft Monitor",
-            execstart: "monitor",
+            execstart: "/opt/minecraft/monitor",
             restart: "on-failure",
             user: "minecraft",
             type: "simple",
             when: true,
           }
         - {
-            src: "templates/systemd/monitor.service.j2",
+            src: "templates/systemd/service.j2",
             dest: "/etc/systemd/system/chunky-monitor.service",
             owner: "root",
             mode: "0644",
             description: "Chunky Monitor",
-            execstart: "chunky-monitor",
+            execstart: "/opt/minecraft/chunky-monitor",
             user: "minecraft",
             type: "oneshot",
             when: "{{ use_chunky == true}}",
           }
         - {
-            src: "templates/systemd/monitor.timer.j2",
+            src: "templates/systemd/timer.j2",
             dest: "/etc/systemd/system/chunky-monitor.timer",
             owner: "root",
             mode: "0644",
@@ -736,6 +793,18 @@
             state: "restarted",
             enabled: "yes",
             when: "{{ true }}",
+          }
+        - {
+            name: "certbot-renew.service",
+            state: "started",
+            enabled: "yes",
+            when: "{{ use_bluemap == true and bluemap_certbot.use == true and bluemap_certbot.force == true }}"
+          }
+        - {
+            name: "certbot-renew.timer",
+            state: "restarted",
+            enabled: "yes",
+            when: "{{ use_bluemap == true and bluemap_certbot.use == true }}"
           }
         - {
             name: "minecraft-monitor.service",
