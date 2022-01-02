@@ -218,6 +218,7 @@ paper:
       allow-permanent-block-break-exploits-readme: This setting controls if players should be able to break bedrock, end portals and other intended to be permanent blocks.
       allow-piston-duplication: false
       allow-piston-duplication-readme: This setting controls if player should be able to use TNT duplication, but this also allows duplicating carpet, rails and potentially other items
+      perform-username-validation: true
     use-alternative-luck-formula: false
     use-display-name-in-quit-message: false
     velocity-support:
