@@ -4,9 +4,12 @@ After=network.target
 
 [Service]
 Type=oneshot
-ExecStart=/usr/bin/sudo -u minecraft /opt/minecraft/backup.sh
+ExecStart=/opt/minecraft/backup.sh
 
 WorkingDirectory=/opt/minecraft
+
+User=minecraft
+Group=minecraft
 
 [Install]
 WantedBy=multi-user.target
