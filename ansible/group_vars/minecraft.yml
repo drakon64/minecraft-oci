@@ -50,6 +50,11 @@ bluemap:
     maxConnectionCount: 100
     port: 8100
     webroot: bluemap/web
+bluemapfloodgate:
+  configVersion_DO_NOT_TOUCH: 2
+  verboseLogging: true
+  useTydiumCraftSkinAPI: false
+  cacheHours: 72
 bukkit:
   aliases: now-in-commands.yml
   chunk-gc:

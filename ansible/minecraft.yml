@@ -237,6 +237,10 @@
             state: "{% if use_bluemap == true %}directory{% else %}absent{% endif %}",
           }
         - {
+            path: BlueMapFloodgate,
+            state: "{% if use_bluemap == true %}directory{% else %}absent{% endif %}",
+          }
+        - {
             path: Chunky,
             state: "{% if use_chunky == true %}directory{% else %}absent{% endif %}",
           }
@@ -283,6 +287,10 @@
         - {
             src: plugins/Chunky/config.yml,
             when: "{{ use_chunky == true and vanilla == false }}",
+          }
+        - {
+            src: plugins/BlueMapFloodgate/config.yml,
+            when: "{{ use_bluemap == true and vanilla == false }}",
           }
         - { src: plugins/floodgate/config.yml, when: "{{ vanilla == false }}" }
         - {
@@ -456,6 +464,10 @@
           }
         - {
             src: ../bluemap,
+            when: "{{ use_bluemap == false or vanilla == true }}",
+          }
+        - {
+            src: BlueMapFloodgate.jar,
             when: "{{ use_bluemap == false or vanilla == true }}",
           }
         - {
