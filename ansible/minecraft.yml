@@ -337,14 +337,14 @@
         - restore_backup == false
         - vanilla == false
 
-    # - name: Getting the latest BlueMap-Floodgate release
-    #   shell: curl --silent "https://api.github.com/repos/TechnicJelle/BlueMapFloodgate/releases/latest" | jq -r '.assets[].browser_download_url'
-    #   register: bluemap_floodgate_latest
-    #   when:
-    #     - new_server == true or update_server == true
-    #     - use_bluemap == true
-    #     - restore_backup == false
-    #     - vanilla == false
+    - name: Getting the latest BlueMap-Floodgate release
+      shell: curl --silent "https://api.github.com/repos/TechnicJelle/BlueMapFloodgate/releases" | jq -r '.[0].assets[].browser_download_url'
+      register: bluemap_floodgate_latest
+      when:
+        - new_server == true or update_server == true
+        - use_bluemap == true
+        - restore_backup == false
+        - vanilla == false
 
     - name: Getting the latest ViaVersion release
       shell: curl --silent "https://api.github.com/repos/ViaVersion/ViaVersion/releases/latest" | jq -r '.assets[].browser_download_url'
@@ -397,7 +397,7 @@
             when: "{{ use_bluemap == true }}",
           }
         - {
-            url: "https://github.com/TechnicJelle/BlueMapFloodgate/releases/download/v1.4.1-BETA/BlueMapFloodgate-1.4.1-BETA.jar",
+            url: "{% if use_bluemap == true %}{{ bluemap_floodgate_latest.stdout }}{% endif %}",
             dest: BlueMapFloodgate.jar,
             when: "{{ use_bluemap == true }}",
           }
