@@ -237,6 +237,10 @@
             state: "{% if use_bluemap == true %}directory{% else %}absent{% endif %}",
           }
         - {
+            path: BlueMapFloodgate,
+            state: "{% if use_bluemap == true %}directory{% else %}absent{% endif %}",
+          }
+        - {
             path: Chunky,
             state: "{% if use_chunky == true %}directory{% else %}absent{% endif %}",
           }
@@ -284,6 +288,10 @@
             src: plugins/Chunky/config.yml,
             when: "{{ use_chunky == true and vanilla == false }}",
           }
+        - {
+            src: plugins/BlueMapFloodgate/config.yml,
+            when: "{{ use_bluemap == true and vanilla == false }}",
+          }
         - { src: plugins/floodgate/config.yml, when: "{{ vanilla == false }}" }
         - {
             src: plugins/Geyser-Spigot/config.yml,
@@ -323,6 +331,15 @@
     - name: Getting the latest BlueMap release
       shell: curl --silent "https://api.github.com/repos/BlueMap-Minecraft/BlueMap/releases/latest" | jq -r '.assets[].browser_download_url | select(contains("spigot"))'
       register: bluemap_latest
+      when:
+        - new_server == true or update_server == true
+        - use_bluemap == true
+        - restore_backup == false
+        - vanilla == false
+
+    - name: Getting the latest BlueMap-Floodgate release
+      shell: curl --silent "https://api.github.com/repos/TechnicJelle/BlueMapFloodgate/releases" | jq -r '.[0].assets[].browser_download_url'
+      register: bluemap_floodgate_latest
       when:
         - new_server == true or update_server == true
         - use_bluemap == true
@@ -377,6 +394,11 @@
         - {
             url: "{% if use_bluemap == true %}{{ bluemap_latest.stdout }}{% endif %}",
             dest: BlueMap.jar,
+            when: "{{ use_bluemap == true }}",
+          }
+        - {
+            url: "{% if use_bluemap == true %}{{ bluemap_floodgate_latest.stdout }}{% endif %}",
+            dest: BlueMapFloodgate.jar,
             when: "{{ use_bluemap == true }}",
           }
         - {
@@ -442,6 +464,10 @@
           }
         - {
             src: ../bluemap,
+            when: "{{ use_bluemap == false or vanilla == true }}",
+          }
+        - {
+            src: BlueMapFloodgate.jar,
             when: "{{ use_bluemap == false or vanilla == true }}",
           }
         - {

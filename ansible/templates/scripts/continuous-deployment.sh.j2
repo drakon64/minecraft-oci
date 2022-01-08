@@ -21,10 +21,12 @@ curl https://ci.opencollab.dev/job/GeyserMC/job/Floodgate/job/master/lastSuccess
 curl https://ci.opencollab.dev/job/GeyserMC/job/GeyserOptionalPack/job/master/lastSuccessfulBuild/artifact/GeyserOptionalPack.mcpack -o $PAPERDIR/plugins/Geyser-Spigot/packs/GeyserOptionalPack.mcpack
 
 {% if use_bluemap == true %}
-CHUNKY=$(curl --silent "https://api.github.com/repos/BlueMap-Minecraft/BlueMap/releases/latest" | jq -r '.assets[].browser_download_url | select(contains("spigot"))')
-curl https://ci.codemc.io/view/Author/job/pop4959/job/Chunky/lastSuccessfulBuild/artifact/bukkit/build/libs/"$BLUEMAP" -o $PAPERDIR/plugins/BlueMap.jar
+BLUEMAP=$(curl --silent "https://api.github.com/repos/BlueMap-Minecraft/BlueMap/releases/latest" | jq -r '.assets[].browser_download_url | select(contains("spigot"))')
+curl -L "$BLUEMAP" -o $PAPERDIR/plugins/BlueMap.jar
+BLUEMAPFLOODGATE=$(curl --silent "https://api.github.com/repos/TechnicJelle/BlueMapFloodgate/releases" | jq -r '.[0].assets[].browser_download_url')
+curl -L "$BLUEMAPFLOODGATE" -o BlueMapFloodgate.jar
 {% else %}
-rm -fr $PAPERDIR/plugins/BlueMap.jar $PAPERDIR/plugins/BlueMap/
+rm -fr $PAPERDIR/plugins/BlueMap.jar $PAPERDIR/plugins/BlueMapFloodgate.jar $PAPERDIR/plugins/BlueMap/ $PAPERDIR/plugins/BlueMapFloodgate/
 {% endif %}
 
 {% if use_chunky == true %}
