@@ -477,6 +477,9 @@ paper:
         spawn-day-length: 24000
         spawn-minute-length: 1200
       water-over-lava-flow-speed: 5
+      wateranimal-spawn-height:
+        maximum: default
+        minimum: default
       zombie-villager-infection-chance: -1.0
       zombies-target-turtle-eggs: true
 server:
