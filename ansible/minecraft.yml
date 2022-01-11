@@ -72,7 +72,7 @@
         - ansible_facts.services['minecraft.service'] is defined
 
     - name: Backing up the existing server
-      shell: tar cf - --exclude=bluemap --exclude=cache -S server | gzip --best --rsyncable -c | oci os object put --auth instance_principal --bucket-name {{ bucket_name }} --file - --name "minecraft.tar.gz" --force
+      shell: tar cf - --exclude=bluemap --exclude=cache -S server | gzip --best -c | oci os object put --auth instance_principal --bucket-name {{ bucket_name }} --file - --name "minecraft.tar.gz" --force
       args:
         chdir: /opt/minecraft
       when:

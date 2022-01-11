@@ -2,6 +2,6 @@
 
 systemctl stop minecraft
 
-tar cf - --exclude=bluemap --exclude=cache -S server | gzip --best --rsyncable -c | oci os object put --auth instance_principal --bucket-name {{ bucket_name }} --file - --name "minecraft.tar.gz" --force
+tar cf - --exclude=bluemap --exclude=cache -S server | gzip --best -c | oci os object put --auth instance_principal --bucket-name {{ bucket_name }} --file - --name "minecraft.tar.gz" --force
 
 systemctl start minecraft
