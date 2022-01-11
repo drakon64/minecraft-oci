@@ -371,14 +371,6 @@
         - restore_backup == false
         - vanilla == false
 
-    - name: Getting the latest NoChatLagServer release
-      shell: curl --silent "https://api.github.com/repos/NoahvdAa/NoChatLagServer/releases/latest" | jq -r '.assets[].browser_download_url'
-      register: nochatlagserver_latest
-      when:
-        - new_server == true or update_server == true
-        - restore_backup == false
-        - vanilla == false
-
     - name: Downloading plugins
       get_url:
         url: "{{ item.url }}"
@@ -431,16 +423,6 @@
             url: "{% if use_viaversion == true %}{{ viaversion_latest.stdout }}{% endif %}",
             dest: "ViaVersion.jar",
             when: "{{ use_viaversion == true }}",
-          }
-        - {
-            url: https://ci.dmulloy2.net/job/ProtocolLib/lastSuccessfulBuild/artifact/target/ProtocolLib.jar,
-            dest: ProtocolLib.jar,
-            when: "{{ true }}",
-          }
-        - {
-            url: "{{ nochatlagserver_latest.stdout }}",
-            dest: NoChatLagServer.jar,
-            when: "{{ true }}",
           }
       when:
         - new_server == true or update_server == true
