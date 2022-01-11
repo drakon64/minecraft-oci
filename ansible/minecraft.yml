@@ -319,6 +319,14 @@
         - restore_permissions == true
         - restore_backup == false
 
+    - name: Getting the latest KeepChunks release
+      shell: curl --silent "https://api.github.com/repos/Geitenijs/KeepChunks/releases/latest" | jq -r '.assets[].browser_download_url'
+      register: keepchunks_latest
+      when:
+        - new_server == true or update_server == true
+        - restore_backup == false
+        - vanilla == false
+
     - name: Getting the latest Chunky release
       shell: curl --silent https://ci.codemc.io/job/pop4959/job/Chunky/lastSuccessfulBuild/api/json | jq -r '.artifacts[0].fileName'
       register: chunky_latest
@@ -392,6 +400,11 @@
         - {
             url: https://ci.opencollab.dev/job/GeyserMC/job/GeyserOptionalPack/job/master/lastSuccessfulBuild/artifact/GeyserOptionalPack.mcpack,
             dest: Geyser-Spigot/packs/,
+            when: "{{ true }}",
+          }
+        - {
+            url: "{{ keepchunks_latest.stdout }}",
+            dest: KeepChunks.jar,
             when: "{{ true }}",
           }
         - {
