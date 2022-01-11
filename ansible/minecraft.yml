@@ -752,6 +752,15 @@
         - { path: chunky-monitor.service, when: "{{ use_chunky == false }}" }
       when: item.when == true
 
+    - name: Copying the server icon
+      copy:
+        src: files/java/server-icon.png
+        dest: /opt/minecraft/server/
+        owner: minecraft
+        group: minecraft
+        mode: 0644
+      ignore_errors: yes
+
     - name: Accepting the Minecraft Server EULA
       copy:
         content: eula=true
