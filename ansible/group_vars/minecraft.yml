@@ -215,6 +215,7 @@ paper:
       tab-spam-increment: 1
       tab-spam-limit: 500
     suggest-player-names-when-null-tab-completions: true
+    time-command-affects-all-worlds: false
     track-plugin-scoreboards: false
     unsupported-settings:
       allow-headless-pistons: false
@@ -446,6 +447,12 @@ paper:
       should-remove-dragon: false
       show-sign-click-command-failure-msgs-to-player: false
       skeleton-horse-thunder-spawn-chance: 0.01
+      slime-spawn-height:
+        slime-chunk:
+          maximum: 40.0
+        swamp-biome:
+          maximum: 70.0
+          minimum: 50.0
       spawn-limits:
         ambient: -1
         axolotls: -1
