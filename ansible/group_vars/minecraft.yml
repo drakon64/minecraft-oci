@@ -599,9 +599,9 @@ spigot:
       enable-zombie-pigmen-portal-spawns: true
       end-portal-sound-radius: 0
       entity-activation-range:
-        ignore-spectators: false
         animals: 32
         flying-monsters: 32
+        ignore-spectators: false
         misc: 16
         monsters: 32
         raiders: 48
