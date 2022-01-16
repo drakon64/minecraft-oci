@@ -130,6 +130,7 @@ geyser:
   command-suggestions: true
   config-version: 4
   debug-mode: false
+  disable-bedrock-scaffolding: false
   emote-offhand-workaround: "disabled"
   enable-proxy-connections: false
   floodgate-key-file: key.pem
@@ -139,6 +140,7 @@ geyser:
   max-players: 100
   metrics:
     enabled: true
+    uuid: generateduuid
   mtu: 1400
   passthrough-motd: false
   passthrough-player-counts: false
