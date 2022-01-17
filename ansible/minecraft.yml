@@ -247,6 +247,7 @@
         - { path: CustomCommandPrefix, state: directory }
         - { path: floodgate, state: directory }
         - { path: Geyser-Spigot/packs, state: directory }
+        - { path: TreeAssist, state: directory }
         - {
             path: ViaVersion,
             state: "{% if use_viaversion == true %}directory{% else %}absent{% endif %}",
@@ -297,6 +298,7 @@
             src: plugins/Geyser-Spigot/config.yml,
             when: "{{ vanilla == false }}",
           }
+        - { src: plugins/TreeAssist/config.yml, when: "{{ vanilla == false }}" }
         - {
             src: plugins/ViaVersion/config.yml,
             when: "{{ use_viaversion == true and vanilla == false }}",
@@ -392,6 +394,11 @@
         - {
             url: https://ci.opencollab.dev/job/GeyserMC/job/GeyserOptionalPack/job/master/lastSuccessfulBuild/artifact/GeyserOptionalPack.mcpack,
             dest: Geyser-Spigot/packs/,
+            when: "{{ true }}",
+          }
+        - {
+            url: https://cdn.discordapp.com/attachments/804019242512810034/932244425374064690/TreeAssist.jar, # this is terrible and I hate it
+            dest: TreeAssist.jar,
             when: "{{ true }}",
           }
         - {

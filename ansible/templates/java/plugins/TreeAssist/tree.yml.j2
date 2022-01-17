@@ -1,0 +1,9 @@
+{% if global_overrides.treeassist.trees.{{ item }} is defined and overrides.treeassist.trees.{{ item }} is defined %}
+{{ treeassist.trees.{{ item }} | combine(global_overrides.treeassist.trees.{{ item }}, overrides.treeassist.trees.{{ item }}, recursive=True) | to_nice_yaml(indent=2) }}
+{% elif global_overrides.treeassist.trees.{{ item }} is defined %}
+{{ treeassist.trees.{{ item }} | combine(global_overrides.treeassist.trees.{{ item }}, recursive=True) | to_nice_yaml(indent=2) }}
+{% elif overrides.treeassist.trees.{{ item }} is defined %}
+{{ treeassist.trees.{{ item }} | combine(overrides.treeassist.trees.{{ item }}, recursive=True) | to_nice_yaml(indent=2) }}
+{% else %}
+{{ treeassist.trees.{{ item }} | to_nice_yaml(indent=2) }}
+{% endif %}
