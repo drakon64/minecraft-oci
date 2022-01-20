@@ -109,6 +109,7 @@
     - name: Installing packages
       dnf:
         name:
+          - git
           - java-17-openjdk-headless
           - jq
           - python36-oci-cli
@@ -247,12 +248,36 @@
         - { path: CustomCommandPrefix, state: directory }
         - { path: floodgate, state: directory }
         - { path: Geyser-Spigot/packs, state: directory }
-        - { path: TreeAssist, state: directory }
+        - { path: TreeAssist/trees, state: directory }
         - {
             path: ViaVersion,
             state: "{% if use_viaversion == true %}directory{% else %}absent{% endif %}",
           }
       when:
+        - restore_backup == false
+        - vanilla == false
+
+    - name: Downloading TreeAssist
+      git:
+        repo: https://github.com/slipcor/TreeAssist.git
+        dest: /opt/minecraft/TreeAssist
+        depth: 1
+        single_branch: yes
+      when:
+        - new_server == true or update_server == true
+        - restore_backup == false
+        - vanilla == false
+
+    - name: Configuring TreeAssist
+      copy:
+        src: /opt/minecraft/TreeAssist/src/main/resources/trees
+        dest: /opt/minecraft/server/plugins/TreeAssist/
+        owner: minecraft
+        group: minecraft
+        mode: u=rwX,g=rX,o=rX
+        remote_src: yes
+      when:
+        - new_server == true or update_server == true
         - restore_backup == false
         - vanilla == false
 
@@ -299,6 +324,10 @@
             when: "{{ vanilla == false }}",
           }
         - { src: plugins/TreeAssist/config.yml, when: "{{ vanilla == false }}" }
+        - {
+            src: plugins/TreeAssist/trees/default.yml,
+            when: "{{ vanilla == false }}",
+          }
         - {
             src: plugins/ViaVersion/config.yml,
             when: "{{ use_viaversion == true and vanilla == false }}",
@@ -397,7 +426,7 @@
             when: "{{ true }}",
           }
         - {
-            url: https://cdn.discordapp.com/attachments/804019242512810034/932244425374064690/TreeAssist.jar, # this is terrible and I hate it
+            url: https://cdn.discordapp.com/attachments/804019242512810034/933402729894801459/TreeAssist.jar, # this is terrible and I hate it
             dest: TreeAssist.jar,
             when: "{{ true }}",
           }
