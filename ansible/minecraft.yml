@@ -707,6 +707,13 @@
             timer: "*:*:0",
             when: "{{ use_chunky == true}}",
           }
+        - {
+            src: "files/scripts/server-icon.sh",
+            dest: "/opt/minecraft/server-icon.sh",
+            owner: "minecraft",
+            mode: "0755",
+            when: "{{ random_server_icon == true }}"
+          }
       when: item.when == true
 
     - name: Stopping and disabling unneeded systemd units
@@ -736,7 +743,7 @@
 
     - name: Copying the server icon
       copy:
-        src: files/java/server-icon.png
+        src: "{% if random_server_icon == false %}files/java/server-icon.png{% else %}files/java/server-icons/{% endif %}"
         dest: /opt/minecraft/server/
         owner: minecraft
         group: minecraft
