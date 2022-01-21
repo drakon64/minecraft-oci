@@ -1,0 +1,9 @@
+{% if global_overrides.treeassist.config is defined and overrides.treeassist.config is defined %}
+{{ treeassist.config | combine(global_overrides.treeassist.config, overrides.treeassist.config, recursive=True) | to_nice_yaml(indent=2) }}
+{% elif global_overrides.treeassist.config is defined %}
+{{ treeassist.config | combine(global_overrides.treeassist.config, recursive=True) | to_nice_yaml(indent=2) }}
+{% elif overrides.treeassist.config is defined %}
+{{ treeassist.config | combine(overrides.treeassist.config, recursive=True) | to_nice_yaml(indent=2) }}
+{% else %}
+{{ treeassist.config | to_nice_yaml(indent=2) }}
+{% endif %}

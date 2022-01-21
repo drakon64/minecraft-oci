@@ -23,7 +23,7 @@ bluemap:
         name: World
         removeCavesBelowY: 55
         renderEdges: true
-        skyColor: #7dabff
+        skyColor: "#7dabff"
         useCompression: true
         world: world
         worldSkyLight: 15
@@ -31,7 +31,7 @@ bluemap:
         id: end
         name: End
         removeCavesBelowY: -10000
-        skyColor: #080010
+        skyColor: "#080010"
         world: world_the_end/DIM1
         worldSkyLight: 0
       - ambientLight: 0.6
@@ -40,7 +40,7 @@ bluemap:
         name: Nether
         removeCavesBelowY: -10000
         renderEdges: true
-        skyColor: #290000
+        skyColor: "#290000"
         world: world_nether/DIM-1
         worldSkyLight: 0
     useCookies: true
@@ -699,6 +699,212 @@ spigot:
       view-distance: default
       wither-spawn-sound-radius: 0
       zombie-aggressive-towards-villager: true
+treeassist:
+  config:
+    Commands:
+      Force Break:
+        Default Radius: 10
+        Max Radius: 30
+      Force Grow:
+        Default Radius: 10
+        Max Radius: 30
+      No Replant:
+        Cooldown Time: 30
+      Replant:
+        Cooldown Time: 30
+    Debug: none
+    Destruction:
+      Falling Blocks: false
+      Falling Blocks Fancy: false
+      Fast Leaf Decay: true
+      Message Invalid Blocks: true
+      Only Above: false
+    General:
+      Language: lang_en
+      Prevent Log Breaking With Breaking Tool: false
+      Prevent Log Breaking Without Tool: false
+      Toggle Default: true
+      Use Permissions: false
+      Verbose Config Loading: false
+    Modding:
+      Disable Durability Fix: false
+    Placed Blocks:
+      Active: true
+      Lookup Time: 86400
+      Plugin Name: TreeAssist
+    Plugins:
+      CustomEvents: false
+      Jobs: true
+      TreeJobs: false
+      TreeMcMMO: false
+      WorldGuard: false
+      mcMMO: true
+    Update:
+      Mode: both
+      Type: beta
+    Version: 7.2046
+    Worlds:
+      Enabled Worlds:
+        - world
+        - world2
+      Restrict: false
+    bStats:
+      Active: true
+      Full: true
+  default:
+    Automatic Destruction:
+      Active: true
+      Apply Full Tool Damage: true
+      Apply Tool Damage For Leaves: true
+      Auto Add To Inventory: false
+      Cleanup Delay Seconds: 20
+      Cooldown Seconds: 0
+      Delay Ticks: 0
+      Forced Removal: false
+      Increases Statistics: false
+      Initial Delay: false
+      Initial Delay Seconds: 10
+      Remove Leaves: true
+      Required Lore: ""
+      Requires Tools: true
+      Use Silk Touch: true
+      When Not Sneaking: true
+      When Sneaking: true
+    Block Statistics:
+      Mine Block: false
+      Pickup: false
+    Blocks:
+      Cap:
+        Height: 2
+        Radius: 3
+      Custom Drops:
+        Active: true
+        Factors:
+          minecraft:diamond_axe: 1.0
+          minecraft:golden_axe: 0.75
+          minecraft:iron_axe: 0.5
+          minecraft:netherite_axe: 1.0
+          minecraft:stone_axe: 0.25
+          minecraft:wooden_axe: 0.1
+        Items:
+          minecraft:apple: 0.01
+          minecraft:golden_apple: 0.001
+        Override: false
+      Materials:
+        - "minecraft:bee_nest"
+      Middle:
+        Air: false
+        Edges: false
+        Radius: 2
+      Required: 10
+      Top:
+        Air: false
+        Edges: false
+        Height: 3
+        Radius: 3
+    Ground Blocks:
+      - "minecraft:podzol"
+      - "minecraft:mycelium"
+      - "minecraft:grass_block"
+      - "minecraft:dirt"
+      - "minecraft:coarse_dirt"
+      - "minecraft:sand"
+    Natural Blocks:
+      - "minecraft:air"
+      - "minecraft:water"
+      - "minecraft:fire"
+      - "minecraft:snow"
+      - "minecraft:snow_block"
+      - "minecraft:stone"
+      - "minecraft:grass_block"
+      - "minecraft:dirt"
+      - "minecraft:coarse_dirt"
+      - "minecraft:sand"
+      - "minecraft:terracotta"
+      - "*_terracotta"
+      - "minecraft:mycelium"
+      - "minecraft:podzol"
+      - "*_sapling"
+      - "*_leaves"
+      - "minecraft:dandelion"
+      - "*_tulip"
+      - "minecraft:poppy"
+      - "*_orchid"
+      - "minecraft:allium"
+      - "minecraft:azure_bluet"
+      - "minecraft:oxeye_daisy"
+      - "minecraft:lilac"
+      - "minecraft:grass"
+      - "minecraft:tall_grass"
+      - "minecraft:fern"
+      - "minecraft:dead_bush"
+      - "minecraft:sugar_cane"
+      - "*_mushroom_block"
+      - "minecraft:mushroom_stem"
+      - "minecraft:melon"
+      - "minecraft:pumpkin"
+      - "minecraft:bee_nest"
+      - "minecraft:cocoa"
+      - "minecraft:torch"
+      - "minecraft:rail"
+      - "minecraft:hopper"
+      - "minecraft:oak_sapling"
+      - "minecraft:birch_sapling"
+      - "minecraft:spruce_sapling"
+      - "minecraft:jungle_sapling"
+      - "minecraft:dark_oak_sapling"
+      - "minecraft:acacia_sapling"
+      - "minecraft:bamboo"
+      - "minecraft:vine"
+      - "minecraft:cave_air"
+      - "minecraft:void_air"
+      - "minecraft:large_fern"
+      - "minecraft:peony"
+      - "red_mushroom"
+      - "brown_mushroom"
+    Permission: treeassist.destroy.*
+    Replanting:
+      Active: true
+      Check Depth: 12
+      Delay: 1
+      Delay Growth Seconds: 0
+      Dropped:
+        Active: false
+        Delay Ticks: 5
+        Probability: 0.1
+      Enforce: false
+      Force Protect: false
+      Material: minecraft:air
+      Only When Bottom Block Broken First: false
+      Protect For Seconds: 0
+      Requires Tools: true
+      When Tree Burns Down: true
+    Tool List:
+      - "minecraft:netherite_axe"
+      - "minecraft:diamond_axe"
+      - "minecraft:wooden_axe"
+      - "minecraft:golden_axe"
+      - "minecraft:iron_axe"
+      - "minecraft:stone_axe"
+    Trunk:
+      Branch: false
+      Custom Drops:
+        Active: false
+        Factors:
+          minecraft:diamond_axe: 1.0
+          minecraft:golden_axe: 0.75
+          minecraft:iron_axe: 0.5
+          minecraft:netherite_axe: 1.0
+          minecraft:stone_axe: 0.25
+          minecraft:wooden_axe: 0.1
+        Items:
+          minecraft:golden_apple: 0.0001
+        Override: false
+      Diagonal: false
+      Minimum Height: 4
+      Thickness: 1
+      Uneven Bottom: false
+    Version: 7.2052
 viaversion:
   1_13-tab-complete-delay: 0
   anti-xray-patch: true
