@@ -4,6 +4,9 @@ After=network.target
 
 [Service]
 Type=forking
+{% if random_server_icon %}
+ExecStartPre=-/opt/minecraft/server-icon.sh
+{% endif %}
 {% if ansible_memtotal_mb < (12288 + heap) %}
 ExecStart=/usr/bin/tmux new-session -s minecraft -d '{{ command }}'
 {% else %}
