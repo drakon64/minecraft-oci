@@ -743,7 +743,7 @@
 
     - name: Copying the server icon
       copy:
-        src: "{% if random_server_icon == false %}files/java/server-icon.png{% else %}files/java/server-icons/{% endif %}"
+        src: "{% if random_server_icon == false %}files/java/server-icon.png{% else %}files/java/server-icons{% endif %}"
         dest: /opt/minecraft/server/
         owner: minecraft
         group: minecraft
