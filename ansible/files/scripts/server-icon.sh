@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -e
 
 FILES=$(ls server-icons)
 OLD_SERVER_ICON="server-icon.png"
