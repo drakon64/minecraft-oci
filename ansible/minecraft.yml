@@ -686,6 +686,26 @@
             when: "{{ use_bluemap == true and bluemap_certbot.use == true }}",
           }
         - {
+            src: "templates/systemd/service.j2",
+            dest: "/etc/systemd/system/certbot-renew.service",
+            owner: root,
+            mode: "0644",
+            description: "CertBot Renewal",
+            type: oneshot,
+            execstart: "{% if bluemap_certbot is defined %}certbot certonly --nginx -d {{ bluemap_certbot.domain }} -m {{ bluemap_certbot.email }} --agree-tos --no-eff-email -n{% endif %}",
+            when: "{{ use_bluemap == true and bluemap_certbot.use == true }}",
+          }
+        - {
+            src: "templates/systemd/timer.j2",
+            dest: "/etc/systemd/system/certbot-renew.timer",
+            owner: root,
+            mode: "0644",
+            description: "CertBot Renewal",
+            timer: "*-1/2-1 00:00:00",
+            persistent: true,
+            when: "{{ use_bluemap == true and bluemap_certbot.use == true }}",
+          }
+        - {
             src: "templates/scripts/continuous-deployment.sh.j2",
             dest: "/opt/minecraft/continuous-deployment.sh",
             owner: "root",
@@ -911,6 +931,12 @@
             state: "reloaded",
             enabled: "yes",
             when: "{{ use_bluemap == true }}",
+          }
+        - {
+            name: "certbot-renew.timer",
+            state: "restarted",
+            enabled: "yes",
+            when: "{{ use_bluemap == true and bluemap_certbot.use == true }}",
           }
         - {
             name: "minecraft-monitor.service",
