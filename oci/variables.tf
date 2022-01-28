@@ -68,11 +68,6 @@ variable "bluemap" {
   default = true
 }
 
-variable "bluemap_https_policies" {
-  type    = bool
-  default = false
-}
-
 variable "bluemap_https" {
   type    = bool
   default = false

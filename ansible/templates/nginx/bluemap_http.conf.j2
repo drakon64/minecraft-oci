@@ -1,0 +1,22 @@
+server {
+    listen 80 default_server;
+    server_name {{ bluemap_certbot.domain }};
+
+    # path to bluemap-webroot, bluemap can also be used in a sub-folder .. just adapt the paths accordingly
+    root /opt/minecraft/server/bluemap/web;
+
+    location / {
+        try_files $uri $uri/ =404 ;
+    }
+
+    # map-tiles are stored compressed, and they have a fallback file that should be returned if the tile does not exist
+    location /data/ {
+        error_page 404 =200 /assets/emptyTile.json;
+        gzip_static always;
+    }
+
+    # Proxy requests to the live data interface to bluemaps integrated webserver
+    location /live/ {
+        proxy_pass http://127.0.0.1:8100;
+    }
+}

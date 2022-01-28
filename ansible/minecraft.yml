@@ -122,9 +122,18 @@
         name: mcstatus
         state: latest
 
+    - name: Installing nginx
+      dnf:
+        name: nginx
+        state: present
+      when:
+        - use_bluemap == true
+
     - name: Installing certbot
       dnf:
-        name: certbot
+        name:
+          - certbot
+          - python3-certbot-nginx
         state: present
       when:
         - use_bluemap == true
@@ -136,6 +145,11 @@
         create_home: yes
         home: /opt/minecraft
         shell: /bin/bash
+
+    - name: Setting permissions for the Minecraft directory
+      file:
+        path: /opt/minecraft
+        mode: 0755
 
     - name: Checking the size of the swapfile
       stat:
@@ -650,44 +664,24 @@
             when: true,
           }
         - {
-            src: "files/scripts/oci-dns-auth.sh",
-            dest: "/opt/minecraft/",
-            owner: root,
-            mode: "0744",
-            when: "{{ use_bluemap == true and bluemap_certbot.use == true }}",
-          }
-        - {
-            src: "files/scripts/oci-dns-cleanup.sh",
-            dest: "/opt/minecraft/",
-            owner: root,
-            mode: "0744",
-            when: "{{ use_bluemap == true and bluemap_certbot.use == true }}",
-          }
-        - {
-            src: "files/scripts/oci-lb-cert.sh",
-            dest: "/opt/minecraft/",
-            owner: root,
-            mode: "0744",
-            when: "{{ use_bluemap == true and bluemap_certbot.use == true }}",
-          }
-        - {
-            src: "templates/systemd/service.j2",
-            dest: "/etc/systemd/system/certbot-renew.service",
+            src: "files/nginx.conf",
+            dest: "/etc/nginx/nginx.conf",
             owner: root,
             mode: "0644",
-            description: "CertBot Renewal",
-            type: oneshot,
-            execstart: "{% if bluemap_certbot is defined %}certbot certonly --manual --manual-auth-hook /opt/minecraft/oci-dns-auth.sh --manual-cleanup-hook /opt/minecraft/oci-dns-cleanup.sh -d {{ bluemap_certbot.domain }} --deploy-hook /opt/minecraft/oci-lb-cert.sh --non-interactive {% if bluemap_certbot.email is defined %}--email {{ bluemap_certbot.email }} --no-eff-email{% else %}--register-unsafely-without-email{% endif %}{% endif %}",
-            when: "{{ use_bluemap == true and bluemap_certbot.use == true }}",
+            when: "{{ use_bluemap == true and bluemap_certbot.use == false }}",
           }
         - {
-            src: "templates/systemd/timer.j2",
-            dest: "/etc/systemd/system/certbot-renew.timer",
+            src: "templates/nginx/bluemap_http.conf.j2",
+            dest: "/etc/nginx/conf.d/bluemap.conf",
             owner: root,
             mode: "0644",
-            description: "CertBot Renewal",
-            timer: "*-1/2-1 00:00:00",
-            persistent: true,
+            when: "{{ use_bluemap == true and bluemap_certbot.use == false }}",
+          }
+        - {
+            src: "templates/nginx/bluemap_https.conf.j2",
+            dest: "/etc/nginx/conf.d/bluemap.conf",
+            owner: root,
+            mode: "0644",
             when: "{{ use_bluemap == true and bluemap_certbot.use == true }}",
           }
         - {
@@ -748,7 +742,7 @@
             dest: "/opt/minecraft/server-icon.sh",
             owner: "minecraft",
             mode: "0755",
-            when: "{{ random_server_icon == true }}"
+            when: "{{ random_server_icon == true }}",
           }
       when: item.when == true
 
@@ -891,16 +885,16 @@
             when: "{{ true }}",
           }
         - {
-            name: "certbot-renew.service",
+            name: "nginx.service",
             state: "started",
             enabled: "yes",
-            when: "{{ use_bluemap == true and bluemap_certbot.use == true and bluemap_certbot.force == true }}",
+            when: "{{ use_bluemap == true }}",
           }
         - {
-            name: "certbot-renew.timer",
-            state: "restarted",
+            name: "nginx.service",
+            state: "reloaded",
             enabled: "yes",
-            when: "{{ use_bluemap == true and bluemap_certbot.use == true }}",
+            when: "{{ use_bluemap == true }}",
           }
         - {
             name: "minecraft-monitor.service",
