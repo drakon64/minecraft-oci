@@ -692,7 +692,7 @@
             mode: "0644",
             description: "CertBot Renewal",
             type: oneshot,
-            execstart: "{% if bluemap_certbot is defined %}certbot certonly --nginx -d {{ bluemap_certbot.domain }} -m {{ bluemap_certbot.email }} --agree-tos --no-eff-email -n{% endif %}",
+            execstart: "{% if bluemap_certbot is defined %}certbot certonly --nginx -d {{ bluemap_certbot.domain }} -m {{ bluemap_certbot.email }} --agree-tos --no-eff-email --key-type ecdsa -n{% endif %}",
             when: "{{ use_bluemap == true and bluemap_certbot.use == true }}",
           }
         - {
@@ -788,7 +788,7 @@
         immediate: yes
 
     - name: Enabling Certbot
-      command: certbot certonly --nginx -d {{ bluemap_certbot.domain }} -m {{ bluemap_certbot.email }} --agree-tos --no-eff-email -n
+      command: certbot certonly --nginx -d {{ bluemap_certbot.domain }} -m {{ bluemap_certbot.email }} --agree-tos --no-eff-email --key-type ecdsa -n
       when: use_bluemap == true and bluemap_certbot.use == true and bluemap_certbot.ready == false
 
     - name: Updating Bluemap Nginx site
