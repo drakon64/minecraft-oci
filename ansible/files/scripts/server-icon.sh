@@ -8,6 +8,7 @@ NEW_SERVER_ICON_HASH=$(sha224sum server-icons/"$NEW_SERVER_ICON" | awk '{ print 
 
 while true ; do
 	if [ "$NEW_SERVER_ICON_HASH" != "$OLD_SERVER_ICON_HASH" ] ; then
+		echo "New server icon: $NEW_SERVER_ICON"
 		cp server-icons/"$NEW_SERVER_ICON" $OLD_SERVER_ICON
 		exit 0
 	else
