@@ -6,9 +6,8 @@
 {% if use_bluemap == true %}
 {% if bluemap_certbot.use == true %}
 	<port protocol="tcp" port="443"/>
-{% else %}
-	<port protocol="tcp" port="80"/>
 {% endif %}
+	<port protocol="tcp" port="80"/>
 {% endif %}
 	<port protocol="udp" port="19132"/>
 {% endif %}
