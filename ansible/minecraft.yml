@@ -768,7 +768,7 @@
         immediate: yes
 
     - name: Enabling Certbot
-      command: certbot certonly --nginx -d {{ bluemap_certbot.domain }} -m {{ bluemap_certbot.email }} --agree-tos --no-eff-email
+      command: certbot certonly --nginx -d {{ bluemap_certbot.domain }} -m {{ bluemap_certbot.email }} --agree-tos --no-eff-email -n
       when: use_bluemap == true and bluemap_certbot.use == true and bluemap_certbot.ready == false
 
     - name: Updating Bluemap Nginx site
