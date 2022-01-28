@@ -668,7 +668,7 @@
             dest: "/etc/nginx/nginx.conf",
             owner: root,
             mode: "0644",
-            when: "{{ use_bluemap == true and bluemap_certbot.use == false }}",
+            when: "{{ use_bluemap == true }}",
           }
         - {
             src: "templates/nginx/bluemap_http.conf.j2",
@@ -682,6 +682,7 @@
             dest: "/etc/nginx/conf.d/bluemap.conf",
             owner: root,
             mode: "0644",
+            certbot_ready: "{{ bluemap_certbot.ready }}",
             when: "{{ use_bluemap == true and bluemap_certbot.use == true }}",
           }
         - {
@@ -746,6 +747,41 @@
           }
       when: item.when == true
 
+    - name: Copying firewall rule
+      template:
+        src: templates/minecraft.xml.j2
+        dest: /etc/firewalld/services/minecraft.xml
+        owner: root
+        group: root
+        mode: 0644
+      register: firewall
+
+    - name: Reloading firewalld
+      command: firewall-cmd --reload
+      when: firewall.changed
+
+    - name: Allowing Minecraft through the firewall
+      firewalld:
+        service: minecraft
+        state: enabled
+        permanent: yes
+        immediate: yes
+
+    - name: Enabling Certbot
+      command: certbot certonly --nginx -d {{ bluemap_certbot.domain }} -m {{ bluemap_certbot.email }} --agree-tos --no-eff-email
+      when: use_bluemap == true and bluemap_certbot.use == true and bluemap_certbot.ready == false
+
+    - name: Updating Bluemap Nginx site
+      template:
+        src: templates/nginx/bluemap_https.conf.j2
+        dest: /etc/nginx/conf.d/bluemap.conf
+        owner: root
+        group: group
+        mode: 0644
+      with_items:
+        - { certbot_ready: true }
+      when: use_bluemap == true and bluemap_certbot.use == true and bluemap_certbot.ready == false
+
     - name: Stopping and disabling unneeded systemd units
       systemd:
         name: "{{ item.name }}"
@@ -791,26 +827,6 @@
         - new_server == true
         - restore_backup == false
         - eula == true
-
-    - name: Copying firewall rule
-      template:
-        src: templates/minecraft.xml.j2
-        dest: /etc/firewalld/services/minecraft.xml
-        owner: root
-        group: root
-        mode: 0644
-      register: firewall
-
-    - name: Reloading firewalld
-      command: firewall-cmd --reload
-      when: firewall.changed
-
-    - name: Allowing Minecraft through the firewall
-      firewalld:
-        service: minecraft
-        state: enabled
-        permanent: yes
-        immediate: yes
 
     - name: Creating directory for the SELinux module
       file:
