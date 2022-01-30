@@ -14,6 +14,13 @@ require {
 	type sudo_exec_t;
 	type tmp_t;
 	type user_tmp_t;
+{% if use_bluemap %}
+
+	class tcp_socket name_connect;
+	type httpd_t;
+	type unreserved_port_t;
+	type http_port_t;
+{% endif %}
 }
 
 allow groupadd_t proc_t:filesystem getattr;
@@ -23,3 +30,8 @@ allow init_t screen_exec_t:file { execute execute_no_trans map open read };
 allow init_t sudo_exec_t:file { execute execute_no_trans map open read };
 allow init_t tmp_t:sock_file { create setattr unlink write };
 allow init_t user_tmp_t:file { create write };
+{% if use_bluemap %}
+
+allow httpd_t http_port_t:tcp_socket name_connect;
+allow httpd_t unreserved_port_t:tcp_socket name_connect;
+{% endif %}
