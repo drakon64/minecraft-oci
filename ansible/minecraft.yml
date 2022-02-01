@@ -814,7 +814,11 @@
           }
         - {
             name: chunky-monitor.service,
-            when: "{{ use_chunky == false }} and ansible_facts.services['chunky-monitor.service'] is defined",
+            when: "{{ use_chunky == false and ansible_facts.services['chunky-monitor.service'] is defined }}",
+          }
+        - {
+            name: nginx.service,
+            when: "{{ use_bluemap == false and ansible_facts.services['nginx.service'] is defined }}",
           }
       when: item.when == true
 
