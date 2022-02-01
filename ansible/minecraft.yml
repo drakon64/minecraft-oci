@@ -793,14 +793,16 @@
 
     - name: Updating Bluemap Nginx site
       template:
-        src: templates/nginx/bluemap_https.conf.j2
+        src: templates/nginx.conf.j2
         dest: /etc/nginx/conf.d/bluemap.conf
         owner: root
-        group: group
+        group: root
         mode: 0644
       with_items:
         - { certbot_ready: true }
-      when: use_bluemap == true and bluemap_certbot.use == true and bluemap_certbot.ready == false
+      when:
+       - use_bluemap == true
+       - (bluemap_certbot.use == true and bluemap_certbot.ready == false) or bluemap_certbot.use == false
 
     - name: Stopping and disabling unneeded systemd units
       systemd:
