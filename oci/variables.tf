@@ -48,11 +48,6 @@ variable "oci_volume_size" {
   default = 50
 }
 
-variable "oci_load_balancer_shape" {
-  type    = string
-  default = "10Mbps-Micro"
-}
-
 variable "minecraft_java_port" {
   type    = number
   default = 25565
