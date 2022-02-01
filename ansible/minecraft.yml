@@ -122,9 +122,18 @@
         name: mcstatus
         state: latest
 
+    - name: Installing nginx
+      dnf:
+        name: nginx
+        state: present
+      when:
+        - use_bluemap == true
+
     - name: Installing certbot
       dnf:
-        name: certbot
+        name:
+          - certbot
+          - python3-certbot-nginx
         state: present
       when:
         - use_bluemap == true
@@ -136,6 +145,11 @@
         create_home: yes
         home: /opt/minecraft
         shell: /bin/bash
+
+    - name: Setting permissions for the Minecraft directory
+      file:
+        path: /opt/minecraft
+        mode: 0755
 
     - name: Checking the size of the swapfile
       stat:
@@ -650,24 +664,25 @@
             when: true,
           }
         - {
-            src: "files/scripts/oci-dns-auth.sh",
-            dest: "/opt/minecraft/",
+            src: "files/nginx.conf",
+            dest: "/etc/nginx/nginx.conf",
             owner: root,
-            mode: "0744",
-            when: "{{ use_bluemap == true and bluemap_certbot.use == true }}",
+            mode: "0644",
+            when: "{{ use_bluemap == true }}",
           }
         - {
-            src: "files/scripts/oci-dns-cleanup.sh",
-            dest: "/opt/minecraft/",
+            src: "templates/nginx/bluemap_http.conf.j2",
+            dest: "/etc/nginx/conf.d/bluemap.conf",
             owner: root,
-            mode: "0744",
-            when: "{{ use_bluemap == true and bluemap_certbot.use == true }}",
+            mode: "0644",
+            when: "{{ use_bluemap == true and bluemap_certbot.use == false }}",
           }
         - {
-            src: "files/scripts/oci-lb-cert.sh",
-            dest: "/opt/minecraft/",
+            src: "templates/nginx/bluemap_https.conf.j2",
+            dest: "/etc/nginx/conf.d/bluemap.conf",
             owner: root,
-            mode: "0744",
+            mode: "0644",
+            certbot_ready: "{{ bluemap_certbot.ready }}",
             when: "{{ use_bluemap == true and bluemap_certbot.use == true }}",
           }
         - {
@@ -677,7 +692,7 @@
             mode: "0644",
             description: "CertBot Renewal",
             type: oneshot,
-            execstart: "{% if bluemap_certbot is defined %}certbot certonly --manual --manual-auth-hook /opt/minecraft/oci-dns-auth.sh --manual-cleanup-hook /opt/minecraft/oci-dns-cleanup.sh -d {{ bluemap_certbot.domain }} --deploy-hook /opt/minecraft/oci-lb-cert.sh --non-interactive {% if bluemap_certbot.email is defined %}--email {{ bluemap_certbot.email }} --no-eff-email{% else %}--register-unsafely-without-email{% endif %}{% endif %}",
+            execstart: "{% if bluemap_certbot is defined %}certbot certonly --nginx -d {{ bluemap_certbot.domain }} -m {{ bluemap_certbot.email }} --agree-tos --no-eff-email --key-type ecdsa -n{% endif %}",
             when: "{{ use_bluemap == true and bluemap_certbot.use == true }}",
           }
         - {
@@ -748,9 +763,46 @@
             dest: "/opt/minecraft/server-icon.sh",
             owner: "minecraft",
             mode: "0755",
-            when: "{{ random_server_icon == true }}"
+            when: "{{ random_server_icon == true }}",
           }
       when: item.when == true
+
+    - name: Copying firewall rule
+      template:
+        src: templates/minecraft.xml.j2
+        dest: /etc/firewalld/services/minecraft.xml
+        owner: root
+        group: root
+        mode: 0644
+      register: firewall
+
+    - name: Reloading firewalld
+      command: firewall-cmd --reload
+      when: firewall.changed
+
+    - name: Allowing Minecraft through the firewall
+      firewalld:
+        service: minecraft
+        state: enabled
+        permanent: yes
+        immediate: yes
+
+    - name: Enabling Certbot
+      command: certbot certonly --nginx -d {{ bluemap_certbot.domain }} -m {{ bluemap_certbot.email }} --agree-tos --no-eff-email --key-type ecdsa -n
+      when: use_bluemap == true and bluemap_certbot.use == true and bluemap_certbot.ready == false
+
+    - name: Updating Bluemap Nginx site
+      template:
+        src: templates/nginx.conf.j2
+        dest: /etc/nginx/conf.d/bluemap.conf
+        owner: root
+        group: root
+        mode: 0644
+      with_items:
+        - { certbot_ready: true }
+      when:
+       - use_bluemap == true
+       - (bluemap_certbot.use == true and bluemap_certbot.ready == false) or bluemap_certbot.use == false
 
     - name: Stopping and disabling unneeded systemd units
       systemd:
@@ -764,7 +816,11 @@
           }
         - {
             name: chunky-monitor.service,
-            when: "{{ use_chunky == false }} and ansible_facts.services['chunky-monitor.service'] is defined",
+            when: "{{ use_chunky == false and ansible_facts.services['chunky-monitor.service'] is defined }}",
+          }
+        - {
+            name: nginx.service,
+            when: "{{ use_bluemap == false and ansible_facts.services['nginx.service'] is defined }}",
           }
       when: item.when == true
 
@@ -798,26 +854,6 @@
         - restore_backup == false
         - eula == true
 
-    - name: Copying firewall rule
-      template:
-        src: templates/minecraft.xml.j2
-        dest: /etc/firewalld/services/minecraft.xml
-        owner: root
-        group: root
-        mode: 0644
-      register: firewall
-
-    - name: Reloading firewalld
-      command: firewall-cmd --reload
-      when: firewall.changed
-
-    - name: Allowing Minecraft through the firewall
-      firewalld:
-        service: minecraft
-        state: enabled
-        permanent: yes
-        immediate: yes
-
     - name: Creating directory for the SELinux module
       file:
         path: /opt/minecraft/selinux
@@ -827,9 +863,9 @@
         mode: 0755
 
     - name: Copying SELinux module
-      copy:
-        src: files/minecraft.te
-        dest: /opt/minecraft/selinux/
+      template:
+        src: templates/selinux.te.j2
+        dest: /opt/minecraft/selinux/minecraft.te
         owner: minecraft
         group: minecraft
         mode: 0644
@@ -891,10 +927,16 @@
             when: "{{ true }}",
           }
         - {
-            name: "certbot-renew.service",
+            name: "nginx.service",
             state: "started",
             enabled: "yes",
-            when: "{{ use_bluemap == true and bluemap_certbot.use == true and bluemap_certbot.force == true }}",
+            when: "{{ use_bluemap == true }}",
+          }
+        - {
+            name: "nginx.service",
+            state: "reloaded",
+            enabled: "yes",
+            when: "{{ use_bluemap == true }}",
           }
         - {
             name: "certbot-renew.timer",

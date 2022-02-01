@@ -52,6 +52,40 @@ resource "oci_core_network_security_group_security_rule" "bedrock" {
   count = var.vanilla ? 0 : 1
 }
 
+resource "oci_core_network_security_group_security_rule" "bluemap_http" {
+  network_security_group_id = oci_core_network_security_group.minecraft.id
+  direction                 = "INGRESS"
+  protocol                  = 6
+  source                    = "0.0.0.0/0"
+  source_type               = "CIDR_BLOCK"
+
+  tcp_options {
+    destination_port_range {
+      min = 80
+      max = 80
+    }
+  }
+
+  count = var.bluemap ? 1 : 0
+}
+
+resource "oci_core_network_security_group_security_rule" "bluemap_https" {
+  network_security_group_id = oci_core_network_security_group.minecraft.id
+  direction                 = "INGRESS"
+  protocol                  = 6
+  source                    = "0.0.0.0/0"
+  source_type               = "CIDR_BLOCK"
+
+  tcp_options {
+    destination_port_range {
+      min = 443
+      max = 443
+    }
+  }
+
+  count = var.bluemap_https ? 1 : 0
+}
+
 resource "oci_core_network_security_group_security_rule" "https" {
   network_security_group_id = oci_core_network_security_group.minecraft.id
   direction                 = "EGRESS"

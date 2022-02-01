@@ -21,11 +21,10 @@ minecraft:
     minecraft-test:
       backup_version:
       bluemap_certbot:
-        email: example@example.com # Remove this line to disable CertBot emails
-        force: false
-        use: true
         domain: bluemap.example.com
-        zone: example.com
+        email: example@example.com
+        ready: false
+        use: true
       bucket_name: minecraft-test-backup
       cd_bucket_name: minecraft-backup
       continuous_deployment: true
