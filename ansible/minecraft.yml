@@ -671,19 +671,12 @@
             when: "{{ use_bluemap == true }}",
           }
         - {
-            src: "templates/nginx/bluemap_http.conf.j2",
-            dest: "/etc/nginx/conf.d/bluemap.conf",
-            owner: root,
-            mode: "0644",
-            when: "{{ use_bluemap == true and bluemap_certbot.use == false }}",
-          }
-        - {
-            src: "templates/nginx/bluemap_https.conf.j2",
+            src: "templates/nginx.conf.j2",
             dest: "/etc/nginx/conf.d/bluemap.conf",
             owner: root,
             mode: "0644",
             certbot_ready: "{{ bluemap_certbot.ready }}",
-            when: "{{ use_bluemap == true and bluemap_certbot.use == true }}",
+            when: "{{ use_bluemap == true }}",
           }
         - {
             src: "templates/systemd/service.j2",
