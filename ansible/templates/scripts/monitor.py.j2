@@ -23,7 +23,10 @@ monitoring_client = oci.monitoring.MonitoringClient(
     config={}, signer=signer, service_endpoint='https://telemetry-ingestion.' + region + '.oraclecloud.com')
 
 while True:
-    load_average_percent = (os.getloadavg()[0] / os.cpu_count()) * 100
+    load_average = os.getloadavg()
+    load_average_1_percent = (load_average[0] / os.cpu_count()) * 100
+    load_average_5_percent = (load_average[1] / os.cpu_count()) * 100
+    load_average_15_percent = (load_average[2] / os.cpu_count()) * 100
     heap = requests.get(
         'http://localhost:8778/jolokia/read/java.lang:type=Memory/HeapMemoryUsage').json()['value']
     heap_percentage = (heap['used'] / heap['init']) * 100
@@ -47,7 +50,7 @@ while True:
                 oci.monitoring.models.MetricDataDetails(
                     namespace='minecraft',
                     compartment_id=compartment_id,
-                    name='LoadAverage',
+                    name='LoadAverage1',
                     dimensions={
                         'resourceDisplayName': resource_display_name,
                         'resourceId': resource_id
@@ -55,11 +58,51 @@ while True:
                     datapoints=[
                         oci.monitoring.models.Datapoint(
                             timestamp=date_time,
-                            value=load_average_percent
+                            value=load_average_1_percent
                         )
                     ],
                     metadata={
-                        'displayName': 'Load Average',
+                        'displayName': 'Load Average (1 minute)',
+                        'minRange': '0',
+                        'unit': 'Percent'
+                    }
+                ),
+                oci.monitoring.models.MetricDataDetails(
+                    namespace='minecraft',
+                    compartment_id=compartment_id,
+                    name='LoadAverage5',
+                    dimensions={
+                        'resourceDisplayName': resource_display_name,
+                        'resourceId': resource_id
+                    },
+                    datapoints=[
+                        oci.monitoring.models.Datapoint(
+                            timestamp=date_time,
+                            value=load_average_5_percent
+                        )
+                    ],
+                    metadata={
+                        'displayName': 'Load Average (5 minutes)',
+                        'minRange': '0',
+                        'unit': 'Percent'
+                    }
+                ),
+                oci.monitoring.models.MetricDataDetails(
+                    namespace='minecraft',
+                    compartment_id=compartment_id,
+                    name='LoadAverage15',
+                    dimensions={
+                        'resourceDisplayName': resource_display_name,
+                        'resourceId': resource_id
+                    },
+                    datapoints=[
+                        oci.monitoring.models.Datapoint(
+                            timestamp=date_time,
+                            value=load_average_15_percent
+                        )
+                    ],
+                    metadata={
+                        'displayName': 'Load Average (15 minutes)',
                         'minRange': '0',
                         'unit': 'Percent'
                     }
