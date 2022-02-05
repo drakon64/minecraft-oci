@@ -516,6 +516,18 @@
         - restore_backup == false
         - vanilla == false
 
+    - name: Copying the BlueMap NoOreTexturePack
+      copy:
+        src: files/BlueMapNoOreTexturePack.zip
+        dest: /opt/minecraft/server/plugins/BlueMap/resourcepacks/
+        owner: minecraft
+        group: minecraft
+        mode: 0644
+      when:
+        - use_bluemap == true
+        - restore_backup == false
+        - vanilla == false
+
     - name: Removing plugins
       file:
         path: /opt/minecraft/server/plugins/{{ item.src }}
