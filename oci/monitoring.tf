@@ -1,6 +1,6 @@
 locals {
-  cpu_warn        = var.oci_compute_ocpus > 1 ? 100 - (100 / var.oci_compute_ocpus) : 75
-  heap_warn       = (((var.oci_compute_memory - 3) - (1 / 3)) / (var.oci_compute_memory - 3)) * 100
+  cpu_warn        = var.oci_compute_ocpus > 1 ? 100 - (100 / var.oci_compute_ocpus) : 66
+  heap_warn       = (((var.oci_compute_memory - 2) - (1 / 3)) / (var.oci_compute_memory - 2)) * 100
   memory_critical = ((var.oci_compute_memory - (1 / 6)) / var.oci_compute_memory) * 100
   heap_critical   = ((var.oci_compute_memory - (1 / 3)) / var.oci_compute_memory) * 100
 }
