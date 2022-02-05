@@ -2,6 +2,7 @@
 
 import oci
 import requests
+import os
 import psutil
 from mcstatus import MinecraftServer
 import shutil
@@ -22,6 +23,7 @@ monitoring_client = oci.monitoring.MonitoringClient(
     config={}, signer=signer, service_endpoint='https://telemetry-ingestion.' + region + '.oraclecloud.com')
 
 while True:
+    load_average_percent = (os.getloadavg()[0] / os.cpu_count()) * 100
     heap = requests.get(
         'http://localhost:8778/jolokia/read/java.lang:type=Memory/HeapMemoryUsage').json()['value']
     heap_percentage = (heap['used'] / heap['init']) * 100
@@ -42,6 +44,27 @@ while True:
     post_metric_data_response = monitoring_client.post_metric_data(
         post_metric_data_details=oci.monitoring.models.PostMetricDataDetails(
             metric_data=[
+                oci.monitoring.models.MetricDataDetails(
+                    namespace='minecraft',
+                    compartment_id=compartment_id,
+                    name='LoadAverage',
+                    dimensions={
+                        'resourceDisplayName': resource_display_name,
+                        'resourceId': resource_id
+                    },
+                    datapoints=[
+                        oci.monitoring.models.Datapoint(
+                            timestamp=date_time,
+                            value=load_average_percent
+                        )
+                    ],
+                    metadata={
+                        'displayName': 'Load Average',
+                        'minRange': '0',
+                        'maxRange': '100',
+                        'unit': 'Percent'
+                    }
+                ),
                 oci.monitoring.models.MetricDataDetails(
                     namespace='minecraft',
                     compartment_id=compartment_id,
