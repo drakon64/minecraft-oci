@@ -1,9 +1,1 @@
-{% if global_overrides.luckperms.config is defined and overrides.luckperms.config is defined %}
-{{ luckperms.config | combine(global_overrides.luckperms.config, overrides.luckperms.config, recursive=True) | to_nice_yaml(indent=2) }}
-{% elif global_overrides.luckperms.config is defined %}
-{{ luckperms.config | combine(global_overrides.luckperms.config, recursive=True) | to_nice_yaml(indent=2) }}
-{% elif overrides.luckperms.config is defined %}
-{{ luckperms.config | combine(overrides.luckperms.config, recursive=True) | to_nice_yaml(indent=2) }}
-{% else %}
-{{ luckperms.config | to_nice_yaml(indent=2) }}
-{% endif %}
+{{ final_luckperms_overrides | to_nice_yaml(indent=2) }}

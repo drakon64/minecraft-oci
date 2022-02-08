@@ -5,6 +5,9 @@
   vars:
     memtotal_b: "{{ ansible_memtotal_mb * 1048576 }}"
     final_server_overrides: "{% if global_overrides.server is defined and overrides.server is defined %}{{ server | combine(global_overrides.server, overrides.server, recursive=True) }}{% elif global_overrides.server is defined %}{{ server | combine(global_overrides.server, recursive=True) }}{% elif overrides.server is defined %}{{ server | combine(overrides.server, recursive=True) }}{% else %}{{ server }}{% endif %}"
+    final_luckperms_overrides: "{% if global_overrides.luckperms.config is defined and overrides.luckperms.config is defined %}{{ luckperms.config | combine(global_overrides.luckperms.config, overrides.luckperms.config, recursive=True) }}{% elif global_overrides.luckperms.config is defined %}{{ luckperms.config | combine(global_overrides.luckperms.config, recursive=True) }}{% elif overrides.luckperms.config is defined %}{{ luckperms.config | combine(overrides.luckperms.config, recursive=True) }}{% else %}{{ luckperms.config }}{% endif %}"
+    final_luckperms_groups: "{% if global_overrides.luckperms.groups is defined and overrides.luckperms.groups is defined %}{{ combine(global_overrides.luckperms.groups, overrides.luckperms.groups, recursive=True) }}{% elif global_overrides.luckperms.groups is defined %}{{ global_overrides.luckperms.groups }}{% elif overrides.luckperms.groups is defined %}{{ overrides.luckperms.groups }}{% endif %}"
+    final_luckperms_users: "{% if global_overrides.luckperms.users is defined and overrides.luckperms.users is defined %}{{ combine(global_overrides.luckperms.users, overrides.luckperms.users, recursive=True) }}{% elif global_overrides.luckperms.users is defined %}{{ global_overrides.luckperms.users }}{% elif overrides.luckperms.users is defined %}{{ overrides.luckperms.users }}{% endif %}"
 
   tasks:
     - name: Configuring sshd # Based on https://infosec.mozilla.org/guidelines/openssh and CIS Benchmarks
@@ -263,7 +266,22 @@
         - { path: floodgate, state: directory }
         - { path: Geyser-Spigot/packs, state: directory }
         - { path: TreeAssist/trees, state: directory }
-        - { path: LuckPerms, state: directory }
+        - {
+            path: LuckPerms/json-storage/groups,
+            state: "{% if final_luckperms_overrides['storage-method'] == 'json' %}directory{% else %}absent{% endif %}",
+          }
+        - {
+            path: LuckPerms/json-storage/users,
+            state: "{% if final_luckperms_overrides['storage-method'] == 'json' %}directory{% else %}absent{% endif %}",
+          }
+        - {
+            path: LuckPerms/yaml-storage/groups,
+            state: "{% if final_luckperms_overrides['storage-method'] == 'yaml' %}directory{% else %}absent{% endif %}",
+          }
+        - {
+            path: LuckPerms/yaml-storage/users,
+            state: "{% if final_luckperms_overrides['storage-method'] == 'yaml' %}directory{% else %}absent{% endif %}",
+          }
         - { path: LPC, state: directory }
         - { path: PlaceholderAPI/expansions, state: directory }
         - {
@@ -523,6 +541,30 @@
         - restore_backup == false
         - vanilla == false
         - item.when == true
+
+    - name: Configuring the LuckPerms users
+      template:
+        src: templates/java/plugins/LuckPerms/luckperms.yml.j2
+        dest: /opt/minecraft/server/plugins/LuckPerms/{% if final_luckperms_overrides['storage-method'] == "json" %}json{% elif final_luckperms_overrides['storage-method'] == "yaml" %}yaml{% endif %}-storage/users/{{ item.name }}.{% if final_luckperms_overrides['storage-method'] == "json" %}json{% elif final_luckperms_overrides['storage-method'] == "yaml" %}yml{% endif %}
+      with_items: "{{ final_luckperms_users }}"
+      when:
+        - final_luckperms_users | length
+        - final_luckperms_overrides['storage-method'] == "json" or final_luckperms_overrides['storage-method'] == "yaml"
+        - restore_backup == false
+        - restore_permissions == true
+        - vanilla == false
+
+    - name: Configuring the LuckPerms groups
+      template:
+        src: templates/java/plugins/LuckPerms/luckperms.yml.j2
+        dest: /opt/minecraft/server/plugins/LuckPerms/{% if final_luckperms_overrides['storage-method'] == "json" %}json{% elif final_luckperms_overrides['storage-method'] == "yaml" %}yaml{% endif %}-storage/groups/{{ item.name }}.{% if final_luckperms_overrides['storage-method'] == "json" %}json{% elif final_luckperms_overrides['storage-method'] == "yaml" %}yml{% endif %}
+      with_items: "{{ final_luckperms_groups }}"
+      when:
+        - final_luckperms_groups | length
+        - final_luckperms_overrides['storage-method'] == "json" or final_luckperms_overrides['storage-method'] == "yaml"
+        - restore_backup == false
+        - restore_permissions == true
+        - vanilla == false
 
     - name: Downloading the CustomCommandPrefix plugin
       copy:
