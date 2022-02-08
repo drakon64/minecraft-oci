@@ -263,6 +263,9 @@
         - { path: floodgate, state: directory }
         - { path: Geyser-Spigot/packs, state: directory }
         - { path: TreeAssist/trees, state: directory }
+        - { path: LuckPerms, state: directory }
+        - { path: LPC, state: directory }
+        - { path: PlaceholderAPI/expansions, state: directory }
         - {
             path: ViaVersion,
             state: "{% if use_viaversion == true %}directory{% else %}absent{% endif %}",
@@ -342,6 +345,8 @@
             src: plugins/TreeAssist/trees/default.yml,
             when: "{{ vanilla == false }}",
           }
+        - { src: plugins/LuckPerms/config.yml, when: "{{ vanilla == false }}" }
+        - { src: plugins/LPC/config.yml, when: "{{ vanilla == false }}" }
         - {
             src: plugins/ViaVersion/config.yml,
             when: "{{ use_viaversion == true and vanilla == false }}",
@@ -416,6 +421,30 @@
         - restore_backup == false
         - vanilla == false
 
+    - name: Getting the latest FloodgatePlaceholders release
+      shell: curl --silent https://api.github.com/repos/rtm516/FloodgatePlaceholders/releases/latest | jq -r '.assets[].browser_download_url'
+      register: floodgateplaceholders_latest
+      when:
+        - new_server == true or update_server == true
+        - restore_backup == false
+        - vanilla == false
+
+    - name: Getting the latest PlaceholderAPI release
+      shell: curl --silent https://ci.extendedclip.com/job/PlaceholderAPI/lastSuccessfulBuild/api/json | jq -r '.artifacts[2].fileName'
+      register: placeholderapi_latest
+      when:
+        - new_server == true or update_server == true
+        - restore_backup == false
+        - vanilla == false
+
+    - name: Getting the latest LuckPerms release
+      shell: curl --silent https://ci.lucko.me/job/LuckPerms/lastSuccessfulBuild/api/json | jq -r '.artifacts[0].fileName'
+      register: luckperms_latest
+      when:
+        - new_server == true or update_server == true
+        - restore_backup == false
+        - vanilla == false
+
     - name: Downloading plugins
       get_url:
         url: "{{ item.url }}"
@@ -470,6 +499,21 @@
             when: "{{ true }}",
           }
         - {
+            url: "{{ floodgateplaceholders_latest.stdout }}",
+            dest: PlaceholderAPI/expansions/FloodgatePlaceholders.jar,
+            when: "{{ true }}",
+          }
+        - {
+            url: "https://ci.extendedclip.com/job/PlaceholderAPI/lastSuccessfulBuild/artifact/build/libs/{{ placeholderapi_latest.stdout }}",
+            dest: PlaceholderAPI.jar,
+            when: "{{ true }}",
+          }
+        - {
+            url: "https://ci.lucko.me/job/LuckPerms/lastSuccessfulBuild/artifact/bukkit/loader/build/libs/{{ luckperms_latest.stdout }}",
+            dest: LuckPerms.jar,
+            when: "{{ true }}",
+          }
+        - {
             url: "{% if use_viaversion == true %}{{ viaversion_latest.stdout }}{% endif %}",
             dest: "ViaVersion.jar",
             when: "{{ use_viaversion == true }}",
@@ -500,6 +544,18 @@
         group: minecraft
         mode: 0644
       when:
+        - restore_backup == false
+        - vanilla == false
+
+    - name: Downloading the LuckPermsChat plugin
+      copy:
+        src: files/LPC.jar
+        dest: /opt/minecraft/server/plugins/LPC.jar
+        owner: minecraft
+        group: minecraft
+        mode: 0644
+      when:
+        - new_server == true or update_server == true
         - restore_backup == false
         - vanilla == false
 
@@ -806,8 +862,8 @@
       with_items:
         - { certbot_ready: true }
       when:
-       - use_bluemap == true
-       - (bluemap_certbot.use == true and bluemap_certbot.ready == false) or bluemap_certbot.use == false
+        - use_bluemap == true
+        - (bluemap_certbot.use == true and bluemap_certbot.ready == false) or bluemap_certbot.use == false
 
     - name: Stopping and disabling unneeded systemd units
       systemd:
