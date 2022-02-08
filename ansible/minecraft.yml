@@ -266,6 +266,7 @@
         - { path: floodgate, state: directory }
         - { path: Geyser-Spigot/packs, state: directory }
         - { path: TreeAssist/trees, state: directory }
+        - { path: LuckPerms, state: directory }
         - {
             path: LuckPerms/json-storage/groups,
             state: "{% if final_luckperms_overrides['storage-method'] == 'json' %}directory{% else %}absent{% endif %}",
