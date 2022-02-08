@@ -1,0 +1,9 @@
+{% if global_overrides.luckperms.chat is defined and overrides.luckperms.chat is defined %}
+{{ luckperms.chat | combine(global_overrides.luckperms.chat, overrides.luckperms.chat, recursive=True) | to_nice_yaml(indent=2) }}
+{% elif global_overrides.luckperms.chat is defined %}
+{{ luckperms.chat | combine(global_overrides.luckperms.chat, recursive=True) | to_nice_yaml(indent=2) }}
+{% elif overrides.luckperms.chat is defined %}
+{{ luckperms.chat | combine(overrides.luckperms.chat, recursive=True) | to_nice_yaml(indent=2) }}
+{% else %}
+{{ luckperms.chat | to_nice_yaml(indent=2) }}
+{% endif %}
