@@ -4,15 +4,30 @@ After=network.target
 
 [Service]
 Type={{ item.type }}
+{% if item.execstartpre is defined %}
+ExecStartPre={{ item.execstartpre }}
+{% endif %}
 ExecStart={{ item.execstart }}
-{%if item.restart is defined %}
+{% if item.execstop is defined %}
+ExecStop={{ item.execstop }}
+{% endif %}
+{% if item.workingdirectory is defined %}
+WorkingDirectory={{ item.workingdirectory }}
+{% else %}
+WorkingDirectory=/opt/minecraft
+{% endif %}
+{% if item.restart is defined %}
 Restart={{ item.restart }}
 {% endif %}
-WorkingDirectory=/opt/minecraft
-
-{%if item.user is defined %}
+{% if item.user is defined %}
 User={{ item.user }}
 Group={{ item.user }}
+{% endif %}
+{% if item.nice is defined %}
+Nice={{ item.nice }}
+{% endif %}
+{% if item.oomscoreadjust is defined %}
+OOMScoreAdjust={{ item.oomscoreadjust }}
 {% endif %}
 
 [Install]

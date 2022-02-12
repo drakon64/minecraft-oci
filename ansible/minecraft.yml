@@ -726,10 +726,20 @@
             when: "{{ use_chunky == true }}",
           }
         - {
-            src: "templates/systemd/minecraft.service.j2",
+            src: "templates/systemd/service.j2",
             dest: "/etc/systemd/system/minecraft.service",
             owner: "root",
             mode: "0644",
+            description: "Minecraft Server",
+            type: "forking",
+            execstartpre: "-/opt/minecraft/server-icon.sh",
+            execstart: "/usr/bin/tmux new-session -s minecraft -d '{{ command }}'",
+            execstop: "/usr/bin/tmux send-keys -t minecraft stop ENTER",
+            workingdirectory: "/opt/minecraft/server",
+            user: "minecraft",
+            group: "minecraft",
+            nice: "-20",
+            oomscoreadjust: "-1000",
             when: true,
           }
         - {
