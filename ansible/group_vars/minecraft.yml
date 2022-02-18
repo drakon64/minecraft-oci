@@ -73,6 +73,7 @@ bukkit:
   spawn-limits:
     ambient: 15
     animals: 10
+    axolotls: 5
     monsters: 70
     water-ambient: 20
     water-animals: 5
@@ -81,6 +82,7 @@ bukkit:
     ambient-spawns: 1
     animal-spawns: 400
     autosave: 6000
+    axolotl-spawns: 1
     monster-spawns: 1
     water-ambient-spawns: 1
     water-spawns: 1
@@ -286,6 +288,16 @@ paper:
       page-max: 2560
       total-multiplier: 0.98
     bungee-online-mode: true
+    chunk-loading:
+      autoconfig-send-distance: true
+      enable-frustum-priority: true
+      global-max-chunk-load-rate: -1.0
+      global-max-chunk-send-rate: -1.0
+      global-max-concurrent-loads: 500.0
+      max-concurrent-sends: 2
+      min-load-radius: 2
+      player-max-concurrent-loads: 20.0
+      target-player-chunk-send-rate: 100.0
     console:
       enable-brigadier-completions: true
       enable-brigadier-highlighting: true
@@ -799,6 +811,7 @@ spigot:
       seed-portal: 34222645
       seed-shipwreck: 165745295
       seed-slime: 987234911
+      seed-stronghold: default
       seed-swamp: 14357620
       seed-village: 10387312
       simulation-distance: default
