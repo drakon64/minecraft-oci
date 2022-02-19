@@ -769,17 +769,25 @@
             when: true,
           }
         - {
-            src: "files/systemd/minecraft-backup.service.j2",
+            src: "templates/systemd/service.j2",
             dest: "/etc/systemd/system/minecraft-backup.service",
             owner: "root",
             mode: "0644",
+            description: "Minecraft server backup",
+            type: "oneshot",
+            execstart: "/opt/minecraft/backup.sh",
+            user: "minecraft",
+            group: "minecraft",
             when: true,
           }
         - {
-            src: "files/systemd/minecraft-backup.timer.j2",
+            src: "templates/systemd/timer.j2",
             dest: "/etc/systemd/system/minecraft-backup.timer",
-            owner: "root",
+            owner: root,
             mode: "0644",
+            description: "Minecraft server backup",
+            timer: "6:00",
+            persistent: true,
             when: true,
           }
         - {
