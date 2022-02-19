@@ -692,6 +692,8 @@
 
     - name: Restoring the server backup
       command: "borg extract /opt/minecraft/backup::{{ backup_version }}"
+      args:
+        chdir: /opt/minecraft
       when: restore_backup
 
     - name: Removing the downloaded backup
