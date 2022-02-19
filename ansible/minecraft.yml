@@ -95,9 +95,6 @@
         gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-oracle
         enabled: yes
         file: oracle-epel-ol8
-      when:
-        - use_bluemap
-        - bluemap_certbot.use
 
     - name: Installing updates
       dnf:
@@ -115,6 +112,7 @@
           - git
           - java-17-openjdk-headless
           - jq
+          - borgbackup
           - python36-oci-cli
           - tmux
         state: present
@@ -199,7 +197,25 @@
         owner: minecraft
         group: minecraft
         mode: 0755
-      when: new_server
+
+    - name: Creating the server backup directory
+      file:
+        path: /opt/minecraft/backup
+        state: directory
+        owner: minecraft
+        group: minecraft
+        mode: 0755
+      when: continuous_deployment == false
+
+    - name: Initialising the server backup repository
+      command: borg init -e none /opt/minecraft/backup
+      changed_when: borg.rc == 0
+      failed_when:
+        - borg.rc != 0
+        - borg.rc != 2
+      register: borg
+      when: continuous_deployment == false
+      become_user: minecraft
 
     - name: Getting the latest Paper build
       shell: curl --silent https://papermc.io/api/v2/projects/paper/versions/{{ version }} | jq ".builds | max"
@@ -659,14 +675,14 @@
         mode: 0644
 
     - name: Downloading the server backup
-      command: oci os object get --auth instance_principal --bucket-name {{ bucket_name }} --file minecraft.tar.gz --name minecraft.tar.gz{%if backup_version is defined %} --version-id {{ backup_version }}{% endif %}
+      command: oci os object get --auth instance_principal --bucket-name {{ bucket_name }} --file minecraft.tar --name minecraft.tar
       args:
         chdir: /opt/minecraft
       when: restore_backup
 
-    - name: Restoring the server backup
+    - name: Restoring the server backup repository
       unarchive:
-        src: /opt/minecraft/minecraft.tar.gz
+        src: /opt/minecraft/minecraft.tar
         dest: /opt/minecraft/
         owner: minecraft
         group: minecraft
@@ -674,9 +690,13 @@
         remote_src: yes
       when: restore_backup
 
+    - name: Restoring the server backup
+      command: "borg extract /opt/minecraft/backup::{{ backup_version }}"
+      when: restore_backup
+
     - name: Removing the downloaded backup
       file:
-        path: /opt/minecraft/minecraft.tar.gz
+        path: /opt/minecraft/minecraft.tar
         state: absent
       when: restore_backup
 
