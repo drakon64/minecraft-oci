@@ -8,3 +8,18 @@ resource "oci_objectstorage_bucket" "minecraft_backup" {
 
   count = var.continuous_deployment ? 0 : 1
 }
+
+resource "oci_objectstorage_object_lifecycle_policy" "minecraft_backup" {
+  bucket    = var.backup_bucket_name
+  namespace = var.oci_namespace
+
+  rules {
+    action      = "ABORT"
+    is_enabled  = "true"
+    name        = "multipart-uploads"
+    time_amount = 1
+    time_unit   = "DAYS"
+
+    target = "multipart-uploads"
+  }
+}
