@@ -5,33 +5,6 @@ resource "oci_objectstorage_bucket" "minecraft_backup" {
 
   access_type  = "NoPublicAccess"
   auto_tiering = "InfrequentAccess"
-  versioning   = "Enabled"
-
-  count = var.continuous_deployment ? 0 : 1
-}
-
-resource "oci_objectstorage_object_lifecycle_policy" "minecraft_backup" {
-  bucket    = var.backup_bucket_name
-  namespace = var.oci_namespace
-
-  rules {
-    action      = "DELETE"
-    is_enabled  = "true"
-    name        = "minecraft-backup"
-    time_amount = var.backup_retention_days
-    time_unit   = "DAYS"
-
-    target = "previous-object-versions"
-  }
-  rules {
-    action      = "ABORT"
-    is_enabled  = "true"
-    name        = "multipart-uploads"
-    time_amount = 1
-    time_unit   = "DAYS"
-
-    target = "multipart-uploads"
-  }
 
   count = var.continuous_deployment ? 0 : 1
 }
