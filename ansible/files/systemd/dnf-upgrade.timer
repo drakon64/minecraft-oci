@@ -1,9 +1,0 @@
-[Unit]
-Description=DNF Upgrade
-
-[Timer]
-OnCalendar=Tue 7:00
-Persistent=true
-
-[Install]
-WantedBy=timers.target

@@ -788,31 +788,43 @@
             when: true,
           }
         - {
-            src: "files/systemd/dnf-upgrade.service",
+            src: "templates/systemd/service.j2",
             dest: "/etc/systemd/system/dnf-upgrade.service",
             owner: "root",
             mode: "0644",
+            description: "DNF Upgrade",
+            type: "oneshot",
+            execstart: "/opt/minecraft/dnf-reboot.sh",
             when: true,
           }
         - {
-            src: "files/systemd/dnf-upgrade.timer",
+            src: "templates/systemd/timer.j2",
             dest: "/etc/systemd/system/dnf-upgrade.timer",
             owner: "root",
             mode: "0644",
+            description: "DNF Upgrade",
+            timer: "Tue 7:00",
+            persistent: true,
             when: true,
           }
         - {
-            src: "files/systemd/uptrack-upgrade.service",
+            src: "templates/systemd/service.j2",
             dest: "/etc/systemd/system/uptrack-upgrade.service",
             owner: "root",
             mode: "0644",
+            description: "Uptrack Upgrade",
+            type: "oneshot",
+            execstart: "/sbin/uptrack-upgrade -y",
             when: true,
           }
         - {
-            src: "files/systemd/uptrack-upgrade.timer",
+            src: "templates/systemd/timer.j2",
             dest: "/etc/systemd/system/uptrack-upgrade.timer",
             owner: "root",
             mode: "0644",
+            description: "Uptrack Upgrade",
+            timer: "Mon,Wed..Sun 7:00",
+            persistent: true,
             when: true,
           }
         - {
@@ -858,17 +870,23 @@
             when: "{{ continuous_deployment }}",
           }
         - {
-            src: "files/systemd/minecraft-continuous-deployment.service",
+            src: "templates/systemd/service.j2",
             dest: "/etc/systemd/system/minecraft-continuous-deployment.service",
-            owner: "root",
-            mode: "0744",
+            owner: root,
+            mode: "0644",
+            description: "Minecraft continuous deployment",
+            type: oneshot,
+            execstart: "/opt/minecraft/continuous-deployment.sh",
             when: "{{ continuous_deployment }}",
           }
         - {
-            src: "files/systemd/minecraft-continuous-deployment.timer",
+            src: "templates/systemd/timer.j2",
             dest: "/etc/systemd/system/minecraft-continuous-deployment.timer",
-            owner: "root",
-            mode: "0744",
+            owner: root,
+            mode: "0644",
+            description: "Minecraft continuous deployment",
+            timer: "8:00",
+            persistent: true,
             when: "{{ continuous_deployment }}",
           }
         - {
