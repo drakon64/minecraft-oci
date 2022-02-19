@@ -109,11 +109,6 @@ variable "backup_bucket_name" {
   default = "minecraft-backup"
 }
 
-variable "backup_retention_days" {
-  type    = number
-  default = 30
-}
-
 variable "topic_name" {
   type    = string
   default = "minecraft"

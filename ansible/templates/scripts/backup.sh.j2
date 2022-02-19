@@ -1,7 +1,17 @@
 #!/bin/sh
 
-systemctl stop minecraft
+sudo systemctl stop minecraft
 
-tar cf - {% if use_bluemap %}server/bluemap/web/data/markers.json --exclude=server/bluemap --exclude=server/cache{% endif %} -S server | gzip --best -c | oci os object put --auth instance_principal --bucket-name {{ bucket_name }} --file - --name "minecraft.tar.gz" --force
+cp -pr --reflink=always server/ server-backup/
 
-systemctl start minecraft
+sudo systemctl start minecraft
+
+PWD=$(pwd)
+cd server-backup || exit 1
+yes 'y' | borg create --compression zstd{% if use_bluemap %} --pattern=+bluemap/web/data/markers.json --pattern=-bluemap{% endif %} --pattern=-cache "$PWD"/backup::"$(date -I'minutes')" .
+cd "$PWD" || exit 1
+rm -rf server-backup
+
+borg prune --keep-within {{ backup_retention_days }}d --save-space backup
+
+tar cf - backup/ | oci os object put --auth instance_principal --bucket-name {{ bucket_name }} --file - --name "minecraft.tar" --force
