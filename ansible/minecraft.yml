@@ -679,8 +679,8 @@
       args:
         chdir: /opt/minecraft
       when:
-       - restore_backup
-       - restore_remote_backup
+        - restore_backup
+        - restore_remote_backup
 
     - name: Restoring the server backup repository
       unarchive:
@@ -691,8 +691,8 @@
         mode: u=rwX,g=rX,o=rX
         remote_src: yes
       when:
-       - restore_backup
-       - restore_remote_backup
+        - restore_backup
+        - restore_remote_backup
 
     - name: Restoring the server backup
       command: "borg extract /opt/minecraft/backup::{{ backup_version }}"
@@ -705,8 +705,8 @@
         path: /opt/minecraft/minecraft.tar
         state: absent
       when:
-       - restore_backup
-       - restore_remote_backup
+        - restore_backup
+        - restore_remote_backup
 
     - name: Copying scripts and systemd units
       template:
