@@ -1,7 +1,7 @@
 minecraft:
   hosts:
     minecraft:
-      backup_retention_days: 7
+      backup_retention_days: 30
       backup_version:
       bucket_name: minecraft-backup
       cd_bucket_name:
