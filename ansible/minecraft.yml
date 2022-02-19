@@ -704,9 +704,6 @@
       file:
         path: /opt/minecraft/minecraft.tar
         state: absent
-      when:
-        - restore_backup
-        - restore_remote_backup
 
     - name: Copying scripts and systemd units
       template:
