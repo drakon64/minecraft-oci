@@ -745,6 +745,13 @@
             when: "{{ use_chunky }}",
           }
         - {
+            src: "files/sudoers",
+            dest: "/etc/sudoers.d/10-minecraft-user",
+            owner: "root",
+            mode: "0440",
+            when: true,
+          }
+        - {
             src: "templates/systemd/service.j2",
             dest: "/etc/systemd/system/minecraft.service",
             owner: "root",
