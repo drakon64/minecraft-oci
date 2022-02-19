@@ -10,7 +10,7 @@ PWD=$(pwd)
 cd server-backup || exit 1
 yes 'y' | borg create --compression zstd{% if use_bluemap %} --pattern=+bluemap/web/data/markers.json --pattern=-bluemap{% endif %} --pattern=-cache "$PWD"/backup::"$(date -I'minutes')" .
 cd "$PWD" || exit 1
-rm -rf server-backup
+rm -fr server-backup
 
 borg prune --keep-within {{ backup_retention_days }}d --save-space backup
 
