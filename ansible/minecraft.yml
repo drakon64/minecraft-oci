@@ -877,6 +877,8 @@
             description: "Minecraft continuous deployment",
             type: oneshot,
             execstart: "/opt/minecraft/continuous-deployment.sh",
+            user: "minecraft",
+            group: "minecraft",
             when: "{{ continuous_deployment }}",
           }
         - {

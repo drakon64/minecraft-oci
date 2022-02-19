@@ -1,15 +1,17 @@
 #!/bin/sh -e
 
-systemctl stop minecraft
+sudo systemctl stop minecraft
 
 PAPERDIR="/opt/minecraft/server"
+BACKUPDIR="/opt/minecraft/backup"
 
-rm -fr $PAPERDIR
-mkdir $PAPERDIR
+rm -fr $PAPERDIR $BACKUPDIR
+mkdir $PAPERDIR $BACKUPDIR
 
-oci os object get --auth instance_principal --bucket-name {{ cd_bucket_name }} --file /opt/minecraft/minecraft.tar.gz --name minecraft.tar.gz
-tar xf /opt/minecraft/minecraft.tar.gz -C /opt/minecraft/
-rm /opt/minecraft/minecraft.tar.gz
+oci os object get --auth instance_principal --bucket-name {{ cd_bucket_name }} --file - --name backup.tar | tar xf - -C /opt/minecraft/backup/
+cd $PAPERDIR
+borg extract /opt/minecraft/backup::$(borg list --last 1 backup | awk '{print $1}')
+rm -fr $BACKUPDIR
 
 PAPER=$(curl --silent https://papermc.io/api/v2/projects/paper/versions/{{ version }} | jq ".builds | max")
 curl "https://papermc.io/api/v2/projects/paper/versions/{{ version }}/builds/$PAPER/downloads/paper-{{ version }}-$PAPER.jar" -o $PAPERDIR/server.jar
@@ -24,7 +26,7 @@ curl https://ci.opencollab.dev/job/GeyserMC/job/GeyserOptionalPack/job/master/la
 BLUEMAP=$(curl --silent "https://api.github.com/repos/BlueMap-Minecraft/BlueMap/releases/latest" | jq -r '.assets[].browser_download_url | select(contains("spigot"))')
 curl -L "$BLUEMAP" -o $PAPERDIR/plugins/BlueMap.jar
 BLUEMAPFLOODGATE=$(curl --silent "https://api.github.com/repos/TechnicJelle/BlueMapFloodgate/releases" | jq -r '.[0].assets[].browser_download_url')
-curl -L "$BLUEMAPFLOODGATE" -o BlueMapFloodgate.jar
+curl -L "$BLUEMAPFLOODGATE" -o $PAPERDIR/plugins/BlueMapFloodgate.jar
 {% else %}
 rm -fr $PAPERDIR/plugins/BlueMap.jar $PAPERDIR/plugins/BlueMapFloodgate.jar $PAPERDIR/plugins/BlueMap/ $PAPERDIR/plugins/BlueMapFloodgate/
 {% endif %}
@@ -41,11 +43,9 @@ curl -L "$TABTPS" -o $PAPERDIR/plugins/tabtps.jar
 
 {% if use_viaversion %}
 VIAVERSION=$(curl --silent "https://api.github.com/repos/ViaVersion/ViaVersion/releases/latest" | jq -r '.assets[].browser_download_url')
-curl -L "$VIAVERSION" -o ViaVersion.jar
+curl -L "$VIAVERSION" -o $PAPERDIR/plugins/ViaVersion.jar
 {% else %}
 rm -fr $PAPERDIR/plugins/ViaVersion.jar $PAPERDIR/plugins/ViaVersion/
 {% endif %}
 
-chown -R minecraft:minecraft $PAPERDIR
-
-systemctl start minecraft
+sudo systemctl start minecraft
