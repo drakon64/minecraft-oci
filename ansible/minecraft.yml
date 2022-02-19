@@ -678,7 +678,9 @@
       command: oci os object get --auth instance_principal --bucket-name {{ bucket_name }} --file minecraft.tar --name minecraft.tar
       args:
         chdir: /opt/minecraft
-      when: restore_backup
+      when:
+       - restore_backup
+       - restore_remote_backup
 
     - name: Restoring the server backup repository
       unarchive:
@@ -688,7 +690,9 @@
         group: minecraft
         mode: u=rwX,g=rX,o=rX
         remote_src: yes
-      when: restore_backup
+      when:
+       - restore_backup
+       - restore_remote_backup
 
     - name: Restoring the server backup
       command: "borg extract /opt/minecraft/backup::{{ backup_version }}"
@@ -700,7 +704,9 @@
       file:
         path: /opt/minecraft/minecraft.tar
         state: absent
-      when: restore_backup
+      when:
+       - restore_backup
+       - restore_remote_backup
 
     - name: Copying scripts and systemd units
       template:

@@ -10,6 +10,7 @@ minecraft:
       new_server: false
       paper_build: 404
       restore_backup: false
+      restore_remote_backup: false
       restore_permissions: true
       skip_backup: false
       timezone: Europe/London
