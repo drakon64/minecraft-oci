@@ -119,6 +119,7 @@ geyser:
   allow-custom-skulls: true
   allow-third-party-capes: true
   allow-third-party-ears: false
+  always-quick-change-armor: false
   bedrock:
     address: 0.0.0.0
     clone-remote-port: false
@@ -142,7 +143,7 @@ geyser:
   max-players: 100
   metrics:
     enabled: true
-    uuid: generateduuid
+    uuid:
   mtu: 1400
   passthrough-motd: false
   passthrough-player-counts: false
@@ -273,7 +274,7 @@ luckperms:
     watch-files: true
     world-rewrite:
 paper:
-  config-version: 24
+  config-version: 25
   messages:
     kick:
       authentication-servers-down: ""
@@ -290,7 +291,7 @@ paper:
     bungee-online-mode: true
     chunk-loading:
       autoconfig-send-distance: true
-      enable-frustum-priority: true
+      enable-frustum-priority: false
       global-max-chunk-load-rate: -1.0
       global-max-chunk-send-rate: -1.0
       global-max-concurrent-loads: 500.0
@@ -521,7 +522,7 @@ paper:
       hopper:
         cooldown-when-full: true
         disable-move-event: false
-        ignore-occluding-blocks: true
+        ignore-occluding-blocks: false
       iron-golems-can-spawn-in-air: false
       keep-spawn-loaded: true
       keep-spawn-loaded-range: 10
