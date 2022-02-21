@@ -166,7 +166,13 @@
       when: swapfile.stat.size != memtotal_b
       register: swapoff
 
-    - name: Extending swapfile to match system memory
+    - name: Removing the existing swapfile
+      file:
+        path: /.swapfile
+        state: absent
+      when: swapfile.stat.size != memtotal_b
+
+    - name: Creating swapfile to match system memory
       command: fallocate -l {{ memtotal_b }} /.swapfile
       when: swapfile.stat.size != memtotal_b
 
