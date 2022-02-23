@@ -510,7 +510,7 @@
             when: "{{ true }}",
           }
         - {
-            url: https://cdn.discordapp.com/attachments/804019242512810034/933402729894801459/TreeAssist.jar, # this is terrible and I hate it
+            url: https://cdn.discordapp.com/attachments/804019242512810034/945799643797811261/TreeAssist.jar, # this is terrible and I hate it
             dest: TreeAssist.jar,
             when: "{{ true }}",
           }
