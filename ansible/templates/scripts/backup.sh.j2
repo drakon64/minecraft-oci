@@ -4,7 +4,10 @@ sudo systemctl stop minecraft
 
 cp -pr --reflink=always server/ server-backup/
 
-sudo systemctl start minecraft
+if [ "$1" = "restart" ]
+then
+	sudo systemctl start minecraft
+fi
 
 SCRIPT_PWD=$(pwd)
 cd server-backup || exit 1

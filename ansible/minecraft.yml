@@ -75,9 +75,9 @@
         - ansible_facts.services['minecraft.service'] is defined
 
     - name: Backing up the existing server
-      systemd:
-        name: minecraft-backup
-        state: started
+      command: /opt/minecraft/backup.sh
+      args:
+        chdir: /opt/minecraft
       when:
         - new_server or update_server
         - skip_backup == false
@@ -778,7 +778,7 @@
             mode: "0644",
             description: "Minecraft server backup",
             type: "oneshot",
-            execstart: "/opt/minecraft/backup.sh",
+            execstart: "/opt/minecraft/backup.sh restart",
             user: "minecraft",
             group: "minecraft",
             when: true,
