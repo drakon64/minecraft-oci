@@ -929,7 +929,7 @@
             type: "oneshot",
             bindsto: "minecraft.service",
             after: "minecraft.service",
-            when: "{{ use_chunky}}",
+            when: "{{ use_chunky }}",
           }
         - {
             src: "templates/systemd/timer.j2",
