@@ -914,6 +914,8 @@
             restart: "on-failure",
             user: "minecraft",
             type: "simple",
+            bindsto: "minecraft.service",
+            after: "minecraft.service",
             when: true,
           }
         - {
@@ -925,6 +927,8 @@
             execstart: "/opt/minecraft/chunky-monitor",
             user: "minecraft",
             type: "oneshot",
+            bindsto: "minecraft.service",
+            after: "minecraft.service",
             when: "{{ use_chunky}}",
           }
         - {
@@ -934,6 +938,8 @@
             mode: "0644",
             description: "Chunky Monitor",
             timer: "*:*:0",
+            bindsto: "minecraft.service",
+            after: "minecraft.service",
             when: "{{ use_chunky}}",
           }
         - {

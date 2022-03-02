@@ -1,6 +1,13 @@
 [Unit]
 Description={{ item.description }}
+{% if item.after is defined %}
+After={{ item.after }}
+{% else %}
 After=network.target
+{% endif %}
+{% if item.bindsto is defined %}
+BindsTo={{ item.bindsto }}
+{% endif %}
 
 [Service]
 Type={{ item.type }}
