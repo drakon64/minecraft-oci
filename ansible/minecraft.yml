@@ -727,6 +727,13 @@
             when: true,
           }
         - {
+            src: "files/scripts/stop.sh",
+            dest: "/opt/minecraft/stop.sh",
+            owner: "minecraft",
+            mode: "0755",
+            when: true,
+          }
+        - {
             src: "templates/scripts/backup.sh.j2",
             dest: "/opt/minecraft/backup.sh",
             owner: "minecraft",
@@ -763,7 +770,7 @@
             type: "forking",
             execstartpre: "-/opt/minecraft/server-icon.sh",
             execstart: "/usr/bin/tmux new-session -s minecraft -d '{{ command }}'",
-            execstop: "/usr/bin/tmux send-keys -t minecraft stop ENTER",
+            execstop: "/opt/minecraft/stop.sh",
             workingdirectory: "/opt/minecraft/server",
             user: "minecraft",
             group: "minecraft",

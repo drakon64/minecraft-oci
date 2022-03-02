@@ -2,7 +2,11 @@
 
 dnf check-update
 if [ "$?" = "100" ] ; then
+
+	printf "Server closed for updates." > server/stop
 	systemctl stop minecraft
+	rm server/stop
+
 	dnf -y update
 
 	if [ ! "$(dnf needs-restarting -r)" ] ; then
