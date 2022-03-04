@@ -407,7 +407,7 @@
 
     - name: Copying the server permissions files
       copy:
-        src: files/java/{{ item }}.json
+        src: files/java/{{ inventory_hostname }}/{{ item }}.json
         dest: /opt/minecraft/server/
         owner: minecraft
         group: minecraft
@@ -1041,7 +1041,7 @@
 
     - name: Copying the server icon
       copy:
-        src: "{% if random_server_icon == false %}files/java/server-icon.png{% else %}files/java/server-icons{% endif %}"
+        src: "{% if random_server_icon == false %}files/java/{{ inventory_hostname }}/server-icon.png{% else %}files/java/{{ inventory_hostname }}/server-icons{% endif %}"
         dest: /opt/minecraft/server/
         owner: minecraft
         group: minecraft
