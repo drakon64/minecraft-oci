@@ -53,9 +53,9 @@ variable "minecraft_java_port" {
   default = 25565
 }
 
-variable "vanilla" {
+variable "geyser" {
   type    = bool
-  default = false
+  default = true
 }
 
 variable "bluemap" {

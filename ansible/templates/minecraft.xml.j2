@@ -9,6 +9,8 @@
 {% endif %}
 	<port protocol="tcp" port="80"/>
 {% endif %}
+{% if use_geyser %}
 	<port protocol="udp" port="19132"/>
+{% endif %}
 {% endif %}
 </service>

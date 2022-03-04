@@ -49,7 +49,7 @@ resource "oci_core_network_security_group_security_rule" "bedrock" {
     }
   }
 
-  count = var.vanilla ? 0 : 1
+  count = var.geyser ? 1 : 0
 }
 
 resource "oci_core_network_security_group_security_rule" "bluemap_http" {

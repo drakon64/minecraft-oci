@@ -278,15 +278,21 @@
           }
         - {
             path: BlueMapFloodgate,
-            state: "{% if use_bluemap %}directory{% else %}absent{% endif %}",
+            state: "{% if use_bluemap and use_geyser %}directory{% else %}absent{% endif %}",
           }
         - {
             path: Chunky,
             state: "{% if use_chunky %}directory{% else %}absent{% endif %}",
           }
         - { path: CustomCommandPrefix, state: directory }
-        - { path: floodgate, state: directory }
-        - { path: Geyser-Spigot/packs, state: directory }
+        - {
+            path: floodgate,
+            state: "{% if use_geyser %}directory{% else %}absent{% endif %}",
+          }
+        - {
+            path: Geyser-Spigot/packs,
+            state: "{% if use_geyser %}directory{% else %}absent{% endif %}",
+          }
         - { path: TreeAssist/trees, state: directory }
         - { path: LuckPerms, state: directory }
         - {
@@ -374,12 +380,15 @@
           }
         - {
             src: plugins/BlueMapFloodgate/config.yml,
-            when: "{{ use_bluemap and vanilla == false }}",
+            when: "{{ use_bluemap and use_geyser and vanilla == false }}",
           }
-        - { src: plugins/floodgate/config.yml, when: "{{ vanilla == false }}" }
+        - {
+            src: plugins/floodgate/config.yml,
+            when: "{{ use_geyser and vanilla == false }}",
+          }
         - {
             src: plugins/Geyser-Spigot/config.yml,
-            when: "{{ vanilla == false }}",
+            when: "{{ use_geyser and vanilla == false }}",
           }
         - { src: plugins/TreeAssist/config.yml, when: "{{ vanilla == false }}" }
         - {
@@ -442,6 +451,7 @@
       when:
         - new_server or update_server
         - use_bluemap
+        - use_geyser
         - restore_backup == false
         - vanilla == false
 
@@ -467,6 +477,7 @@
       register: floodgateplaceholders_latest
       when:
         - new_server or update_server
+        - use_geyser
         - restore_backup == false
         - vanilla == false
 
@@ -475,6 +486,7 @@
       register: placeholderapi_latest
       when:
         - new_server or update_server
+        - use_geyser
         - restore_backup == false
         - vanilla == false
 
@@ -497,17 +509,17 @@
         - {
             url: https://ci.opencollab.dev/job/GeyserMC/job/Geyser/job/master/lastSuccessfulBuild/artifact/bootstrap/spigot/target/Geyser-Spigot.jar,
             dest: Geyser-Spigot.jar,
-            when: "{{ true }}",
+            when: "{{ use_geyser }}",
           }
         - {
             url: https://ci.opencollab.dev/job/GeyserMC/job/Floodgate/job/master/lastSuccessfulBuild/artifact/spigot/target/floodgate-spigot.jar,
             dest: floodgate-spigot.jar,
-            when: "{{ true }}",
+            when: "{{ use_geyser }}",
           }
         - {
             url: https://ci.opencollab.dev/job/GeyserMC/job/GeyserOptionalPack/job/master/lastSuccessfulBuild/artifact/GeyserOptionalPack.mcpack,
             dest: Geyser-Spigot/packs/,
-            when: "{{ true }}",
+            when: "{{ use_geyser }}",
           }
         - {
             url: https://cdn.discordapp.com/attachments/804019242512810034/945799643797811261/TreeAssist.jar, # this is terrible and I hate it
@@ -532,7 +544,7 @@
         - {
             url: "{% if use_bluemap %}{{ bluemap_floodgate_latest.stdout }}{% endif %}",
             dest: BlueMapFloodgate.jar,
-            when: "{{ use_bluemap }}",
+            when: "{{ use_bluemap and use_geyser }}",
           }
         - {
             url: "{{ tabtps_latest.stdout }}",
@@ -542,12 +554,12 @@
         - {
             url: "{{ floodgateplaceholders_latest.stdout }}",
             dest: PlaceholderAPI/expansions/FloodgatePlaceholders.jar,
-            when: "{{ true }}",
+            when: "{{ use_geyser }}",
           }
         - {
             url: "https://ci.extendedclip.com/job/PlaceholderAPI/lastSuccessfulBuild/artifact/build/libs/{{ placeholderapi_latest.stdout }}",
             dest: PlaceholderAPI.jar,
-            when: "{{ true }}",
+            when: "{{ use_geyser }}",
           }
         - {
             url: "https://ci.lucko.me/job/LuckPerms/lastSuccessfulBuild/artifact/bukkit/loader/build/libs/{{ luckperms_latest.stdout }}",
@@ -598,6 +610,7 @@
         mode: 0644
       when:
         - new_server or update_server
+        - use_geyser
         - restore_backup == false
         - vanilla == false
 
@@ -609,6 +622,7 @@
         group: minecraft
         mode: 0644
       when:
+        - use_geyser
         - restore_backup == false
         - vanilla == false
 
@@ -620,6 +634,7 @@
         group: minecraft
         mode: 0644
       when:
+        - use_geyser
         - new_server or update_server
         - restore_backup == false
         - vanilla == false
@@ -633,6 +648,7 @@
         mode: 0644
       with_items: "{{ bedrock_resource_packs }}"
       when:
+        - use_geyser
         - bedrock_resource_packs is defined
         - restore_backup == false
         - vanilla == false
@@ -658,12 +674,18 @@
         - { src: ../bluemap, when: "{{ use_bluemap == false or vanilla }}" }
         - {
             src: BlueMapFloodgate.jar,
-            when: "{{ use_bluemap == false or vanilla }}",
+            when: "{{ use_bluemap == false or use_geyser == false or vanilla }}",
           }
         - { src: Chunky.jar, when: "{{ use_chunky == false or vanilla }}" }
         - { src: CustomCommandPrefix.jar, when: "{{ vanilla }}" }
-        - { src: floodgate-spigot.jar, when: "{{ vanilla }}" }
-        - { src: Geyser-Spigot.jar, when: "{{ vanilla }}" }
+        - {
+            src: floodgate-spigot.jar,
+            when: "{{ use_geyser == false or vanilla }}",
+          }
+        - {
+            src: Geyser-Spigot.jar,
+            when: "{{ use_geyser == false or vanilla }}",
+          }
         - { src: tabtps.jar, when: "{{ vanilla }}" }
         - {
             src: ViaVersion.jar,
