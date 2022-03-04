@@ -8,7 +8,7 @@ minecraft:
       continuous_deployment: false
       eula: true
       new_server: false
-      paper_build: 404
+      paper_build: 217
       restore_backup: false
       restore_remote_backup: false
       restore_permissions: true
@@ -17,9 +17,10 @@ minecraft:
       update_server: true
       use_bluemap: true
       use_chunky: true
+      use_geyser: true
       use_viaversion: true
       vanilla: false
-      version: 1.17.1
+      version: 1.18.2
     minecraft-test:
       backup_version:
       bluemap_certbot:
@@ -32,7 +33,6 @@ minecraft:
       continuous_deployment: true
       eula: true
       new_server: true
-      paper_build: 108
       restore_backup: false
       restore_permissions: true
       skip_backup: true
@@ -40,6 +40,7 @@ minecraft:
       update_server: false
       use_bluemap: false
       use_chunky: false
+      use_geyser: true
       use_viaversion: false
       vanilla: false
-      version: 1.18.1
+      version: 1.18.2
