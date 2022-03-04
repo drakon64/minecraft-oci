@@ -2,8 +2,8 @@
 
 import oci
 import requests
-import os
 import psutil
+import os
 from mcstatus import MinecraftServer
 import shutil
 from datetime import datetime
@@ -23,6 +23,7 @@ monitoring_client = oci.monitoring.MonitoringClient(
     config={}, signer=signer, service_endpoint='https://telemetry-ingestion.' + region + '.oraclecloud.com')
 
 while True:
+    cpu_percent = psutil.cpu_percent(interval=1, percpu=True)
     load_average = os.getloadavg()
     load_average_1_percent = (load_average[0] / os.cpu_count()) * 100
     load_average_5_percent = (load_average[1] / os.cpu_count()) * 100
@@ -47,6 +48,29 @@ while True:
     post_metric_data_response = monitoring_client.post_metric_data(
         post_metric_data_details=oci.monitoring.models.PostMetricDataDetails(
             metric_data=[
+{% for i in range(ansible_processor_nproc) %}
+                oci.monitoring.models.MetricDataDetails(
+                    namespace='minecraft',
+                    compartment_id=compartment_id,
+                    name='CPU{{ i }}Percent',
+                    dimensions={
+                        'resourceDisplayName': resource_display_name,
+                        'resourceId': resource_id
+                    },
+                    datapoints=[
+                        oci.monitoring.models.Datapoint(
+                            timestamp=date_time,
+                            value=cpu_percent[{{ i }}]
+                        )
+                    ],
+                    metadata={
+                        'displayName': 'CPU {{ i }} Usage',
+                        'minRange': '0',
+                        'maxRange': '100',
+                        'unit': 'Percent'
+                    }
+                ),
+{% endfor %}
                 oci.monitoring.models.MetricDataDetails(
                     namespace='minecraft',
                     compartment_id=compartment_id,
