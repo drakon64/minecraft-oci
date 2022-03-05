@@ -406,9 +406,9 @@
         - item.when
 
     - name: Copying the server permissions files
-      copy:
-        src: files/java/{{ inventory_hostname }}/{{ item }}.json
-        dest: /opt/minecraft/server/
+      template:
+        src: templates/java/{{ item }}.json.j2
+        dest: /opt/minecraft/server/{{ item }}.json
         owner: minecraft
         group: minecraft
         mode: 0644
