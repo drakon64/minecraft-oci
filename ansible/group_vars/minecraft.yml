@@ -353,6 +353,7 @@ paper:
       allow-piston-duplication-readme: This setting controls if player should be able to use TNT duplication, but this also allows duplicating carpet, rails and potentially other items
       perform-username-validation: true
     use-alternative-luck-formula: false
+    use-dimension-type-for-custom-spawners: false
     use-display-name-in-quit-message: false
     velocity-support:
       enabled: false
@@ -807,6 +808,7 @@ spigot:
       seed-jungle: 14357619
       seed-mansion: 10387319
       seed-monument: 10387313
+      seed-nether: 30084232
       seed-ocean: 14357621
       seed-outpost: 165745296
       seed-portal: 34222645
