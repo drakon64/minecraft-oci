@@ -580,7 +580,7 @@
     - name: Configuring the LuckPerms users
       template:
         src: templates/java/plugins/LuckPerms/luckperms.yml.j2
-        dest: /opt/minecraft/server/plugins/LuckPerms/{% if final_luckperms_overrides['storage-method'] == "json" %}json{% elif final_luckperms_overrides['storage-method'] == "yaml" %}yaml{% endif %}-storage/users/{{ item.name }}.{% if final_luckperms_overrides['storage-method'] == "json" %}json{% elif final_luckperms_overrides['storage-method'] == "yaml" %}yml{% endif %}
+        dest: /opt/minecraft/server/plugins/LuckPerms/{% if final_luckperms_overrides['storage-method'] == "json" %}json{% elif final_luckperms_overrides['storage-method'] == "yaml" %}yaml{% endif %}-storage/users/{{ item.uuid }}.{% if final_luckperms_overrides['storage-method'] == "json" %}json{% elif final_luckperms_overrides['storage-method'] == "yaml" %}yml{% endif %}
       with_items: "{{ final_luckperms_users }}"
       when:
         - final_luckperms_users | length
