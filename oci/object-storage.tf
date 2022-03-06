@@ -22,4 +22,6 @@ resource "oci_objectstorage_object_lifecycle_policy" "minecraft_backup" {
 
     target = "multipart-uploads"
   }
+
+  count = var.continuous_deployment ? 0 : 1
 }
