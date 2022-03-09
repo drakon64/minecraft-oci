@@ -22,6 +22,7 @@ minecraft:
       use_viaversion: true
       vanilla: false
       version: 1.18.2
+      zgc: false
     minecraft-test:
       backup_version:
       bluemap_certbot:
@@ -46,3 +47,4 @@ minecraft:
       use_viaversion: false
       vanilla: false
       version: 1.18.2
+      zgc: true

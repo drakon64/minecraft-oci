@@ -805,7 +805,7 @@
             description: "Minecraft Server",
             type: "forking",
             execstartpre: "-/opt/minecraft/server-icon.sh",
-            execstart: "/usr/bin/tmux new-session -s minecraft -d '{{ command }}'",
+            execstart: "/usr/bin/tmux new-session -s minecraft -d '{% if zgc %} {{ zgc_command }}{% else %}{{ command }}{% endif %}'",
             execstop: "/opt/minecraft/stop.sh",
             workingdirectory: "/opt/minecraft/server",
             user: "minecraft",
