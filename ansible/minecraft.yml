@@ -110,13 +110,27 @@
       dnf:
         name:
           - git
-          - java-17-openjdk-headless
           - jq
           - borgbackup
           - python36-oci-cli
           - tmux
         state: present
         update_cache: yes
+
+    - name: Installing Java
+      dnf:
+        name: "{{ item.name }}"
+        state: "{{ item.state }}"
+        update_cache: yes
+      with_items:
+        - {
+            name: "java-17-openjdk-headless",
+            state: "{% if graalvm %}absent{% else %}present{% endif %}",
+          }
+        - {
+            name: "graalvm22-ee-17-jdk",
+            state: "{% if graalvm %}present{% else %}absent{% endif %}",
+          }
 
     - name: Installing mcstatus
       pip:
