@@ -562,7 +562,7 @@
             when: "{{ use_geyser }}",
           }
         - {
-            url: https://cdn.discordapp.com/attachments/804019242512810034/945799643797811261/TreeAssist.jar, # this is terrible and I hate it
+            url: https://cdn.discordapp.com/attachments/804019242512810034/951278280319852554/TreeAssist.jar, # this is terrible and I hate it
             dest: TreeAssist.jar,
             when: "{{ true }}",
           }
