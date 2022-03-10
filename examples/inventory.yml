@@ -4,15 +4,16 @@ minecraft:
       backup_retention_days: 30
       backup_version:
       bucket_name: minecraft-backup
+      build: 217
       cd_bucket_name:
       continuous_deployment: false
       eula: true
       graalvm: false
       new_server: false
-      paper_build: 217
+      pufferfish: false
       restore_backup: false
-      restore_remote_backup: false
       restore_permissions: true
+      restore_remote_backup: false
       skip_backup: false
       timezone: Europe/London
       update_server: true
@@ -36,6 +37,7 @@ minecraft:
       eula: true
       graalvm: true
       new_server: true
+      pufferfish: true
       restore_backup: false
       restore_permissions: true
       skip_backup: true
