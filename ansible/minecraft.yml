@@ -112,6 +112,7 @@
           - git
           - jq
           - borgbackup
+          - python3-lxml
           - python36-oci-cli
           - tmux
         state: present
