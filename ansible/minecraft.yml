@@ -191,6 +191,13 @@
       command: fallocate -l {{ memtotal_b }} /.swapfile
       when: swapfile.stat.size != memtotal_b
 
+    - name: Setting permissions for the swapfile
+      file:
+        path: /.swapfile
+        owner: root
+        group: root
+        mode: 0600
+
     - name: Formatting swapfile
       command: mkswap /.swapfile
       when: swapfile.stat.size != memtotal_b
