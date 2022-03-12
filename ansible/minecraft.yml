@@ -595,12 +595,12 @@
             when: "{{ true }}",
           }
         - {
-            url: "{{ floodgateplaceholders_latest.stdout }}",
+            url: "{% if use_geyser %}{{ floodgateplaceholders_latest.stdout }}{% endif %}",
             dest: PlaceholderAPI/expansions/FloodgatePlaceholders.jar,
             when: "{{ use_geyser }}",
           }
         - {
-            url: "https://ci.extendedclip.com/job/PlaceholderAPI/lastSuccessfulBuild/artifact/build/libs/{{ placeholderapi_latest.stdout }}",
+            url: "{% if use_geyser %}https://ci.extendedclip.com/job/PlaceholderAPI/lastSuccessfulBuild/artifact/build/libs/{{ placeholderapi_latest.stdout }}{% endif %}",
             dest: PlaceholderAPI.jar,
             when: "{{ use_geyser }}",
           }
