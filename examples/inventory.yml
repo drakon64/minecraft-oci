@@ -9,6 +9,10 @@ minecraft:
       continuous_deployment: false
       eula: true
       graalvm: false
+      grafana:
+        api_key:
+        dashboard_id:
+        use: true
       new_server: false
       pufferfish: false
       restore_backup: false
@@ -36,6 +40,10 @@ minecraft:
       continuous_deployment: true
       eula: true
       graalvm: true
+      grafana:
+        api_key:
+        dashboard_id:
+        use: true
       new_server: true
       pufferfish: true
       restore_backup: false
