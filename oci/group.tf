@@ -17,15 +17,6 @@ resource "oci_identity_policy" "minecraft_backup" {
   count = var.continuous_deployment ? 0 : 1
 }
 
-resource "oci_identity_policy" "minecraft_monitoring" {
-  compartment_id = oci_identity_compartment.minecraft_compartment.id
-  description    = "Minecraft monitoring"
-  name           = "${var.oci_compute_display_name}-monitoring"
-  statements = [
-    "Allow dynamic-group ${oci_identity_dynamic_group.minecraft.name} to use metrics in compartment id ${oci_identity_compartment.minecraft_compartment.id} where target.metrics.namespace='minecraft'"
-  ]
-}
-
 resource "oci_identity_policy" "minecraft_continuous_deployment" {
   compartment_id = var.oci_tenancy
   description    = "Minecraft continuous integration"
