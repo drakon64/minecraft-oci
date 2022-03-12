@@ -155,6 +155,10 @@
         - use_bluemap
         - bluemap_certbot.use
 
+    - name: Installing the Grafana Agent
+      shell: sudo ARCH={%if ansible_architecture == "x86_64" %}amd64{% elif ansible_architecture == "aarch64" %}arm64{% endif %} GCLOUD_STACK_ID="{{ grafana.stack_id }}" GCLOUD_API_KEY="{{ grafana.api_key }}" GCLOUD_API_URL="https://integrations-api-eu-west.grafana.net" /bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/grafana/agent/release/production/grafanacloud-install.sh)"
+      when: grafana.use
+
     - name: Creating the minecraft user
       user:
         name: minecraft
