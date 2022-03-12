@@ -6,8 +6,8 @@ After={{ item.after }}
 
 [Timer]
 OnCalendar={{ item.timer }}
-{% if item.persistent %}
-Persistent=true
+{% if item.persistent is defined %}
+Persistent={{ item.persistent }}
 {% endif %}
 
 [Install]
