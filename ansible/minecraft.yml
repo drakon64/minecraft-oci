@@ -817,13 +817,6 @@
             when: true,
           }
         - {
-            src: "templates/scripts/monitor.py.j2",
-            dest: "/opt/minecraft/monitor",
-            owner: "minecraft",
-            mode: "0744",
-            when: true,
-          }
-        - {
             src: "templates/scripts/chunky-monitor.py.j2",
             dest: "/opt/minecraft/chunky-monitor",
             owner: "minecraft",
@@ -979,19 +972,6 @@
             timer: "8:00",
             persistent: true,
             when: "{{ continuous_deployment }}",
-          }
-        - {
-            src: "templates/systemd/service.j2",
-            dest: "/etc/systemd/system/minecraft-monitor.service",
-            owner: "root",
-            mode: "0644",
-            description: "Minecraft Monitor",
-            execstart: "/opt/minecraft/monitor",
-            restart: "on-failure",
-            user: "minecraft",
-            type: "simple",
-            after: "minecraft.service",
-            when: true,
           }
         - {
             src: "templates/systemd/service.j2",
@@ -1200,12 +1180,6 @@
             state: "restarted",
             enabled: "yes",
             when: "{{ use_bluemap and bluemap_certbot.use }}",
-          }
-        - {
-            name: "minecraft-monitor.service",
-            state: "restarted",
-            enabled: "yes",
-            when: "{{ true }}",
           }
         - {
             name: "chunky-monitor.timer",
