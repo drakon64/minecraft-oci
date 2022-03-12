@@ -324,7 +324,10 @@
             path: Chunky,
             state: "{% if use_chunky %}directory{% else %}absent{% endif %}",
           }
-        - { path: CustomCommandPrefix, state: directory }
+        - {
+            path: CustomCommandPrefix,
+            state: "{% if use_geyser %}directory{% else %}absent{% endif %}",
+          }
         - {
             path: floodgate,
             state: "{% if use_geyser %}directory{% else %}absent{% endif %}",
@@ -717,7 +720,10 @@
             when: "{{ use_bluemap == false or use_geyser == false or vanilla }}",
           }
         - { src: Chunky.jar, when: "{{ use_chunky == false or vanilla }}" }
-        - { src: CustomCommandPrefix.jar, when: "{{ vanilla }}" }
+        - {
+            src: CustomCommandPrefix.jar,
+            when: "{{ use_geyser == false or vanilla }}",
+          }
         - {
             src: floodgate-spigot.jar,
             when: "{{ use_geyser == false or vanilla }}",
