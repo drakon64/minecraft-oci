@@ -260,7 +260,7 @@
         - vanilla == false
         - pufferfish == false
 
-    - name: Getting the Pufferfish release
+    - name: Getting the Pufferfish build
       shell: curl --silent https://ci.pufferfish.host/job/Pufferfish-{{ version }}/{% if build == 0 %}lastSuccessfulBuild{% else %}{{ build }}{% endif %}/api/json | jq -r '.artifacts[].fileName'
       register: pufferfish_url
       when:
