@@ -113,18 +113,3 @@ variable "backup_bucket_name" {
   type    = string
   default = "minecraft-backup"
 }
-
-variable "topic_name" {
-  type    = string
-  default = "minecraft"
-}
-
-variable "enable_monitoring_emails" {
-  type    = bool
-  default = true
-}
-
-variable "management_email" {
-  type    = string
-  default = ""
-}
