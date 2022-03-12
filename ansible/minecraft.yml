@@ -155,9 +155,18 @@
         - use_bluemap
         - bluemap_certbot.use
 
-    - name: Installing the Grafana Agent
-      shell: sudo ARCH={%if ansible_architecture == "x86_64" %}amd64{% elif ansible_architecture == "aarch64" %}arm64{% endif %} GCLOUD_STACK_ID="{{ grafana.stack_id }}" GCLOUD_API_KEY="{{ grafana.api_key }}" GCLOUD_API_URL="https://integrations-api-eu-west.grafana.net" /bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/grafana/agent/release/production/grafanacloud-install.sh)"
-      when: grafana.use
+    - name: Getting the latest Grafana Agent release
+      shell: curl --silent https://api.github.com/repos/grafana/agent/releases/latest | jq -r '.assets[].browser_download_url | select(contains("{% if ansible_architecture == 'aarch64' %}arm64{% elif ansible_architecture == 'x86_64' %}amd64{% endif %}")) | select(contains("rpm"))'
+      register: grafanaagent_latest
+      when:
+        - unifiedmetrics.use
+
+    - name: Installing Grafana Agent
+      dnf:
+        name: "{{ grafanaagent_latest.stdout }}"
+        state: present
+        disable_gpg_check: yes
+      when: unifiedmetrics.use
 
     - name: Creating the minecraft user
       user:
@@ -553,6 +562,15 @@
         - restore_backup == false
         - vanilla == false
 
+    - name: Getting the latest UnifiedMetrics release
+      shell: curl --silent https://api.github.com/repos/Cubxity/UnifiedMetrics/releases/latest | jq -r '.assets[].browser_download_url | select(contains("bukkit")) | select(contains("asc") | not)'
+      register: unifiedmetrics_latest
+      when:
+        - new_server or update_server
+        - unifiedmetrics.use
+        - restore_backup == false
+        - vanilla == false
+
     - name: Downloading plugins
       get_url:
         url: "{{ item.url }}"
@@ -625,6 +643,11 @@
             url: "{% if use_viaversion %}{{ viaversion_latest.stdout }}{% endif %}",
             dest: "ViaVersion.jar",
             when: "{{ use_viaversion }}",
+          }
+        - {
+            url: "{% if unifiedmetrics.use %}{{ unifiedmetrics_latest.stdout }}{% endif %}",
+            dest: "unifiedmetrics.jar",
+            when: "{{ unifiedmetrics.use }}",
           }
       when:
         - new_server or update_server
@@ -796,7 +819,7 @@
         src: "{{ item.src }}"
         dest: "{{ item.dest }}"
         owner: "{{ item.owner }}"
-        group: "{{ item.owner }}"
+        group: "{% if item.group is defined %}{{ item.group }}{% else %}{{ item.owner }}{% endif %}"
         mode: "{{ item.mode }}"
       with_items:
         - {
@@ -929,6 +952,14 @@
             when: "{{ use_bluemap }}",
           }
         - {
+            src: "templates/grafana-agent.yml.j2",
+            dest: "/etc/grafana-agent.yaml",
+            owner: root,
+            group: grafana-agent,
+            mode: "0640",
+            when: "{{ unifiedmetrics.use }}",
+          }
+        - {
             src: "templates/systemd/service.j2",
             dest: "/etc/systemd/system/certbot-renew.service",
             owner: root,
@@ -988,6 +1019,17 @@
             type: "oneshot",
             after: "minecraft.service",
             when: "{{ use_chunky }}",
+          }
+        - {
+            src: "templates/systemd/service.j2",
+            dest: "/etc/systemd/system/grafana-agent.service",
+            owner: "root",
+            mode: "0644",
+            description: "Monitoring system and forwarder",
+            execstart: "/usr/bin/grafana-agent --config.file /etc/grafana-agent.yaml",
+            type: "simple",
+            after: "network-online.target",
+            when: "{{ unifiedmetrics.use }}",
           }
         - {
             src: "templates/systemd/timer.j2",
@@ -1067,11 +1109,21 @@
 
     - name: Removing unneeded systemd units
       file:
-        path: /etc/systemd/system/{{ item.path }}
+        path: "{{ item.path }}"
         state: absent
       with_items:
-        - { path: chunky-monitor.timer, when: "{{ use_chunky == false }}" }
-        - { path: chunky-monitor.service, when: "{{ use_chunky == false }}" }
+        - {
+            path: /etc/systemd/system/chunky-monitor.timer,
+            when: "{{ use_chunky == false }}",
+          }
+        - {
+            path: /etc/systemd/system/chunky-monitor.service,
+            when: "{{ use_chunky == false }}",
+          }
+        - {
+            path: /usr/lib/systemd/system/grafana-agent.service,
+            when: "{{ unifiedmetrics.use }}",
+          }
       when: item.when
 
     - name: Copying the server icon
@@ -1184,6 +1236,12 @@
             state: "restarted",
             enabled: "yes",
             when: "{{ use_bluemap and bluemap_certbot.use }}",
+          }
+        - {
+            name: "grafana-agent.service",
+            state: "restarted",
+            enabled: "true",
+            when: "{{ unifiedmetrics.use }}",
           }
         - {
             name: "chunky-monitor.timer",
