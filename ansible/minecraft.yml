@@ -802,6 +802,7 @@
       when:
         - restore_backup
         - restore_remote_backup
+      become_user: minecraft
 
     - name: Restoring the server backup
       command: "borg extract /opt/minecraft/backup::{{ backup_version }}"
