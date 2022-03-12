@@ -33,6 +33,11 @@ variable "oci_compute_shape" {
   default = "VM.Standard.A1.Flex"
 }
 
+variable "oci_compute_shape_flex" {
+  type    = bool
+  default = true
+}
+
 variable "oci_compute_memory" {
   type    = number
   default = 6

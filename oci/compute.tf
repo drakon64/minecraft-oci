@@ -11,9 +11,13 @@ resource "oci_core_instance" "minecraft_instance" {
     source_id               = var.oci_image_id
     source_type             = "image"
   }
-  shape_config {
-    memory_in_gbs = var.oci_compute_memory
-    ocpus         = var.oci_compute_ocpus
+
+  dynamic "shape_config" {
+    for_each = var.oci_compute_shape_flex ? [1] : []
+    content {
+      memory_in_gbs = var.oci_compute_memory
+      ocpus         = var.oci_compute_ocpus
+    }
   }
 
   display_name = var.oci_compute_display_name
