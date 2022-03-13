@@ -81,4 +81,16 @@ resource "oci_core_default_security_list" "default-security-list" {
       max = 443
     }
   }
+
+  egress_security_rules {
+    protocol         = 6
+    destination      = "0.0.0.0/0"
+    destination_type = "CIDR_BLOCK"
+    stateless        = false
+
+    tcp_options {
+      min = 80
+      max = 80
+    }
+  }
 }
