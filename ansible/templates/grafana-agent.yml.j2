@@ -1,20 +1,68 @@
-prometheus:
-  global:
-    scrape_interval: 5s
+integrations:
+  node_exporter:
+    enabled: true
+    relabel_configs:
+      - replacement: {{ inventory_hostname }}
+        source_labels:
+          - __address__
+        target_label: instance
+  prometheus_remote_write:
+    - basic_auth:
+        password: {{ grafana.prometheus.password }}
+        username: {{ grafana.prometheus.username }}
+      url: {{ grafana.prometheus.url }}
+logs:
   configs:
-    - name: minecraft
-      host_filter: false
+    - clients:
+        - basic_auth:
+            password: {{ grafana.loki.password }}
+            username: {{ grafana.loki.username }}
+          url: {{ grafana.loki.url }}
+      name: integrations
+      positions:
+        filename: /tmp/positions.yaml
+      scrape_configs:
+        - job_name: integrations/node_exporter_direct_scrape
+          static_configs:
+            - labels:
+                __path__: /var/log/{syslog,messages,*.log}
+                instance: {{ inventory_hostname }}
+                job: integrations/node_exporter
+              targets:
+                - localhost
+        - job_name: integrations/node_exporter_journal_scrape
+          journal:
+            labels:
+              instance: {{ inventory_hostname }}
+              job: integrations/node_exporter
+            max_age: 24h
+          relabel_configs:
+            - source_labels:
+                - __journal__systemd_unit
+              target_label: unit
+            - source_labels:
+                - __journal__boot_id
+              target_label: boot_id
+            - source_labels:
+                - __journal__transport
+              target_label: transport
+      target_config:
+        sync_period: 10s
+metrics:
+  configs:
+    - host_filter: false
+      name: minecraft
+      remote_write:
+        - basic_auth:
+            password: {{ grafana.prometheus.password }}
+            username: {{ grafana.prometheus.username }}
+          url: {{ grafana.prometheus.url }}
       scrape_configs:
         - job_name: {{ inventory_hostname }}
           static_configs:
             - targets: ["127.0.0.1:9100"]
-      remote_write:
-        - url: {{ unifiedmetrics.url }}
-          basic_auth:
-            username: {{ unifiedmetrics.username }}
-            password: {{ unifiedmetrics.password }}
+  global:
+    scrape_interval: 5s
   wal_directory: /tmp/grafana-agent-wal
-
 server:
-  http_listen_address: '127.0.0.1'
-  http_listen_port: 9090
+  http_listen_port: 12345

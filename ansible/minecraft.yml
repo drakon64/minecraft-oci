@@ -159,14 +159,14 @@
       shell: curl --silent https://api.github.com/repos/grafana/agent/releases/latest | jq -r '.assets[].browser_download_url | select(contains("{% if ansible_architecture == 'aarch64' %}arm64{% elif ansible_architecture == 'x86_64' %}amd64{% endif %}")) | select(contains("rpm"))'
       register: grafanaagent_latest
       when:
-        - unifiedmetrics.use
+        - grafana.use
 
     - name: Installing Grafana Agent
       dnf:
         name: "{{ grafanaagent_latest.stdout }}"
         state: present
         disable_gpg_check: yes
-      when: unifiedmetrics.use
+      when: grafana.use
 
     - name: Creating the minecraft user
       user:
@@ -567,7 +567,7 @@
       register: unifiedmetrics_latest
       when:
         - new_server or update_server
-        - unifiedmetrics.use
+        - grafana.use
         - restore_backup == false
         - vanilla == false
 
@@ -645,9 +645,9 @@
             when: "{{ use_viaversion }}",
           }
         - {
-            url: "{% if unifiedmetrics.use %}{{ unifiedmetrics_latest.stdout }}{% endif %}",
+            url: "{% if grafana.use %}{{ unifiedmetrics_latest.stdout }}{% endif %}",
             dest: "unifiedmetrics.jar",
-            when: "{{ unifiedmetrics.use }}",
+            when: "{{ grafana.use }}",
           }
       when:
         - new_server or update_server
@@ -949,7 +949,7 @@
             owner: root,
             group: grafana-agent,
             mode: "0640",
-            when: "{{ unifiedmetrics.use }}",
+            when: "{{ grafana.use }}",
           }
         - {
             src: "templates/systemd/service.j2",
@@ -1021,7 +1021,7 @@
             execstart: "/usr/bin/grafana-agent --config.file /etc/grafana-agent.yaml",
             type: "simple",
             after: "network-online.target",
-            when: "{{ unifiedmetrics.use }}",
+            when: "{{ grafana.use }}",
           }
         - {
             src: "templates/systemd/timer.j2",
@@ -1114,7 +1114,7 @@
           }
         - {
             path: /usr/lib/systemd/system/grafana-agent.service,
-            when: "{{ unifiedmetrics.use }}",
+            when: "{{ grafana.use }}",
           }
       when: item.when
 
@@ -1233,7 +1233,7 @@
             name: "grafana-agent.service",
             state: "restarted",
             enabled: "true",
-            when: "{{ unifiedmetrics.use }}",
+            when: "{{ grafana.use }}",
           }
         - {
             name: "chunky-monitor.timer",
