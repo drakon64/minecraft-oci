@@ -1,5 +1,7 @@
 #!/bin/sh
 
+DATE=$(date -I'minutes')
+
 printf "Server closed for backup." > server/stop
 sudo systemctl stop minecraft
 rm server/stop
@@ -13,7 +15,7 @@ fi
 
 SCRIPT_PWD=$(pwd)
 cd server-backup || exit 1
-yes 'y' | borg create --compression zstd{% if use_bluemap %} --pattern=+bluemap/web/data/markers.json --pattern=-bluemap{% endif %} --pattern=-cache "$SCRIPT_PWD"/backup::"$(date -I'minutes')" .
+yes 'y' | borg create --compression zstd{% if use_bluemap %} --pattern=+bluemap/web/data/markers.json --pattern=-bluemap{% endif %} --pattern=-cache "$SCRIPT_PWD"/backup::"$DATE" .
 cd "$SCRIPT_PWD" || exit 1
 rm -fr server-backup
 
