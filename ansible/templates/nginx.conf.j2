@@ -2,7 +2,6 @@ server {
     listen 80 default_server;
     listen [::]:80 default_server;
     server_name {{ bluemap_certbot.domain }};
-
 {% if bluemap_certbot.use %}
     location / {
         return 301 https://$host$request_uri;
