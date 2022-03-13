@@ -17,6 +17,7 @@ resource "oci_core_default_security_list" "default-security-list" {
     protocol    = 6
     source      = "0.0.0.0/0"
     source_type = "CIDR_BLOCK"
+    stateless   = false
 
     tcp_options {
       min = var.minecraft_java_port
@@ -30,6 +31,7 @@ resource "oci_core_default_security_list" "default-security-list" {
       protocol    = 17
       source      = "0.0.0.0/0"
       source_type = "CIDR_BLOCK"
+      stateless   = false
 
       udp_options {
         min = var.minecraft_bedrock_port
@@ -44,6 +46,7 @@ resource "oci_core_default_security_list" "default-security-list" {
       protocol    = 6
       source      = "0.0.0.0/0"
       source_type = "CIDR_BLOCK"
+      stateless   = false
 
       tcp_options {
         min = 80
@@ -58,6 +61,7 @@ resource "oci_core_default_security_list" "default-security-list" {
       protocol    = 6
       source      = "0.0.0.0/0"
       source_type = "CIDR_BLOCK"
+      stateless   = false
 
       tcp_options {
         min = 443
@@ -70,6 +74,7 @@ resource "oci_core_default_security_list" "default-security-list" {
     protocol         = 6
     destination      = "0.0.0.0/0"
     destination_type = "CIDR_BLOCK"
+    stateless        = false
 
     tcp_options {
       min = 443
