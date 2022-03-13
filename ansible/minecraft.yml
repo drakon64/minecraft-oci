@@ -799,16 +799,25 @@
         - restore_remote_backup
       become_user: minecraft
 
-    - name: Restoring the server backup
-      command: "borg extract /opt/minecraft/backup::{{ backup_version }}"
-      args:
-        chdir: /opt/minecraft/server
-      when: restore_backup
-
     - name: Removing the downloaded backup
       file:
         path: /opt/minecraft/minecraft.tar
         state: absent
+
+    - name: Restoring the server backup
+      shell: "yes 'y' | borg extract /opt/minecraft/backup::{{ backup_version }}"
+      args:
+        chdir: /opt/minecraft/server
+      when: restore_backup
+
+    - name: Fixing server permissions
+      file:
+        path: /opt/minecraft
+        owner: minecraft
+        group: minecraft
+        state: directory
+        mode: u=rwX,g=rX,o=rX
+        recurse: true
 
     - name: Copying scripts and systemd units
       template:
