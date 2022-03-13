@@ -9,6 +9,16 @@ minecraft:
       continuous_deployment: false
       eula: true
       graalvm: false
+      grafana:
+        loki:
+          password:
+          url:
+          username:
+        prometheus:
+          password:
+          url:
+          username:
+        use: true
       new_server: false
       pufferfish: false
       restore_backup: false
@@ -16,11 +26,6 @@ minecraft:
       restore_remote_backup: false
       skip_backup: false
       timezone: Europe/London
-      unifiedmetrics:
-        url:
-        username:
-        password:
-        use: true
       update_server: true
       use_bluemap: true
       use_chunky: true
@@ -41,17 +46,22 @@ minecraft:
       continuous_deployment: true
       eula: true
       graalvm: true
+      grafana:
+        loki:
+          password:
+          url:
+          username:
+        prometheus:
+          password:
+          url:
+          username:
+        use: true
       new_server: true
       pufferfish: true
       restore_backup: false
       restore_permissions: true
       skip_backup: true
       timezone: Europe/London
-      unifiedmetrics:
-        url:
-        username:
-        password:
-        use: true
       update_server: false
       use_bluemap: false
       use_chunky: false
