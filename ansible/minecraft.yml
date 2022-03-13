@@ -808,15 +808,7 @@
       args:
         chdir: /opt/minecraft/server
       when: restore_backup
-
-    - name: Fixing server permissions
-      file:
-        path: /opt/minecraft
-        owner: minecraft
-        group: minecraft
-        state: directory
-        mode: u=rwX,g=rX,o=rX
-        recurse: true
+      become_user: minecraft
 
     - name: Copying scripts and systemd units
       template:
