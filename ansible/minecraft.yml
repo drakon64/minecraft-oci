@@ -349,6 +349,10 @@
             state: "{% if use_chunky %}directory{% else %}absent{% endif %}",
           }
         - {
+            path: KeepChunks,
+            state: "{% if use_keepchunks %}directory{% else %}absent{% endif %}",
+          }
+        - {
             path: CustomCommandPrefix,
             state: "{% if use_geyser %}directory{% else %}absent{% endif %}",
           }
