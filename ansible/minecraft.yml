@@ -540,6 +540,14 @@
         - restore_backup == false
         - vanilla == false
 
+    - name: Getting the latest AppleSkinSpigot release
+      shell: curl --silent https://api.github.com/repos/jmattingley23/AppleSkinSpigot/releases/latest | jq -r '.assets[].browser_download_url'
+      register: appleskin_latest
+      when:
+        - new_server or update_server
+        - restore_backup == false
+        - vanilla == false
+
     - name: Getting the latest FloodgatePlaceholders release
       shell: curl --silent https://api.github.com/repos/rtm516/FloodgatePlaceholders/releases/latest | jq -r '.assets[].browser_download_url'
       register: floodgateplaceholders_latest
@@ -622,6 +630,11 @@
             url: "{% if use_bluemap %}{{ bluemap_floodgate_latest.stdout }}{% endif %}",
             dest: BlueMapFloodgate.jar,
             when: "{{ use_bluemap and use_geyser }}",
+          }
+        - {
+            url: "{{ appleskin_latest.stdout }}",
+            dest: AppleSkinSpigot.jar,
+            when: "{{ true }}",
           }
         - {
             url: "{{ tabtps_latest.stdout }}",
