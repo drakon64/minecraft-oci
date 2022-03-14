@@ -493,6 +493,7 @@
         - new_server or update_server
         - restore_backup == false
         - vanilla == false
+        - use_keepchunks
 
     - name: Getting the latest Chunky release
       shell: curl --silent https://ci.codemc.io/job/pop4959/job/Chunky/lastSuccessfulBuild/api/json | jq -r '.artifacts[0].fileName'
@@ -603,7 +604,7 @@
             when: "{{ true }}",
           }
         - {
-            url: "{{ keepchunks_latest.stdout }}",
+            url: "{% if use_keepchunks %}{{ keepchunks_latest.stdout }}{% endif %}",
             dest: KeepChunks.jar,
             when: "{{ true }}",
           }
