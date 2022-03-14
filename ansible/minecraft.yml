@@ -680,6 +680,9 @@
       template:
         src: templates/java/plugins/LuckPerms/luckperms.yml.j2
         dest: /opt/minecraft/server/plugins/LuckPerms/{% if final_luckperms_overrides['storage-method'] == "json" %}json{% elif final_luckperms_overrides['storage-method'] == "yaml" %}yaml{% endif %}-storage/users/{{ item.uuid }}.{% if final_luckperms_overrides['storage-method'] == "json" %}json{% elif final_luckperms_overrides['storage-method'] == "yaml" %}yml{% endif %}
+        owner: minecraft
+        group: minecraft
+        mode: 0644
       with_items: "{{ final_luckperms_users }}"
       when:
         - final_luckperms_users | length
@@ -692,6 +695,9 @@
       template:
         src: templates/java/plugins/LuckPerms/luckperms.yml.j2
         dest: /opt/minecraft/server/plugins/LuckPerms/{% if final_luckperms_overrides['storage-method'] == "json" %}json{% elif final_luckperms_overrides['storage-method'] == "yaml" %}yaml{% endif %}-storage/groups/{{ item.name }}.{% if final_luckperms_overrides['storage-method'] == "json" %}json{% elif final_luckperms_overrides['storage-method'] == "yaml" %}yml{% endif %}
+        owner: minecraft
+        group: minecraft
+        mode: 0644
       with_items: "{{ final_luckperms_groups }}"
       when:
         - final_luckperms_groups | length
