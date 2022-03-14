@@ -618,7 +618,7 @@
         - {
             url: "{% if use_keepchunks %}{{ keepchunks_latest.stdout }}{% endif %}",
             dest: KeepChunks.jar,
-            when: "{{ true }}",
+            when: "{{ use_keepchunks }}",
           }
         - {
             url: "{% if use_chunky %}https://ci.codemc.io/view/Author/job/pop4959/job/Chunky/lastSuccessfulBuild/artifact/bukkit/build/libs/{{ chunky_latest.stdout }}{% endif %}",
