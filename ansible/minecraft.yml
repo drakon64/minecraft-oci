@@ -246,8 +246,8 @@
         group: minecraft
         mode: 0755
       when:
-       - continuous_deployment == false
-       - restore_backup == false
+        - continuous_deployment == false
+        - restore_backup == false
 
     - name: Initialising the server backup repository
       command: borg init -e none /opt/minecraft/backup
@@ -257,8 +257,8 @@
         - borg.rc != 2
       register: borg
       when:
-       - continuous_deployment == false
-       - restore_backup == false
+        - continuous_deployment == false
+        - restore_backup == false
       become_user: minecraft
 
     - name: Getting the latest Paper build
@@ -772,6 +772,10 @@
             when: "{{ use_bluemap == false or use_geyser == false or vanilla }}",
           }
         - { src: Chunky.jar, when: "{{ use_chunky == false or vanilla }}" }
+        - {
+            src: KeepChunks.jar,
+            when: "{{ use_keepchunks == false or vanilla }}",
+          }
         - {
             src: CustomCommandPrefix.jar,
             when: "{{ use_geyser == false or vanilla }}",
