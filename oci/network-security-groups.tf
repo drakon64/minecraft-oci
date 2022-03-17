@@ -85,33 +85,3 @@ resource "oci_core_network_security_group_security_rule" "bluemap_https" {
 
   count = var.bluemap_https ? 1 : 0
 }
-
-resource "oci_core_network_security_group_security_rule" "https" {
-  network_security_group_id = oci_core_network_security_group.minecraft.id
-  direction                 = "EGRESS"
-  protocol                  = 6
-  destination               = "0.0.0.0/0"
-  destination_type          = "CIDR_BLOCK"
-
-  tcp_options {
-    destination_port_range {
-      min = 443
-      max = 443
-    }
-  }
-}
-
-resource "oci_core_network_security_group_security_rule" "http" {
-  network_security_group_id = oci_core_network_security_group.minecraft.id
-  direction                 = "EGRESS"
-  protocol                  = 6
-  destination               = "0.0.0.0/0"
-  destination_type          = "CIDR_BLOCK"
-
-  tcp_options {
-    destination_port_range {
-      min = 80
-      max = 80
-    }
-  }
-}
