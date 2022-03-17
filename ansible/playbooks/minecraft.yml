@@ -303,21 +303,19 @@
         dest: /opt/minecraft/TreeAssist
         depth: 1
         single_branch: yes
-      when:
-        - new_server or update_server
-        - restore_backup == false
 
     - name: Configuring TreeAssist
       copy:
         src: /opt/minecraft/TreeAssist/src/main/resources/trees
-        dest: /opt/minecraft/server/plugins/TreeAssist/
+        dest: /opt/minecraft/{{ item.name }}/server/plugins/TreeAssist/
         owner: minecraft
         group: minecraft
         mode: u=rwX,g=rX,o=rX
         remote_src: yes
+      loop: "{{ instances }}"
       when:
-        - new_server or update_server
-        - restore_backup == false
+        - item.new_server or item.update_server
+        - item.restore_backup == false
 
     - name: Configuring the Minecraft server
       template:
