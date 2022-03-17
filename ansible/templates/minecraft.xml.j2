@@ -4,7 +4,7 @@
 	<port protocol="tcp" port="{{ final_server_overrides['server-port'] }}"/>
 {% if vanilla == false %}
 {% if use_bluemap %}
-{% if bluemap_certbot.use %}
+{% if certbot.use %}
 	<port protocol="tcp" port="443"/>
 {% endif %}
 	<port protocol="tcp" port="80"/>

@@ -4,10 +4,6 @@
 
   vars:
     memtotal_b: "{{ ansible_memtotal_mb * 1048576 }}"
-    final_server_overrides: "{% if global_overrides.server is defined and overrides.server is defined %}{{ server | combine(global_overrides.server, overrides.server, recursive=True) }}{% elif global_overrides.server is defined %}{{ server | combine(global_overrides.server, recursive=True) }}{% elif overrides.server is defined %}{{ server | combine(overrides.server, recursive=True) }}{% else %}{{ server }}{% endif %}"
-    final_luckperms_overrides: "{% if global_overrides.luckperms.config is defined and overrides.luckperms.config is defined %}{{ luckperms.config | combine(global_overrides.luckperms.config, overrides.luckperms.config, recursive=True) }}{% elif global_overrides.luckperms.config is defined %}{{ luckperms.config | combine(global_overrides.luckperms.config, recursive=True) }}{% elif overrides.luckperms.config is defined %}{{ luckperms.config | combine(overrides.luckperms.config, recursive=True) }}{% else %}{{ luckperms.config }}{% endif %}"
-    final_luckperms_groups: "{% if global_overrides.luckperms.groups is defined and overrides.luckperms.groups is defined %}{{ global_overrides.luckperms.groups | combine(overrides.luckperms.groups, recursive=True) }}{% elif global_overrides.luckperms.groups is defined %}{{ global_overrides.luckperms.groups }}{% elif overrides.luckperms.groups is defined %}{{ overrides.luckperms.groups }}{% endif %}"
-    final_luckperms_users: "{% if global_overrides.luckperms.users is defined and overrides.luckperms.users is defined %}{{ combine(global_overrides.luckperms.users, overrides.luckperms.users, recursive=True) }}{% elif global_overrides.luckperms.users is defined %}{{ global_overrides.luckperms.users }}{% elif overrides.luckperms.users is defined %}{{ overrides.luckperms.users }}{% endif %}"
 
   tasks:
     - name: Configuring sshd # Based on https://infosec.mozilla.org/guidelines/openssh and CIS Benchmarks
@@ -75,13 +71,14 @@
         - ansible_facts.services['minecraft.service'] is defined
 
     - name: Backing up the existing server
-      command: /opt/minecraft/backup.sh
+      shell: /opt/minecraft/backup.sh {{ item.name }}
       args:
         chdir: /opt/minecraft
+      loop: "{{ instances }}"
       when:
-        - new_server or update_server
-        - skip_backup == false
-        - continuous_deployment == false
+        - item.new_server or item.update_server
+        - item.skip_backup == false
+        - item.continuous_deployment == false
 
     - name: Applying updates with Uptrack
       command: uptrack-upgrade -y
@@ -142,7 +139,7 @@
         name: nginx
         state: present
       when:
-        - use_bluemap
+        - bluemap
 
     - name: Installing certbot
       dnf:
@@ -151,8 +148,8 @@
           - python3-certbot-nginx
         state: present
       when:
-        - use_bluemap
-        - bluemap_certbot.use
+        - bluemap
+        - certbot.use
 
     - name: Getting the latest Grafana Agent release
       shell: curl --silent https://api.github.com/repos/grafana/agent/releases/latest | jq -r '.assets[].browser_download_url | select(contains("{% if ansible_architecture == 'aarch64' %}arm64{% elif ansible_architecture == 'x86_64' %}amd64{% endif %}")) | select(contains("rpm"))'
@@ -177,7 +174,10 @@
     - name: Setting permissions for the Minecraft directory
       file:
         path: /opt/minecraft
+        owner: minecraft
+        group: minecraft
         mode: 0755
+        state: directory
 
     - name: Checking the size of the swapfile
       stat:
@@ -226,28 +226,31 @@
 
     - name: Removing the existing server
       file:
-        path: /opt/minecraft/server
+        path: /opt/minecraft/{{ item.name }}/server
         state: absent
-      when: new_server
+      loop: "{{ instances }}"
+      when: item.new_server
 
     - name: Creating the server directory
       file:
-        path: /opt/minecraft/server
+        path: /opt/minecraft/{{ item.name }}/server
         state: directory
         owner: minecraft
         group: minecraft
         mode: 0755
+      loop: "{{ instances }}"
 
     - name: Creating the server backup directory
       file:
-        path: /opt/minecraft/backup
+        path: /opt/minecraft/{{ item.name }}/backup
         state: directory
         owner: minecraft
         group: minecraft
         mode: 0755
+      loop: "{{ instances }}"
       when:
-        - continuous_deployment == false
-        - restore_backup == false
+        - item.continuous_deployment == false
+        - item.restore_backup == false
 
     - name: Initialising the server backup repository
       command: borg init -e none /opt/minecraft/backup
@@ -256,141 +259,43 @@
         - borg.rc != 0
         - borg.rc != 2
       register: borg
+      loop: "{{ instances }}"
       when:
-        - continuous_deployment == false
-        - restore_backup == false
+        - item.continuous_deployment == false
+        - item.restore_backup == false
       become_user: minecraft
-
-    - name: Getting the latest Paper build
-      shell: curl --silent https://papermc.io/api/v2/projects/paper/versions/{{ version }} | jq ".builds | max"
-      register: paper_latest
-      when:
-        - new_server or update_server
-        - restore_backup == false
-        - vanilla == false
-        - pufferfish == false
-        - build == 0
 
     - name: Downloading Minecraft Paper server
       get_url:
-        url: https://papermc.io/api/v2/projects/paper/versions/{{ version }}/builds/{% if build == 0 %}{{ paper_latest.stdout }}{% else %}{{ build }}{% endif %}/downloads/paper-{{ version }}-{% if build == 0 %}{{ paper_latest.stdout }}{% else %}{{ build }}{% endif %}.jar
-        dest: /opt/minecraft/server/server.jar
+        url: https://papermc.io/api/v2/projects/paper/versions/{{ item.version.full }}/builds/{{ item.version.build }}/downloads/paper-{{ item.version.full }}-{{ item.version.build }}.jar
+        dest: /opt/minecraft/{{ item.name }}/server/server.jar
         owner: minecraft
         group: minecraft
         mode: 0644
+      loop: "{{ instances }}"
       when:
-        - new_server or update_server
-        - restore_backup == false
-        - vanilla == false
-        - pufferfish == false
-
-    - name: Getting the Pufferfish build
-      shell: curl --silent https://ci.pufferfish.host/job/Pufferfish-{{ version }}/{% if build == 0 %}lastSuccessfulBuild{% else %}{{ build }}{% endif %}/api/json | jq -r '.artifacts[].fileName'
-      register: pufferfish_url
-      when:
-        - new_server or update_server
-        - restore_backup == false
-        - vanilla == false
-        - pufferfish
+        - item.new_server or item.update_server
+        - item.restore_backup == false
+        - item.pufferfish == false
 
     - name: Downloading Minecraft Pufferfish server
       get_url:
-        url: https://ci.pufferfish.host/job/Pufferfish-{{ version }}/{% if build == 0 %}lastSuccessfulBuild{% else %}{{ build }}{% endif %}/artifact/build/libs/{{ pufferfish_url.stdout }}
-        dest: /opt/minecraft/server/server.jar
+        url: https://ci.pufferfish.host/job/Pufferfish-{{ item.version.major }}/{{ item.version.build }}/artifact/build/libs/pufferfish-paperclip-{{ item.version.full }}-R0.1-SNAPSHOT-reobf.jar
+        dest: /opt/minecraft/{{ item.name }}/server/server.jar
         owner: minecraft
         group: minecraft
         mode: 0644
+      loop: "{{ instances }}"
       when:
-        - new_server or update_server
-        - restore_backup == false
-        - vanilla == false
-        - pufferfish
-
-    - name: Getting the Minecraft server URL
-      shell: curl --silent https://launchermeta.mojang.com/mc/game/version_manifest.json | jq -r '.versions[] | select(.id == "{{ version }}") | .url' | xargs -n 1 curl --silent | jq -r .downloads.server.url
-      register: vanilla_url
-      when:
-        - new_server or update_server
-        - restore_backup == false
-        - vanilla
-        - pufferfish == false
-
-    - name: Downloading Minecraft server
-      get_url:
-        url: "{{ vanilla_url.stdout }}"
-        dest: /opt/minecraft/server/server.jar
-        owner: minecraft
-        group: minecraft
-        mode: 0644
-      when:
-        - new_server or update_server
-        - restore_backup == false
-        - vanilla
-        - pufferfish == false
+        - item.new_server or item.update_server
+        - item.restore_backup == false
+        - item.pufferfish
 
     - name: Creating the plugin directories
-      file:
-        path: /opt/minecraft/server/plugins/{{ item.path }}
-        state: "{{ item.state }}"
-        owner: minecraft
-        group: minecraft
-        mode: 0755
-      with_items:
-        - {
-            path: BlueMap,
-            state: "{% if use_bluemap %}directory{% else %}absent{% endif %}",
-          }
-        - {
-            path: BlueMapFloodgate,
-            state: "{% if use_bluemap and use_geyser %}directory{% else %}absent{% endif %}",
-          }
-        - {
-            path: Chunky,
-            state: "{% if use_chunky %}directory{% else %}absent{% endif %}",
-          }
-        - {
-            path: KeepChunks,
-            state: "{% if use_keepchunks %}directory{% else %}absent{% endif %}",
-          }
-        - {
-            path: CustomCommandPrefix,
-            state: "{% if use_geyser %}directory{% else %}absent{% endif %}",
-          }
-        - {
-            path: floodgate,
-            state: "{% if use_geyser %}directory{% else %}absent{% endif %}",
-          }
-        - {
-            path: Geyser-Spigot/packs,
-            state: "{% if use_geyser %}directory{% else %}absent{% endif %}",
-          }
-        - { path: TreeAssist/trees, state: directory }
-        - { path: LuckPerms, state: directory }
-        - {
-            path: LuckPerms/json-storage/groups,
-            state: "{% if final_luckperms_overrides['storage-method'] == 'json' %}directory{% else %}absent{% endif %}",
-          }
-        - {
-            path: LuckPerms/json-storage/users,
-            state: "{% if final_luckperms_overrides['storage-method'] == 'json' %}directory{% else %}absent{% endif %}",
-          }
-        - {
-            path: LuckPerms/yaml-storage/groups,
-            state: "{% if final_luckperms_overrides['storage-method'] == 'yaml' %}directory{% else %}absent{% endif %}",
-          }
-        - {
-            path: LuckPerms/yaml-storage/users,
-            state: "{% if final_luckperms_overrides['storage-method'] == 'yaml' %}directory{% else %}absent{% endif %}",
-          }
-        - { path: LPC, state: directory }
-        - { path: PlaceholderAPI/expansions, state: directory }
-        - {
-            path: ViaVersion,
-            state: "{% if use_viaversion %}directory{% else %}absent{% endif %}",
-          }
-      when:
-        - restore_backup == false
-        - vanilla == false
+      include_tasks: plugins.yml
+      loop: "{{ instances }}"
+      loop_control:
+        loop_var: outer_item
 
     - name: Downloading TreeAssist
       git:
@@ -401,7 +306,6 @@
       when:
         - new_server or update_server
         - restore_backup == false
-        - vanilla == false
 
     - name: Configuring TreeAssist
       copy:
@@ -414,7 +318,6 @@
       when:
         - new_server or update_server
         - restore_backup == false
-        - vanilla == false
 
     - name: Configuring the Minecraft server
       template:
@@ -425,52 +328,52 @@
         mode: 0644
       with_items:
         - { src: server.properties, when: "{{ true }}" }
-        - { src: bukkit.yml, when: "{{ vanilla == false }}" }
-        - { src: commands.yml, when: "{{ vanilla == false }}" }
-        - { src: spigot.yml, when: "{{ vanilla == false }}" }
-        - { src: paper.yml, when: "{{ vanilla == false }}" }
+        - { src: bukkit.yml, when: "{{ true }}" }
+        - { src: commands.yml, when: "{{ true }}" }
+        - { src: spigot.yml, when: "{{ true }}" }
+        - { src: paper.yml, when: "{{ true }}" }
         - {
             src: plugins/BlueMap/core.conf,
-            when: "{{ use_bluemap and vanilla == false }}",
+            when: "{{ bluemap }}",
           }
         - {
             src: plugins/BlueMap/plugin.conf,
-            when: "{{ use_bluemap and vanilla == false }}",
+            when: "{{ bluemap }}",
           }
         - {
             src: plugins/BlueMap/render.conf,
-            when: "{{ use_bluemap and vanilla == false }}",
+            when: "{{ bluemap }}",
           }
         - {
             src: plugins/BlueMap/webserver.conf,
-            when: "{{ use_bluemap and vanilla == false }}",
+            when: "{{ bluemap }}",
           }
         - {
             src: plugins/Chunky/config.yml,
-            when: "{{ use_chunky and vanilla == false }}",
+            when: "{{ use_chunky }}",
           }
         - {
             src: plugins/BlueMapFloodgate/config.yml,
-            when: "{{ use_bluemap and use_geyser and vanilla == false }}",
+            when: "{{ bluemap and use_geyser }}",
           }
         - {
             src: plugins/floodgate/config.yml,
-            when: "{{ use_geyser and vanilla == false }}",
+            when: "{{ use_geyser }}",
           }
         - {
             src: plugins/Geyser-Spigot/config.yml,
-            when: "{{ use_geyser and vanilla == false }}",
+            when: "{{ use_geyser }}",
           }
-        - { src: plugins/TreeAssist/config.yml, when: "{{ vanilla == false }}" }
+        - { src: plugins/TreeAssist/config.yml, when: "{{ true }}" }
         - {
             src: plugins/TreeAssist/trees/default.yml,
-            when: "{{ vanilla == false }}",
+            when: "{{ true }}",
           }
-        - { src: plugins/LuckPerms/config.yml, when: "{{ vanilla == false }}" }
-        - { src: plugins/LPC/config.yml, when: "{{ vanilla == false }}" }
+        - { src: plugins/LuckPerms/config.yml, when: "{{ true }}" }
+        - { src: plugins/LPC/config.yml, when: "{{ true }}" }
         - {
             src: plugins/ViaVersion/config.yml,
-            when: "{{ use_viaversion and vanilla == false }}",
+            when: "{{ use_viaversion }}",
           }
       when:
         - restore_backup == false
@@ -496,7 +399,6 @@
       when:
         - new_server or update_server
         - restore_backup == false
-        - vanilla == false
         - use_keepchunks
 
     - name: Getting the latest Chunky release
@@ -505,7 +407,6 @@
       when:
         - new_server or update_server
         - restore_backup == false
-        - vanilla == false
         - use_chunky
 
     - name: Getting the latest BlueMap release
@@ -513,19 +414,17 @@
       register: bluemap_latest
       when:
         - new_server or update_server
-        - use_bluemap
+        - bluemap
         - restore_backup == false
-        - vanilla == false
 
     - name: Getting the latest BlueMap-Floodgate release
       shell: curl --silent "https://api.github.com/repos/TechnicJelle/BlueMapFloodgate/releases" | jq -r '.[0].assets[].browser_download_url'
       register: bluemap_floodgate_latest
       when:
         - new_server or update_server
-        - use_bluemap
+        - bluemap
         - use_geyser
         - restore_backup == false
-        - vanilla == false
 
     - name: Getting the latest ViaVersion release
       shell: curl --silent "https://api.github.com/repos/ViaVersion/ViaVersion/releases/latest" | jq -r '.assets[].browser_download_url'
@@ -534,7 +433,6 @@
         - new_server or update_server
         - use_viaversion
         - restore_backup == false
-        - vanilla == false
 
     - name: Getting the latest TabTPS release
       shell: curl --silent https://api.github.com/repos/jpenilla/TabTPS/releases/latest | jq -r '.assets[].browser_download_url | select(contains("spigot"))'
@@ -542,7 +440,6 @@
       when:
         - new_server or update_server
         - restore_backup == false
-        - vanilla == false
 
     - name: Getting the latest AppleSkinSpigot release
       shell: curl --silent https://api.github.com/repos/jmattingley23/AppleSkinSpigot/releases/latest | jq -r '.assets[].browser_download_url'
@@ -550,7 +447,6 @@
       when:
         - new_server or update_server
         - restore_backup == false
-        - vanilla == false
 
     - name: Getting the latest FloodgatePlaceholders release
       shell: curl --silent https://api.github.com/repos/rtm516/FloodgatePlaceholders/releases/latest | jq -r '.assets[].browser_download_url'
@@ -559,7 +455,6 @@
         - new_server or update_server
         - use_geyser
         - restore_backup == false
-        - vanilla == false
 
     - name: Getting the latest PlaceholderAPI release
       shell: curl --silent https://ci.extendedclip.com/job/PlaceholderAPI/lastSuccessfulBuild/api/json | jq -r '.artifacts[2].fileName'
@@ -568,7 +463,6 @@
         - new_server or update_server
         - use_geyser
         - restore_backup == false
-        - vanilla == false
 
     - name: Getting the latest LuckPerms release
       shell: curl --silent https://ci.lucko.me/job/LuckPerms/lastSuccessfulBuild/api/json | jq -r '.artifacts[0].fileName'
@@ -576,7 +470,6 @@
       when:
         - new_server or update_server
         - restore_backup == false
-        - vanilla == false
 
     - name: Getting the latest UnifiedMetrics release
       shell: curl --silent https://api.github.com/repos/Cubxity/UnifiedMetrics/releases/latest | jq -r '.assets[].browser_download_url | select(contains("bukkit")) | select(contains("asc") | not)'
@@ -585,7 +478,6 @@
         - new_server or update_server
         - grafana.use
         - restore_backup == false
-        - vanilla == false
 
     - name: Downloading plugins
       get_url:
@@ -626,14 +518,14 @@
             when: "{{ use_chunky }}",
           }
         - {
-            url: "{% if use_bluemap %}{{ bluemap_latest.stdout }}{% endif %}",
+            url: "{% if bluemap %}{{ bluemap_latest.stdout }}{% endif %}",
             dest: BlueMap.jar,
-            when: "{{ use_bluemap }}",
+            when: "{{ bluemap }}",
           }
         - {
-            url: "{% if use_bluemap %}{{ bluemap_floodgate_latest.stdout }}{% endif %}",
+            url: "{% if bluemap %}{{ bluemap_floodgate_latest.stdout }}{% endif %}",
             dest: BlueMapFloodgate.jar,
-            when: "{{ use_bluemap and use_geyser }}",
+            when: "{{ bluemap and use_geyser }}",
           }
         - {
             url: "{{ appleskin_latest.stdout }}",
@@ -673,7 +565,6 @@
       when:
         - new_server or update_server
         - restore_backup == false
-        - vanilla == false
         - item.when
 
     - name: Configuring the LuckPerms users
@@ -689,7 +580,6 @@
         - final_luckperms_overrides['storage-method'] == "json" or final_luckperms_overrides['storage-method'] == "yaml"
         - restore_backup == false
         - restore_permissions
-        - vanilla == false
 
     - name: Configuring the LuckPerms groups
       template:
@@ -704,7 +594,6 @@
         - final_luckperms_overrides['storage-method'] == "json" or final_luckperms_overrides['storage-method'] == "yaml"
         - restore_backup == false
         - restore_permissions
-        - vanilla == false
 
     - name: Downloading the CustomCommandPrefix plugin
       copy:
@@ -717,7 +606,6 @@
         - new_server or update_server
         - use_geyser
         - restore_backup == false
-        - vanilla == false
 
     - name: Configuring the CustomCommandPrefix plugin
       copy:
@@ -729,7 +617,6 @@
       when:
         - use_geyser
         - restore_backup == false
-        - vanilla == false
 
     - name: Downloading the LuckPermsChat plugin
       copy:
@@ -742,7 +629,6 @@
         - use_geyser
         - new_server or update_server
         - restore_backup == false
-        - vanilla == false
 
     - name: Downloading Bedrock resource packs
       get_url:
@@ -756,7 +642,6 @@
         - use_geyser
         - bedrock_resource_packs is defined
         - restore_backup == false
-        - vanilla == false
 
     - name: Copying the BlueMap NoOreTexturePack
       copy:
@@ -766,42 +651,41 @@
         group: minecraft
         mode: 0644
       when:
-        - use_bluemap
+        - bluemap
         - restore_backup == false
-        - vanilla == false
 
     - name: Removing plugins
       file:
         path: /opt/minecraft/server/plugins/{{ item.src }}
         state: absent
       with_items:
-        - { src: BlueMap.jar, when: "{{ use_bluemap == false or vanilla }}" }
-        - { src: ../bluemap, when: "{{ use_bluemap == false or vanilla }}" }
+        - { src: BlueMap.jar, when: "{{ bluemap == false }}" }
+        - { src: ../bluemap, when: "{{ bluemap == false }}" }
         - {
             src: BlueMapFloodgate.jar,
-            when: "{{ use_bluemap == false or use_geyser == false or vanilla }}",
+            when: "{{ bluemap == false or use_geyser == false }}",
           }
-        - { src: Chunky.jar, when: "{{ use_chunky == false or vanilla }}" }
+        - { src: Chunky.jar, when: "{{ use_chunky == false }}" }
         - {
             src: KeepChunks.jar,
-            when: "{{ use_keepchunks == false or vanilla }}",
+            when: "{{ use_keepchunks == false }}",
           }
         - {
             src: CustomCommandPrefix.jar,
-            when: "{{ use_geyser == false or vanilla }}",
+            when: "{{ use_geyser == false }}",
           }
         - {
             src: floodgate-spigot.jar,
-            when: "{{ use_geyser == false or vanilla }}",
+            when: "{{ use_geyser == false }}",
           }
         - {
             src: Geyser-Spigot.jar,
-            when: "{{ use_geyser == false or vanilla }}",
+            when: "{{ use_geyser == false }}",
           }
         - { src: tabtps.jar, when: "{{ vanilla }}" }
         - {
             src: ViaVersion.jar,
-            when: "{{ use_viaversion == false or vanilla }}",
+            when: "{{ use_viaversion == false }}",
           }
       when: item.when
 
@@ -965,7 +849,7 @@
             dest: "/etc/nginx/nginx.conf",
             owner: root,
             mode: "0644",
-            when: "{{ use_bluemap }}",
+            when: "{{ bluemap }}",
           }
         - {
             src: "templates/nginx.conf.j2",
@@ -973,7 +857,7 @@
             owner: root,
             mode: "0644",
             certbot_ready: "{{ bluemap_certbot.ready }}",
-            when: "{{ use_bluemap }}",
+            when: "{{ bluemap }}",
           }
         - {
             src: "templates/grafana-agent.yml.j2",
@@ -991,7 +875,7 @@
             description: "CertBot Renewal",
             type: oneshot,
             execstart: "{% if bluemap_certbot is defined %}certbot certonly --nginx -d {{ bluemap_certbot.domain }} -m {{ bluemap_certbot.email }} --agree-tos --no-eff-email --key-type ecdsa -n{% endif %}",
-            when: "{{ use_bluemap and bluemap_certbot.use }}",
+            when: "{{ bluemap and certbot.use }}",
           }
         - {
             src: "templates/systemd/timer.j2",
@@ -1001,7 +885,7 @@
             description: "CertBot Renewal",
             timer: "*-1/2-1 00:00:00",
             persistent: true,
-            when: "{{ use_bluemap and bluemap_certbot.use }}",
+            when: "{{ bluemap and certbot.use }}",
           }
         - {
             src: "templates/scripts/continuous-deployment.sh.j2",
@@ -1096,7 +980,7 @@
 
     - name: Enabling Certbot
       command: certbot certonly --nginx -d {{ bluemap_certbot.domain }} -m {{ bluemap_certbot.email }} --agree-tos --no-eff-email --key-type ecdsa -n
-      when: use_bluemap and bluemap_certbot.use and bluemap_certbot.ready == false
+      when: bluemap and certbot.use and bluemap_certbot.ready == false
 
     - name: Updating Bluemap Nginx site
       template:
@@ -1108,8 +992,8 @@
       with_items:
         - { certbot_ready: true }
       when:
-        - use_bluemap
-        - (bluemap_certbot.use and bluemap_certbot.ready == false) or bluemap_certbot.use == false
+        - bluemap
+        - (certbot.use and bluemap_certbot.ready == false) or certbot.use == false
 
     - name: Stopping and disabling unneeded systemd units
       systemd:
@@ -1127,7 +1011,7 @@
           }
         - {
             name: nginx.service,
-            when: "{{ use_bluemap == false and ansible_facts.services['nginx.service'] is defined }}",
+            when: "{{ bluemap == false and ansible_facts.services['nginx.service'] is defined }}",
           }
       when: item.when
 
@@ -1247,19 +1131,19 @@
             name: "nginx.service",
             state: "started",
             enabled: "yes",
-            when: "{{ use_bluemap }}",
+            when: "{{ bluemap }}",
           }
         - {
             name: "nginx.service",
             state: "reloaded",
             enabled: "yes",
-            when: "{{ use_bluemap }}",
+            when: "{{ bluemap }}",
           }
         - {
             name: "certbot-renew.timer",
             state: "restarted",
             enabled: "yes",
-            when: "{{ use_bluemap and bluemap_certbot.use }}",
+            when: "{{ bluemap and certbot.use }}",
           }
         - {
             name: "grafana-agent.service",
