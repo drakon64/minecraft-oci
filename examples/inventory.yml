@@ -1,51 +1,8 @@
 minecraft:
   hosts:
-    minecraft:
-      backup_retention_days: 30
-      backup_version:
-      bucket_name: minecraft-backup
-      build: 217
-      cd_bucket_name:
-      continuous_deployment: false
-      eula: true
-      graalvm: false
-      grafana:
-        loki:
-          password:
-          url:
-          username:
-        prometheus:
-          password:
-          url:
-          username:
-        use: true
-      new_server: false
-      pufferfish: false
-      restore_backup: false
-      restore_permissions: true
-      restore_remote_backup: false
-      skip_backup: false
-      timezone: Europe/London
-      update_server: true
-      use_bluemap: true
-      use_chunky: true
-      use_geyser: true
-      use_keepchunks: false
-      use_viaversion: true
-      vanilla: false
-      version: 1.18.2
-      zgc: false
     minecraft-test:
-      backup_version:
-      bluemap_certbot:
-        domain: bluemap.example.com
-        email: example@example.com
-        ready: false
+      certbot:
         use: true
-      bucket_name: minecraft-test-backup
-      cd_bucket_name: minecraft-backup
-      continuous_deployment: true
-      eula: true
       graalvm: true
       grafana:
         loki:
@@ -57,18 +14,40 @@ minecraft:
           url:
           username:
         use: true
-      new_server: true
-      pufferfish: true
-      restore_backup: false
-      restore_permissions: true
-      skip_backup: true
+      instances:
+        - continuous_deployment: false
+          name: minecraft-test
+          new_server: true
+          plugins:
+            luckperms:
+              storage-method: yaml
+          pufferfish: true
+          restore_backup: false
+          skip_backup: true
+          bluemap: false
+          chunky: false
+          geyser: true
+          keepchunks: false
+          viaversion: false
+          version:
+            build: 54
+            full: 1.18.2
+            major: 1.18
+        - continuous_deployment: false
+          name: minecraft
+          new_server: true
+          plugins:
+            luckperms:
+              storage-method: yaml
+          pufferfish: false
+          restore_backup: false
+          skip_backup: true
+          bluemap: true
+          chunky: false
+          geyser: true
+          keepchunks: false
+          viaversion: false
+          version:
+            build: 259
+            full: 1.18.2
       timezone: Europe/London
-      update_server: false
-      use_bluemap: false
-      use_chunky: false
-      use_geyser: true
-      use_keepchunks: false
-      use_viaversion: false
-      vanilla: false
-      version: 1.18.2
-      zgc: true
