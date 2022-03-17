@@ -22,7 +22,7 @@ curl https://ci.opencollab.dev/job/GeyserMC/job/Floodgate/job/master/lastSuccess
 
 curl https://ci.opencollab.dev/job/GeyserMC/job/GeyserOptionalPack/job/master/lastSuccessfulBuild/artifact/GeyserOptionalPack.mcpack -o $PAPERDIR/plugins/Geyser-Spigot/packs/GeyserOptionalPack.mcpack
 
-{% if use_bluemap %}
+{% if bluemap %}
 BLUEMAP=$(curl --silent "https://api.github.com/repos/BlueMap-Minecraft/BlueMap/releases/latest" | jq -r '.assets[].browser_download_url | select(contains("spigot"))')
 curl -L "$BLUEMAP" -o $PAPERDIR/plugins/BlueMap.jar
 BLUEMAPFLOODGATE=$(curl --silent "https://api.github.com/repos/TechnicJelle/BlueMapFloodgate/releases" | jq -r '.[0].assets[].browser_download_url')
@@ -31,7 +31,7 @@ curl -L "$BLUEMAPFLOODGATE" -o $PAPERDIR/plugins/BlueMapFloodgate.jar
 rm -fr $PAPERDIR/plugins/BlueMap.jar $PAPERDIR/plugins/BlueMapFloodgate.jar $PAPERDIR/plugins/BlueMap/ $PAPERDIR/plugins/BlueMapFloodgate/
 {% endif %}
 
-{% if use_chunky %}
+{% if chunky %}
 CHUNKY=$(curl --silent https://ci.codemc.io/job/pop4959/job/Chunky/lastSuccessfulBuild/api/json | jq -r '.artifacts[0].fileName')
 curl https://ci.codemc.io/view/Author/job/pop4959/job/Chunky/lastSuccessfulBuild/artifact/bukkit/build/libs/"$CHUNKY" -o $PAPERDIR/plugins/Chunky.jar
 {% else %}
@@ -41,7 +41,7 @@ rm -fr $PAPERDIR/plugins/Chunky.jar $PAPERDIR/plugins/Chunky/
 TABTPS=$(curl --silent "https://api.github.com/repos/jpenilla/TabTPS/releases/latest" | jq -r '.assets[].browser_download_url' | grep spigot)
 curl -L "$TABTPS" -o $PAPERDIR/plugins/tabtps.jar
 
-{% if use_viaversion %}
+{% if viaversion %}
 VIAVERSION=$(curl --silent "https://api.github.com/repos/ViaVersion/ViaVersion/releases/latest" | jq -r '.assets[].browser_download_url')
 curl -L "$VIAVERSION" -o $PAPERDIR/plugins/ViaVersion.jar
 {% else %}

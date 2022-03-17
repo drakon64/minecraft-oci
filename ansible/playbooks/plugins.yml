@@ -10,31 +10,31 @@
   loop:
     - {
         path: BlueMap,
-        state: "{% if outer_item.use_bluemap %}directory{% else %}absent{% endif %}",
+        state: "{% if outer_item.bluemap %}directory{% else %}absent{% endif %}",
       }
     - {
         path: BlueMapFloodgate,
-        state: "{% if outer_item.use_bluemap and outer_item.use_geyser %}directory{% else %}absent{% endif %}",
+        state: "{% if outer_item.bluemap and outer_item.geyser %}directory{% else %}absent{% endif %}",
       }
     - {
         path: Chunky,
-        state: "{% if outer_item.use_chunky %}directory{% else %}absent{% endif %}",
+        state: "{% if outer_item.chunky %}directory{% else %}absent{% endif %}",
       }
     - {
         path: KeepChunks,
-        state: "{% if outer_item.use_keepchunks %}directory{% else %}absent{% endif %}",
+        state: "{% if outer_item.keepchunks %}directory{% else %}absent{% endif %}",
       }
     - {
         path: CustomCommandPrefix,
-        state: "{% if outer_item.use_geyser %}directory{% else %}absent{% endif %}",
+        state: "{% if outer_item.geyser %}directory{% else %}absent{% endif %}",
       }
     - {
         path: floodgate,
-        state: "{% if outer_item.use_geyser %}directory{% else %}absent{% endif %}",
+        state: "{% if outer_item.geyser %}directory{% else %}absent{% endif %}",
       }
     - {
         path: Geyser-Spigot/packs,
-        state: "{% if outer_item.use_geyser %}directory{% else %}absent{% endif %}",
+        state: "{% if outer_item.geyser %}directory{% else %}absent{% endif %}",
       }
     - { path: TreeAssist/trees, state: directory }
     - { path: LuckPerms, state: directory }
@@ -58,7 +58,7 @@
     - { path: PlaceholderAPI/expansions, state: directory }
     - {
         path: ViaVersion,
-        state: "{% if outer_item.use_viaversion %}directory{% else %}absent{% endif %}",
+        state: "{% if outer_item.viaversion %}directory{% else %}absent{% endif %}",
       }
   when:
     - outer_item.restore_backup == false

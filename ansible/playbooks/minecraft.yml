@@ -350,19 +350,19 @@
           }
         - {
             src: plugins/Chunky/config.yml,
-            when: "{{ use_chunky }}",
+            when: "{{ chunky }}",
           }
         - {
             src: plugins/BlueMapFloodgate/config.yml,
-            when: "{{ bluemap and use_geyser }}",
+            when: "{{ bluemap and geyser }}",
           }
         - {
             src: plugins/floodgate/config.yml,
-            when: "{{ use_geyser }}",
+            when: "{{ geyser }}",
           }
         - {
             src: plugins/Geyser-Spigot/config.yml,
-            when: "{{ use_geyser }}",
+            when: "{{ geyser }}",
           }
         - { src: plugins/TreeAssist/config.yml, when: "{{ true }}" }
         - {
@@ -373,7 +373,7 @@
         - { src: plugins/LPC/config.yml, when: "{{ true }}" }
         - {
             src: plugins/ViaVersion/config.yml,
-            when: "{{ use_viaversion }}",
+            when: "{{ viaversion }}",
           }
       when:
         - restore_backup == false
@@ -399,7 +399,7 @@
       when:
         - new_server or update_server
         - restore_backup == false
-        - use_keepchunks
+        - keepchunks
 
     - name: Getting the latest Chunky release
       shell: curl --silent https://ci.codemc.io/job/pop4959/job/Chunky/lastSuccessfulBuild/api/json | jq -r '.artifacts[0].fileName'
@@ -407,7 +407,7 @@
       when:
         - new_server or update_server
         - restore_backup == false
-        - use_chunky
+        - chunky
 
     - name: Getting the latest BlueMap release
       shell: curl --silent "https://api.github.com/repos/BlueMap-Minecraft/BlueMap/releases/latest" | jq -r '.assets[].browser_download_url | select(contains("spigot"))'
@@ -423,7 +423,7 @@
       when:
         - new_server or update_server
         - bluemap
-        - use_geyser
+        - geyser
         - restore_backup == false
 
     - name: Getting the latest ViaVersion release
@@ -431,7 +431,7 @@
       register: viaversion_latest
       when:
         - new_server or update_server
-        - use_viaversion
+        - viaversion
         - restore_backup == false
 
     - name: Getting the latest TabTPS release
@@ -453,7 +453,7 @@
       register: floodgateplaceholders_latest
       when:
         - new_server or update_server
-        - use_geyser
+        - geyser
         - restore_backup == false
 
     - name: Getting the latest PlaceholderAPI release
@@ -461,7 +461,7 @@
       register: placeholderapi_latest
       when:
         - new_server or update_server
-        - use_geyser
+        - geyser
         - restore_backup == false
 
     - name: Getting the latest LuckPerms release
@@ -490,17 +490,17 @@
         - {
             url: https://ci.opencollab.dev/job/GeyserMC/job/Geyser/job/master/lastSuccessfulBuild/artifact/bootstrap/spigot/target/Geyser-Spigot.jar,
             dest: Geyser-Spigot.jar,
-            when: "{{ use_geyser }}",
+            when: "{{ geyser }}",
           }
         - {
             url: https://ci.opencollab.dev/job/GeyserMC/job/Floodgate/job/master/lastSuccessfulBuild/artifact/spigot/target/floodgate-spigot.jar,
             dest: floodgate-spigot.jar,
-            when: "{{ use_geyser }}",
+            when: "{{ geyser }}",
           }
         - {
             url: https://ci.opencollab.dev/job/GeyserMC/job/GeyserOptionalPack/job/master/lastSuccessfulBuild/artifact/GeyserOptionalPack.mcpack,
             dest: Geyser-Spigot/packs/,
-            when: "{{ use_geyser }}",
+            when: "{{ geyser }}",
           }
         - {
             url: https://cdn.discordapp.com/attachments/804019242512810034/951278280319852554/TreeAssist.jar, # this is terrible and I hate it
@@ -508,14 +508,14 @@
             when: "{{ true }}",
           }
         - {
-            url: "{% if use_keepchunks %}{{ keepchunks_latest.stdout }}{% endif %}",
+            url: "{% if keepchunks %}{{ keepchunks_latest.stdout }}{% endif %}",
             dest: KeepChunks.jar,
-            when: "{{ use_keepchunks }}",
+            when: "{{ keepchunks }}",
           }
         - {
-            url: "{% if use_chunky %}https://ci.codemc.io/view/Author/job/pop4959/job/Chunky/lastSuccessfulBuild/artifact/bukkit/build/libs/{{ chunky_latest.stdout }}{% endif %}",
+            url: "{% if chunky %}https://ci.codemc.io/view/Author/job/pop4959/job/Chunky/lastSuccessfulBuild/artifact/bukkit/build/libs/{{ chunky_latest.stdout }}{% endif %}",
             dest: "Chunky.jar",
-            when: "{{ use_chunky }}",
+            when: "{{ chunky }}",
           }
         - {
             url: "{% if bluemap %}{{ bluemap_latest.stdout }}{% endif %}",
@@ -525,7 +525,7 @@
         - {
             url: "{% if bluemap %}{{ bluemap_floodgate_latest.stdout }}{% endif %}",
             dest: BlueMapFloodgate.jar,
-            when: "{{ bluemap and use_geyser }}",
+            when: "{{ bluemap and geyser }}",
           }
         - {
             url: "{{ appleskin_latest.stdout }}",
@@ -538,14 +538,14 @@
             when: "{{ true }}",
           }
         - {
-            url: "{% if use_geyser %}{{ floodgateplaceholders_latest.stdout }}{% endif %}",
+            url: "{% if geyser %}{{ floodgateplaceholders_latest.stdout }}{% endif %}",
             dest: PlaceholderAPI/expansions/FloodgatePlaceholders.jar,
-            when: "{{ use_geyser }}",
+            when: "{{ geyser }}",
           }
         - {
-            url: "{% if use_geyser %}https://ci.extendedclip.com/job/PlaceholderAPI/lastSuccessfulBuild/artifact/build/libs/{{ placeholderapi_latest.stdout }}{% endif %}",
+            url: "{% if geyser %}https://ci.extendedclip.com/job/PlaceholderAPI/lastSuccessfulBuild/artifact/build/libs/{{ placeholderapi_latest.stdout }}{% endif %}",
             dest: PlaceholderAPI.jar,
-            when: "{{ use_geyser }}",
+            when: "{{ geyser }}",
           }
         - {
             url: "https://ci.lucko.me/job/LuckPerms/lastSuccessfulBuild/artifact/bukkit/loader/build/libs/{{ luckperms_latest.stdout }}",
@@ -553,9 +553,9 @@
             when: "{{ true }}",
           }
         - {
-            url: "{% if use_viaversion %}{{ viaversion_latest.stdout }}{% endif %}",
+            url: "{% if viaversion %}{{ viaversion_latest.stdout }}{% endif %}",
             dest: "ViaVersion.jar",
-            when: "{{ use_viaversion }}",
+            when: "{{ viaversion }}",
           }
         - {
             url: "{% if grafana.use %}{{ unifiedmetrics_latest.stdout }}{% endif %}",
@@ -604,7 +604,7 @@
         mode: 0644
       when:
         - new_server or update_server
-        - use_geyser
+        - geyser
         - restore_backup == false
 
     - name: Configuring the CustomCommandPrefix plugin
@@ -615,7 +615,7 @@
         group: minecraft
         mode: 0644
       when:
-        - use_geyser
+        - geyser
         - restore_backup == false
 
     - name: Downloading the LuckPermsChat plugin
@@ -626,7 +626,7 @@
         group: minecraft
         mode: 0644
       when:
-        - use_geyser
+        - geyser
         - new_server or update_server
         - restore_backup == false
 
@@ -639,7 +639,7 @@
         mode: 0644
       with_items: "{{ bedrock_resource_packs }}"
       when:
-        - use_geyser
+        - geyser
         - bedrock_resource_packs is defined
         - restore_backup == false
 
@@ -663,28 +663,28 @@
         - { src: ../bluemap, when: "{{ bluemap == false }}" }
         - {
             src: BlueMapFloodgate.jar,
-            when: "{{ bluemap == false or use_geyser == false }}",
+            when: "{{ bluemap == false or geyser == false }}",
           }
-        - { src: Chunky.jar, when: "{{ use_chunky == false }}" }
+        - { src: Chunky.jar, when: "{{ chunky == false }}" }
         - {
             src: KeepChunks.jar,
-            when: "{{ use_keepchunks == false }}",
+            when: "{{ keepchunks == false }}",
           }
         - {
             src: CustomCommandPrefix.jar,
-            when: "{{ use_geyser == false }}",
+            when: "{{ geyser == false }}",
           }
         - {
             src: floodgate-spigot.jar,
-            when: "{{ use_geyser == false }}",
+            when: "{{ geyser == false }}",
           }
         - {
             src: Geyser-Spigot.jar,
-            when: "{{ use_geyser == false }}",
+            when: "{{ geyser == false }}",
           }
         - {
             src: ViaVersion.jar,
-            when: "{{ use_viaversion == false }}",
+            when: "{{ viaversion == false }}",
           }
       when: item.when
 
@@ -755,7 +755,7 @@
             dest: "/opt/minecraft/chunky-monitor",
             owner: "minecraft",
             mode: "0744",
-            when: "{{ use_chunky }}",
+            when: "{{ chunky }}",
           }
         - {
             src: "files/sudoers",
@@ -925,7 +925,7 @@
             user: "minecraft",
             type: "oneshot",
             after: "minecraft.service",
-            when: "{{ use_chunky }}",
+            when: "{{ chunky }}",
           }
         - {
             src: "templates/systemd/service.j2",
@@ -946,7 +946,7 @@
             description: "Chunky Monitor",
             timer: "*:*:0",
             after: "minecraft.service",
-            when: "{{ use_chunky}}",
+            when: "{{ chunky}}",
           }
         - {
             src: "files/scripts/server-icon.sh",
@@ -1002,11 +1002,11 @@
       with_items:
         - {
             name: chunky-monitor.timer,
-            when: "{{ use_chunky == false and ansible_facts.services['chunky-monitor.timer'] is defined }}",
+            when: "{{ chunky == false and ansible_facts.services['chunky-monitor.timer'] is defined }}",
           }
         - {
             name: chunky-monitor.service,
-            when: "{{ use_chunky == false and ansible_facts.services['chunky-monitor.service'] is defined }}",
+            when: "{{ chunky == false and ansible_facts.services['chunky-monitor.service'] is defined }}",
           }
         - {
             name: nginx.service,
@@ -1021,11 +1021,11 @@
       with_items:
         - {
             path: /etc/systemd/system/chunky-monitor.timer,
-            when: "{{ use_chunky == false }}",
+            when: "{{ chunky == false }}",
           }
         - {
             path: /etc/systemd/system/chunky-monitor.service,
-            when: "{{ use_chunky == false }}",
+            when: "{{ chunky == false }}",
           }
         - {
             path: /usr/lib/systemd/system/grafana-agent.service,
@@ -1154,6 +1154,6 @@
             name: "chunky-monitor.timer",
             state: "restarted",
             enabled: "true",
-            when: "{{ use_chunky }}",
+            when: "{{ chunky }}",
           }
       when: item.when

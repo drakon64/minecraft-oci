@@ -15,7 +15,7 @@ fi
 
 SCRIPT_PWD=$(pwd)
 cd $1/server-backup || exit 1
-yes 'y' | borg create --compression zstd{% if use_bluemap %} --pattern=+bluemap/web/data/markers.json --pattern=-bluemap{% endif %} --pattern=-cache "$SCRIPT_PWD"/$1/backup::"$DATE" .
+yes 'y' | borg create --compression zstd{% if bluemap %} --pattern=+bluemap/web/data/markers.json --pattern=-bluemap{% endif %} --pattern=-cache "$SCRIPT_PWD"/$1/backup::"$DATE" .
 cd "$SCRIPT_PWD" || exit 1
 rm -fr $1/server-backup
 
