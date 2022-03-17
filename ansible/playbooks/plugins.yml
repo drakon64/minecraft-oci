@@ -62,4 +62,3 @@
       }
   when:
     - outer_item.restore_backup == false
-    - outer_item.vanilla == false

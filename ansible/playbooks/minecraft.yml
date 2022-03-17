@@ -682,7 +682,6 @@
             src: Geyser-Spigot.jar,
             when: "{{ use_geyser == false }}",
           }
-        - { src: tabtps.jar, when: "{{ vanilla }}" }
         - {
             src: ViaVersion.jar,
             when: "{{ use_viaversion == false }}",
