@@ -332,88 +332,46 @@
     - name: Getting the latest KeepChunks release
       shell: curl --silent "https://api.github.com/repos/Geitenijs/KeepChunks/releases/latest" | jq -r '.assets[].browser_download_url'
       register: keepchunks_latest
-      when:
-        - new_server or update_server
-        - restore_backup == false
-        - keepchunks
 
     - name: Getting the latest Chunky release
       shell: curl --silent https://ci.codemc.io/job/pop4959/job/Chunky/lastSuccessfulBuild/api/json | jq -r '.artifacts[0].fileName'
       register: chunky_latest
-      when:
-        - new_server or update_server
-        - restore_backup == false
-        - chunky
 
     - name: Getting the latest BlueMap release
       shell: curl --silent "https://api.github.com/repos/BlueMap-Minecraft/BlueMap/releases/latest" | jq -r '.assets[].browser_download_url | select(contains("spigot"))'
       register: bluemap_latest
-      when:
-        - new_server or update_server
-        - bluemap
-        - restore_backup == false
 
     - name: Getting the latest BlueMap-Floodgate release
       shell: curl --silent "https://api.github.com/repos/TechnicJelle/BlueMapFloodgate/releases" | jq -r '.[0].assets[].browser_download_url'
       register: bluemap_floodgate_latest
-      when:
-        - new_server or update_server
-        - bluemap
-        - geyser
-        - restore_backup == false
 
     - name: Getting the latest ViaVersion release
       shell: curl --silent "https://api.github.com/repos/ViaVersion/ViaVersion/releases/latest" | jq -r '.assets[].browser_download_url'
       register: viaversion_latest
-      when:
-        - new_server or update_server
-        - viaversion
-        - restore_backup == false
 
     - name: Getting the latest TabTPS release
       shell: curl --silent https://api.github.com/repos/jpenilla/TabTPS/releases/latest | jq -r '.assets[].browser_download_url | select(contains("spigot"))'
       register: tabtps_latest
-      when:
-        - new_server or update_server
-        - restore_backup == false
 
     - name: Getting the latest AppleSkinSpigot release
       shell: curl --silent https://api.github.com/repos/jmattingley23/AppleSkinSpigot/releases/latest | jq -r '.assets[].browser_download_url'
       register: appleskin_latest
-      when:
-        - new_server or update_server
-        - restore_backup == false
 
     - name: Getting the latest FloodgatePlaceholders release
       shell: curl --silent https://api.github.com/repos/rtm516/FloodgatePlaceholders/releases/latest | jq -r '.assets[].browser_download_url'
       register: floodgateplaceholders_latest
-      when:
-        - new_server or update_server
-        - geyser
-        - restore_backup == false
 
     - name: Getting the latest PlaceholderAPI release
       shell: curl --silent https://ci.extendedclip.com/job/PlaceholderAPI/lastSuccessfulBuild/api/json | jq -r '.artifacts[2].fileName'
       register: placeholderapi_latest
-      when:
-        - new_server or update_server
-        - geyser
-        - restore_backup == false
 
     - name: Getting the latest LuckPerms release
       shell: curl --silent https://ci.lucko.me/job/LuckPerms/lastSuccessfulBuild/api/json | jq -r '.artifacts[0].fileName'
       register: luckperms_latest
-      when:
-        - new_server or update_server
-        - restore_backup == false
 
     - name: Getting the latest UnifiedMetrics release
       shell: curl --silent https://api.github.com/repos/Cubxity/UnifiedMetrics/releases/latest | jq -r '.assets[].browser_download_url | select(contains("bukkit")) | select(contains("asc") | not)'
       register: unifiedmetrics_latest
-      when:
-        - new_server or update_server
-        - grafana.use
-        - restore_backup == false
 
     - name: Downloading plugins
       get_url:
