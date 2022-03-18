@@ -474,7 +474,7 @@
 
     - name: Copying scripts and systemd units
       template:
-        src: "{{ item.src }}"
+        src: "../{{ item.src }}"
         dest: "{{ item.dest }}"
         owner: "{{ item.owner }}"
         group: "{% if item.group is defined %}{{ item.group }}{% else %}{{ item.owner }}{% endif %}"
@@ -495,20 +495,6 @@
             when: true,
           }
         - {
-            src: "templates/scripts/backup.sh.j2",
-            dest: "/opt/minecraft/backup.sh",
-            owner: "minecraft",
-            mode: "0755",
-            when: true,
-          }
-        - {
-            src: "templates/scripts/chunky-monitor.py.j2",
-            dest: "/opt/minecraft/chunky-monitor",
-            owner: "minecraft",
-            mode: "0744",
-            when: "{{ use_chunky }}",
-          }
-        - {
             src: "files/sudoers",
             dest: "/etc/sudoers.d/10-minecraft-user",
             owner: "root",
@@ -523,7 +509,7 @@
             description: "Minecraft Server",
             type: "forking",
             execstartpre: "-/opt/minecraft/server-icon.sh",
-            execstart: "/usr/bin/tmux new-session -s minecraft -d '{% if zgc %} {{ zgc_command }}{% else %}{{ command }}{% endif %}'",
+            execstart: "/usr/bin/tmux new-session -s minecraft -d '{{ command }}'",
             execstop: "/opt/minecraft/stop.sh",
             workingdirectory: "/opt/minecraft/server",
             user: "minecraft",
@@ -575,96 +561,12 @@
             when: true,
           }
         - {
-            src: "templates/systemd/service.j2",
-            dest: "/etc/systemd/system/uptrack-upgrade.service",
-            owner: "root",
-            mode: "0644",
-            description: "Uptrack Upgrade",
-            type: "oneshot",
-            execstart: "/sbin/uptrack-upgrade -y",
-            when: true,
-          }
-        - {
-            src: "templates/systemd/timer.j2",
-            dest: "/etc/systemd/system/uptrack-upgrade.timer",
-            owner: "root",
-            mode: "0644",
-            description: "Uptrack Upgrade",
-            timer: "Mon,Wed..Sun 7:00",
-            persistent: true,
-            when: true,
-          }
-        - {
-            src: "files/nginx.conf",
-            dest: "/etc/nginx/nginx.conf",
-            owner: root,
-            mode: "0644",
-            when: "{{ use_bluemap }}",
-          }
-        - {
-            src: "templates/nginx.conf.j2",
-            dest: "/etc/nginx/conf.d/bluemap.conf",
-            owner: root,
-            mode: "0644",
-            certbot_ready: "{{ bluemap_certbot.ready }}",
-            when: "{{ use_bluemap }}",
-          }
-        - {
             src: "templates/grafana-agent.yml.j2",
             dest: "/etc/grafana-agent.yaml",
             owner: root,
             group: grafana-agent,
             mode: "0640",
             when: "{{ grafana.use }}",
-          }
-        - {
-            src: "templates/systemd/service.j2",
-            dest: "/etc/systemd/system/certbot-renew.service",
-            owner: root,
-            mode: "0644",
-            description: "CertBot Renewal",
-            type: oneshot,
-            execstart: "{% if bluemap_certbot is defined %}certbot certonly --nginx -d {{ bluemap_certbot.domain }} -m {{ bluemap_certbot.email }} --agree-tos --no-eff-email --key-type ecdsa -n{% endif %}",
-            when: "{{ use_bluemap and bluemap_certbot.use }}",
-          }
-        - {
-            src: "templates/systemd/timer.j2",
-            dest: "/etc/systemd/system/certbot-renew.timer",
-            owner: root,
-            mode: "0644",
-            description: "CertBot Renewal",
-            timer: "*-1/2-1 00:00:00",
-            persistent: true,
-            when: "{{ use_bluemap and bluemap_certbot.use }}",
-          }
-        - {
-            src: "templates/scripts/continuous-deployment.sh.j2",
-            dest: "/opt/minecraft/continuous-deployment.sh",
-            owner: "root",
-            mode: "0744",
-            when: "{{ continuous_deployment }}",
-          }
-        - {
-            src: "templates/systemd/service.j2",
-            dest: "/etc/systemd/system/minecraft-continuous-deployment.service",
-            owner: root,
-            mode: "0644",
-            description: "Minecraft continuous deployment",
-            type: oneshot,
-            execstart: "/opt/minecraft/continuous-deployment.sh",
-            user: "minecraft",
-            group: "minecraft",
-            when: "{{ continuous_deployment }}",
-          }
-        - {
-            src: "templates/systemd/timer.j2",
-            dest: "/etc/systemd/system/minecraft-continuous-deployment.timer",
-            owner: root,
-            mode: "0644",
-            description: "Minecraft continuous deployment",
-            timer: "8:00",
-            persistent: true,
-            when: "{{ continuous_deployment }}",
           }
         - {
             src: "templates/systemd/service.j2",
@@ -676,7 +578,7 @@
             user: "minecraft",
             type: "oneshot",
             after: "minecraft.service",
-            when: "{{ use_chunky }}",
+            when: "true",
           }
         - {
             src: "templates/systemd/service.j2",
@@ -697,25 +599,9 @@
             description: "Chunky Monitor",
             timer: "*:*:0",
             after: "minecraft.service",
-            when: "{{ use_chunky}}",
-          }
-        - {
-            src: "files/scripts/server-icon.sh",
-            dest: "/opt/minecraft/server-icon.sh",
-            owner: "minecraft",
-            mode: "0755",
-            when: "{{ random_server_icon }}",
+            when: "true",
           }
       when: item.when
-
-    - name: Copying firewall rule
-      template:
-        src: templates/minecraft.xml.j2
-        dest: /etc/firewalld/services/minecraft.xml
-        owner: root
-        group: root
-        mode: 0644
-      register: firewall
 
     - name: Reloading firewalld
       command: firewall-cmd --reload
@@ -728,82 +614,18 @@
         permanent: yes
         immediate: yes
 
-    - name: Enabling Certbot
-      command: certbot certonly --nginx -d {{ certbot.domain }} -m {{ certbot.email }} --agree-tos --no-eff-email --key-type ecdsa -n
-      when: bluemap.use and certbot and certbot.ready == false
-
-    - name: Updating BlueMap Nginx site
-      template:
-        src: templates/nginx.conf.j2
-        dest: /etc/nginx/conf.d/bluemap.conf
-        owner: root
-        group: root
-        mode: 0644
-      with_items:
-        - { certbot_ready: true }
-      when:
-        - bluemap.use
-        - (certbot and certbot.ready == false) or certbot == false
-
-    - name: Stopping and disabling unneeded systemd units
-      systemd:
-        name: "{{ item.name }}"
-        state: stopped
-        enabled: false
-      with_items:
-        - {
-            name: chunky-monitor.timer,
-            when: "{{ chunky == false and ansible_facts.services['chunky-monitor.timer'] is defined }}",
-          }
-        - {
-            name: chunky-monitor.service,
-            when: "{{ chunky == false and ansible_facts.services['chunky-monitor.service'] is defined }}",
-          }
-        - {
-            name: nginx.service,
-            when: "{{ bluemap.use == false and ansible_facts.services['nginx.service'] is defined }}",
-          }
-      when: item.when
-
-    - name: Removing unneeded systemd units
-      file:
-        path: "{{ item.path }}"
-        state: absent
-      with_items:
-        - {
-            path: /etc/systemd/system/chunky-monitor.timer,
-            when: "{{ chunky == false }}",
-          }
-        - {
-            path: /etc/systemd/system/chunky-monitor.service,
-            when: "{{ chunky == false }}",
-          }
-        - {
-            path: /usr/lib/systemd/system/grafana-agent.service,
-            when: "{{ grafana.use }}",
-          }
-      when: item.when
-
-    - name: Copying the server icon
-      copy:
-        src: "{% if random_server_icon == false %}files/java/{{ inventory_hostname }}/server-icon.png{% else %}files/java/{{ inventory_hostname }}/server-icons{% endif %}"
-        dest: /opt/minecraft/server/
-        owner: minecraft
-        group: minecraft
-        mode: 0644
-      ignore_errors: yes
-
     - name: Accepting the Minecraft Server EULA
       copy:
         content: eula=true
-        dest: /opt/minecraft/server/eula.txt
+        dest: /opt/minecraft/{{ item.name }}/server/eula.txt
         owner: minecraft
         group: minecraft
         mode: 0644
+      loop: "{{ instances }}"
       when:
-        - new_server
-        - restore_backup == false
-        - eula
+        - item.new_server
+        - item.restore_backup == false
+        - item.eula
 
     - name: Creating directory for the SELinux module
       file:
@@ -815,7 +637,7 @@
 
     - name: Copying SELinux module
       template:
-        src: templates/selinux.te.j2
+        src: ../templates/selinux.te.j2
         dest: /opt/minecraft/selinux/minecraft.te
         owner: minecraft
         group: minecraft
