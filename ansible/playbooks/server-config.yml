@@ -36,7 +36,7 @@
     - outer_item.restore_backup == false
     - item.when
 
-- name: Copying the server permissions files
+- name: Copying the server permissions files for {{ outer_item.name }}
   template:
     src: ../templates/java/{{ item }}.json.j2
     dest: /opt/minecraft/{{ outer_item.name }}/server/{{ item }}.json
