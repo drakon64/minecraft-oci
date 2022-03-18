@@ -159,7 +159,8 @@
         path: /opt/minecraft
         owner: minecraft
         group: minecraft
-        mode: 0755
+        mode: u=rwX,g=rX,o=rX
+        recurse: yes
         state: directory
 
     - name: Checking the size of the swapfile
@@ -462,15 +463,15 @@
           }
         - {
             src: "templates/systemd/service.j2",
-            dest: "/etc/systemd/system/minecraft.service",
+            dest: "/etc/systemd/system/minecraft@.service",
             owner: "root",
             mode: "0644",
-            description: "Minecraft Server",
+            description: "Minecraft Server - %i",
             type: "forking",
             execstartpre: "-/opt/minecraft/server-icon.sh",
-            execstart: "/usr/bin/tmux new-session -s minecraft -d '{{ command }}'",
-            execstop: "/opt/minecraft/stop.sh",
-            workingdirectory: "/opt/minecraft/server",
+            execstart: "/usr/bin/tmux new-session -s minecraft-%i -d '{{ command }}'",
+            execstop: "/opt/minecraft/stop.sh %i",
+            workingdirectory: "/opt/minecraft/%i/server",
             user: "minecraft",
             group: "minecraft",
             nice: "-20",
@@ -562,6 +563,15 @@
           }
       when: item.when
 
+    - name: Copying firewall rule
+      template:
+        src: ../templates/minecraft.xml.j2
+        dest: /etc/firewalld/services/minecraft.xml
+        owner: root
+        group: root
+        mode: 0644
+      register: firewall
+
     - name: Reloading firewalld
       command: firewall-cmd --reload
       when: firewall.changed
@@ -638,13 +648,7 @@
             name: "minecraft-backup.timer",
             state: "restarted",
             enabled: "true",
-            when: "{{ continuous_deployment == false }}",
-          }
-        - {
-            name: "minecraft-continuous-deployment.timer",
-            state: "restarted",
-            enabled: "yes",
-            when: "{{ continuous_deployment }}",
+            when: "{{ true }}",
           }
         - {
             name: "dnf-upgrade.timer",
@@ -657,11 +661,5 @@
             state: "restarted",
             enabled: "true",
             when: "{{ grafana.use }}",
-          }
-        - {
-            name: "chunky-monitor.timer",
-            state: "restarted",
-            enabled: "true",
-            when: "{{ chunky }}",
           }
       when: item.when

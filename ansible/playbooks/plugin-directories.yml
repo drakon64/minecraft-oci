@@ -4,8 +4,8 @@
   file:
     path: /opt/minecraft/{{ outer_item.name }}/server/plugins/{{ item.path }}
     state: "{{ item.state }}"
-    owner: root
-    group: root
+    owner: minecraft
+    group: minecraft
     mode: 0755
   loop:
     - {
