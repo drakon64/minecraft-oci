@@ -17,7 +17,6 @@ minecraft:
           continuous_deployment: false
           eula: true
           geyser: true
-          keepchunks: false
           name: minecraft-test
           new_server: true
           plugins:
@@ -39,7 +38,6 @@ minecraft:
           continuous_deployment: false
           eula: true
           geyser: true
-          keepchunks: false
           name: minecraft
           new_server: true
           plugins:

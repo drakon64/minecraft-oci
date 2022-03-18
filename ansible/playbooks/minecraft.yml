@@ -306,10 +306,6 @@
       loop_control:
         loop_var: outer_item
 
-    - name: Getting the latest KeepChunks release
-      shell: curl --silent "https://api.github.com/repos/Geitenijs/KeepChunks/releases/latest" | jq -r '.assets[].browser_download_url'
-      register: keepchunks_latest
-
     - name: Getting the latest Chunky release
       shell: curl --silent https://ci.codemc.io/job/pop4959/job/Chunky/lastSuccessfulBuild/api/json | jq -r '.artifacts[0].fileName'
       register: chunky_latest

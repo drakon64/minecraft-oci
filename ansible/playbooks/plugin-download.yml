@@ -29,11 +29,6 @@
         when: "{{ true }}",
       }
     - {
-        url: "{% if outer_item.keepchunks %}{{ keepchunks_latest.stdout }}{% endif %}",
-        dest: KeepChunks.jar,
-        when: "{{ outer_item.keepchunks }}",
-      }
-    - {
         url: "{% if outer_item.chunky %}https://ci.codemc.io/view/Author/job/pop4959/job/Chunky/lastSuccessfulBuild/artifact/bukkit/build/libs/{{ chunky_latest.stdout }}{% endif %}",
         dest: "Chunky.jar",
         when: "{{ outer_item.chunky }}",
@@ -84,7 +79,6 @@
     state: absent
   with_items:
     - { src: Chunky.jar, when: "{{ outer_item.chunky == false }}" }
-    - { src: KeepChunks.jar, when: "{{ outer_item.keepchunks == false }}" }
     - { src: CustomCommandPrefix.jar, when: "{{ outer_item.geyser == false }}" }
     - { src: floodgate-spigot.jar, when: "{{ outer_item.geyser == false }}" }
     - { src: Geyser-Spigot.jar, when: "{{ outer_item.geyser == false }}" }

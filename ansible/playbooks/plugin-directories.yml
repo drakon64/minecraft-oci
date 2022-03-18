@@ -13,10 +13,6 @@
         state: "{% if outer_item.chunky %}directory{% else %}absent{% endif %}",
       }
     - {
-        path: KeepChunks,
-        state: "{% if outer_item.keepchunks %}directory{% else %}absent{% endif %}",
-      }
-    - {
         path: CustomCommandPrefix,
         state: "{% if outer_item.geyser %}directory{% else %}absent{% endif %}",
       }
