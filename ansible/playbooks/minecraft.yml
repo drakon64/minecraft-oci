@@ -318,13 +318,7 @@
         - item.restore_backup == false
 
     - name: Configuring the Minecraft server
-      include_tasks: plugin-config.yml
-      loop: "{{ instances }}"
-      loop_control:
-        loop_var: outer_item
-
-    - name: Copying the server permissions files
-      include_tasks: permissions.yml
+      include_tasks: server-config.yml
       loop: "{{ instances }}"
       loop_control:
         loop_var: outer_item
