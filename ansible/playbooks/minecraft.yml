@@ -381,51 +381,47 @@
 
     - name: Downloading the CustomCommandPrefix plugin
       copy:
-        src: files/CustomCommandPrefix-1.0.jar
-        dest: /opt/minecraft/server/plugins/CustomCommandPrefix.jar
+        src: ../files/CustomCommandPrefix-1.0.jar
+        dest: /opt/minecraft/{{ item.name }}/server/plugins/CustomCommandPrefix.jar
         owner: minecraft
         group: minecraft
         mode: 0644
+      loop: "{{ instances }}"
       when:
-        - new_server or update_server
-        - geyser
-        - restore_backup == false
+        - item.new_server or item.update_server
+        - item.geyser
+        - item.restore_backup == false
 
     - name: Configuring the CustomCommandPrefix plugin
       copy:
         content: "prefix: '?'"
-        dest: /opt/minecraft/server/plugins/CustomCommandPrefix/config.yml
+        dest: /opt/minecraft/{{ item.name }}/server/plugins/CustomCommandPrefix/config.yml
         owner: minecraft
         group: minecraft
         mode: 0644
+      loop: "{{ instances }}"
       when:
-        - geyser
-        - restore_backup == false
+        - item.geyser
+        - item.restore_backup == false
 
     - name: Downloading the LuckPermsChat plugin
       copy:
-        src: files/LPC.jar
-        dest: /opt/minecraft/server/plugins/LPC.jar
+        src: ../files/LPC.jar
+        dest: /opt/minecraft/{{ item.name }}/server/plugins/LPC.jar
         owner: minecraft
         group: minecraft
         mode: 0644
+      loop: "{{ instances }}"
       when:
-        - geyser
-        - new_server or update_server
-        - restore_backup == false
+        - item.geyser
+        - item.new_server or item.update_server
+        - item.restore_backup == false
 
     - name: Downloading Bedrock resource packs
-      get_url:
-        url: "{{ item }}"
-        dest: /opt/minecraft/server/plugins/Geyser-Spigot/packs/
-        owner: minecraft
-        group: minecraft
-        mode: 0644
-      with_items: "{{ bedrock_resource_packs }}"
-      when:
-        - geyser
-        - bedrock_resource_packs is defined
-        - restore_backup == false
+      include_tasks: bedrock-rp.yml
+      loop: "{{ instances }}"
+      loop_control:
+        loop_var: outer_item
 
     - name: Copying the BlueMap NoOreTexturePack
       copy:
