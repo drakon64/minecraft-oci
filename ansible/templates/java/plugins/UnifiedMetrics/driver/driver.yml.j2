@@ -1,0 +1,7 @@
+{% if outer_item.plugins.unifiedmetrics.driver.prometheus is defined %}
+{% set combined_unifiedmetrics = (unifiedmetrics.driver.prometheus | combine(outer_item.plugins.unifiedmetrics.driver.prometheus, recursive=True)) %}
+{% else %}
+{% set combined_unifiedmetrics = unifiedmetrics.driver.prometheus %}
+{% endif %}
+
+{{ combined_unifiedmetrics | to_nice_yaml(indent=2) }}

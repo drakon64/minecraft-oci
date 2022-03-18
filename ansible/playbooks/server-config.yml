@@ -16,10 +16,11 @@
     - { src: plugins/Chunky/config.yml, when: "{{ outer_item.chunky }}" }
     - { src: plugins/floodgate/config.yml, when: "{{ outer_item.geyser }}" }
     - { src: plugins/Geyser-Spigot/config.yml, when: "{{ outer_item.geyser }}" }
-    - { src: plugins/TreeAssist/config.yml, when: "{{ true }}" }
-    - { src: plugins/TreeAssist/trees/default.yml, when: "{{ true }}" }
     - { src: plugins/LuckPerms/config.yml, when: "{{ true }}" }
     - { src: plugins/LPC/config.yml, when: "{{ true }}" }
+    - { src: plugins/TreeAssist/config.yml, when: "{{ true }}" }
+    - { src: plugins/TreeAssist/trees/default.yml, when: "{{ true }}" }
+    - { src: plugins/UnifiedMetrics/driver/driver.yml, when: "{{ grafana.use }}" }
     - {
         src: plugins/ViaVersion/config.yml,
         when: "{{ outer_item.viaversion }}",

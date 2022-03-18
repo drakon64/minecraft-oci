@@ -23,11 +23,17 @@ minecraft:
             luckperms:
               config:
                 storage-method: yaml
+            unifiedmetrics:
+              driver:
+                prometheus:
+                  http:
+                    port: 9101
           pufferfish: true
           restore_backup: false
           restore_permissions: true
           restore_remote_backup: false
           server:
+            server-port: 25566
           skip_backup: true
           version:
             build: 54
@@ -44,11 +50,17 @@ minecraft:
             luckperms:
               config:
                 storage-method: yaml
+            unifiedmetrics:
+              driver:
+                prometheus:
+                  http:
+                    port: 9100
           pufferfish: false
           restore_backup: false
           restore_permissions: true
           restore_remote_backup: false
           server:
+            server-port: 25565
           skip_backup: true
           version:
             build: 260

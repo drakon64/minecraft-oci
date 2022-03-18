@@ -45,6 +45,10 @@
     - { path: LPC, state: directory }
     - { path: PlaceholderAPI/expansions, state: directory }
     - {
+        path: UnifiedMetrics/driver,
+        state: "{% if grafana.use %}directory{% else %}absent{% endif %}",
+      }
+    - {
         path: ViaVersion,
         state: "{% if outer_item.viaversion %}directory{% else %}absent{% endif %}",
       }

@@ -58,9 +58,11 @@ metrics:
             username: {{ grafana.prometheus.username }}
           url: {{ grafana.prometheus.url }}
       scrape_configs:
-        - job_name: {{ inventory_hostname }}
+{% for i in instances %}
+        - job_name: {{ i.name }}
           static_configs:
-            - targets: ["127.0.0.1:9100"]
+            - targets: ["127.0.0.1:{{ i.plugins.unifiedmetrics.driver.prometheus.http.port }}"]
+{% endfor %}
   global:
     scrape_interval: 5s
   wal_directory: /tmp/grafana-agent-wal
