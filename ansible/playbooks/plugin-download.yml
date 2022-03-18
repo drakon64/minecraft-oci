@@ -39,16 +39,6 @@
         when: "{{ outer_item.chunky }}",
       }
     - {
-        url: "{% if outer_item.bluemap.use %}{{ bluemap.use_latest.stdout }}{% endif %}",
-        dest: bluemap.use.jar,
-        when: "{{ outer_item.bluemap.use }}",
-      }
-    - {
-        url: "{% if outer_item.bluemap.use %}{{ bluemap.use_floodgate_latest.stdout }}{% endif %}",
-        dest: bluemap.useFloodgate.jar,
-        when: "{{ outer_item.bluemap.use and outer_item.geyser }}",
-      }
-    - {
         url: "{{ appleskin_latest.stdout }}",
         dest: AppleSkinSpigot.jar,
         when: "{{ true }}",
@@ -93,12 +83,6 @@
     path: /opt/minecraft/server/plugins/{{ item.src }}
     state: absent
   with_items:
-    - { src: bluemap.use.jar, when: "{{ outer_item.bluemap.use == false }}" }
-    - { src: ../bluemap.use, when: "{{ outer_item.bluemap.use == false }}" }
-    - {
-        src: bluemap.useFloodgate.jar,
-        when: "{{ outer_item.bluemap.use == false or outer_item.geyser == false }}",
-      }
     - { src: Chunky.jar, when: "{{ outer_item.chunky == false }}" }
     - { src: KeepChunks.jar, when: "{{ outer_item.keepchunks == false }}" }
     - { src: CustomCommandPrefix.jar, when: "{{ outer_item.geyser == false }}" }

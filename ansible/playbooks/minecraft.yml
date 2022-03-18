@@ -134,23 +134,6 @@
         name: mcstatus
         state: latest
 
-    - name: Installing nginx
-      dnf:
-        name: nginx
-        state: present
-      when:
-        - bluemap.use
-
-    - name: Installing certbot
-      dnf:
-        name:
-          - certbot
-          - python3-certbot-nginx
-        state: present
-      when:
-        - bluemap.use
-        - certbot
-
     - name: Getting the latest Grafana Agent release
       shell: curl --silent https://api.github.com/repos/grafana/agent/releases/latest | jq -r '.assets[].browser_download_url | select(contains("{% if ansible_architecture == 'aarch64' %}arm64{% elif ansible_architecture == 'x86_64' %}amd64{% endif %}")) | select(contains("rpm"))'
       register: grafanaagent_latest
@@ -331,14 +314,6 @@
       shell: curl --silent https://ci.codemc.io/job/pop4959/job/Chunky/lastSuccessfulBuild/api/json | jq -r '.artifacts[0].fileName'
       register: chunky_latest
 
-    - name: Getting the latest BlueMap release
-      shell: curl --silent "https://api.github.com/repos/BlueMap-Minecraft/BlueMap/releases/latest" | jq -r '.assets[].browser_download_url | select(contains("spigot"))'
-      register: bluemap_latest
-
-    - name: Getting the latest BlueMap-Floodgate release
-      shell: curl --silent "https://api.github.com/repos/TechnicJelle/BlueMapFloodgate/releases" | jq -r '.[0].assets[].browser_download_url'
-      register: bluemap_floodgate_latest
-
     - name: Getting the latest ViaVersion release
       shell: curl --silent "https://api.github.com/repos/ViaVersion/ViaVersion/releases/latest" | jq -r '.assets[].browser_download_url'
       register: viaversion_latest
@@ -422,18 +397,6 @@
       loop: "{{ instances }}"
       loop_control:
         loop_var: outer_item
-
-    - name: Copying the BlueMap NoOreTexturePack
-      copy:
-        src: ../files/BlueMapNoOreTexturePack.zip
-        dest: /opt/minecraft/{{ item.name }}/server/plugins/BlueMap/resourcepacks/
-        owner: minecraft
-        group: minecraft
-        mode: 0644
-      loop: "{{ instances }}"
-      when:
-        - item.bluemap.use
-        - item.restore_backup == false
 
     - name: Downloading the server backup
       command: oci os object get --auth instance_principal --bucket-name {{ bucket_name }} --file minecraft.tar --name minecraft.tar
@@ -692,30 +655,6 @@
             state: "restarted",
             enabled: "yes",
             when: "{{ true }}",
-          }
-        - {
-            name: "uptrack-upgrade.timer",
-            state: "restarted",
-            enabled: "yes",
-            when: "{{ true }}",
-          }
-        - {
-            name: "nginx.service",
-            state: "started",
-            enabled: "yes",
-            when: "{{ bluemap.use }}",
-          }
-        - {
-            name: "nginx.service",
-            state: "reloaded",
-            enabled: "yes",
-            when: "{{ bluemap.use }}",
-          }
-        - {
-            name: "certbot-renew.timer",
-            state: "restarted",
-            enabled: "yes",
-            when: "{{ bluemap.use and certbot }}",
           }
         - {
             name: "grafana-agent.service",

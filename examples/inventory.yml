@@ -1,7 +1,6 @@
 minecraft:
   hosts:
     minecraft-test:
-      certbot: true
       graalvm: true
       grafana:
         loki:
@@ -14,9 +13,9 @@ minecraft:
           username:
         use: true
       instances:
-        - bluemap: false
-          chunky: false
+        - chunky: false
           continuous_deployment: false
+          eula: true
           geyser: true
           keepchunks: false
           name: minecraft-test
@@ -36,10 +35,9 @@ minecraft:
             full: 1.18.2
             major: 1.18
           viaversion: false
-          zgc: true
-        - bluemap: true
-          chunky: true
+        - chunky: true
           continuous_deployment: false
+          eula: true
           geyser: true
           keepchunks: false
           name: minecraft
@@ -58,5 +56,4 @@ minecraft:
             build: 260
             full: 1.18.2
           viaversion: false
-          zgc: false
       timezone: Europe/London
