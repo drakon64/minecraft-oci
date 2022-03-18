@@ -12,4 +12,10 @@
 # Bug tracker: https://www.spigotmc.org/go/bugs
 
 
-{% if global_overrides.bukkit is defined and overrides.bukkit is defined %}{{ bukkit | combine(global_overrides.bukkit, overrides.bukkit, recursive=True) | to_nice_yaml(indent=2) }}{% elif global_overrides.bukkit is defined %}{{ bukkit | combine(global_overrides.bukkit, recursive=True) | to_nice_yaml(indent=2) }}{% elif overrides.bukkit is defined %}{{ bukkit | combine(overrides.bukkit, recursive=True) | to_nice_yaml(indent=2) }}{% else %}{{ bukkit | to_nice_yaml(indent=2) }}{% endif %}
+{% if outer_item.plugins.bukkit is defined %}
+{% set combined_bukkit = (bukkit | combine(outer_item.plugins.bukkit, recursive=True)) %}
+{% else %}
+{% set combined_bukkit = bukkit %}
+{% endif %}
+
+{{ combined_bukkit | to_nice_yaml(indent=2) }}

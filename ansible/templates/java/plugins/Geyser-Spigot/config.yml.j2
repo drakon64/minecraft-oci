@@ -1,9 +1,7 @@
-{% if global_overrides.geyser is defined and overrides.geyser is defined %}
-{{ geyser | combine(global_overrides.geyser, overrides.geyser, recursive=True) | to_nice_yaml(indent=2) }}
-{% elif global_overrides.geyser is defined %}
-{{ geyser | combine(global_overrides.geyser, recursive=True) | to_nice_yaml(indent=2) }}
-{% elif overrides.geyser is defined %}
-{{ geyser | combine(overrides.geyser, recursive=True) | to_nice_yaml(indent=2) }}
+{% if outer_item.plugins.geyser is defined %}
+{% set combined_geyser = (geyser | combine(outer_item.plugins.geyser, recursive=True)) %}
 {% else %}
-{{ geyser | to_nice_yaml(indent=2) }}
+{% set combined_geyser = geyser %}
 {% endif %}
+
+{{ combined_geyser | to_nice_yaml(indent=2) }}

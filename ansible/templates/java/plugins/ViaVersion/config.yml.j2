@@ -1,9 +1,7 @@
-{% if global_overrides.viaversion is defined and overrides.viaversion is defined %}
-{{ viaversion | combine(global_overrides.viaversion, overrides.viaversion, recursive=True) | to_nice_yaml(indent=2) }}
-{% elif global_overrides.viaversion is defined %}
-{{ viaversion | combine(global_overrides.viaversion, recursive=True) | to_nice_yaml(indent=2) }}
-{% elif overrides.viaversion is defined %}
-{{ viaversion | combine(overrides.viaversion, recursive=True) | to_nice_yaml(indent=2) }}
+{% if outer_item.plugins.viaversion is defined %}
+{% set combined_luckperms = (viaversion | combine(outer_item.plugins.viaversion, recursive=True)) %}
 {% else %}
-{{ viaversion | to_nice_yaml(indent=2) }}
+{% set combined_luckperms = viaversion %}
 {% endif %}
+
+{{ combined_luckperms | to_nice_yaml(indent=2) }}
