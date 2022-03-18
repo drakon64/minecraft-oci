@@ -644,6 +644,12 @@
             when: "{{ true }}",
           }
         - {
+            name: "caddy",
+            state: "restarted",
+            enabled: "true",
+            when: "{{ bluemap }}",
+          }
+        - {
             name: "minecraft-backup.timer",
             state: "restarted",
             enabled: "true",

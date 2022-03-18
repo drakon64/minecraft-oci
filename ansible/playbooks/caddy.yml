@@ -1,0 +1,13 @@
+# yaml-language-server: $schema=https://json.schemastore.org/ansible-playbook.json
+
+- name: Enabling the Caddy COPR
+  copr:
+    host: copr.fedorainfracloud.org
+    state: enabled
+    name: caddy/caddy
+
+- name: Installing Caddy
+  dnf:
+    name: caddy
+    state: present
+    update_cache: yes
