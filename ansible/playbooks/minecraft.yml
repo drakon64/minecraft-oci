@@ -473,10 +473,240 @@
       become_user: minecraft
 
     - name: Copying scripts and systemd units
-      include_tasks: scripts.yml
-      loop: "{{ instances }}"
-      loop_control:
-        loop_var: outer_item
+      template:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        owner: "{{ item.owner }}"
+        group: "{% if item.group is defined %}{{ item.group }}{% else %}{{ item.owner }}{% endif %}"
+        mode: "{{ item.mode }}"
+      with_items:
+        - {
+            src: "files/scripts/dnf-reboot.sh",
+            dest: "/opt/minecraft/dnf-reboot.sh",
+            owner: "minecraft",
+            mode: "0755",
+            when: true,
+          }
+        - {
+            src: "files/scripts/stop.sh",
+            dest: "/opt/minecraft/stop.sh",
+            owner: "minecraft",
+            mode: "0755",
+            when: true,
+          }
+        - {
+            src: "templates/scripts/backup.sh.j2",
+            dest: "/opt/minecraft/backup.sh",
+            owner: "minecraft",
+            mode: "0755",
+            when: true,
+          }
+        - {
+            src: "templates/scripts/chunky-monitor.py.j2",
+            dest: "/opt/minecraft/chunky-monitor",
+            owner: "minecraft",
+            mode: "0744",
+            when: "{{ use_chunky }}",
+          }
+        - {
+            src: "files/sudoers",
+            dest: "/etc/sudoers.d/10-minecraft-user",
+            owner: "root",
+            mode: "0440",
+            when: true,
+          }
+        - {
+            src: "templates/systemd/service.j2",
+            dest: "/etc/systemd/system/minecraft.service",
+            owner: "root",
+            mode: "0644",
+            description: "Minecraft Server",
+            type: "forking",
+            execstartpre: "-/opt/minecraft/server-icon.sh",
+            execstart: "/usr/bin/tmux new-session -s minecraft -d '{% if zgc %} {{ zgc_command }}{% else %}{{ command }}{% endif %}'",
+            execstop: "/opt/minecraft/stop.sh",
+            workingdirectory: "/opt/minecraft/server",
+            user: "minecraft",
+            group: "minecraft",
+            nice: "-20",
+            oomscoreadjust: "-1000",
+            when: true,
+          }
+        - {
+            src: "templates/systemd/service.j2",
+            dest: "/etc/systemd/system/minecraft-backup.service",
+            owner: "root",
+            mode: "0644",
+            description: "Minecraft server backup",
+            type: "oneshot",
+            execstart: "/opt/minecraft/backup.sh restart",
+            user: "minecraft",
+            group: "minecraft",
+            when: true,
+          }
+        - {
+            src: "templates/systemd/timer.j2",
+            dest: "/etc/systemd/system/minecraft-backup.timer",
+            owner: root,
+            mode: "0644",
+            description: "Minecraft server backup",
+            timer: "6:00",
+            persistent: true,
+            when: true,
+          }
+        - {
+            src: "templates/systemd/service.j2",
+            dest: "/etc/systemd/system/dnf-upgrade.service",
+            owner: "root",
+            mode: "0644",
+            description: "DNF Upgrade",
+            type: "oneshot",
+            execstart: "/opt/minecraft/dnf-reboot.sh",
+            when: true,
+          }
+        - {
+            src: "templates/systemd/timer.j2",
+            dest: "/etc/systemd/system/dnf-upgrade.timer",
+            owner: "root",
+            mode: "0644",
+            description: "DNF Upgrade",
+            timer: "Tue 7:00",
+            persistent: true,
+            when: true,
+          }
+        - {
+            src: "templates/systemd/service.j2",
+            dest: "/etc/systemd/system/uptrack-upgrade.service",
+            owner: "root",
+            mode: "0644",
+            description: "Uptrack Upgrade",
+            type: "oneshot",
+            execstart: "/sbin/uptrack-upgrade -y",
+            when: true,
+          }
+        - {
+            src: "templates/systemd/timer.j2",
+            dest: "/etc/systemd/system/uptrack-upgrade.timer",
+            owner: "root",
+            mode: "0644",
+            description: "Uptrack Upgrade",
+            timer: "Mon,Wed..Sun 7:00",
+            persistent: true,
+            when: true,
+          }
+        - {
+            src: "files/nginx.conf",
+            dest: "/etc/nginx/nginx.conf",
+            owner: root,
+            mode: "0644",
+            when: "{{ use_bluemap }}",
+          }
+        - {
+            src: "templates/nginx.conf.j2",
+            dest: "/etc/nginx/conf.d/bluemap.conf",
+            owner: root,
+            mode: "0644",
+            certbot_ready: "{{ bluemap_certbot.ready }}",
+            when: "{{ use_bluemap }}",
+          }
+        - {
+            src: "templates/grafana-agent.yml.j2",
+            dest: "/etc/grafana-agent.yaml",
+            owner: root,
+            group: grafana-agent,
+            mode: "0640",
+            when: "{{ grafana.use }}",
+          }
+        - {
+            src: "templates/systemd/service.j2",
+            dest: "/etc/systemd/system/certbot-renew.service",
+            owner: root,
+            mode: "0644",
+            description: "CertBot Renewal",
+            type: oneshot,
+            execstart: "{% if bluemap_certbot is defined %}certbot certonly --nginx -d {{ bluemap_certbot.domain }} -m {{ bluemap_certbot.email }} --agree-tos --no-eff-email --key-type ecdsa -n{% endif %}",
+            when: "{{ use_bluemap and bluemap_certbot.use }}",
+          }
+        - {
+            src: "templates/systemd/timer.j2",
+            dest: "/etc/systemd/system/certbot-renew.timer",
+            owner: root,
+            mode: "0644",
+            description: "CertBot Renewal",
+            timer: "*-1/2-1 00:00:00",
+            persistent: true,
+            when: "{{ use_bluemap and bluemap_certbot.use }}",
+          }
+        - {
+            src: "templates/scripts/continuous-deployment.sh.j2",
+            dest: "/opt/minecraft/continuous-deployment.sh",
+            owner: "root",
+            mode: "0744",
+            when: "{{ continuous_deployment }}",
+          }
+        - {
+            src: "templates/systemd/service.j2",
+            dest: "/etc/systemd/system/minecraft-continuous-deployment.service",
+            owner: root,
+            mode: "0644",
+            description: "Minecraft continuous deployment",
+            type: oneshot,
+            execstart: "/opt/minecraft/continuous-deployment.sh",
+            user: "minecraft",
+            group: "minecraft",
+            when: "{{ continuous_deployment }}",
+          }
+        - {
+            src: "templates/systemd/timer.j2",
+            dest: "/etc/systemd/system/minecraft-continuous-deployment.timer",
+            owner: root,
+            mode: "0644",
+            description: "Minecraft continuous deployment",
+            timer: "8:00",
+            persistent: true,
+            when: "{{ continuous_deployment }}",
+          }
+        - {
+            src: "templates/systemd/service.j2",
+            dest: "/etc/systemd/system/chunky-monitor.service",
+            owner: "root",
+            mode: "0644",
+            description: "Chunky Monitor",
+            execstart: "/opt/minecraft/chunky-monitor",
+            user: "minecraft",
+            type: "oneshot",
+            after: "minecraft.service",
+            when: "{{ use_chunky }}",
+          }
+        - {
+            src: "templates/systemd/service.j2",
+            dest: "/etc/systemd/system/grafana-agent.service",
+            owner: "root",
+            mode: "0644",
+            description: "Monitoring system and forwarder",
+            execstart: "/usr/bin/grafana-agent --config.file /etc/grafana-agent.yaml",
+            type: "simple",
+            after: "network-online.target",
+            when: "{{ grafana.use }}",
+          }
+        - {
+            src: "templates/systemd/timer.j2",
+            dest: "/etc/systemd/system/chunky-monitor.timer",
+            owner: "root",
+            mode: "0644",
+            description: "Chunky Monitor",
+            timer: "*:*:0",
+            after: "minecraft.service",
+            when: "{{ use_chunky}}",
+          }
+        - {
+            src: "files/scripts/server-icon.sh",
+            dest: "/opt/minecraft/server-icon.sh",
+            owner: "minecraft",
+            mode: "0755",
+            when: "{{ random_server_icon }}",
+          }
+      when: item.when
 
     - name: Copying firewall rule
       template:
