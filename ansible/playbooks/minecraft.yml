@@ -460,19 +460,15 @@
           }
         - {
             src: "templates/systemd/service.j2",
-            dest: "/etc/systemd/system/minecraft@.service",
+            dest: "/etc/systemd/system/tmux.service",
             owner: "root",
             mode: "0644",
-            description: "Minecraft Server - %i",
+            description: "tmux",
             type: "forking",
-            execstartpre: "-/opt/minecraft/server-icon.sh",
-            execstart: "/usr/bin/tmux new-session -s minecraft-%i -d '{{ command }}'",
-            execstop: "/opt/minecraft/stop.sh %i",
-            workingdirectory: "/opt/minecraft/%i/server",
+            execstart: "/usr/bin/tmux new-session -d -s main",
+            execstop: "/usr/bin/tmux kill-session -t main",
             user: "minecraft",
             group: "minecraft",
-            nice: "-20",
-            oomscoreadjust: "-1000",
             when: true,
           }
         - {
@@ -560,6 +556,12 @@
           }
       when: item.when
 
+    - name: Copying systemd units
+      include_tasks: systemd.yml
+      loop: "{{ instances }}"
+      loop_control:
+        loop_var: outer_item
+
     - name: Copying firewall rule
       template:
         src: ../templates/minecraft.xml.j2
@@ -636,9 +638,9 @@
         daemon_reload: yes
       with_items:
         - {
-            name: "minecraft.service",
-            state: "started",
-            enabled: "yes",
+            name: "tmux",
+            state: "restarted",
+            enabled: "true",
             when: "{{ true }}",
           }
         - {
@@ -660,3 +662,11 @@
             when: "{{ grafana.use }}",
           }
       when: item.when
+
+    - name: Starting the Minecraft instances
+      systemd:
+        name: minecraft-{{ item.name }}
+        state: started
+        enabled: yes
+        daemon_reload: yes
+      loop: "{{ instances }}"

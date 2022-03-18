@@ -17,6 +17,7 @@ minecraft:
           continuous_deployment: false
           eula: true
           geyser: true
+          heap: 5G
           name: minecraft-test
           new_server: true
           plugins:
@@ -44,6 +45,7 @@ minecraft:
           continuous_deployment: false
           eula: true
           geyser: true
+          heap: 5G
           name: minecraft
           new_server: true
           plugins:
