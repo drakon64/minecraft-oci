@@ -7,7 +7,7 @@
     owner: minecraft
     group: minecraft
     mode: 0644
-  with_items: "{{ outer_item.plugins.luckperms.users }}"
+  loop: "{{ outer_item.plugins.luckperms.users }}"
   when:
     - outer_item.plugins.luckperms.config['storage-method'] == "json" or outer_item.plugins.luckperms.config['storage-method'] == "yaml"
     - outer_item.plugins.luckperms.users is defined
@@ -21,7 +21,7 @@
     owner: minecraft
     group: minecraft
     mode: 0644
-  with_items: "{{ outer_item.plugins.luckperms.groups }}"
+  loop: "{{ outer_item.plugins.luckperms.groups }}"
   when:
     - outer_item.plugins.luckperms.config['storage-method'] == "json" or outer_item.plugins.luckperms.config['storage-method'] == "yaml"
     - outer_item.plugins.luckperms.groups is defined

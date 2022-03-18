@@ -7,7 +7,7 @@
     owner: minecraft
     group: minecraft
     mode: 0644
-  with_items:
+  loop:
     - { src: server.properties, when: "{{ true }}" }
     - { src: bukkit.yml, when: "{{ true }}" }
     - { src: commands.yml, when: "{{ true }}" }
@@ -39,7 +39,7 @@
     owner: minecraft
     group: minecraft
     mode: 0644
-  with_items:
+  loop:
     - ops
     - whitelist
   when:

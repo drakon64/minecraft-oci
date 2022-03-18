@@ -8,7 +8,7 @@
         path: /etc/ssh/sshd_config
         regexp: "^({{ item.regexp }}|#{{ item.regexp }})"
         line: "{{ item.line }}"
-      with_items:
+      loop:
         - {
             regexp: "KexAlgorithms",
             line: "KexAlgorithms curve25519-sha256@libssh.org",
@@ -116,7 +116,7 @@
         name: "{{ item.name }}"
         state: "{{ item.state }}"
         update_cache: yes
-      with_items:
+      loop:
         - {
             name: "java-17-openjdk-headless",
             state: "{% if graalvm %}absent{% else %}present{% endif %}",
@@ -436,7 +436,7 @@
         owner: "{{ item.owner }}"
         group: "{% if item.group is defined %}{{ item.group }}{% else %}{{ item.owner }}{% endif %}"
         mode: "{{ item.mode }}"
-      with_items:
+      loop:
         - {
             src: "files/scripts/dnf-reboot.sh",
             dest: "/opt/minecraft/dnf-reboot.sh",
@@ -636,7 +636,7 @@
         state: "{{ item.state }}"
         enabled: "{{ item.enabled }}"
         daemon_reload: yes
-      with_items:
+      loop:
         - {
             name: "tmux",
             state: "restarted",

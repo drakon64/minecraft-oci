@@ -7,7 +7,7 @@
     owner: minecraft
     group: minecraft
     mode: 0644
-  with_items: "{{ outer_item.bedrock_resource_packs }}"
+  loop: "{{ outer_item.bedrock_resource_packs }}"
   when:
     - outer_item.geyser
     - outer_item.bedrock_resource_packs is defined

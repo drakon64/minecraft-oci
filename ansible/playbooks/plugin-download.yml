@@ -7,7 +7,7 @@
     owner: minecraft
     group: minecraft
     mode: 0644
-  with_items:
+  loop:
     - {
         url: https://ci.opencollab.dev/job/GeyserMC/job/Geyser/job/master/lastSuccessfulBuild/artifact/bootstrap/spigot/target/Geyser-Spigot.jar,
         dest: Geyser-Spigot.jar,
@@ -77,7 +77,7 @@
   file:
     path: /opt/minecraft/server/plugins/{{ item.src }}
     state: absent
-  with_items:
+  loop:
     - { src: Chunky.jar, when: "{{ outer_item.chunky == false }}" }
     - { src: CustomCommandPrefix.jar, when: "{{ outer_item.geyser == false }}" }
     - { src: floodgate-spigot.jar, when: "{{ outer_item.geyser == false }}" }
