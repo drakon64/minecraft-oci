@@ -8,8 +8,8 @@ server {
     }
 {% endif %}
 {% if certbot == false %}
-    # path to bluemap-webroot, bluemap can also be used in a sub-folder .. just adapt the paths accordingly
-    root /opt/minecraft/server/bluemap/web;
+    # path to bluemap.use-webroot, bluemap.use can also be used in a sub-folder .. just adapt the paths accordingly
+    root /opt/minecraft/server/bluemap.use/web;
 
     location / {
         try_files $uri $uri/ =404 ;
@@ -21,7 +21,7 @@ server {
         gzip_static always;
     }
 
-    # Proxy requests to the live data interface to bluemaps integrated webserver
+    # Proxy requests to the live data interface to bluemap.uses integrated webserver
     location /live/ {
         proxy_pass http://127.0.0.1:8100;
     }
@@ -56,8 +56,8 @@ server {
     # verify chain of trust of OCSP response using Root CA and Intermediate certs
     #ssl_trusted_certificate /path/to/root_CA_cert_plus_intermediates;
 
-    # path to bluemap-webroot, bluemap can also be used in a sub-folder .. just adapt the paths accordingly
-    root /opt/minecraft/server/bluemap/web;
+    # path to bluemap.use-webroot, bluemap.use can also be used in a sub-folder .. just adapt the paths accordingly
+    root /opt/minecraft/server/bluemap.use/web;
 
     location / {
         try_files $uri $uri/ =404 ;
@@ -69,7 +69,7 @@ server {
         gzip_static always;
     }
 
-    # Proxy requests to the live data interface to bluemaps integrated webserver
+    # Proxy requests to the live data interface to bluemap.uses integrated webserver
     location /live/ {
         proxy_pass http://127.0.0.1:8100;
     }

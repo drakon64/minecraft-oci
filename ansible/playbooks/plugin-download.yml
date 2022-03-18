@@ -39,14 +39,14 @@
         when: "{{ outer_item.chunky }}",
       }
     - {
-        url: "{% if outer_item.bluemap %}{{ bluemap_latest.stdout }}{% endif %}",
-        dest: BlueMap.jar,
-        when: "{{ outer_item.bluemap }}",
+        url: "{% if outer_item.bluemap.use %}{{ bluemap.use_latest.stdout }}{% endif %}",
+        dest: bluemap.use.jar,
+        when: "{{ outer_item.bluemap.use }}",
       }
     - {
-        url: "{% if outer_item.bluemap %}{{ bluemap_floodgate_latest.stdout }}{% endif %}",
-        dest: BlueMapFloodgate.jar,
-        when: "{{ outer_item.bluemap and outer_item.geyser }}",
+        url: "{% if outer_item.bluemap.use %}{{ bluemap.use_floodgate_latest.stdout }}{% endif %}",
+        dest: bluemap.useFloodgate.jar,
+        when: "{{ outer_item.bluemap.use and outer_item.geyser }}",
       }
     - {
         url: "{{ appleskin_latest.stdout }}",
@@ -87,3 +87,22 @@
     - outer_item.new_server or outer_item.update_server
     - outer_item.restore_backup == false
     - item.when
+
+- name: Removing plugins for {{ outer_item.name }}
+  file:
+    path: /opt/minecraft/server/plugins/{{ item.src }}
+    state: absent
+  with_items:
+    - { src: bluemap.use.jar, when: "{{ outer_item.bluemap.use == false }}" }
+    - { src: ../bluemap.use, when: "{{ outer_item.bluemap.use == false }}" }
+    - {
+        src: bluemap.useFloodgate.jar,
+        when: "{{ outer_item.bluemap.use == false or outer_item.geyser == false }}",
+      }
+    - { src: Chunky.jar, when: "{{ outer_item.chunky == false }}" }
+    - { src: KeepChunks.jar, when: "{{ outer_item.keepchunks == false }}" }
+    - { src: CustomCommandPrefix.jar, when: "{{ outer_item.geyser == false }}" }
+    - { src: floodgate-spigot.jar, when: "{{ outer_item.geyser == false }}" }
+    - { src: Geyser-Spigot.jar, when: "{{ outer_item.geyser == false }}" }
+    - { src: ViaVersion.jar, when: "{{ outer_item.viaversion == false }}" }
+  when: item.when

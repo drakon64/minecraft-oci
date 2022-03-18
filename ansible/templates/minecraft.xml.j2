@@ -5,7 +5,7 @@
 {% if geyser %}
 	<port protocol="udp" port="19132"/>
 {% endif %}
-{% if bluemap %}
+{% if bluemap.use %}
 {% if certbot %}
 	<port protocol="tcp" port="443"/>
 {% endif %}

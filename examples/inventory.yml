@@ -36,6 +36,7 @@ minecraft:
             full: 1.18.2
             major: 1.18
           viaversion: false
+          zgc: true
         - bluemap: true
           chunky: true
           continuous_deployment: false
@@ -57,4 +58,5 @@ minecraft:
             build: 260
             full: 1.18.2
           viaversion: false
+          zgc: false
       timezone: Europe/London
