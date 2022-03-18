@@ -1,0 +1,23 @@
+{% for i in instances %}
+{% if i.bluemap.use %}
+http://{{ i.bluemap.domain }} {
+  root * /opt/minecraft/{{ i.name }}/server/bluemap/web
+  file_server
+
+  reverse_proxy /live/* http://127.0.0.1:8100
+
+  @JSONgz {
+    path *.json
+    file {
+      try_files {path}.gz
+    }
+  }
+
+  route @JSONgz {
+    rewrite {http.matchers.file.relative}
+    header Content-Type application/json
+    header Content-Encoding gzip
+  }
+}
+{% endif %}
+{% endfor %}
