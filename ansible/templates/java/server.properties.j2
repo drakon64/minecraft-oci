@@ -1,3 +1,9 @@
-{% for key, value in final_server_overrides | dictsort %}
+{% if outer_item.server is defined %}
+{% set combined_server = (server | combine(outer_item.server, recursive=True)) %}
+{% else %}
+{% set combined_server = server %}
+{% endif %}
+
+{% for key, value in combined_server | dictsort %}
 {{ key }}={{ value }}
 {% endfor %}

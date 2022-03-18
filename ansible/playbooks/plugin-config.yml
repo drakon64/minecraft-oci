@@ -1,0 +1,34 @@
+#yaml-language-server: $schema=https://json.schemastore.org/ansible-playbook.json
+
+- name: Configuring the Minecraft server for {{ outer_item.name }}
+  template:
+    src: ../templates/java/{{ item.src }}.j2
+    dest: /opt/minecraft/{{ outer_item.name }}/server/{{ item.src }}
+    owner: minecraft
+    group: minecraft
+    mode: 0644
+  with_items:
+    - { src: server.properties, when: "{{ true }}" }
+    - { src: bukkit.yml, when: "{{ true }}" }
+    - { src: commands.yml, when: "{{ true }}" }
+    - { src: spigot.yml, when: "{{ true }}" }
+    - { src: paper.yml, when: "{{ true }}" }
+    - { src: plugins/BlueMap/core.conf, when: "{{ outer_item.bluemap }}" }
+    - { src: plugins/BlueMap/plugin.conf, when: "{{ outer_item.bluemap }}" }
+    - { src: plugins/BlueMap/render.conf, when: "{{ outer_item.bluemap }}" }
+    - { src: plugins/BlueMap/webserver.conf, when: "{{ outer_item.bluemap }}" }
+    - { src: plugins/Chunky/config.yml, when: "{{ outer_item.chunky }}" }
+    - {
+        src: plugins/BlueMapFloodgate/config.yml,
+        when: "{{ outer_item.bluemap and outer_item.geyser }}",
+      }
+    - { src: plugins/floodgate/config.yml, when: "{{ outer_item.geyser }}" }
+    - { src: plugins/Geyser-Spigot/config.yml, when: "{{ outer_item.geyser }}" }
+    - { src: plugins/TreeAssist/config.yml, when: "{{ true }}" }
+    - { src: plugins/TreeAssist/trees/default.yml, when: "{{ true }}" }
+    - { src: plugins/LuckPerms/config.yml, when: "{{ true }}" }
+    - { src: plugins/LPC/config.yml, when: "{{ true }}" }
+    - { src: plugins/ViaVersion/config.yml, when: "{{ outer_item.viaversion }}" }
+  when:
+    - outer_item.restore_backup == false
+    - item.when

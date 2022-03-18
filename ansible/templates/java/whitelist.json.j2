@@ -1,1 +1,3 @@
-{{ whitelist | to_nice_json(indent=2) }}
+{% if outer_item.whitelist is defined %}
+{{ outer_item.whitelist | to_nice_json(indent=2) }}
+{% endif %}

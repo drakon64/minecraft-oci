@@ -1,1 +1,7 @@
-{{ final_luckperms_overrides | to_nice_yaml(indent=2) }}
+{% if outer_item.plugins.luckperms.config is defined %}
+{% set combined_luckperms = (luckperms.config | combine(outer_item.plugins.luckperms.config, recursive=True)) %}
+{% else %}
+{% set combined_luckperms = luckperms.config %}
+{% endif %}
+
+{{ combined_luckperms | to_nice_yaml(indent=2) }}

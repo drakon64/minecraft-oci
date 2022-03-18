@@ -40,19 +40,19 @@
     - { path: LuckPerms, state: directory }
     - {
         path: LuckPerms/json-storage/groups,
-        state: "{% if outer_item.plugins.luckperms['storage-method'] == 'json' %}directory{% else %}absent{% endif %}",
+        state: "{% if outer_item.plugins.luckperms.config['storage-method'] == 'json' %}directory{% else %}absent{% endif %}",
       }
     - {
         path: LuckPerms/json-storage/users,
-        state: "{% if outer_item.plugins.luckperms['storage-method'] == 'json' %}directory{% else %}absent{% endif %}",
+        state: "{% if outer_item.plugins.luckperms.config['storage-method'] == 'json' %}directory{% else %}absent{% endif %}",
       }
     - {
         path: LuckPerms/yaml-storage/groups,
-        state: "{% if outer_item.plugins.luckperms['storage-method'] == 'yaml' %}directory{% else %}absent{% endif %}",
+        state: "{% if outer_item.plugins.luckperms.config['storage-method'] == 'yaml' %}directory{% else %}absent{% endif %}",
       }
     - {
         path: LuckPerms/yaml-storage/users,
-        state: "{% if outer_item.plugins.luckperms['storage-method'] == 'yaml' %}directory{% else %}absent{% endif %}",
+        state: "{% if outer_item.plugins.luckperms.config['storage-method'] == 'yaml' %}directory{% else %}absent{% endif %}",
       }
     - { path: LPC, state: directory }
     - { path: PlaceholderAPI/expansions, state: directory }

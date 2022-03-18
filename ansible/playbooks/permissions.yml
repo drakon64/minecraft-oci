@@ -1,0 +1,15 @@
+#yaml-language-server: $schema=https://json.schemastore.org/ansible-playbook.json
+
+- name: Copying the server permissions files
+  template:
+    src: ../templates/java/{{ item }}.json.j2
+    dest: /opt/minecraft/{{ outer_item.name }}/server/{{ item }}.json
+    owner: minecraft
+    group: minecraft
+    mode: 0644
+  with_items:
+    - ops
+    - whitelist
+  when:
+    - outer_item.restore_permissions
+    - outer_item.restore_backup == false

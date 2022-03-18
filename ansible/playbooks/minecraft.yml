@@ -149,7 +149,7 @@
         state: present
       when:
         - bluemap
-        - certbot.use
+        - certbot
 
     - name: Getting the latest Grafana Agent release
       shell: curl --silent https://api.github.com/repos/grafana/agent/releases/latest | jq -r '.assets[].browser_download_url | select(contains("{% if ansible_architecture == 'aarch64' %}arm64{% elif ansible_architecture == 'x86_64' %}amd64{% endif %}")) | select(contains("rpm"))'
@@ -292,7 +292,7 @@
         - item.pufferfish
 
     - name: Creating the plugin directories
-      include_tasks: plugins.yml
+      include_tasks: plugin-directories.yml
       loop: "{{ instances }}"
       loop_control:
         loop_var: outer_item
@@ -318,78 +318,16 @@
         - item.restore_backup == false
 
     - name: Configuring the Minecraft server
-      template:
-        src: templates/java/{{ item.src }}.j2
-        dest: /opt/minecraft/server/{{ item.src }}
-        owner: minecraft
-        group: minecraft
-        mode: 0644
-      with_items:
-        - { src: server.properties, when: "{{ true }}" }
-        - { src: bukkit.yml, when: "{{ true }}" }
-        - { src: commands.yml, when: "{{ true }}" }
-        - { src: spigot.yml, when: "{{ true }}" }
-        - { src: paper.yml, when: "{{ true }}" }
-        - {
-            src: plugins/BlueMap/core.conf,
-            when: "{{ bluemap }}",
-          }
-        - {
-            src: plugins/BlueMap/plugin.conf,
-            when: "{{ bluemap }}",
-          }
-        - {
-            src: plugins/BlueMap/render.conf,
-            when: "{{ bluemap }}",
-          }
-        - {
-            src: plugins/BlueMap/webserver.conf,
-            when: "{{ bluemap }}",
-          }
-        - {
-            src: plugins/Chunky/config.yml,
-            when: "{{ chunky }}",
-          }
-        - {
-            src: plugins/BlueMapFloodgate/config.yml,
-            when: "{{ bluemap and geyser }}",
-          }
-        - {
-            src: plugins/floodgate/config.yml,
-            when: "{{ geyser }}",
-          }
-        - {
-            src: plugins/Geyser-Spigot/config.yml,
-            when: "{{ geyser }}",
-          }
-        - { src: plugins/TreeAssist/config.yml, when: "{{ true }}" }
-        - {
-            src: plugins/TreeAssist/trees/default.yml,
-            when: "{{ true }}",
-          }
-        - { src: plugins/LuckPerms/config.yml, when: "{{ true }}" }
-        - { src: plugins/LPC/config.yml, when: "{{ true }}" }
-        - {
-            src: plugins/ViaVersion/config.yml,
-            when: "{{ viaversion }}",
-          }
-      when:
-        - restore_backup == false
-        - item.when
+      include_tasks: plugin-config.yml
+      loop: "{{ instances }}"
+      loop_control:
+        loop_var: outer_item
 
     - name: Copying the server permissions files
-      template:
-        src: templates/java/{{ item }}.json.j2
-        dest: /opt/minecraft/server/{{ item }}.json
-        owner: minecraft
-        group: minecraft
-        mode: 0644
-      with_items:
-        - ops
-        - whitelist
-      when:
-        - restore_permissions
-        - restore_backup == false
+      include_tasks: permissions.yml
+      loop: "{{ instances }}"
+      loop_control:
+        loop_var: outer_item
 
     - name: Getting the latest KeepChunks release
       shell: curl --silent "https://api.github.com/repos/Geitenijs/KeepChunks/releases/latest" | jq -r '.assets[].browser_download_url'
@@ -853,7 +791,7 @@
             dest: "/etc/nginx/conf.d/bluemap.conf",
             owner: root,
             mode: "0644",
-            certbot_ready: "{{ bluemap_certbot.ready }}",
+            certbot_ready: "{{ certbot.ready }}",
             when: "{{ bluemap }}",
           }
         - {
@@ -871,8 +809,8 @@
             mode: "0644",
             description: "CertBot Renewal",
             type: oneshot,
-            execstart: "{% if bluemap_certbot is defined %}certbot certonly --nginx -d {{ bluemap_certbot.domain }} -m {{ bluemap_certbot.email }} --agree-tos --no-eff-email --key-type ecdsa -n{% endif %}",
-            when: "{{ bluemap and certbot.use }}",
+            execstart: "{% if certbot is defined %}certbot certonly --nginx -d {{ certbot.domain }} -m {{ certbot.email }} --agree-tos --no-eff-email --key-type ecdsa -n{% endif %}",
+            when: "{{ bluemap and certbot }}",
           }
         - {
             src: "templates/systemd/timer.j2",
@@ -882,7 +820,7 @@
             description: "CertBot Renewal",
             timer: "*-1/2-1 00:00:00",
             persistent: true,
-            when: "{{ bluemap and certbot.use }}",
+            when: "{{ bluemap and certbot }}",
           }
         - {
             src: "templates/scripts/continuous-deployment.sh.j2",
@@ -976,8 +914,8 @@
         immediate: yes
 
     - name: Enabling Certbot
-      command: certbot certonly --nginx -d {{ bluemap_certbot.domain }} -m {{ bluemap_certbot.email }} --agree-tos --no-eff-email --key-type ecdsa -n
-      when: bluemap and certbot.use and bluemap_certbot.ready == false
+      command: certbot certonly --nginx -d {{ certbot.domain }} -m {{ certbot.email }} --agree-tos --no-eff-email --key-type ecdsa -n
+      when: bluemap and certbot and certbot.ready == false
 
     - name: Updating Bluemap Nginx site
       template:
@@ -990,7 +928,7 @@
         - { certbot_ready: true }
       when:
         - bluemap
-        - (certbot.use and bluemap_certbot.ready == false) or certbot.use == false
+        - (certbot and certbot.ready == false) or certbot == false
 
     - name: Stopping and disabling unneeded systemd units
       systemd:
@@ -1140,7 +1078,7 @@
             name: "certbot-renew.timer",
             state: "restarted",
             enabled: "yes",
-            when: "{{ bluemap and certbot.use }}",
+            when: "{{ bluemap and certbot }}",
           }
         - {
             name: "grafana-agent.service",

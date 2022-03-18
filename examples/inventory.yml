@@ -1,8 +1,7 @@
 minecraft:
   hosts:
     minecraft-test:
-      certbot:
-        use: true
+      certbot: true
       graalvm: true
       grafana:
         loki:
@@ -15,39 +14,45 @@ minecraft:
           username:
         use: true
       instances:
-        - continuous_deployment: false
+        - bluemap: false
+          chunky: false
+          continuous_deployment: false
+          geyser: true
+          keepchunks: false
           name: minecraft-test
           new_server: true
           plugins:
             luckperms:
-              storage-method: yaml
+              config:
+                storage-method: yaml
           pufferfish: true
           restore_backup: false
+          restore_permissions: true
+          server:
           skip_backup: true
-          bluemap: false
-          chunky: false
-          geyser: true
-          keepchunks: false
-          viaversion: false
           version:
             build: 54
             full: 1.18.2
             major: 1.18
-        - continuous_deployment: false
+          viaversion: false
+        - bluemap: true
+          chunky: true
+          continuous_deployment: false
+          geyser: true
+          keepchunks: false
           name: minecraft
           new_server: true
           plugins:
             luckperms:
-              storage-method: yaml
+              config:
+                storage-method: yaml
           pufferfish: false
           restore_backup: false
+          restore_permissions: true
+          server:
           skip_backup: true
-          bluemap: true
-          chunky: false
-          geyser: true
-          keepchunks: false
-          viaversion: false
           version:
-            build: 259
+            build: 260
             full: 1.18.2
+          viaversion: false
       timezone: Europe/London
