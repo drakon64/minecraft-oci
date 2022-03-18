@@ -28,6 +28,7 @@ minecraft:
           pufferfish: true
           restore_backup: false
           restore_permissions: true
+          restore_remote_backup: false
           server:
           skip_backup: true
           version:
@@ -49,6 +50,7 @@ minecraft:
           pufferfish: false
           restore_backup: false
           restore_permissions: true
+          restore_remote_backup: false
           server:
           skip_backup: true
           version:
