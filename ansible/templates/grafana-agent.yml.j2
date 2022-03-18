@@ -8,14 +8,14 @@ integrations:
         target_label: instance
   prometheus_remote_write:
     - basic_auth:
-        password: {{ grafana.prometheus.password }}
+        password: {{ grafana.api_key }}
         username: {{ grafana.prometheus.username }}
       url: {{ grafana.prometheus.url }}
 logs:
   configs:
     - clients:
         - basic_auth:
-            password: {{ grafana.loki.password }}
+            password: {{ grafana.api_key }}
             username: {{ grafana.loki.username }}
           url: {{ grafana.loki.url }}
       name: integrations
@@ -54,7 +54,7 @@ metrics:
       name: minecraft
       remote_write:
         - basic_auth:
-            password: {{ grafana.prometheus.password }}
+            password: {{ grafana.api_key }}
             username: {{ grafana.prometheus.username }}
           url: {{ grafana.prometheus.url }}
       scrape_configs:

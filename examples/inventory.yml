@@ -3,14 +3,13 @@ minecraft:
     minecraft-test:
       graalvm: true
       grafana:
+        api_key:
         loki:
           password:
           url:
-          username:
         prometheus:
           password:
           url:
-          username:
         use: true
       instances:
         - chunky: false
