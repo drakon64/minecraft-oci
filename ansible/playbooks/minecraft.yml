@@ -420,7 +420,10 @@
         group: minecraft
         mode: 0644
       loop: "{{ instances }}"
-      when: item.bluemap.use
+      when:
+      - item.bluemap.use
+      - item.new_server or item.update_server
+      - item.restore_backup == false
 
     - name: Copying the server icon(s)
       copy:
@@ -430,7 +433,9 @@
         group: minecraft
         mode: u=rwX,g=rX,o=rX
       loop: "{{ instances }}"
-      when: item.server_icon.use
+      when:
+       - item.server_icon.use
+       - item.restore_backup == false
 
     - name: Downloading the server backup
       command: oci os object get --auth instance_principal --bucket-name {{ bucket_name }} --file minecraft-{{ item.name }}.tar --name minecraft-{{ item.name }}.tar
