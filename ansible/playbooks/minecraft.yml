@@ -472,7 +472,7 @@
             when: true,
           }
         - {
-            src: "files/sudoers",
+            src: "templates/sudoers.j2",
             dest: "/etc/sudoers.d/10-minecraft-user",
             owner: "root",
             mode: "0440",
