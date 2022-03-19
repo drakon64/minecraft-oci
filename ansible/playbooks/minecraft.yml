@@ -413,9 +413,9 @@
         loop_var: outer_item
 
     - name: Downloading the server backup
-      command: oci os object get --auth instance_principal --bucket-name {{ bucket_name }} --file minecraft.tar --name minecraft.tar
+      command: oci os object get --auth instance_principal --bucket-name {{ bucket_name }} --file minecraft-{{ item.name }}.tar --name minecraft-{{ item.name }}.tar
       args:
-        chdir: /opt/minecraft
+        chdir: /opt/minecraft/{{ item.name }}
       loop: "{{ instances }}"
       when:
         - item.restore_backup
@@ -424,8 +424,8 @@
 
     - name: Restoring the server backup repository
       unarchive:
-        src: /opt/minecraft/minecraft.tar
-        dest: /opt/minecraft/
+        src: /opt/minecraft/{{ item.name }}/minecraft.tar
+        dest: /opt/minecraft/{{ item.name }}
         owner: minecraft
         group: minecraft
         mode: u=rwX,g=rX,o=rX
@@ -438,13 +438,13 @@
 
     - name: Removing the downloaded backup
       file:
-        path: /opt/minecraft/minecraft.tar
+        path: /opt/minecraft/minecraft-{{ item.name }}.tar
         state: absent
 
     - name: Restoring the server backup
       shell: "yes 'y' | borg extract /opt/minecraft/{{ item.name }}/backup::{{ item.backup_version }}"
       args:
-        chdir: /opt/minecraft/server
+        chdir: /opt/minecraft/-{{ item.name }}/server
       loop: "{{ instances }}"
       when: item.restore_backup
       become_user: minecraft
