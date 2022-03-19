@@ -10,8 +10,8 @@
 # Forums: https://www.spigotmc.org/
 # Bug tracker: https://www.spigotmc.org/go/bugs
 
-{% if outer_item.plugins.commands is defined %}
-{% set combined_commands = (commands | combine(outer_item.plugins.commands, recursive=True)) %}
+{% if outer_item.commands is defined %}
+{% set combined_commands = (commands | combine(outer_item.commands, recursive=True)) %}
 {% else %}
 {% set combined_commands = commands %}
 {% endif %}

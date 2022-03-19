@@ -12,8 +12,8 @@
 # Bug tracker: https://www.spigotmc.org/go/bugs
 
 
-{% if outer_item.plugins.bukkit is defined %}
-{% set combined_bukkit = (bukkit | combine(outer_item.plugins.bukkit, recursive=True)) %}
+{% if outer_item.bukkit is defined %}
+{% set combined_bukkit = (bukkit | combine(outer_item.bukkit, recursive=True)) %}
 {% else %}
 {% set combined_bukkit = bukkit %}
 {% endif %}
