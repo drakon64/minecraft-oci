@@ -456,6 +456,7 @@
         owner: "{{ item.owner }}"
         group: "{% if item.group is defined %}{{ item.group }}{% else %}{{ item.owner }}{% endif %}"
         mode: "{{ item.mode }}"
+        validate: "{{ item.validate | default(omit) }}"
       loop:
         - {
             src: "files/scripts/dnf-reboot.sh",
@@ -477,6 +478,7 @@
             owner: "root",
             mode: "0400",
             when: true,
+            validate: "visudo -cf %s",
           }
         - {
             src: "templates/systemd/service.j2",
