@@ -475,7 +475,7 @@
             src: "templates/sudoers.j2",
             dest: "/etc/sudoers.d/10-minecraft-user",
             owner: "root",
-            mode: "0440",
+            mode: "0400",
             when: true,
           }
         - {
