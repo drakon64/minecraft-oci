@@ -1,0 +1,725 @@
+# yaml-language-server: $schema=https://json.schemastore.org/ansible-playbook.json
+
+- hosts: minecraft
+
+  vars:
+    memtotal_b: "{{ ansible_memtotal_mb * 1048576 }}"
+
+  tasks:
+    - name: Configuring sshd # Based on https://infosec.mozilla.org/guidelines/openssh and CIS Benchmarks
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: "^({{ item.regexp }}|#{{ item.regexp }})"
+        line: "{{ item.line }}"
+      loop:
+        - {
+            regexp: "KexAlgorithms",
+            line: "KexAlgorithms curve25519-sha256@libssh.org",
+          }
+        - { regexp: "Ciphers", line: "Ciphers chacha20-poly1305@openssh.com" }
+        - {
+            regexp: "MACs",
+            line: "MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,umac-128-etm@openssh.com",
+          }
+        - {
+            regexp: "AuthenticationMethods",
+            line: "AuthenticationMethods publickey",
+          }
+        - { regexp: "LogLevel", line: "LogLevel VERBOSE" }
+        - {
+            regexp: "Subsystem sftp",
+            line: "Subsystem sftp /usr/libexec/openssh/sftp-server -f AUTHPRIV -l INFO",
+          }
+        - { regexp: "PermitRootLogin", line: "PermitRootLogin no" }
+        - {
+            regexp: "UsePrivilegeSeparation",
+            line: "UsePrivilegeSeparation sandbox",
+          }
+        - { regexp: "LoginGraceTime", line: "LoginGraceTime 1m" }
+        - { regexp: "AllowTcpForwarding", line: "AllowTcpForwarding no" }
+        - { regexp: "MaxSessions", line: "MaxSessions 4" }
+        - { regexp: "X11Forwarding", line: "X11Forwarding no" }
+        - { regexp: "MaxAuthTries", line: "MaxAuthTries 4" }
+      register: sshd
+
+    - name: Checking if SSH short moduli needs disabling
+      command: awk '{ if ($5 < 3071) { exit 3 } else { exit 0 } }' /etc/ssh/moduli
+      changed_when: moduli.rc == 3
+      failed_when:
+        - moduli.rc != 0
+        - moduli.rc != 3
+      register: moduli
+
+    - name: Disabling SSH short moduli
+      command: awk -i inplace '$5 >= 3071' /etc/ssh/moduli
+      when: moduli.changed
+
+    - name: Restarting sshd
+      systemd:
+        name: sshd
+        state: restarted
+      when: sshd.changed or moduli.changed
+
+    - name: Stopping the existing instances
+      systemd:
+        name: minecraft-{{ item.name }}
+        state: stopped
+      loop: "{{ instances }}"
+      ignore_errors: yes # todo: fix this
+
+    - name: Backing up the existing server
+      shell: /opt/minecraft/backup.sh {{ item.name }}
+      args:
+        chdir: /opt/minecraft
+      loop: "{{ instances }}"
+      when:
+        - item.new_server or item.update_server
+        - item.skip_backup == false
+        - item.continuous_deployment == false
+
+    - name: Applying updates with Uptrack
+      command: uptrack-upgrade -y
+
+    - name: Enabling EPEL
+      yum_repository:
+        name: ol8_developer_EPEL
+        baseurl: https://yum$ociregion.$ocidomain/repo/OracleLinux/OL8/developer/EPEL/$basearch/
+        description: Oracle Linux $releasever EPEL Packages for Development ($basearch)
+        gpgcheck: yes
+        gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-oracle
+        enabled: yes
+        file: oracle-epel-ol8
+
+    - name: Installing updates
+      dnf:
+        name: "*"
+        state: latest
+        update_cache: yes
+
+    - name: Setting the timezone
+      timezone:
+        name: "{{ timezone }}"
+
+    - name: Installing packages
+      dnf:
+        name:
+          - git
+          - jq
+          - borgbackup
+          - python36-oci-cli
+          - tmux
+        state: present
+        update_cache: yes
+
+    - name: Installing Java
+      dnf:
+        name: "{{ item.name }}"
+        state: "{{ item.state }}"
+        update_cache: yes
+      loop:
+        - {
+            name: "java-17-openjdk-headless",
+            state: "{% if graalvm %}absent{% else %}present{% endif %}",
+          }
+        - {
+            name: "graalvm22-ee-17-jdk",
+            state: "{% if graalvm %}present{% else %}absent{% endif %}",
+          }
+
+    - name: Installing mcstatus
+      pip:
+        name: mcstatus
+        state: latest
+
+    - name: Installing and configuring Caddy
+      include_tasks: caddy.yml
+
+    - name: Getting the latest Grafana Agent release
+      shell: curl --silent https://api.github.com/repos/grafana/agent/releases/latest | jq -r '.assets[].browser_download_url | select(contains("{% if ansible_architecture == 'aarch64' %}arm64{% elif ansible_architecture == 'x86_64' %}amd64{% endif %}")) | select(contains("rpm"))'
+      register: grafanaagent_latest
+      when:
+        - grafana.use
+
+    - name: Installing Grafana Agent
+      dnf:
+        name: "{{ grafanaagent_latest.stdout }}"
+        state: present
+        disable_gpg_check: yes
+      when: grafana.use
+
+    - name: Creating the minecraft user
+      user:
+        name: minecraft
+        create_home: yes
+        home: /opt/minecraft
+        shell: /bin/bash
+
+    - name: Setting permissions for the Minecraft directory
+      file:
+        path: /opt/minecraft
+        owner: minecraft
+        group: minecraft
+        mode: u=rwX,g=rX,o=rX
+        recurse: yes
+        state: directory
+
+    - name: Checking the size of the swapfile
+      stat:
+        path: /.swapfile
+      register: swapfile
+
+    - name: Turning off swapfile
+      command: swapoff /.swapfile
+      changed_when: swapoff.rc == 0
+      failed_when:
+        - swapoff.rc != 0
+        - swapoff.rc != 255
+      when: swapfile.stat.size != memtotal_b
+      register: swapoff
+
+    - name: Removing the existing swapfile
+      file:
+        path: /.swapfile
+        state: absent
+      when: swapfile.stat.size != memtotal_b
+
+    - name: Creating swapfile to match system memory
+      command: fallocate -l {{ memtotal_b }} /.swapfile
+      when: swapfile.stat.size != memtotal_b
+
+    - name: Setting permissions for the swapfile
+      file:
+        path: /.swapfile
+        owner: root
+        group: root
+        mode: 0600
+
+    - name: Formatting swapfile
+      command: mkswap /.swapfile
+      when: swapfile.stat.size != memtotal_b
+
+    - name: Changing vm.swappiness to 1 # Oracle Linux recommendation for SSD's
+      sysctl:
+        name: vm.swappiness
+        value: 1
+        reload: yes
+
+    - name: Turning on swapfile
+      command: swapon /.swapfile
+      when: swapfile.stat.size != memtotal_b
+
+    - name: Removing the existing server
+      file:
+        path: /opt/minecraft/{{ item.name }}/server
+        state: absent
+      loop: "{{ instances }}"
+      when: item.new_server
+
+    - name: Creating the server directory
+      file:
+        path: /opt/minecraft/{{ item.name }}/server
+        state: directory
+        owner: minecraft
+        group: minecraft
+        mode: 0755
+      loop: "{{ instances }}"
+
+    - name: Creating the server backup directory
+      file:
+        path: /opt/minecraft/{{ item.name }}/backup
+        state: directory
+        owner: minecraft
+        group: minecraft
+        mode: 0755
+      loop: "{{ instances }}"
+      when:
+        - item.continuous_deployment == false
+        - item.restore_backup == false
+
+    - name: Initialising the server backup repository
+      command: borg init -e none /opt/minecraft/{{ item.name }}/backup
+      changed_when: borg.rc == 0
+      failed_when:
+        - borg.rc != 0
+        - borg.rc != 2
+      register: borg
+      loop: "{{ instances }}"
+      when:
+        - item.continuous_deployment == false
+        - item.restore_backup == false
+      become_user: minecraft
+
+    - name: Setting the instance backup retention policy
+      copy:
+        content: "{{ item.backup_retention_days }}"
+        dest: /opt/minecraft/{{ item.name }}/backup_retention_days
+        owner: minecraft
+        group: minecraft
+        mode: 0644
+      loop: "{{ instances }}"
+
+    - name: Downloading Minecraft Paper server
+      get_url:
+        url: https://papermc.io/api/v2/projects/paper/versions/{{ item.version.full }}/builds/{{ item.version.build }}/downloads/paper-{{ item.version.full }}-{{ item.version.build }}.jar
+        dest: /opt/minecraft/{{ item.name }}/server/server.jar
+        owner: minecraft
+        group: minecraft
+        mode: 0644
+      loop: "{{ instances }}"
+      when:
+        - item.new_server or item.update_server
+        - item.restore_backup == false
+        - item.pufferfish == false
+
+    - name: Downloading Minecraft Pufferfish server
+      get_url:
+        url: https://ci.pufferfish.host/job/Pufferfish-{{ item.version.major }}/{{ item.version.build }}/artifact/build/libs/pufferfish-paperclip-{{ item.version.full }}-R0.1-SNAPSHOT-reobf.jar
+        dest: /opt/minecraft/{{ item.name }}/server/server.jar
+        owner: minecraft
+        group: minecraft
+        mode: 0644
+      loop: "{{ instances }}"
+      when:
+        - item.new_server or item.update_server
+        - item.restore_backup == false
+        - item.pufferfish
+
+    - name: Creating the plugin directories
+      include_tasks: plugin-directories.yml
+      loop: "{{ instances }}"
+      loop_control:
+        loop_var: outer_item
+
+    - name: Downloading TreeAssist
+      git:
+        repo: https://github.com/slipcor/TreeAssist.git
+        dest: /opt/minecraft/TreeAssist
+        depth: 1
+        single_branch: yes
+
+    - name: Configuring TreeAssist
+      copy:
+        src: /opt/minecraft/TreeAssist/src/main/resources/trees
+        dest: /opt/minecraft/{{ item.name }}/server/plugins/TreeAssist/
+        owner: minecraft
+        group: minecraft
+        mode: u=rwX,g=rX,o=rX
+        remote_src: yes
+      loop: "{{ instances }}"
+      when:
+        - item.new_server or item.update_server
+        - item.restore_backup == false
+
+    - name: Configuring the Minecraft server
+      include_tasks: server-config.yml
+      loop: "{{ instances }}"
+      loop_control:
+        loop_var: outer_item
+
+    - name: Getting the latest BlueMap release
+      shell: curl --silent "https://api.github.com/repos/BlueMap-Minecraft/BlueMap/releases/latest" | jq -r '.assets[].browser_download_url | select(contains("spigot"))'
+      register: bluemap_latest
+
+    - name: Getting the latest BlueMap-Floodgate release
+      shell: curl --silent "https://api.github.com/repos/TechnicJelle/BlueMapFloodgate/releases" | jq -r '.[0].assets[].browser_download_url'
+      register: bluemap_floodgate_latest
+
+    - name: Getting the latest Chunky release
+      shell: curl --silent https://ci.codemc.io/job/pop4959/job/Chunky/lastSuccessfulBuild/api/json | jq -r '.artifacts[0].fileName'
+      register: chunky_latest
+
+    - name: Getting the latest ViaVersion release
+      shell: curl --silent "https://api.github.com/repos/ViaVersion/ViaVersion/releases/latest" | jq -r '.assets[].browser_download_url'
+      register: viaversion_latest
+
+    - name: Getting the latest TabTPS release
+      shell: curl --silent https://api.github.com/repos/jpenilla/TabTPS/releases/latest | jq -r '.assets[].browser_download_url | select(contains("spigot"))'
+      register: tabtps_latest
+
+    - name: Getting the latest AppleSkinSpigot release
+      shell: curl --silent https://api.github.com/repos/jmattingley23/AppleSkinSpigot/releases/latest | jq -r '.assets[].browser_download_url'
+      register: appleskin_latest
+
+    - name: Getting the latest FloodgatePlaceholders release
+      shell: curl --silent https://api.github.com/repos/rtm516/FloodgatePlaceholders/releases/latest | jq -r '.assets[].browser_download_url'
+      register: floodgateplaceholders_latest
+
+    - name: Getting the latest PlaceholderAPI release
+      shell: curl --silent https://ci.extendedclip.com/job/PlaceholderAPI/lastSuccessfulBuild/api/json | jq -r '.artifacts[2].fileName'
+      register: placeholderapi_latest
+
+    - name: Getting the latest LuckPerms release
+      shell: curl --silent https://ci.lucko.me/job/LuckPerms/lastSuccessfulBuild/api/json | jq -r '.artifacts[0].fileName'
+      register: luckperms_latest
+
+    - name: Getting the latest UnifiedMetrics release
+      shell: curl --silent https://api.github.com/repos/Cubxity/UnifiedMetrics/releases/latest | jq -r '.assets[].browser_download_url | select(contains("bukkit")) | select(contains("asc") | not)'
+      register: unifiedmetrics_latest
+
+    - name: Downloading plugins
+      include_tasks: plugin-download.yml
+      loop: "{{ instances }}"
+      loop_control:
+        loop_var: outer_item
+
+    - name: Configuring LuckPerms permissions
+      include_tasks: luckperms.yml
+      loop: "{{ instances }}"
+      loop_control:
+        loop_var: outer_item
+
+    - name: Downloading the CustomCommandPrefix plugin
+      copy:
+        src: ../files/CustomCommandPrefix-1.0.jar
+        dest: /opt/minecraft/{{ item.name }}/server/plugins/CustomCommandPrefix.jar
+        owner: minecraft
+        group: minecraft
+        mode: 0644
+      loop: "{{ instances }}"
+      when:
+        - item.new_server or item.update_server
+        - item.geyser
+        - item.restore_backup == false
+
+    - name: Configuring the CustomCommandPrefix plugin
+      copy:
+        content: "prefix: '?'"
+        dest: /opt/minecraft/{{ item.name }}/server/plugins/CustomCommandPrefix/config.yml
+        owner: minecraft
+        group: minecraft
+        mode: 0644
+      loop: "{{ instances }}"
+      when:
+        - item.geyser
+        - item.restore_backup == false
+
+    - name: Downloading the LuckPermsChat plugin
+      copy:
+        src: ../files/LPC.jar
+        dest: /opt/minecraft/{{ item.name }}/server/plugins/LPC.jar
+        owner: minecraft
+        group: minecraft
+        mode: 0644
+      loop: "{{ instances }}"
+      when:
+        - item.geyser
+        - item.new_server or item.update_server
+        - item.restore_backup == false
+
+    - name: Downloading Bedrock resource packs
+      include_tasks: bedrock-rp.yml
+      loop: "{{ instances }}"
+      loop_control:
+        loop_var: outer_item
+
+    - name: Copying the BlueMap NoOreTexturePack
+      copy:
+        src: ../files/BlueMapNoOreTexturePack.zip
+        dest: /opt/minecraft/server/{{ item.name }}/plugins/BlueMap/resourcepacks/
+        owner: minecraft
+        group: minecraft
+        mode: 0644
+      loop: "{{ instances }}"
+      when: item.bluemap.use
+
+    - name: Copying the server icon(s)
+      copy:
+        src: "../files/java/{% if item.server_icon.random == false %}{{ item.name }}/server-icon.png{% else %}{{ item.name }}/server-icons{% endif %}"
+        dest: /opt/minecraft/{{ item.name }}/{% if item.server_icon.random == false %}server-icon.png{% endif %}
+        owner: minecraft
+        group: minecraft
+        mode: u=rwX,g=rX,o=rX
+      loop: "{{ instances }}"
+      when: item.server_icon.use
+
+    - name: Downloading the server backup
+      command: oci os object get --auth instance_principal --bucket-name {{ bucket_name }} --file minecraft-{{ item.name }}.tar --name minecraft-{{ item.name }}.tar
+      args:
+        chdir: /opt/minecraft/{{ item.name }}
+      loop: "{{ instances }}"
+      when:
+        - item.restore_backup
+        - item.restore_remote_backup
+      become_user: minecraft
+
+    - name: Restoring the server backup repository
+      unarchive:
+        src: /opt/minecraft/{{ item.name }}/minecraft.tar
+        dest: /opt/minecraft/{{ item.name }}
+        owner: minecraft
+        group: minecraft
+        mode: u=rwX,g=rX,o=rX
+        remote_src: yes
+      loop: "{{ instances }}"
+      when:
+        - item.restore_backup
+        - item.restore_remote_backup
+      become_user: minecraft
+
+    - name: Removing the downloaded backup
+      file:
+        path: /opt/minecraft/{{ item.name }}/minecraft-{{ item.name }}.tar
+        state: absent
+      loop: "{{ instances }}"
+
+    - name: Restoring the server backup
+      shell: "yes 'y' | borg extract /opt/minecraft/{{ item.name }}/backup::{{ item.backup_version }}"
+      args:
+        chdir: /opt/minecraft/-{{ item.name }}/server
+      loop: "{{ instances }}"
+      when: item.restore_backup
+      become_user: minecraft
+
+    - name: Copying scripts and systemd units
+      template:
+        src: "../{{ item.src }}"
+        dest: "{{ item.dest }}"
+        owner: "{{ item.owner }}"
+        group: "{% if item.group is defined %}{{ item.group }}{% else %}{{ item.owner }}{% endif %}"
+        mode: "{{ item.mode }}"
+        validate: "{{ item.validate | default(omit) }}"
+      loop:
+        - {
+            src: "files/scripts/dnf-reboot.sh",
+            dest: "/opt/minecraft/dnf-reboot.sh",
+            owner: "minecraft",
+            mode: "0755",
+            when: true,
+          }
+        - {
+            src: "files/scripts/stop.sh",
+            dest: "/opt/minecraft/stop.sh",
+            owner: "minecraft",
+            mode: "0755",
+            when: true,
+          }
+        - {
+            src: "templates/sudoers.j2",
+            dest: "/etc/sudoers.d/10-minecraft-user",
+            owner: "root",
+            mode: "0400",
+            when: true,
+            validate: "visudo -cf %s",
+          }
+        - {
+            src: "templates/scripts/backup.sh.j2",
+            dest: "/opt/minecraft/backup.sh",
+            owner: "minecraft",
+            mode: "0755",
+            when: true,
+          }
+        - {
+            src: "templates/systemd/service.j2",
+            dest: "/etc/systemd/system/tmux.service",
+            owner: "root",
+            mode: "0644",
+            description: "tmux",
+            type: "forking",
+            execstart: "/usr/bin/tmux new-session -d -s main",
+            execstop: "/usr/bin/tmux kill-session -t main",
+            user: "minecraft",
+            group: "minecraft",
+            when: true,
+          }
+        - {
+            src: "templates/systemd/service.j2",
+            dest: "/etc/systemd/system/minecraft-backup@.service",
+            owner: "root",
+            mode: "0644",
+            description: "Minecraft Server backup - %i",
+            type: "oneshot",
+            execstart: "/opt/minecraft/backup.sh %i restart",
+            user: "minecraft",
+            group: "minecraft",
+            when: true,
+          }
+        - {
+            src: "templates/systemd/timer.j2",
+            dest: "/etc/systemd/system/minecraft-backup@.timer",
+            owner: "root",
+            mode: "0644",
+            description: "Minecraft Server backup - %i",
+            timer: "6:00",
+            persistent: true,
+            when: true,
+          }
+        - {
+            src: "templates/systemd/service.j2",
+            dest: "/etc/systemd/system/dnf-upgrade.service",
+            owner: "root",
+            mode: "0644",
+            description: "DNF Upgrade",
+            type: "oneshot",
+            execstart: "/opt/minecraft/dnf-reboot.sh",
+            when: true,
+          }
+        - {
+            src: "templates/systemd/timer.j2",
+            dest: "/etc/systemd/system/dnf-upgrade.timer",
+            owner: "root",
+            mode: "0644",
+            description: "DNF Upgrade",
+            timer: "Tue 7:00",
+            persistent: true,
+            when: true,
+          }
+        - {
+            src: "templates/grafana-agent.yml.j2",
+            dest: "/etc/grafana-agent.yaml",
+            owner: root,
+            group: grafana-agent,
+            mode: "0640",
+            when: "{{ grafana.use }}",
+          }
+        - {
+            src: "templates/systemd/service.j2",
+            dest: "/etc/systemd/system/grafana-agent.service",
+            owner: "root",
+            mode: "0644",
+            description: "Monitoring system and forwarder",
+            execstart: "/usr/bin/grafana-agent --config.file /etc/grafana-agent.yaml",
+            type: "simple",
+            after: "network-online.target",
+            when: "{{ grafana.use }}",
+          }
+        - {
+            src: "files/scripts/server-icon.sh",
+            dest: "/opt/minecraft/server-icon.sh",
+            owner: "minecraft",
+            mode: "0755",
+            when: "{{ true }}",
+          }
+      when: item.when
+
+    - name: Copying systemd services
+      include_tasks: systemd.yml
+      loop: "{{ instances }}"
+      loop_control:
+        loop_var: outer_item
+
+    - name: Copying firewall rule
+      template:
+        src: ../templates/minecraft.xml.j2
+        dest: /etc/firewalld/services/minecraft.xml
+        owner: root
+        group: root
+        mode: 0644
+      register: firewall
+
+    - name: Reloading firewalld
+      command: firewall-cmd --reload
+      when: firewall.changed
+
+    - name: Allowing Minecraft through the firewall
+      firewalld:
+        service: minecraft
+        state: enabled
+        permanent: yes
+        immediate: yes
+
+    - name: Accepting the Minecraft Server EULA
+      copy:
+        content: eula=true
+        dest: /opt/minecraft/{{ item.name }}/server/eula.txt
+        owner: minecraft
+        group: minecraft
+        mode: 0644
+      loop: "{{ instances }}"
+      when:
+        - item.new_server
+        - item.restore_backup == false
+        - item.eula
+
+    - name: Creating directory for the SELinux module
+      file:
+        path: /opt/minecraft/selinux
+        state: directory
+        owner: minecraft
+        group: minecraft
+        mode: 0755
+
+    - name: Copying SELinux module
+      template:
+        src: ../templates/selinux.te.j2
+        dest: /opt/minecraft/selinux/minecraft.te
+        owner: minecraft
+        group: minecraft
+        mode: 0644
+      register: selinux
+
+    - name: Compiling SELinux module
+      command: checkmodule -M -m -o minecraft.mod minecraft.te
+      args:
+        chdir: /opt/minecraft/selinux
+      when: selinux.changed
+
+    - name: Packaging SELinux module
+      command: semodule_package -o minecraft.pp -m minecraft.mod
+      args:
+        chdir: /opt/minecraft/selinux
+      when: selinux.changed
+
+    - name: Loading SELinux module
+      command: semodule -i minecraft.pp
+      args:
+        chdir: /opt/minecraft/selinux
+      when: selinux.changed
+
+    - name: Starting the systemd units
+      systemd:
+        name: "{{ item.name }}"
+        state: "{{ item.state }}"
+        enabled: "{{ item.enabled }}"
+        daemon_reload: yes
+      loop:
+        - {
+            name: "tmux",
+            state: "restarted",
+            enabled: "true",
+            when: "{{ true }}",
+          }
+        - {
+            name: "dnf-upgrade.timer",
+            state: "restarted",
+            enabled: "yes",
+            when: "{{ true }}",
+          }
+        - {
+            name: "grafana-agent.service",
+            state: "restarted",
+            enabled: "true",
+            when: "{{ grafana.use }}",
+          }
+      when: item.when
+
+    - name: Starting Caddy
+      systemd:
+        name: caddy
+        state: started
+        enabled: yes
+        daemon_reload: yes
+      register: caddy
+
+    - name: Reloading Caddy
+      systemd:
+        name: caddy
+        state: reloaded
+        enabled: yes
+        daemon_reload: yes
+      when: caddy.changed == false
+
+    - name: Starting the Minecraft instances
+      systemd:
+        name: minecraft-{{ item.name }}
+        state: started
+        enabled: yes
+        daemon_reload: yes
+      loop: "{{ instances }}"
+
+    - name: Starting the Minecraft backup timers
+      systemd:
+        name: minecraft-backup@{{ item.name }}.timer
+        state: started
+        enabled: yes
+        daemon_reload: yes
+      loop: "{{ instances }}"

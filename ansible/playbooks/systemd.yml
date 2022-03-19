@@ -1,0 +1,24 @@
+- name: Copying systemd services for {{ outer_item.name }}
+  template:
+    src: "../templates/systemd/service.j2"
+    dest: "/etc/systemd/system/{{ item.dest }}"
+    owner: root
+    group: root
+    mode: 0644
+  loop:
+    - {
+        dest: "minecraft-{{ outer_item.name }}.service",
+        description: "Minecraft Server - {{ outer_item.name }}",
+        partof: "tmux.service",
+        after: "tmux.service",
+        type: "oneshot",
+        remainafterexit: yes,
+        execstartpre: "{% if outer_item.server_icon.random %}-/opt/minecraft/server-icon.sh{% endif %}",
+        execstart: "/usr/bin/tmux new-session -s minecraft-{{ outer_item.name }} -d '{{ command }}'",
+        execstop: "/opt/minecraft/stop.sh {{ outer_item.name }}",
+        workingdirectory: "/opt/minecraft/{{ outer_item.name }}/server",
+        user: "minecraft",
+        group: "minecraft",
+        nice: "-20",
+        oomscoreadjust: "-1000",
+      }

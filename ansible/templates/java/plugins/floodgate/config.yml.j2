@@ -1,9 +1,7 @@
-{% if global_overrides.floodgate is defined and overrides.floodgate is defined %}
-{{ floodgate | combine(global_overrides.floodgate, overrides.floodgate, recursive=True) | to_nice_yaml(indent=2) }}
-{% elif global_overrides.floodgate is defined %}
-{{ floodgate | combine(global_overrides.floodgate, recursive=True) | to_nice_yaml(indent=2) }}
-{% elif overrides.floodgate is defined %}
-{{ floodgate | combine(overrides.floodgate, recursive=True) | to_nice_yaml(indent=2) }}
+{% if outer_item.plugins.floodgate is defined %}
+{% set combined_floodgate = (floodgate | combine(outer_item.plugins.floodgate, recursive=True)) %}
 {% else %}
-{{ floodgate | to_nice_yaml(indent=2) }}
+{% set combined_floodgate = floodgate %}
 {% endif %}
+
+{{ combined_floodgate | to_nice_yaml(indent=2) }}

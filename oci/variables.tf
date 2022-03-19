@@ -53,39 +53,6 @@ variable "oci_volume_size" {
   default = 50
 }
 
-variable "minecraft_java_port" {
-  type    = number
-  default = 25565
-}
-
-variable "geyser" {
-  type    = bool
-  default = true
-}
-
-variable "bluemap" {
-  type    = bool
-  default = true
-}
-
-variable "bluemap_https" {
-  type    = bool
-  default = false
-}
-
-variable "bluemap_domain_zone" {
-  type = string
-}
-
-variable "bluemap_domain_name" {
-  type = string
-}
-
-variable "minecraft_bedrock_port" {
-  type    = number
-  default = 19132
-}
-
 variable "oci_compute_display_name" {
   type    = string
   default = "minecraft"

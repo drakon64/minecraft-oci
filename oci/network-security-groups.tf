@@ -20,68 +20,10 @@ resource "oci_core_network_security_group_security_rule" "ssh" {
   }
 }
 
-resource "oci_core_network_security_group_security_rule" "java" {
+resource "oci_core_network_security_group_security_rule" "all" {
   network_security_group_id = oci_core_network_security_group.minecraft.id
   direction                 = "INGRESS"
-  protocol                  = 6
+  protocol                  = "all"
   source                    = "0.0.0.0/0"
   source_type               = "CIDR_BLOCK"
-
-  tcp_options {
-    destination_port_range {
-      min = var.minecraft_java_port
-      max = var.minecraft_java_port
-    }
-  }
-}
-
-resource "oci_core_network_security_group_security_rule" "bedrock" {
-  network_security_group_id = oci_core_network_security_group.minecraft.id
-  direction                 = "INGRESS"
-  protocol                  = 17
-  source                    = "0.0.0.0/0"
-  source_type               = "CIDR_BLOCK"
-
-  udp_options {
-    destination_port_range {
-      min = var.minecraft_bedrock_port
-      max = var.minecraft_bedrock_port
-    }
-  }
-
-  count = var.geyser ? 1 : 0
-}
-
-resource "oci_core_network_security_group_security_rule" "bluemap_http" {
-  network_security_group_id = oci_core_network_security_group.minecraft.id
-  direction                 = "INGRESS"
-  protocol                  = 6
-  source                    = "0.0.0.0/0"
-  source_type               = "CIDR_BLOCK"
-
-  tcp_options {
-    destination_port_range {
-      min = 80
-      max = 80
-    }
-  }
-
-  count = var.bluemap ? 1 : 0
-}
-
-resource "oci_core_network_security_group_security_rule" "bluemap_https" {
-  network_security_group_id = oci_core_network_security_group.minecraft.id
-  direction                 = "INGRESS"
-  protocol                  = 6
-  source                    = "0.0.0.0/0"
-  source_type               = "CIDR_BLOCK"
-
-  tcp_options {
-    destination_port_range {
-      min = 443
-      max = 443
-    }
-  }
-
-  count = var.bluemap_https ? 1 : 0
 }

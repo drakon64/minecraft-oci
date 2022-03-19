@@ -8,14 +8,14 @@ integrations:
         target_label: instance
   prometheus_remote_write:
     - basic_auth:
-        password: {{ grafana.prometheus.password }}
+        password: {{ grafana.api_key }}
         username: {{ grafana.prometheus.username }}
       url: {{ grafana.prometheus.url }}
 logs:
   configs:
     - clients:
         - basic_auth:
-            password: {{ grafana.loki.password }}
+            password: {{ grafana.api_key }}
             username: {{ grafana.loki.username }}
           url: {{ grafana.loki.url }}
       name: integrations
@@ -54,13 +54,15 @@ metrics:
       name: minecraft
       remote_write:
         - basic_auth:
-            password: {{ grafana.prometheus.password }}
+            password: {{ grafana.api_key }}
             username: {{ grafana.prometheus.username }}
           url: {{ grafana.prometheus.url }}
       scrape_configs:
-        - job_name: {{ inventory_hostname }}
+{% for i in instances %}
+        - job_name: {{ i.name }}
           static_configs:
-            - targets: ["127.0.0.1:9100"]
+            - targets: ["127.0.0.1:{{ i.plugins.unifiedmetrics.driver.prometheus.http.port }}"]
+{% endfor %}
   global:
     scrape_interval: 5s
   wal_directory: /tmp/grafana-agent-wal

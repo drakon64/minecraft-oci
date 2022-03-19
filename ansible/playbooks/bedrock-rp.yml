@@ -1,0 +1,14 @@
+# yaml-language-server: $schema=https://json.schemastore.org/ansible-playbook.json
+
+- name: Downloading Bedrock resource packs for {{ outer_item.name }}
+  get_url:
+    url: "{{ item }}"
+    dest: /opt/minecraft/{{ outer_item.name }}/server/plugins/Geyser-Spigot/packs/
+    owner: minecraft
+    group: minecraft
+    mode: 0644
+  loop: "{{ outer_item.bedrock_resource_packs }}"
+  when:
+    - outer_item.geyser
+    - outer_item.bedrock_resource_packs is defined
+    - outer_item.restore_backup == false

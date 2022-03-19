@@ -1,0 +1,68 @@
+#yaml-language-server: $schema=https://json.schemastore.org/ansible-playbook.json
+
+- name: Creating the plugin directories for {{ outer_item.name }}
+  file:
+    path: /opt/minecraft/{{ outer_item.name }}/server/plugins/{{ item.path }}
+    state: "{{ item.state }}"
+    owner: minecraft
+    group: minecraft
+    mode: 0755
+  loop:
+    - {
+        path: BlueMap,
+        state: "{% if outer_item.bluemap.use %}directory{% else %}absent{% endif %}",
+      }
+    - {
+        path: BlueMapFloodgate,
+        state: "{% if outer_item.bluemap.use and outer_item.geyser %}directory{% else %}absent{% endif %}",
+      }
+    - {
+        path: Chunky,
+        state: "{% if outer_item.chunky %}directory{% else %}absent{% endif %}",
+      }
+    - {
+        path: CustomCommandPrefix,
+        state: "{% if outer_item.geyser %}directory{% else %}absent{% endif %}",
+      }
+    - {
+        path: floodgate,
+        state: "{% if outer_item.geyser %}directory{% else %}absent{% endif %}",
+      }
+    - {
+        path: Geyser-Spigot/packs,
+        state: "{% if outer_item.geyser %}directory{% else %}absent{% endif %}",
+      }
+    - { path: TreeAssist/trees, state: directory }
+    - { path: LuckPerms, state: directory }
+    - {
+        path: LuckPerms/json-storage/groups,
+        state: "{% if outer_item.plugins.luckperms.config['storage-method'] == 'json' %}directory{% else %}absent{% endif %}",
+      }
+    - {
+        path: LuckPerms/json-storage/users,
+        state: "{% if outer_item.plugins.luckperms.config['storage-method'] == 'json' %}directory{% else %}absent{% endif %}",
+      }
+    - {
+        path: LuckPerms/yaml-storage/groups,
+        state: "{% if outer_item.plugins.luckperms.config['storage-method'] == 'yaml' %}directory{% else %}absent{% endif %}",
+      }
+    - {
+        path: LuckPerms/yaml-storage/users,
+        state: "{% if outer_item.plugins.luckperms.config['storage-method'] == 'yaml' %}directory{% else %}absent{% endif %}",
+      }
+    - { path: LPC, state: directory }
+    - { path: PlaceholderAPI/expansions, state: directory }
+    - {
+        path: UnifiedMetrics,
+        state: "{% if grafana.use %}directory{% else %}absent{% endif %}",
+      }
+    - {
+        path: UnifiedMetrics/driver,
+        state: "{% if grafana.use %}directory{% else %}absent{% endif %}",
+      }
+    - {
+        path: ViaVersion,
+        state: "{% if outer_item.viaversion %}directory{% else %}absent{% endif %}",
+      }
+  when:
+    - outer_item.restore_backup == false

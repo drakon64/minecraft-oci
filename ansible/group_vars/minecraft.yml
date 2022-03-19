@@ -50,11 +50,6 @@ bluemap:
     maxConnectionCount: 100
     port: 8100
     webroot: bluemap/web
-bluemapfloodgate:
-  cacheHours: 72
-  configVersion_DO_NOT_TOUCH: 2
-  useTydiumCraftSkinAPI: false
-  verboseLogging: true
 bukkit:
   aliases: now-in-commands.yml
   chunk-gc:
@@ -1033,6 +1028,25 @@ treeassist:
       Thickness: 1
       Uneven Bottom: false
     Version: 7.2052
+unifiedmetrics:
+  driver:
+    prometheus:
+      http:
+        authentication:
+          password: "password"
+          scheme: "NONE"
+          username: "username"
+        host: "0.0.0.0"
+        port: 9100
+      mode: "HTTP"
+      pushGateway:
+        authentication:
+          password: "password"
+          scheme: "NONE"
+          username: "username"
+        interval: 10
+        job: "unifiedmetrics"
+        url: "http://pushgateway:9091"
 viaversion:
   1_13-tab-complete-delay: 0
   anti-xray-patch: true

@@ -1,74 +1,104 @@
 minecraft:
   hosts:
-    minecraft:
-      backup_retention_days: 30
-      backup_version:
-      bucket_name: minecraft-backup
-      build: 217
-      cd_bucket_name:
-      continuous_deployment: false
-      eula: true
-      graalvm: false
-      grafana:
-        loki:
-          password:
-          url:
-          username:
-        prometheus:
-          password:
-          url:
-          username:
-        use: true
-      new_server: false
-      pufferfish: false
-      restore_backup: false
-      restore_permissions: true
-      restore_remote_backup: false
-      skip_backup: false
-      timezone: Europe/London
-      update_server: true
-      use_bluemap: true
-      use_chunky: true
-      use_geyser: true
-      use_keepchunks: false
-      use_viaversion: true
-      vanilla: false
-      version: 1.18.2
-      zgc: false
     minecraft-test:
-      backup_version:
-      bluemap_certbot:
-        domain: bluemap.example.com
-        email: example@example.com
-        ready: false
-        use: true
       bucket_name: minecraft-test-backup
-      cd_bucket_name: minecraft-backup
-      continuous_deployment: true
-      eula: true
       graalvm: true
       grafana:
+        api_key:
         loki:
-          password:
           url:
           username:
         prometheus:
-          password:
           url:
           username:
         use: true
-      new_server: true
-      pufferfish: true
-      restore_backup: false
-      restore_permissions: true
-      skip_backup: true
+      instances:
+        - backup_retention_days: 1
+          bluemap:
+            domain: minecraft-test.example.com
+            use: false
+          chunky: false
+          continuous_deployment: false
+          eula: true
+          geyser: true
+          heap: 5G
+          name: test
+          new_server: true
+          ops:
+          plugins:
+            bluemap:
+              webserver:
+                port: 8101
+            geyser:
+              bedrock:
+                port: 19133
+            luckperms:
+              config:
+                storage-method: yaml
+            unifiedmetrics:
+              driver:
+                prometheus:
+                  http:
+                    port: 9101
+          pufferfish: true
+          restore_backup: false
+          restore_permissions: true
+          restore_remote_backup: false
+          server:
+            server-port: 25566
+          server_icon:
+            random: no
+            use: no
+          skip_backup: true
+          update_server: false
+          version:
+            build: 54
+            full: 1.18.2
+            major: 1.18
+          viaversion: false
+          whitelist:
+        - backup_retention_days: 30
+          bluemap:
+            domain: minecraft.example.com
+            use: true
+          chunky: true
+          continuous_deployment: false
+          eula: true
+          geyser: true
+          heap: 5G
+          name: prod
+          new_server: false
+          ops:
+          plugins:
+            bluemap:
+              webserver:
+                port: 8100
+            geyser:
+              bedrock:
+                port: 19132
+            luckperms:
+              config:
+                storage-method: yaml
+            unifiedmetrics:
+              driver:
+                prometheus:
+                  http:
+                    port: 9100
+          pufferfish: false
+          restore_backup: false
+          restore_permissions: true
+          restore_remote_backup: false
+          server:
+            server-port: 25565
+          server_icon:
+            random: yes
+            use: yes
+          skip_backup: true
+          update_server: false
+          version:
+            build: 260
+            full: 1.18.2
+          viaversion: false
+          whitelist:
       timezone: Europe/London
-      update_server: false
-      use_bluemap: false
-      use_chunky: false
-      use_geyser: true
-      use_keepchunks: false
-      use_viaversion: false
-      vanilla: false
-      version: 1.18.2
-      zgc: true
+      use_bluemap: true

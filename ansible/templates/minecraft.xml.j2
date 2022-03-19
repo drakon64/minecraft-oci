@@ -1,16 +1,14 @@
 <service>
 	<short>Minecraft</short>
 	<description>Explore your own unique world, survive the night, and create anything you can imagine!</description>
-	<port protocol="tcp" port="{{ final_server_overrides['server-port'] }}"/>
-{% if vanilla == false %}
+{% for i in instances %}
+	<port protocol="tcp" port="{{ i.server['server-port'] }}"/>
+{% if i.geyser %}
+	<port protocol="udp" port="{{ i.plugins.geyser.bedrock.port }}"/>
+{% endif %}
+{% endfor %}
 {% if use_bluemap %}
-{% if bluemap_certbot.use %}
-	<port protocol="tcp" port="443"/>
-{% endif %}
 	<port protocol="tcp" port="80"/>
-{% endif %}
-{% if use_geyser %}
-	<port protocol="udp" port="19132"/>
-{% endif %}
+	<port protocol="tcp" port="443"/>
 {% endif %}
 </service>

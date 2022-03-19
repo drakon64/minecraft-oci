@@ -1,0 +1,7 @@
+{% if outer_item.plugins.bluemap.render is defined %}
+{% set combined_bluemap_render = (bluemap.render | combine(outer_item.plugins.bluemap.render, recursive=True)) %}
+{% else %}
+{% set combined_bluemap_render = bluemap.render %}
+{% endif %}
+
+{{ combined_bluemap_render | to_nice_json(indent=2) }}

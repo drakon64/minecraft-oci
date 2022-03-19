@@ -1,7 +1,8 @@
 #!/bin/bash
 
-if [ -s stop ]
+if [ -s "$1"/stop ]
 then
-	tmux send-keys -t minecraft kick SPACE @p SPACE "$(< stop)" ENTER
+	tmux send-keys -t minecraft-"$1" kick SPACE @p SPACE "$(< "$1"/stop)" ENTER
 fi
-systemctl stop minecraft
+
+tmux send-keys -t minecraft-"$1" stop ENTER

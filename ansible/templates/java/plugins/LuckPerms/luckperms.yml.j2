@@ -1,5 +1,5 @@
-{% if final_luckperms_overrides['storage-method'] == "json" %}
+{% if outer_item.plugins.luckperms.config['storage-method'] == "json" %}
 {{ item | to_nice_json(indent=2) }}
-{% elif final_luckperms_overrides['storage-method'] == "yaml" %}
+{% elif outer_item.plugins.luckperms.config['storage-method'] == "yaml" %}
 {{ item | to_nice_yaml(indent=2) }}
 {% endif %}

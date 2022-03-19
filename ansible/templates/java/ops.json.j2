@@ -1,1 +1,3 @@
-{{ ops | to_nice_json(indent=2) }}
+{% if outer_item.ops is defined %}
+{{ outer_item.ops | to_nice_json(indent=2) }}
+{% endif %}

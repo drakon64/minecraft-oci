@@ -1,0 +1,25 @@
+# yaml-language-server: $schema=https://json.schemastore.org/ansible-playbook.json
+
+- name: Enabling the Caddy COPR
+  yum_repository:
+    name: copr:copr.fedorainfracloud.org:group_caddy:caddy
+    description: Copr repo for caddy owned by @caddy
+    baseurl: https://download.copr.fedorainfracloud.org/results/@caddy/caddy/epel-8-$basearch/
+    gpgcheck: yes
+    gpgkey: https://download.copr.fedorainfracloud.org/results/@caddy/caddy/pubkey.gpg
+    repo_gpgcheck: no
+    enabled: yes
+
+- name: Installing Caddy
+  dnf:
+    name: caddy
+    state: present
+    update_cache: yes
+
+- name: Configuring Caddy
+  template:
+    src: ../templates/Caddyfile.j2
+    dest: /etc/caddy/Caddyfile
+    owner: caddy
+    group: caddy
+    mode: 0644

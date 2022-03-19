@@ -1,9 +1,7 @@
-{% if global_overrides.treeassist.config is defined and overrides.treeassist.config is defined %}
-{{ treeassist.config | combine(global_overrides.treeassist.config, overrides.treeassist.config, recursive=True) | to_nice_yaml(indent=2) }}
-{% elif global_overrides.treeassist.config is defined %}
-{{ treeassist.config | combine(global_overrides.treeassist.config, recursive=True) | to_nice_yaml(indent=2) }}
-{% elif overrides.treeassist.config is defined %}
-{{ treeassist.config | combine(overrides.treeassist.config, recursive=True) | to_nice_yaml(indent=2) }}
+{% if outer_item.plugins.treeassist.config is defined %}
+{% set combined_luckperms = (treeassist.config | combine(outer_item.plugins.treeassist.config, recursive=True)) %}
 {% else %}
-{{ treeassist.config | to_nice_yaml(indent=2) }}
+{% set combined_luckperms = treeassist.config %}
 {% endif %}
+
+{{ combined_luckperms | to_nice_yaml(indent=2) }}

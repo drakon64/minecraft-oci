@@ -1,24 +1,26 @@
-#!/bin/sh
+#!/bin/bash
 
 DATE=$(date -I'minutes')
+BACKUP_RETENTION_DAYS=$(< "$1"/backup_retendion_days)
 
-printf "Server closed for backup." > server/stop
+printf "Server closed for backup." > "$1"/server/stop
 sudo systemctl stop minecraft
-rm server/stop
+rm "$1"/server/stop
 
-cp -pr --reflink=always server/ server-backup/
+cp -pr --reflink=always "$1"/server/ "$1"/server-backup/
 
-if [ "$1" = "restart" ]
+if [ "$2" = "restart" ]
 then
 	sudo systemctl start minecraft
 fi
 
 SCRIPT_PWD=$(pwd)
-cd server-backup || exit 1
-yes 'y' | borg create --compression zstd{% if use_bluemap %} --pattern=+bluemap/web/data/markers.json --pattern=-bluemap{% endif %} --pattern=-cache "$SCRIPT_PWD"/backup::"$DATE" .
+cd "$1"/server-backup || exit 1
+yes 'y' | borg create --compression zstd --pattern=-cache "$SCRIPT_PWD"/"$1"/backup::"$DATE" .
 cd "$SCRIPT_PWD" || exit 1
-rm -fr server-backup
+rm -fr "$1"/server-backup
 
-borg prune --keep-within {{ backup_retention_days }}d --save-space backup
+borg prune --keep-within "$BACKUP_RETENTION_DAYS"d --save-space "$1"/backup
 
-tar cf - backup/ | oci os object put --auth instance_principal --bucket-name {{ bucket_name }} --file - --name "minecraft.tar" --force
+cd "$1" || exit
+tar cf - backup/ | oci os object put --auth instance_principal --bucket-name {{ bucket_name }} --file - --name minecraft-"$1".tar --force

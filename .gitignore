@@ -1,5 +1,6 @@
 .DS_Store
 ansible/inventory.yml
+ansible/inventory-instance.yml
 
 ansible/files/*.jar
 ansible/files/*.zip
