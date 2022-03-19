@@ -19,4 +19,11 @@ resource "oci_core_default_security_list" "default-security-list" {
     source_type = "CIDR_BLOCK"
     stateless   = false
   }
+
+  egress_security_rules {
+    protocol         = "all"
+    destination      = "0.0.0.0/0"
+    destination_type = "CIDR_BLOCK"
+    stateless        = false
+  }
 }
