@@ -40,7 +40,6 @@ minecraft:
                 prometheus:
                   http:
                     port: 9101
-          pufferfish: true
           restore_backup: false
           restore_permissions: true
           restore_remote_backup: false
@@ -51,6 +50,7 @@ minecraft:
             use: no
           skip_backup: true
           update_server: false
+          use_pufferfish: true
           version:
             build: 54
             full: 1.18.2
@@ -84,7 +84,6 @@ minecraft:
                 prometheus:
                   http:
                     port: 9100
-          pufferfish: false
           restore_backup: false
           restore_permissions: true
           restore_remote_backup: false
@@ -95,6 +94,7 @@ minecraft:
             use: yes
           skip_backup: true
           update_server: false
+          use_pufferfish: false
           version:
             build: 260
             full: 1.18.2

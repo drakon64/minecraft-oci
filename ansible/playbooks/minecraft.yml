@@ -269,7 +269,7 @@
       when:
         - item.new_server or item.update_server
         - item.restore_backup == false
-        - item.pufferfish == false
+        - item.use_pufferfish == false
 
     - name: Downloading Minecraft Pufferfish server
       get_url:
@@ -282,7 +282,7 @@
       when:
         - item.new_server or item.update_server
         - item.restore_backup == false
-        - item.pufferfish
+        - item.use_pufferfish
 
     - name: Creating the plugin directories
       include_tasks: plugin-directories.yml
