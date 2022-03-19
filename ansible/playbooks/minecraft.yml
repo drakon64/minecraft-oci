@@ -237,7 +237,7 @@
         - item.restore_backup == false
 
     - name: Initialising the server backup repository
-      command: borg init -e none /opt/minecraft/backup
+      command: borg init -e none /opt/minecraft/{{ item.name }}/backup
       changed_when: borg.rc == 0
       failed_when:
         - borg.rc != 0
