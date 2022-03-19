@@ -552,18 +552,6 @@
           }
         - {
             src: "templates/systemd/service.j2",
-            dest: "/etc/systemd/system/chunky-monitor.service",
-            owner: "root",
-            mode: "0644",
-            description: "Chunky Monitor",
-            execstart: "/opt/minecraft/chunky-monitor",
-            user: "minecraft",
-            type: "oneshot",
-            after: "minecraft.service",
-            when: "true",
-          }
-        - {
-            src: "templates/systemd/service.j2",
             dest: "/etc/systemd/system/grafana-agent.service",
             owner: "root",
             mode: "0644",
@@ -572,16 +560,6 @@
             type: "simple",
             after: "network-online.target",
             when: "{{ grafana.use }}",
-          }
-        - {
-            src: "templates/systemd/timer.j2",
-            dest: "/etc/systemd/system/chunky-monitor.timer",
-            owner: "root",
-            mode: "0644",
-            description: "Chunky Monitor",
-            timer: "*:*:0",
-            after: "minecraft.service",
-            when: "true",
           }
       when: item.when
 
