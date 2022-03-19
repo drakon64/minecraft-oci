@@ -1,13 +1,13 @@
-- name: Copying systemd units for {{ outer_item.name }}
+- name: Copying systemd services for {{ outer_item.name }}
   template:
     src: "../templates/systemd/service.j2"
-    dest: "{{ item.dest }}"
+    dest: "/etc/systemd/system/{{ item.dest }}"
     owner: root
     group: root
     mode: 0644
   loop:
     - {
-        dest: "/etc/systemd/system/minecraft-{{ outer_item.name }}.service",
+        dest: "minecraft-{{ outer_item.name }}.service",
         description: "Minecraft Server - {{ outer_item.name }}",
         partof: "tmux.service",
         after: "tmux.service",
