@@ -495,22 +495,22 @@
           }
         - {
             src: "templates/systemd/service.j2",
-            dest: "/etc/systemd/system/minecraft-backup.service",
+            dest: "/etc/systemd/system/minecraft-backup@.service",
             owner: "root",
             mode: "0644",
-            description: "Minecraft server backup",
+            description: "Minecraft Server backup - %i",
             type: "oneshot",
-            execstart: "/opt/minecraft/backup.sh restart",
+            execstart: "/opt/minecraft/backup.sh %i restart",
             user: "minecraft",
             group: "minecraft",
             when: true,
           }
         - {
             src: "templates/systemd/timer.j2",
-            dest: "/etc/systemd/system/minecraft-backup.timer",
-            owner: root,
+            dest: "/etc/systemd/system/minecraft-backup@.timer",
+            owner: "root",
             mode: "0644",
-            description: "Minecraft server backup",
+            description: "Minecraft Server backup - %i",
             timer: "6:00",
             persistent: true,
             when: true,
@@ -666,12 +666,6 @@
             when: "{{ true }}",
           }
         - {
-            name: "minecraft-backup.timer",
-            state: "restarted",
-            enabled: "true",
-            when: "{{ true }}",
-          }
-        - {
             name: "dnf-upgrade.timer",
             state: "restarted",
             enabled: "yes",
@@ -704,6 +698,14 @@
     - name: Starting the Minecraft instances
       systemd:
         name: minecraft-{{ item.name }}
+        state: started
+        enabled: yes
+        daemon_reload: yes
+      loop: "{{ instances }}"
+
+    - name: Starting the Minecraft backup timers
+      systemd:
+        name: minecraft-backup@{{ item.name }}.timer
         state: started
         enabled: yes
         daemon_reload: yes
