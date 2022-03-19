@@ -60,16 +60,12 @@
         state: restarted
       when: sshd.changed or moduli.changed
 
-    - name: Gathering Facts about services
-      service_facts:
-
     - name: Stopping the existing instances
       systemd:
-        name: "{{ item.name }}"
+        name: minecraft-{{ item.name }}
         state: stopped
       loop: "{{ instances }}"
-      when:
-        - ansible_facts.services['minecraft-{{ item.name }}.service'] is defined
+      ignore_errors: yes # todo: fix this
 
     - name: Backing up the existing server
       shell: /opt/minecraft/backup.sh {{ item.name }}
