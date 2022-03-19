@@ -9,6 +9,14 @@
     mode: 0755
   loop:
     - {
+        path: BlueMap,
+        state: "{% if outer_item.bluemap.use %}directory{% else %}absent{% endif %}",
+      }
+    - {
+        path: BlueMapFloodgate,
+        state: "{% if outer_item.bluemap.use and outer_item.geyser %}directory{% else %}absent{% endif %}",
+      }
+    - {
         path: Chunky,
         state: "{% if outer_item.chunky %}directory{% else %}absent{% endif %}",
       }

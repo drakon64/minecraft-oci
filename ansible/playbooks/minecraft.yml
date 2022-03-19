@@ -308,6 +308,14 @@
       loop_control:
         loop_var: outer_item
 
+    - name: Getting the latest BlueMap release
+      shell: curl --silent "https://api.github.com/repos/BlueMap-Minecraft/BlueMap/releases/latest" | jq -r '.assets[].browser_download_url | select(contains("spigot"))'
+      register: bluemap_latest
+
+    - name: Getting the latest BlueMap-Floodgate release
+      shell: curl --silent "https://api.github.com/repos/TechnicJelle/BlueMapFloodgate/releases" | jq -r '.[0].assets[].browser_download_url'
+      register: bluemap_floodgate_latest
+
     - name: Getting the latest Chunky release
       shell: curl --silent https://ci.codemc.io/job/pop4959/job/Chunky/lastSuccessfulBuild/api/json | jq -r '.artifacts[0].fileName'
       register: chunky_latest

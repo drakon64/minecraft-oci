@@ -13,6 +13,13 @@
     - { src: commands.yml, when: "{{ true }}" }
     - { src: spigot.yml, when: "{{ true }}" }
     - { src: paper.yml, when: "{{ true }}" }
+    - { src: plugins/BlueMap/core.conf, when: "{{ outer_item.bluemap.use }}" }
+    - { src: plugins/BlueMap/plugin.conf, when: "{{ outer_item.bluemap.use }}" }
+    - { src: plugins/BlueMap/render.conf, when: "{{ outer_item.bluemap.use }}" }
+    - {
+        src: plugins/BlueMap/webserver.conf,
+        when: "{{ outer_item.bluemap.use }}",
+      }
     - { src: plugins/Chunky/config.yml, when: "{{ outer_item.chunky }}" }
     - { src: plugins/floodgate/config.yml, when: "{{ outer_item.geyser }}" }
     - { src: plugins/Geyser-Spigot/config.yml, when: "{{ outer_item.geyser }}" }

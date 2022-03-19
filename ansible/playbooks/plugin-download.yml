@@ -34,6 +34,16 @@
         when: "{{ outer_item.chunky }}",
       }
     - {
+        url: "{% if use_bluemap %}{{ bluemap_latest.stdout }}{% endif %}",
+        dest: BlueMap.jar,
+        when: "{{ outer_item.bluemap.use }}",
+      }
+    - {
+        url: "{% if outer_item.bluemap.use %}{{ bluemap_floodgate_latest.stdout }}{% endif %}",
+        dest: BlueMapFloodgate.jar,
+        when: "{{ outer_item.bluemap.use and outer_item.geyser }}",
+      }
+    - {
         url: "{{ appleskin_latest.stdout }}",
         dest: AppleSkinSpigot.jar,
         when: "{{ true }}",

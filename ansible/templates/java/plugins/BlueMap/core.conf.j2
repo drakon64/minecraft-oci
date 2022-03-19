@@ -1,0 +1,7 @@
+{% if outer_item.plugins.bluemap.core is defined %}
+{% set combined_bluemap_core = (bluemap.core | combine(outer_item.plugins.bluemap.core, recursive=True)) %}
+{% else %}
+{% set combined_bluemap_core = bluemap.core %}
+{% endif %}
+
+{{ combined_bluemap_core | to_nice_json(indent=2) }}
