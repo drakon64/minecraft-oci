@@ -63,6 +63,16 @@ variable "geyser" {
   default = true
 }
 
+variable "bluemap" {
+  type    = bool
+  default = true
+}
+
+variable "bluemap_https" {
+  type    = bool
+  default = false
+}
+
 variable "minecraft_bedrock_port" {
   type    = number
   default = 19132
