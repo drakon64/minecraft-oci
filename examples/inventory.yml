@@ -1,6 +1,7 @@
 minecraft:
   hosts:
     minecraft-test:
+      bucket_name: minecraft-test-backup
       graalvm: true
       grafana:
         api_key:
@@ -12,15 +13,16 @@ minecraft:
           username:
         use: true
       instances:
-        - bluemap:
-            domain:
-            use: true
+        - backup_retention_days: 1
+          bluemap:
+            domain: minecraft-test.example.com
+            use: false
           chunky: false
           continuous_deployment: false
           eula: true
           geyser: true
           heap: 5G
-          name: minecraft-test
+          name: test
           new_server: true
           ops:
           plugins:
@@ -44,23 +46,28 @@ minecraft:
           restore_remote_backup: false
           server:
             server-port: 25566
+          server_icon:
+            random: no
+            use: no
           skip_backup: true
+          update_server: false
           version:
             build: 54
             full: 1.18.2
             major: 1.18
           viaversion: false
           whitelist:
-        - bluemap:
-            domain:
+        - backup_retention_days: 30
+          bluemap:
+            domain: minecraft.example.com
             use: true
           chunky: true
           continuous_deployment: false
           eula: true
           geyser: true
           heap: 5G
-          name: minecraft
-          new_server: true
+          name: prod
+          new_server: false
           ops:
           plugins:
             bluemap:
@@ -83,7 +90,11 @@ minecraft:
           restore_remote_backup: false
           server:
             server-port: 25565
+          server_icon:
+            random: yes
+            use: yes
           skip_backup: true
+          update_server: false
           version:
             build: 260
             full: 1.18.2
