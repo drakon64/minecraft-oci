@@ -65,8 +65,9 @@
 
     - name: Stopping the existing server
       systemd:
-        name: minecraft
+        name: "{{ item }}"
         state: stopped
+      loop: "{{ instances.name }}"
       when:
         - ansible_facts.services['minecraft.service'] is defined
 
