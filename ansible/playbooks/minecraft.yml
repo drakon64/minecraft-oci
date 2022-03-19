@@ -412,6 +412,16 @@
       loop_control:
         loop_var: outer_item
 
+    - name: Copying the server icon(s)
+      copy:
+        src: "../files/java/{% if item.random_server_icon == false %}{{ item.name }}/server-icon.png{% else %}{{ item.name }}/server-icons{% endif %}"
+        dest: /opt/minecraft/{{ item.name }}/{% if item.random_server_icon == false %}server-icon.png{% endif %}
+        owner: minecraft
+        group: minecraft
+        mode: u=rwX,g=rX,o=rX
+      loop: "{{ instances }}"
+      ignore_errors: yes
+
     - name: Downloading the server backup
       command: oci os object get --auth instance_principal --bucket-name {{ bucket_name }} --file minecraft-{{ item.name }}.tar --name minecraft-{{ item.name }}.tar
       args:
@@ -561,6 +571,13 @@
             type: "simple",
             after: "network-online.target",
             when: "{{ grafana.use }}",
+          }
+        - {
+            src: "files/scripts/server-icon.sh",
+            dest: "/opt/minecraft/server-icon.sh",
+            owner: "minecraft",
+            mode: "0755",
+            when: "{{ true }}",
           }
       when: item.when
 
