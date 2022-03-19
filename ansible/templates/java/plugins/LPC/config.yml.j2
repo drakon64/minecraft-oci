@@ -1,7 +1,7 @@
 {% if outer_item.plugins.luckperms.chat is defined %}
-{% set combined_luckperms.chat = (luckperms.chat | combine(outer_item.plugins.luckperms.chat, recursive=True)) %}
+{% set combined_luckperms_chat = (luckperms.chat | combine(outer_item.plugins.luckperms.chat, recursive=True)) %}
 {% else %}
-{% set combined_luckperms.chat = luckperms.chat %}
+{% set combined_luckperms_chat = luckperms.chat %}
 {% endif %}
 
-{{ combined_luckperms.chat | to_nice_yaml(indent=2) }}
+{{ combined_luckperms_chat | to_nice_yaml(indent=2) }}
