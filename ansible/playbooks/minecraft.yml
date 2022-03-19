@@ -249,6 +249,15 @@
         - item.restore_backup == false
       become_user: minecraft
 
+    - name: Setting the instance backup retention policy
+      copy:
+        content: "{{ item.backup_retention_days }}"
+        dest: /opt/minecraft/{{ item.name }}/backup_retention_days
+        owner: minecraft
+        group: minecraft
+        mode: 0644
+      loop: "{{ instances }}"
+
     - name: Downloading Minecraft Paper server
       get_url:
         url: https://papermc.io/api/v2/projects/paper/versions/{{ item.version.full }}/builds/{{ item.version.build }}/downloads/paper-{{ item.version.full }}-{{ item.version.build }}.jar
