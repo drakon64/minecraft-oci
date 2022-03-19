@@ -65,11 +65,11 @@
 
     - name: Stopping the existing instances
       systemd:
-        name: "{{ item }}"
+        name: "{{ item.name }}"
         state: stopped
-      loop: "{{ instances.name }}"
+      loop: "{{ instances }}"
       when:
-        - ansible_facts.services['minecraft.service'] is defined
+        - ansible_facts.services['minecraft-{{ item.name }}.service'] is defined
 
     - name: Backing up the existing server
       shell: /opt/minecraft/backup.sh {{ item.name }}
@@ -659,12 +659,6 @@
             when: "{{ true }}",
           }
         - {
-            name: "caddy",
-            state: "restarted",
-            enabled: "true",
-            when: "{{ bluemap }}",
-          }
-        - {
             name: "minecraft-backup.timer",
             state: "restarted",
             enabled: "true",
@@ -683,6 +677,22 @@
             when: "{{ grafana.use }}",
           }
       when: item.when
+
+    - name: Starting Caddy
+      systemd:
+        name: caddy
+        state: started
+        enabled: yes
+        daemon_reload: yes
+      register: caddy
+
+    - name: Reloading Caddy
+      systemd:
+        name: caddy
+        state: reloaded
+        enabled: yes
+        daemon_reload: yes
+      when: caddy.changed == false
 
     - name: Starting the Minecraft instances
       systemd:
