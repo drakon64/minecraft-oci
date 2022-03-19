@@ -581,7 +581,7 @@
           }
       when: item.when
 
-    - name: Copying systemd units
+    - name: Copying systemd services
       include_tasks: systemd.yml
       loop: "{{ instances }}"
       loop_control:
