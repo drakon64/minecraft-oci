@@ -438,8 +438,9 @@
 
     - name: Removing the downloaded backup
       file:
-        path: /opt/minecraft/minecraft-{{ item.name }}.tar
+        path: /opt/minecraft/{{ item.name }}/minecraft-{{ item.name }}.tar
         state: absent
+      loop: "{{ instances }}"
 
     - name: Restoring the server backup
       shell: "yes 'y' | borg extract /opt/minecraft/{{ item.name }}/backup::{{ item.backup_version }}"
