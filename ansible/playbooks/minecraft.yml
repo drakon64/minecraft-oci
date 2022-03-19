@@ -135,6 +135,9 @@
         name: mcstatus
         state: latest
 
+    - name: Installing and configuring Caddy
+      include_tasks: caddy.yml
+
     - name: Getting the latest Grafana Agent release
       shell: curl --silent https://api.github.com/repos/grafana/agent/releases/latest | jq -r '.assets[].browser_download_url | select(contains("{% if ansible_architecture == 'aarch64' %}arm64{% elif ansible_architecture == 'x86_64' %}amd64{% endif %}")) | select(contains("rpm"))'
       register: grafanaagent_latest
