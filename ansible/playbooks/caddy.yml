@@ -5,7 +5,6 @@
     name: copr:copr.fedorainfracloud.org:group_caddy:caddy
     description: Copr repo for caddy owned by @caddy
     baseurl: https://download.copr.fedorainfracloud.org/results/@caddy/caddy/epel-8-$basearch/
-    skip_if_unavailable: yes
     gpgcheck: yes
     gpgkey: https://download.copr.fedorainfracloud.org/results/@caddy/caddy/pubkey.gpg
     repo_gpgcheck: no
