@@ -63,7 +63,7 @@
     - name: Gathering Facts about services
       service_facts:
 
-    - name: Stopping the existing server
+    - name: Stopping the existing instances
       systemd:
         name: "{{ item }}"
         state: stopped
