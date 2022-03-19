@@ -315,6 +315,7 @@ paper:
     log-player-ip-addresses: true
     loggers:
       deobfuscate-stacktraces: true
+      use-rgb-for-named-text-colors: true
     max-joins-per-tick: 3
     max-player-auto-save-per-tick: -1
     packet-limiter:
@@ -365,6 +366,7 @@ paper:
       - settings.velocity-support.secret
     history-interval: 300
     history-length: 3600
+    really-enabled: false
     server-name: Unknown Server
     server-name-privacy: false
     url: https://timings.aikar.co/
@@ -566,7 +568,6 @@ paper:
       portal-search-vanilla-dimension-scaling: true
       prevent-moving-into-unloaded-chunks: false
       prevent-tnt-from-moving-in-water: false
-      remove-corrupt-tile-entities: false
       should-remove-dragon: false
       show-sign-click-command-failure-msgs-to-player: false
       skeleton-horse-thunder-spawn-chance: 0.01
