@@ -1,0 +1,13 @@
+# Pufferfish Configuration
+# Check out Pufferfish Host for maximum performance server hosting: https://pufferfish.host
+# Join our Discord for support: https://discord.gg/reZw4vQV9H
+# Download new builds at https://ci.pufferfish.host/job/Pufferfish
+{% if outer_item.pufferfish is defined %}
+{% if pufferfish %}
+{% set combined_pufferfish = (pufferfish | combine(pufferfish, outer_item.pufferfish, recursive=True)) %}
+{% else %}
+{% set combined_pufferfish = (pufferfish | combine(outer_item.pufferfish, recursive=True)) %}
+{% set combined_pufferfish = pufferfish %}
+{% endif %}
+
+{{ combined_pufferfish | to_nice_yaml(indent=2) }}

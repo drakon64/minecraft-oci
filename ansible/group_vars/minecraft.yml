@@ -613,6 +613,27 @@ paper:
         minimum: default
       zombie-villager-infection-chance: -1.0
       zombies-target-turtle-eggs: true
+pufferfish:
+  dab:
+    activation-dist-mod: 8
+    blacklisted-entities: []
+    enabled: true
+    max-tick-freq: 20
+    start-distance: 12
+  enable-async-mob-spawning: true
+  enable-books: true
+  enable-suffocation-optimization: true
+  flare:
+    url: https://flare.airplane.gg
+  inactive-goal-selector-throttle: true
+  info:
+    version: '1.0'
+  projectile:
+    max-loads-per-projectile: 10
+    max-loads-per-tick: 10
+  sentry-dsn: ''
+  web-services:
+    token: ''
 server:
   allow-flight: "false"
   allow-nether: "true"
