@@ -18,6 +18,10 @@
     header Content-Type application/json
     header Content-Encoding gzip
   }
+
+  tls {
+    issuer acme https://acme-staging-v02.api.letsencrypt.org/directory
+  }
 }
 {% endif %}
 {% endfor %}
