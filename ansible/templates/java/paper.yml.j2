@@ -10,10 +10,8 @@
 # Website: https://papermc.io/
 # Docs: https://paper.readthedocs.org/
 {% if outer_item.paper is defined %}
-{% if pufferfish %}
-{% set combined_paper = (paper | combine(pufferfish, outer_item.paper, recursive=True)) %}
-{% else %}
 {% set combined_paper = (paper | combine(outer_item.paper, recursive=True)) %}
+{% else %}
 {% set combined_paper = paper %}
 {% endif %}
 
