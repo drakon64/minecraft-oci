@@ -481,6 +481,13 @@
             validate: "visudo -cf %s",
           }
         - {
+            src: "templates/scripts/backup.sh.j2",
+            dest: "/opt/minecraft/backup.sh",
+            owner: "minecraft",
+            mode: "0755",
+            when: true,
+          }
+        - {
             src: "templates/systemd/service.j2",
             dest: "/etc/systemd/system/tmux.service",
             owner: "root",
