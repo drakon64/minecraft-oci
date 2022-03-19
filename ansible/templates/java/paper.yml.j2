@@ -9,7 +9,6 @@
 # IRC: #paper @ irc.esper.net ( https://webchat.esper.net/?channels=paper )
 # Website: https://papermc.io/
 # Docs: https://paper.readthedocs.org/
-
 {% if outer_item.plugins.paper is defined %}
 {% set combined_paper = (paper | combine(outer_item.plugins.paper, recursive=True)) %}
 {% else %}

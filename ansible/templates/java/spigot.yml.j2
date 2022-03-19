@@ -9,7 +9,6 @@
 #
 # Discord: https://www.spigotmc.org/go/discord
 # Forums: http://www.spigotmc.org/
-
 {% if outer_item.plugins.spigot is defined %}
 {% set combined_spigot = (spigot | combine(outer_item.plugins.spigot, recursive=True)) %}
 {% else %}
