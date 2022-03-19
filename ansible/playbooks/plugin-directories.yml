@@ -50,8 +50,6 @@
         path: LuckPerms/yaml-storage/users,
         state: "{% if outer_item.plugins.luckperms.config['storage-method'] == 'yaml' %}directory{% else %}absent{% endif %}",
       }
-    - { path: LPC, state: directory }
-    - { path: PlaceholderAPI/expansions, state: directory }
     - {
         path: UnifiedMetrics,
         state: "{% if grafana.use %}directory{% else %}absent{% endif %}",

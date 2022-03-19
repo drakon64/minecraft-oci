@@ -54,16 +54,6 @@
         when: "{{ true }}",
       }
     - {
-        url: "{% if outer_item.geyser %}{{ floodgateplaceholders_latest.stdout }}{% endif %}",
-        dest: PlaceholderAPI/expansions/FloodgatePlaceholders.jar,
-        when: "{{ outer_item.geyser }}",
-      }
-    - {
-        url: "{% if outer_item.geyser %}https://ci.extendedclip.com/job/PlaceholderAPI/lastSuccessfulBuild/artifact/build/libs/{{ placeholderapi_latest.stdout }}{% endif %}",
-        dest: PlaceholderAPI.jar,
-        when: "{{ outer_item.geyser }}",
-      }
-    - {
         url: "https://ci.lucko.me/job/LuckPerms/lastSuccessfulBuild/artifact/bukkit/loader/build/libs/{{ luckperms_latest.stdout }}",
         dest: LuckPerms.jar,
         when: "{{ true }}",

@@ -24,7 +24,6 @@
     - { src: plugins/floodgate/config.yml, when: "{{ outer_item.geyser }}" }
     - { src: plugins/Geyser-Spigot/config.yml, when: "{{ outer_item.geyser }}" }
     - { src: plugins/LuckPerms/config.yml, when: "{{ true }}" }
-    - { src: plugins/LPC/config.yml, when: "{{ true }}" }
     - { src: plugins/TreeAssist/config.yml, when: "{{ true }}" }
     - { src: plugins/TreeAssist/trees/default.yml, when: "{{ true }}" }
     - {

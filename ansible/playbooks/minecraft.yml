@@ -393,19 +393,6 @@
         - item.geyser
         - item.restore_backup == false
 
-    - name: Downloading the LuckPermsChat plugin
-      copy:
-        src: ../files/LPC.jar
-        dest: /opt/minecraft/{{ item.name }}/server/plugins/LPC.jar
-        owner: minecraft
-        group: minecraft
-        mode: 0644
-      loop: "{{ instances }}"
-      when:
-        - item.geyser
-        - item.new_server or item.update_server
-        - item.restore_backup == false
-
     - name: Downloading Bedrock resource packs
       include_tasks: bedrock-rp.yml
       loop: "{{ instances }}"
