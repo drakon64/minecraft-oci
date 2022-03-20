@@ -1,8 +1,5 @@
 [Unit]
 Description={{ item.description }}
-{% if item.partof is defined %}
-PartOf={{ item.partof }}
-{% endif %}
 {% if item.after is defined %}
 After={{ item.after }}
 {% else %}
@@ -11,9 +8,6 @@ After=network.target
 
 [Service]
 Type={{ item.type }}
-{% if item.remainafterexit is defined %}
-RemainAfterExit={{ item.remainafterexit }}
-{% endif %}
 {% if item.execstartpre is defined %}
 ExecStartPre={{ item.execstartpre }}
 {% endif %}
@@ -25,6 +19,9 @@ ExecStop={{ item.execstop }}
 WorkingDirectory={{ item.workingdirectory }}
 {% else %}
 WorkingDirectory=/opt/minecraft
+{% endif %}
+{% if item.pidfile is defined %}
+PIDFile={{ item.pidfile }}
 {% endif %}
 {% if item.restart is defined %}
 Restart={{ item.restart }}
