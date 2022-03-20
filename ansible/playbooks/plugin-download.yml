@@ -69,8 +69,8 @@
         when: "{{ grafana.use }}",
       }
   when:
-    - outer_item.new_server or outer_item.update_server
-    - outer_item.restore_backup == false
+    - outer_item.state.new_server or outer_item.state.update_server
+    - outer_item.state.backup.restore_backup == false
     - item.when
 
 - name: Removing plugins for {{ outer_item.name }}

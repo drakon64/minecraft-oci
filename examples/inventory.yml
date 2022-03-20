@@ -1,7 +1,7 @@
 minecraft:
   hosts:
-    minecraft-test:
-      bucket_name: minecraft-test-backup
+    minecraft.example.com:
+      bucket_name: minecraft-backup
       graalvm: true
       grafana:
         api_key:
@@ -13,62 +13,20 @@ minecraft:
           username:
         use: true
       instances:
-        - backup_retention_days: 1
-          bluemap:
-            domain: minecraft-test.example.com
-            use: false
+        - bluemap:
+            domain: minecraft.example.com
+            use: true
           chunky: false
           continuous_deployment: false
           eula: true
           geyser: true
           heap: 5G
-          name: test
-          new_server: true
-          ops:
-          plugins:
-            bluemap:
-              webserver:
-                port: 8101
-            geyser:
-              bedrock:
-                port: 19133
-            luckperms:
-              config:
-                storage-method: yaml
-            unifiedmetrics:
-              driver:
-                prometheus:
-                  http:
-                    port: 9101
-          restore_backup: false
-          restore_permissions: true
-          restore_remote_backup: false
-          server:
-            server-port: 25566
-          server_icon:
-            random: no
-            use: no
-          skip_backup: true
-          update_server: false
-          use_pufferfish: true
-          version:
-            build: 54
-            full: 1.18.2
-            major: 1.18
-          viaversion: false
-          whitelist:
-        - backup_retention_days: 30
-          bluemap:
-            domain: minecraft.example.com
-            use: true
-          chunky: true
-          continuous_deployment: false
-          eula: true
-          geyser: true
-          heap: 5G
           name: prod
-          new_server: false
           ops:
+            - bypassesPlayerLimit:
+              level:
+              name:
+              uuid:
           plugins:
             bluemap:
               webserver:
@@ -84,21 +42,29 @@ minecraft:
                 prometheus:
                   http:
                     port: 9100
-          restore_backup: false
           restore_permissions: true
-          restore_remote_backup: false
           server:
             server-port: 25565
           server_icon:
-            random: yes
-            use: yes
-          skip_backup: true
-          update_server: false
-          use_pufferfish: false
+            random: no
+            use: no
+          state:
+            backup:
+              backup_retention_days: 30
+              backup_version:
+              restore_backup: false
+              restore_remote_backup: false
+            new_server: false
+            skip_backup: false
+            update_server: false
+          use_pufferfish: true
           version:
-            build: 260
+            build: 56
             full: 1.18.2
+            major: 1.18
           viaversion: false
           whitelist:
+            - name:
+              uuid:
       timezone: Europe/London
       use_bluemap: true

@@ -11,7 +11,7 @@
   when:
     - outer_item.plugins.luckperms.config['storage-method'] == "json" or outer_item.plugins.luckperms.config['storage-method'] == "yaml"
     - outer_item.plugins.luckperms.users is defined
-    - outer_item.restore_backup == false
+    - outer_item.state.backup.restore_backup == false
     - outer_item.restore_permissions
 
 - name: Configuring the LuckPerms groups for {{ outer_item.name }}
@@ -25,5 +25,5 @@
   when:
     - outer_item.plugins.luckperms.config['storage-method'] == "json" or outer_item.plugins.luckperms.config['storage-method'] == "yaml"
     - outer_item.plugins.luckperms.groups is defined
-    - outer_item.restore_backup == false
+    - outer_item.state.backup.restore_backup == false
     - outer_item.restore_permissions

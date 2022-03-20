@@ -73,8 +73,8 @@
         chdir: /opt/minecraft
       loop: "{{ instances }}"
       when:
-        - item.new_server or item.update_server
-        - item.skip_backup == false
+        - item.state.new_server or item.state.update_server
+        - item.state.skip_backup == false
         - item.continuous_deployment == false
 
     - name: Applying updates with Uptrack
@@ -213,7 +213,7 @@
         path: /opt/minecraft/{{ item.name }}/server
         state: absent
       loop: "{{ instances }}"
-      when: item.new_server
+      when: item.state.new_server
 
     - name: Creating the server directory
       file:
@@ -234,7 +234,7 @@
       loop: "{{ instances }}"
       when:
         - item.continuous_deployment == false
-        - item.restore_backup == false
+        - item.state.backup.restore_backup == false
 
     - name: Initialising the server backup repository
       command: borg init -e none /opt/minecraft/{{ item.name }}/backup
@@ -246,12 +246,12 @@
       loop: "{{ instances }}"
       when:
         - item.continuous_deployment == false
-        - item.restore_backup == false
+        - item.state.backup.restore_backup == false
       become_user: minecraft
 
     - name: Setting the instance backup retention policy
       copy:
-        content: "{{ item.backup_retention_days }}"
+        content: "{{ item.state.backup.backup_retention_days }}"
         dest: /opt/minecraft/{{ item.name }}/backup_retention_days
         owner: minecraft
         group: minecraft
@@ -267,8 +267,8 @@
         mode: 0644
       loop: "{{ instances }}"
       when:
-        - item.new_server or item.update_server
-        - item.restore_backup == false
+        - item.state.new_server or item.state.update_server
+        - item.state.state.backup.restore_backup == false
         - item.use_pufferfish == false
 
     - name: Downloading Minecraft Pufferfish server
@@ -280,8 +280,8 @@
         mode: 0644
       loop: "{{ instances }}"
       when:
-        - item.new_server or item.update_server
-        - item.restore_backup == false
+        - item.state.new_server or item.state.update_server
+        - item.state.state.backup.restore_backup == false
         - item.use_pufferfish
 
     - name: Creating the plugin directories
@@ -307,8 +307,8 @@
         remote_src: yes
       loop: "{{ instances }}"
       when:
-        - item.new_server or item.update_server
-        - item.restore_backup == false
+        - item.state.new_server or item.state.update_server
+        - item.state.state.backup.restore_backup == false
 
     - name: Configuring the Minecraft server
       include_tasks: server-config.yml
@@ -377,9 +377,9 @@
         mode: 0644
       loop: "{{ instances }}"
       when:
-        - item.new_server or item.update_server
+        - item.state.new_server or item.state.update_server
         - item.geyser
-        - item.restore_backup == false
+        - item.state.state.backup.restore_backup == false
 
     - name: Configuring the CustomCommandPrefix plugin
       copy:
@@ -391,7 +391,7 @@
       loop: "{{ instances }}"
       when:
         - item.geyser
-        - item.restore_backup == false
+        - item.state.backup.restore_backup == false
 
     - name: Downloading Bedrock resource packs
       include_tasks: bedrock-rp.yml
@@ -409,7 +409,7 @@
       loop: "{{ instances }}"
       when:
        - item.server_icon.use
-       - item.restore_backup == false
+       - item.state.backup.restore_backup == false
 
     - name: Downloading the server backup
       shell: oci os object get --auth instance_principal --bucket-name {{ bucket_name }} --file - --name minecraft-{{ item.name }}.tar | tar xf -
@@ -417,16 +417,16 @@
         chdir: /opt/minecraft/{{ item.name }}
       loop: "{{ instances }}"
       when:
-        - item.restore_backup
-        - item.restore_remote_backup
+        - item.state.backup.restore_backup
+        - item.state.backup.restore_remote_backup
       become_user: minecraft
 
     - name: Restoring the server backup
-      shell: "yes 'y' | borg extract /opt/minecraft/{{ item.name }}/backup::{{ item.backup_version }}"
+      shell: "yes 'y' | borg extract /opt/minecraft/{{ item.name }}/backup::{{ item.state.backup.backup_version }}"
       args:
         chdir: /opt/minecraft/{{ item.name }}/server
       loop: "{{ instances }}"
-      when: item.restore_backup
+      when: item.state.backup.restore_backup
       become_user: minecraft
 
     - name: Copying scripts and systemd units
@@ -572,8 +572,8 @@
         mode: 0644
       loop: "{{ instances }}"
       when:
-        - item.new_server
-        - item.restore_backup == false
+        - item.state.new_server
+        - item.state.backup.restore_backup == false
         - item.eula
 
     - name: Creating directory for the SELinux module

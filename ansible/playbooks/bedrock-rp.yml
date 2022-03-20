@@ -11,4 +11,4 @@
   when:
     - outer_item.geyser
     - outer_item.bedrock_resource_packs is defined
-    - outer_item.restore_backup == false
+    - outer_item.state.backup.restore_backup == false
