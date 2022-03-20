@@ -399,19 +399,6 @@
       loop_control:
         loop_var: outer_item
 
-    - name: Copying the BlueMap NoOreTexturePack
-      copy:
-        src: ../files/BlueMapNoOreTexturePack.zip
-        dest: /opt/minecraft/server/{{ item.name }}/plugins/BlueMap/resourcepacks/
-        owner: minecraft
-        group: minecraft
-        mode: 0644
-      loop: "{{ instances }}"
-      when:
-      - item.bluemap.use
-      - item.new_server or item.update_server
-      - item.restore_backup == false
-
     - name: Copying the server icon(s)
       copy:
         src: "../files/java/{% if item.server_icon.random == false %}{{ item.name }}/server-icon.png{% else %}{{ item.name }}/server-icons{% endif %}"
