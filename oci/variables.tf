@@ -58,6 +58,36 @@ variable "oci_compute_display_name" {
   default = "minecraft"
 }
 
+variable "java_port_min" {
+  type    = number
+  default = 25565
+}
+
+variable "java_port_max" {
+  type    = number
+  default = 25565
+}
+
+variable "geyser" {
+  type    = bool
+  default = true
+}
+
+variable "bedrock_port_min" {
+  type    = number
+  default = 19132
+}
+
+variable "bedrock_port_max" {
+  type    = number
+  default = 19132
+}
+
+variable "bluemap" {
+  type    = bool
+  default = true
+}
+
 variable "oci_image_id" {
   type    = string
   default = "ocid1.image.oc1.uk-london-1.aaaaaaaadkpfeh6hnzt64adsw6xr4moayfjk33xi5d4l3ps4hdwwpcaqbjhq"
