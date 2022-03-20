@@ -1,0 +1,23 @@
+#!/bin/sh -e
+
+pid(){
+	PID=$(sudo -u minecraft tmux list-panes -a -F "#{session_name} #{pane_pid}" | grep minecraft-{{ outer_item.name }} | awk '{ print $2 }')
+}
+
+if [ $# -eq 0 ]
+then
+	mkdir -p /run/minecraft
+	sudo -u minecraft tmux new-session -s minecraft-{{ outer_item.name }} -d '{{ command }}'
+	sleep 1
+	pid
+	echo "$PID" > /run/minecraft/{{ outer_item.name }}
+	sleep 1
+elif [ "$1" = "post" ]
+then
+	pid
+	sleep 10
+	echo "$PID" > /sys/fs/cgroup/systemd/system.slice/minecraft-{{ outer_item.name }}.service/cgroup.procs
+else
+	echo "Unknown argument"
+	exit 1
+fi

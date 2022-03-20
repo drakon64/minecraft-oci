@@ -482,19 +482,6 @@
           }
         - {
             src: "templates/systemd/service.j2",
-            dest: "/etc/systemd/system/tmux.service",
-            owner: "root",
-            mode: "0644",
-            description: "tmux",
-            type: "forking",
-            execstart: "/usr/bin/tmux new-session -d -s main",
-            execstop: "/usr/bin/tmux kill-session -t main",
-            user: "minecraft",
-            group: "minecraft",
-            when: true,
-          }
-        - {
-            src: "templates/systemd/service.j2",
             dest: "/etc/systemd/system/minecraft-backup@.service",
             owner: "root",
             mode: "0644",
@@ -644,12 +631,6 @@
         enabled: "{{ item.enabled }}"
         daemon_reload: yes
       loop:
-        - {
-            name: "tmux",
-            state: "restarted",
-            enabled: "true",
-            when: "{{ true }}",
-          }
         - {
             name: "dnf-upgrade.timer",
             state: "restarted",
