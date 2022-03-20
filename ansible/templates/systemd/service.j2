@@ -12,6 +12,9 @@ Type={{ item.type }}
 ExecStartPre={{ item.execstartpre }}
 {% endif %}
 ExecStart={{ item.execstart }}
+{% if item.execstartpost is defined %}
+ExecStartPost={{ item.execstartpost }}
+{% endif %}
 {% if item.execstop is defined %}
 ExecStop={{ item.execstop }}
 {% endif %}

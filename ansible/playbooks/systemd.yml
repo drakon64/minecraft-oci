@@ -22,6 +22,7 @@
         type: "forking",
         execstartpre: "{% if outer_item.server_icon.random %}-/opt/minecraft/server-icon.sh{% endif %}",
         execstart: "/opt/minecraft/{{ outer_item.name }}/start.sh",
+        execstartpost: "/opt/minecraft/{{ outer_item.name }}/start.sh post",
         execstop: "/opt/minecraft/stop.sh {{ outer_item.name }}",
         pidfile: "/run/minecraft/{{ outer_item.name }}",
         workingdirectory: "/opt/minecraft/{{ outer_item.name }}/server",
