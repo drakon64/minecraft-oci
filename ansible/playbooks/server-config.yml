@@ -35,6 +35,10 @@
         src: plugins/ViaVersion/config.yml,
         when: "{{ outer_item.viaversion }}",
       }
+    - {
+        src: plugins/ViewDistanceTweaks/config.yml,
+        when: "{{ outer_item.viewdistancetweaks }}",
+      }
   when:
     - outer_item.state.backup.restore_backup == false
     - item.when

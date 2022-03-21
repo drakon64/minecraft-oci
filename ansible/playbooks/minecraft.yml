@@ -393,6 +393,19 @@
         - item.geyser
         - item.state.backup.restore_backup == false
 
+    - name: Downloading the ViewDistanceTweaks plugin
+      copy:
+        src: ../files/ViewDistanceTweaks.jar
+        dest: /opt/minecraft/{{ item.name }}/server/plugins/ViewDistanceTweaks.jar
+        owner: minecraft
+        group: minecraft
+        mode: 0644
+      loop: "{{ instances }}"
+      when:
+        - item.state.new_server or item.state.update_server
+        - item.viewdistancetweaks
+        - item.state.backup.restore_backup == false
+
     - name: Downloading Bedrock resource packs
       include_tasks: bedrock-rp.yml
       loop: "{{ instances }}"
