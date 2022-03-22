@@ -24,7 +24,7 @@
         when: "{{ outer_item.geyser }}",
       }
     - {
-        url: https://cdn.discordapp.com/attachments/804019242512810034/954449677959434270/TreeAssist.jar, # this is terrible and I hate it
+        url: https://cdn.discordapp.com/attachments/804019242512810034/955946831714615316/TreeAssist.jar, # this is terrible and I hate it
         dest: TreeAssist.jar,
         when: "{{ true }}",
       }
