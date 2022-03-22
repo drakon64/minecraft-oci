@@ -75,7 +75,7 @@
 
 - name: Removing plugins for {{ outer_item.name }}
   file:
-    path: /opt/minecraft/server/plugins/{{ item.src }}
+    path: /opt/minecraft/{{ outer_item.name }}/server/plugins/{{ item.src }}
     state: absent
   loop:
     - { src: Chunky.jar, when: "{{ outer_item.chunky == false }}" }
