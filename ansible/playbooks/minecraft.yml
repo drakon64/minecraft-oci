@@ -268,7 +268,7 @@
       loop: "{{ instances }}"
       when:
         - item.state.new_server or item.state.update_server
-        - item.state.state.backup.restore_backup == false
+        - item.state.backup.restore_backup == false
         - item.use_pufferfish == false
 
     - name: Downloading Minecraft Pufferfish server
@@ -281,7 +281,7 @@
       loop: "{{ instances }}"
       when:
         - item.state.new_server or item.state.update_server
-        - item.state.state.backup.restore_backup == false
+        - item.state.backup.restore_backup == false
         - item.use_pufferfish
 
     - name: Creating the plugin directories
@@ -308,7 +308,7 @@
       loop: "{{ instances }}"
       when:
         - item.state.new_server or item.state.update_server
-        - item.state.state.backup.restore_backup == false
+        - item.state.backup.restore_backup == false
 
     - name: Configuring the Minecraft server
       include_tasks: server-config.yml
@@ -379,7 +379,7 @@
       when:
         - item.state.new_server or item.state.update_server
         - item.geyser
-        - item.state.state.backup.restore_backup == false
+        - item.state.backup.restore_backup == false
 
     - name: Configuring the CustomCommandPrefix plugin
       copy:
