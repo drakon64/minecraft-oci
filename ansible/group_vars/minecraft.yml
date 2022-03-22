@@ -1012,13 +1012,13 @@ treeassist:
       Active: true
       Check Depth: 12
       Delay: 1
-      Delay Growth Seconds: 0
       Dropped:
         Active: false
         Delay Ticks: 5
         Probability: 0.1
       Enforce: false
       Force Protect: false
+      Growth Delay Seconds: 0
       Material: minecraft:air
       Only When Bottom Block Broken First: false
       Protect For Seconds: 0
@@ -1049,7 +1049,7 @@ treeassist:
       Minimum Height: 4
       Thickness: 1
       Uneven Bottom: false
-    Version: 7.2052
+    Version: 7.3016
 unifiedmetrics:
   driver:
     prometheus:
