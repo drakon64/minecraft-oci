@@ -213,7 +213,7 @@
         path: /opt/minecraft/{{ item.name }}/server
         state: absent
       loop: "{{ instances }}"
-      when: item.state.new_server
+      when: item.state.new_server or item.state.backup.restore_backup
 
     - name: Creating the server directory
       file:
