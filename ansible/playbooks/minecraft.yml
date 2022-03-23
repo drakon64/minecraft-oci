@@ -340,14 +340,6 @@
       shell: curl --silent https://api.github.com/repos/jmattingley23/AppleSkinSpigot/releases/latest | jq -r '.assets[].browser_download_url'
       register: appleskin_latest
 
-    - name: Getting the latest FloodgatePlaceholders release
-      shell: curl --silent https://api.github.com/repos/rtm516/FloodgatePlaceholders/releases/latest | jq -r '.assets[].browser_download_url'
-      register: floodgateplaceholders_latest
-
-    - name: Getting the latest PlaceholderAPI release
-      shell: curl --silent https://ci.extendedclip.com/job/PlaceholderAPI/lastSuccessfulBuild/api/json | jq -r '.artifacts[2].fileName'
-      register: placeholderapi_latest
-
     - name: Getting the latest LuckPerms release
       shell: curl --silent https://ci.lucko.me/job/LuckPerms/lastSuccessfulBuild/api/json | jq -r '.artifacts[0].fileName'
       register: luckperms_latest
