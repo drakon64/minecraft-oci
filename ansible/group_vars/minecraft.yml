@@ -627,13 +627,13 @@ pufferfish:
     url: https://flare.airplane.gg
   inactive-goal-selector-throttle: true
   info:
-    version: '1.0'
+    version: "1.0"
   projectile:
     max-loads-per-projectile: 10
     max-loads-per-tick: 10
-  sentry-dsn: ''
+  sentry-dsn: ""
   web-services:
-    token: ''
+    token: ""
 server:
   allow-flight: "false"
   allow-nether: "true"
