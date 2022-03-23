@@ -903,6 +903,7 @@ treeassist:
       Apply Tool Damage For Leaves: true
       Auto Add To Inventory: false
       Cleanup Delay Seconds: 20
+      Cleanup Leaves: true
       Cooldown Seconds: 0
       Delay Ticks: 0
       Forced Removal: false
@@ -1049,7 +1050,7 @@ treeassist:
       Minimum Height: 4
       Thickness: 1
       Uneven Bottom: false
-    Version: 7.3016
+    Version: 7.3019
 unifiedmetrics:
   driver:
     prometheus:
