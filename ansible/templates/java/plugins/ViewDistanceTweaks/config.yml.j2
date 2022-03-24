@@ -1,7 +1,7 @@
 {% if outer_item.plugins.viewdistancetweaks is defined %}
-{% set combined_luckperms = (viewdistancetweaks | combine(outer_item.plugins.viewdistancetweaks, recursive=True)) %}
+{% set combined_viewdistancetweaks = (viewdistancetweaks | combine(outer_item.plugins.viewdistancetweaks, recursive=True)) %}
 {% else %}
-{% set combined_luckperms = viewdistancetweaks %}
+{% set combined_viewdistancetweaks = viewdistancetweaks %}
 {% endif %}
 
-{{ combined_luckperms | to_nice_yaml(indent=2) }}
+{{ combined_viewdistancetweaks | to_nice_yaml(indent=2) }}
