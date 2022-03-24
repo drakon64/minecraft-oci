@@ -66,5 +66,13 @@
         path: ViewDistanceTweaks,
         state: "{% if outer_item.viewdistancetweaks %}directory{% else %}absent{% endif %}",
       }
+    - {
+        path: WorldEdit,
+        state: "{% if outer_item.worldguard %}directory{% else %}absent{% endif %}",
+      }
+    - {
+        path: WorldGuard,
+        state: "{% if outer_item.worldguard %}directory{% else %}absent{% endif %}",
+      }
   when:
     - outer_item.state.backup.restore_backup == false
