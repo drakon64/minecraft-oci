@@ -407,7 +407,7 @@
     - name: Copying the server icon(s)
       copy:
         src: "../files/java/{% if item.server_icon.random == false %}{{ item.name }}/server-icon.png{% else %}{{ item.name }}/server-icons{% endif %}"
-        dest: /opt/minecraft/{{ item.name }}/{% if item.server_icon.random == false %}server-icon.png{% endif %}
+        dest: /opt/minecraft/{{ item.name }}/{% if item.server_icon.random == false %}server/server-icon.png{% endif %}
         owner: minecraft
         group: minecraft
         mode: u=rwX,g=rX,o=rX
