@@ -1,7 +1,7 @@
 {% if outer_item.plugins.worldedit is defined %}
-{% set combined_luckperms = (worldedit | combine(outer_item.plugins.worldedit, recursive=True)) %}
+{% set combined_worldedit = (worldedit | combine(outer_item.plugins.worldedit, recursive=True)) %}
 {% else %}
 {% set combined_worldedit = worldedit %}
 {% endif %}
 
-{{ combined_luckperms | to_nice_yaml(indent=2) }}
+{{ combined_worldedit | to_nice_yaml(indent=2) }}
