@@ -68,6 +68,16 @@
         dest: "unifiedmetrics.jar",
         when: "{{ grafana.use }}",
       }
+    - {
+        url: https://media.forgecdn.net/files/3697/296/worldedit-bukkit-7.2.10.jar,
+        dest: worldedit-bukkit.jar,
+        when: "{{ outer_item.worldguard }}"
+      }
+    - {
+        url: https://media.forgecdn.net/files/3677/516/worldguard-bukkit-7.0.7-dist.jar,
+        dest: worldguard-bukkit.jar,
+        when: "{{ outer_item.worldguard }}"
+      }
   when:
     - outer_item.state.new_server or outer_item.state.update_server
     - outer_item.state.backup.restore_backup == false
@@ -83,4 +93,6 @@
     - { src: floodgate-spigot.jar, when: "{{ outer_item.geyser == false }}" }
     - { src: Geyser-Spigot.jar, when: "{{ outer_item.geyser == false }}" }
     - { src: ViaVersion.jar, when: "{{ outer_item.viaversion == false }}" }
+    - { src: worldedit-bukkit.jar, when: "{{ outer_item.worldguard == false }}" }
+    - { src: worldguard-bukkit.jar, when: "{{ outer_item.worldguard == false }}" }
   when: item.when

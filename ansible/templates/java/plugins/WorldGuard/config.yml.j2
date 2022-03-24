@@ -1,0 +1,7 @@
+{% if outer_item.plugins.worldguard is defined %}
+{% set combined_luckperms = (worldguard | combine(outer_item.plugins.worldguard, recursive=True)) %}
+{% else %}
+{% set combined_worldguard = worldguard %}
+{% endif %}
+
+{{ combined_luckperms | to_nice_yaml(indent=2) }}
