@@ -9,6 +9,11 @@
     mode: 0644
   loop:
     - {
+        url: "{% if outer_item.discordsrv %}{{ discordsrv_latest.stdout }}{% endif %}",
+        dest: DiscordSRV.jar,
+        when: "{{ outer_item.discordsrv }}",
+      }
+    - {
         url: https://ci.opencollab.dev/job/GeyserMC/job/Geyser/job/master/lastSuccessfulBuild/artifact/bootstrap/spigot/target/Geyser-Spigot.jar,
         dest: Geyser-Spigot.jar,
         when: "{{ outer_item.geyser }}",

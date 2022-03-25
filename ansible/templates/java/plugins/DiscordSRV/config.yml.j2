@@ -1,0 +1,7 @@
+{% if outer_item.plugins.discordsrv is defined %}
+{% set combined_discordsrv = (discordsrv | combine(outer_item.plugins.discordsrv, recursive=True)) %}
+{% else %}
+{% set combined_discordsrv = discordsrv %}
+{% endif %}
+
+{{ combined_discordsrv | to_nice_yaml(indent=2) }}

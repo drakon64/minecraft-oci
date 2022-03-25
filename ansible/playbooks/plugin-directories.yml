@@ -25,6 +25,10 @@
         state: "{% if outer_item.geyser %}directory{% else %}absent{% endif %}",
       }
     - {
+        path: DiscordSRV,
+        state: "{% if outer_item.discordsrv %}directory{% else %}absent{% endif %}",
+      }
+    - {
         path: floodgate,
         state: "{% if outer_item.geyser %}directory{% else %}absent{% endif %}",
       }
