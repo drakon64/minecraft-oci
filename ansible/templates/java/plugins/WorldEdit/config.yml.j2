@@ -1,0 +1,7 @@
+{% if outer_item.plugins.worldedit is defined %}
+{% set combined_worldedit = (worldedit | combine(outer_item.plugins.worldedit, recursive=True)) %}
+{% else %}
+{% set combined_worldedit = worldedit %}
+{% endif %}
+
+{{ combined_worldedit | to_nice_yaml(indent=4) }}
