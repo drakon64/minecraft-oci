@@ -22,6 +22,7 @@
         when: "{{ outer_item.bluemap.use }}",
       }
     - { src: plugins/Chunky/config.yml, when: "{{ outer_item.chunky }}" }
+    - { src: plugins/DiscordSRV/config.yml, when: "{{ outer_item.discordsrv }}" }
     - { src: plugins/floodgate/config.yml, when: "{{ outer_item.geyser }}" }
     - { src: plugins/Geyser-Spigot/config.yml, when: "{{ outer_item.geyser }}" }
     - { src: plugins/LuckPerms/config.yml, when: "{{ true }}" }
