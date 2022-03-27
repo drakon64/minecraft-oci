@@ -1,0 +1,7 @@
+{% if outer_item.plugins.harbor is defined %}
+{% set combined_harbor = (harbor | combine(outer_item.plugins.harbor, recursive=True)) %}
+{% else %}
+{% set combined_harbor = harbor %}
+{% endif %}
+
+{{ combined_harbor | to_nice_yaml(indent=2) }}

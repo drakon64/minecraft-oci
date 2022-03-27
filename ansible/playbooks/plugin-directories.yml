@@ -36,6 +36,10 @@
         path: Geyser-Spigot/packs,
         state: "{% if outer_item.geyser %}directory{% else %}absent{% endif %}",
       }
+    - {
+        path: Harbor,
+        state: "{% if outer_item.harbor %}directory{% else %}absent{% endif %}",
+      }
     - { path: TreeAssist/trees, state: directory }
     - { path: LuckPerms, state: directory }
     - {
