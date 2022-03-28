@@ -421,8 +421,8 @@
         mode: u=rwX,g=rX,o=rX
       loop: "{{ instances }}"
       when:
-       - item.server_icon.use
-       - item.state.backup.restore_backup == false
+        - item.server_icon.use
+        - item.state.backup.restore_backup == false
 
     - name: Downloading the server backup
       shell: oci os object get --auth instance_principal --bucket-name {{ bucket_name }} --file - --name minecraft-{{ item.name }}.tar | tar xf -
