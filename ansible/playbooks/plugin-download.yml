@@ -98,10 +98,14 @@
     path: /opt/minecraft/{{ outer_item.name }}/server/plugins/{{ item.src }}
     state: absent
   loop:
+    - { src: BlueMap.jar, when: "{{ outer_item.bluemap.use == false }}" }
+    - { src: BlueMapFloodgate.jar, when: "{{ outer_item.bluemap.use == false }}" }
     - { src: Chunky.jar, when: "{{ outer_item.chunky == false }}" }
     - { src: CustomCommandPrefix.jar, when: "{{ outer_item.geyser == false }}" }
+    - { src: DiscordSRV.jar, when: "{{ outer_item.discordsrv == false }}" }
     - { src: floodgate-spigot.jar, when: "{{ outer_item.geyser == false }}" }
     - { src: Geyser-Spigot.jar, when: "{{ outer_item.geyser == false }}" }
+    - { src: Harbor.jar, when: "{{ outer_item.harbor == false }}" }
     - { src: ViaVersion.jar, when: "{{ outer_item.viaversion == false }}" }
     - {
         src: worldedit-bukkit.jar,
