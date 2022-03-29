@@ -7,13 +7,6 @@
     mode: "{{ item.mode }}"
   loop:
     - {
-        src: "../templates/scripts/start.sh.j2",
-        dest: "/opt/minecraft/{{ outer_item.name }}/start.sh",
-        owner: "root",
-        mode: "0755",
-        when: true,
-      }
-    - {
         src: "../templates/systemd/service.j2",
         dest: "/etc/systemd/system/minecraft-{{ outer_item.name }}.service",
         owner: root,
@@ -21,11 +14,11 @@
         description: "Minecraft Server - {{ outer_item.name }}",
         type: "forking",
         execstartpre: "{% if outer_item.server_icon.random %}-/opt/minecraft/server-icon.sh{% endif %}",
-        execstart: "/opt/minecraft/{{ outer_item.name }}/start.sh",
-        execstartpost: "/opt/minecraft/{{ outer_item.name }}/start.sh post",
+        execstart: "/usr/bin/tmux new-session -s minecraft-{{ outer_item.name }} -d '{{ command }}'",
         execstop: "/opt/minecraft/stop.sh {{ outer_item.name }}",
-        pidfile: "/run/minecraft/{{ outer_item.name }}",
         workingdirectory: "/opt/minecraft/{{ outer_item.name }}/server",
         nice: "-20",
         oomscoreadjust: "-1000",
+        user: "minecraft-{{ outer_item.name }}",
+        group: "minecraft-{{ outer_item.name }}",
       }

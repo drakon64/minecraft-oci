@@ -4,8 +4,8 @@
   get_url:
     url: "{{ item.url }}"
     dest: /opt/minecraft/{{ outer_item.name }}/server/plugins/{{ item.dest }}
-    owner: minecraft
-    group: minecraft
+    owner: minecraft-{{ outer_item.name }}
+    group: minecraft-{{ outer_item.name }}
     mode: 0644
   loop:
     - {
