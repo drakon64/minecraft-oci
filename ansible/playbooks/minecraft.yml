@@ -476,8 +476,8 @@
             description: "Minecraft Server backup - %i",
             type: "oneshot",
             execstart: "/opt/minecraft/backup.sh %i restart",
-            user: "root",
-            group: "root",
+            user: "%i",
+            group: "%i",
             when: true,
           }
         - {
