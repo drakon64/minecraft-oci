@@ -98,18 +98,21 @@ discordsrv:
   CancelConsoleCommandIfLoggingFailed: true
   ChannelTopicUpdaterChannelTopicsAtShutdownEnabled: true
   ChannelTopicUpdaterRateInMinutes: 10
-  Channels: {"global": "000000000000000000"}
+  Channels: { "global": "000000000000000000" }
   ConfigVersion: 1.25.1
   DateFormat: yyyy-MM-dd
   Debug: []
   DebugLevel: 0
   DisabledPluginHooks: []
-  DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursiteurl.net"}
+  DiscordCannedResponses:
+    { "!ip": "yourserveripchange.me", "!site": "http://yoursiteurl.net" }
   DiscordChatChannelAllowedMentions: [user, channel, emote]
   DiscordChatChannelBlockBots: false
-  DiscordChatChannelBlockedIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
+  DiscordChatChannelBlockedIds:
+    ["000000000000000000", "000000000000000000", "000000000000000000"]
   DiscordChatChannelBlockedRolesAsWhitelist: false
-  DiscordChatChannelBlockedRolesIds: ["000000000000000000", "000000000000000000", "000000000000000000"]
+  DiscordChatChannelBlockedRolesIds:
+    ["000000000000000000", "000000000000000000", "000000000000000000"]
   DiscordChatChannelBroadcastDiscordMessagesToConsole: true
   DiscordChatChannelConsoleCommandEnabled: true
   DiscordChatChannelConsoleCommandExpiration: 0
@@ -120,7 +123,8 @@ discordsrv:
   DiscordChatChannelConsoleCommandWhitelist: ["say", "lag", "tps"]
   DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist: false
   DiscordChatChannelConsoleCommandWhitelistBypassRoles: ["Owner", "Developer"]
-  DiscordChatChannelDiscordFilters: {".*Online players\\(.*": "", ".*\\*\\*No online players\\*\\*.*": ""}
+  DiscordChatChannelDiscordFilters:
+    { ".*Online players\\(.*": "", ".*\\*\\*No online players\\*\\*.*": "" }
   DiscordChatChannelDiscordToMinecraft: true
   DiscordChatChannelEmojiBehavior: "name"
   DiscordChatChannelEmoteBehavior: "name"
@@ -133,8 +137,9 @@ discordsrv:
   DiscordChatChannelPrefixActsAsBlacklist: false
   DiscordChatChannelPrefixRequiredToProcessMessage: ""
   DiscordChatChannelRequireLinkedAccount: false
-  DiscordChatChannelRoleAliases: {"Developer": "Dev"}
-  DiscordChatChannelRolesAllowedToUseColorCodesInChat: ["Developer", "Owner", "Admin", "Moderator"]
+  DiscordChatChannelRoleAliases: { "Developer": "Dev" }
+  DiscordChatChannelRolesAllowedToUseColorCodesInChat:
+    ["Developer", "Owner", "Admin", "Moderator"]
   DiscordChatChannelRolesSelection: ["Don't show me!", "Misc role"]
   DiscordChatChannelRolesSelectionAsWhitelist: false
   DiscordChatChannelTranslateMentions: true
@@ -143,7 +148,11 @@ discordsrv:
   DiscordConsoleChannelBlacklistActsAsWhitelist: false
   DiscordConsoleChannelBlacklistedCommands: ["?", "op", "deop", "execute"]
   DiscordConsoleChannelBlockBots: false
-  DiscordConsoleChannelFilters: {".*(?i)async chat thread.*": "", ".*There are \\d+ (?:of a max of|out of maximum) \\d+ players online.*": ""}
+  DiscordConsoleChannelFilters:
+    {
+      ".*(?i)async chat thread.*": "",
+      ".*There are \\d+ (?:of a max of|out of maximum) \\d+ players online.*": "",
+    }
   DiscordConsoleChannelId: "000000000000000000"
   DiscordConsoleChannelLevels: [info, warn, error]
   DiscordConsoleChannelLogRefreshRateInSeconds: 5
@@ -1442,7 +1451,7 @@ worldguard:
       database:
         dsn: jdbc:mysql://localhost:3306/minecraft
         enable: false
-        pass: ''
+        pass: ""
         table: blacklist_events
         user: root
       file:
@@ -1451,7 +1460,7 @@ worldguard:
         path: worldguard/logs/%Y-%m-%d.log
     use-as-whitelist: false
   build-permission-nodes:
-    deny-message: '&eSorry, but you are not permitted to do that here.'
+    deny-message: "&eSorry, but you are not permitted to do that here."
     enable: false
   crops:
     disable-creature-trampling: false
@@ -1565,7 +1574,7 @@ worldguard:
       default: 7
     nether-portal-protection: true
     protect-against-liquid-flow: false
-    set-parent-on-claim: ''
+    set-parent-on-claim: ""
     use-creature-spawn-event: true
     use-paper-entity-origin: false
     uuid-migration:
