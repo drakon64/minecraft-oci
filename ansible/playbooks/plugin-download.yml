@@ -116,3 +116,12 @@
         when: "{{ outer_item.worldguard == false }}",
       }
   when: item.when
+
+- name: Downloading custom plugins
+  get_url:
+    url: "{{ item.url }}"
+    dest: /opt/minecraft/{{ outer_item.name }}/server/plugins/{{ item.name }}
+    owner: minecraft-{{ outer_item.name }}
+    group: minecraft-{{ outer_item.name }}
+    mode: 0644
+  loop: "{{ outer_item.custom_plugins }}"

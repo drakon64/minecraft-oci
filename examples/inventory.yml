@@ -20,6 +20,9 @@ minecraft:
             use: true
           chunky: true
           continuous_deployment: false
+          custom_plugins:
+            - name: plugin.jar
+              url: example.com/plugin.jar
           discordsrv: true
           eula: true
           geyser: true
