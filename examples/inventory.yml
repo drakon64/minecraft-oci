@@ -2,7 +2,7 @@ minecraft:
   hosts:
     minecraft.example.com:
       bucket_name: minecraft-backup
-      graalvm: true
+      graalvm: false
       grafana:
         api_key:
         loki:
@@ -13,20 +13,27 @@ minecraft:
           username:
         use: true
       instances:
-        - bluemap:
+        - bedrock_resource_packs:
+            - https://minecraft.example.com/bedrockresourcepack.mcpack
+          bluemap:
             domain: minecraft.example.com
             use: true
-          chunky: false
+          chunky: true
           continuous_deployment: false
+          discordsrv: true
           eula: true
           geyser: true
-          heap: 5G
+          harbor: true
+          heap: 4608M
           name: prod
           ops:
-            - bypassesPlayerLimit:
-              level:
-              name:
-              uuid:
+            - bypassesPlayerLimit: true
+              level: 4
+              name: jeb_
+              uuid: 853c80ef-3c37-49fd-aa49-938b674adae6
+          paper:
+            settings:
+              log-player-ip-addresses: false
           plugins:
             bluemap:
               webserver:
@@ -34,9 +41,6 @@ minecraft:
             geyser:
               bedrock:
                 port: 19132
-            luckperms:
-              config:
-                storage-method: yaml
             unifiedmetrics:
               driver:
                 prometheus:
@@ -44,26 +48,34 @@ minecraft:
                     port: 9100
           restore_permissions: true
           server:
+            "query.port": 25565
             server-port: 25565
           server_icon:
             random: no
             use: no
+          spigot:
+            world-settings:
+              default:
+                entity-tracking-range:
+                  players: 512
           state:
             backup:
-              backup_retention_days: 30
-              backup_version:
+              backup_retention_days: 7
+              backup_version: 2022-03-23T18:02+00:00
               restore_backup: false
               restore_remote_backup: false
-            new_server: false
-            skip_backup: false
+            new_server: true
+            skip_backup: true
             update_server: false
           version:
-            build: 56
+            build: 59
             full: 1.18.2
             major: 1.18
           viaversion: false
+          viewdistancetweaks: true
           whitelist:
-            - name:
-              uuid:
+            - name: jeb_
+              uuid: 853c80ef-3c37-49fd-aa49-938b674adae6
+          worldguard: true
       timezone: Europe/London
       use_bluemap: true
