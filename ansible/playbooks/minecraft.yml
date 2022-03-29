@@ -435,7 +435,7 @@
         src: "../{{ item.src }}"
         dest: "{{ item.dest }}"
         owner: "{{ item.owner }}"
-        group: "{% if item.group is defined %}{{ item.group }}{% else %}{{ item.owner }}{% endif %}"
+        group: "{{ item.owner }}"
         mode: "{{ item.mode }}"
         validate: "{{ item.validate | default(omit) }}"
       loop:
@@ -477,7 +477,6 @@
             type: "oneshot",
             execstart: "/opt/minecraft/backup.sh %i restart",
             user: "%i",
-            group: "%i",
             when: true,
           }
         - {
