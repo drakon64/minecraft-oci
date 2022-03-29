@@ -221,7 +221,7 @@
         state: directory
         owner: minecraft-{{ item.name }}
         group: minecraft-{{ item.name }}
-        mode: 0755
+        mode: u=rwX,g=rX,o=rX
         recurse: yes
       loop: "{{ instances }}"
 
