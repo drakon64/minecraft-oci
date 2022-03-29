@@ -41,6 +41,9 @@ minecraft:
             geyser:
               bedrock:
                 port: 19132
+            luckperms:
+              config:
+                storage-method: yaml
             unifiedmetrics:
               driver:
                 prometheus:
