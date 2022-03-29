@@ -4,8 +4,8 @@
   template:
     src: ../templates/java/{{ item.src }}.j2
     dest: /opt/minecraft/{{ outer_item.name }}/server/{{ item.src }}
-    owner: minecraft
-    group: minecraft
+    owner: minecraft-{{ outer_item.name }}
+    group: minecraft-{{ outer_item.name }}
     mode: 0644
   loop:
     - { src: server.properties, when: "{{ true }}" }
@@ -57,8 +57,8 @@
   template:
     src: ../templates/java/{{ item }}.json.j2
     dest: /opt/minecraft/{{ outer_item.name }}/server/{{ item }}.json
-    owner: minecraft
-    group: minecraft
+    owner: minecraft-{{ outer_item.name }}
+    group: minecraft-{{ outer_item.name }}
     mode: 0644
   loop:
     - ops

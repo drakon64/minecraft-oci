@@ -28,4 +28,6 @@
         workingdirectory: "/opt/minecraft/{{ outer_item.name }}/server",
         nice: "-20",
         oomscoreadjust: "-1000",
+        user: "minecraft-{{ outer_item.name }}",
+        group: "minecraft-{{ outer_item.name }}",
       }

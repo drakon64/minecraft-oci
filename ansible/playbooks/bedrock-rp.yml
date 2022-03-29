@@ -4,8 +4,8 @@
   get_url:
     url: "{{ item }}"
     dest: /opt/minecraft/{{ outer_item.name }}/server/plugins/Geyser-Spigot/packs/
-    owner: minecraft
-    group: minecraft
+    owner: minecraft-{{ outer_item.name }}
+    group: minecraft-{{ outer_item.name }}
     mode: 0644
   loop: "{{ outer_item.bedrock_resource_packs }}"
   when:

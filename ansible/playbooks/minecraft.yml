@@ -147,20 +147,20 @@
         disable_gpg_check: yes
       when: grafana.use
 
-    - name: Creating the minecraft user
+    - name: Creating the instance user
       user:
-        name: minecraft
+        name: minecraft-{{ item.name }}
         create_home: yes
         home: /opt/minecraft
         shell: /bin/bash
+      loop: "{{ instances }}"
 
     - name: Setting permissions for the Minecraft directory
       file:
         path: /opt/minecraft
-        owner: minecraft
-        group: minecraft
+        owner: root
+        group: root
         mode: u=rwX,g=rX,o=rX
-        recurse: yes
         state: directory
 
     - name: Checking the size of the swapfile
@@ -219,18 +219,20 @@
       file:
         path: /opt/minecraft/{{ item.name }}/server
         state: directory
-        owner: minecraft
-        group: minecraft
+        owner: minecraft-{{ item.name }}
+        group: minecraft-{{ item.name }}
         mode: 0755
+        recurse: yes
       loop: "{{ instances }}"
 
     - name: Creating the server backup directory
       file:
         path: /opt/minecraft/{{ item.name }}/backup
         state: directory
-        owner: minecraft
-        group: minecraft
+        owner: minecraft-{{ item.name }}
+        group: minecraft-{{ item.name }}
         mode: 0755
+        recurse: yes
       loop: "{{ instances }}"
       when:
         - item.continuous_deployment == false
@@ -247,14 +249,14 @@
       when:
         - item.continuous_deployment == false
         - item.state.backup.restore_backup == false
-      become_user: minecraft
+      become_user: minecraft-{{ item.name }}
 
     - name: Setting the instance backup retention policy
       copy:
         content: "{{ item.state.backup.backup_retention_days }}"
         dest: /opt/minecraft/{{ item.name }}/backup_retention_days
-        owner: minecraft
-        group: minecraft
+        owner: minecraft-{{ item.name }}
+        group: minecraft-{{ item.name }}
         mode: 0644
       loop: "{{ instances }}"
 
@@ -262,8 +264,8 @@
       get_url:
         url: https://ci.pufferfish.host/job/Pufferfish-{{ item.version.major }}/{{ item.version.build }}/artifact/build/libs/pufferfish-paperclip-{{ item.version.full }}-R0.1-SNAPSHOT-reobf.jar
         dest: /opt/minecraft/{{ item.name }}/server/server.jar
-        owner: minecraft
-        group: minecraft
+        owner: minecraft-{{ item.name }}
+        group: minecraft-{{ item.name }}
         mode: 0644
       loop: "{{ instances }}"
       when:
@@ -287,8 +289,8 @@
       copy:
         src: /opt/minecraft/TreeAssist/src/main/resources/trees
         dest: /opt/minecraft/{{ item.name }}/server/plugins/TreeAssist/
-        owner: minecraft
-        group: minecraft
+        owner: minecraft-{{ item.name }}
+        group: minecraft-{{ item.name }}
         mode: u=rwX,g=rX,o=rX
         remote_src: yes
       loop: "{{ instances }}"
@@ -358,8 +360,8 @@
       copy:
         src: ../files/CustomCommandPrefix-1.0.jar
         dest: /opt/minecraft/{{ item.name }}/server/plugins/CustomCommandPrefix.jar
-        owner: minecraft
-        group: minecraft
+        owner: minecraft-{{ item.name }}
+        group: minecraft-{{ item.name }}
         mode: 0644
       loop: "{{ instances }}"
       when:
@@ -371,8 +373,8 @@
       copy:
         content: "prefix: '?'"
         dest: /opt/minecraft/{{ item.name }}/server/plugins/CustomCommandPrefix/config.yml
-        owner: minecraft
-        group: minecraft
+        owner: minecraft-{{ item.name }}
+        group: minecraft-{{ item.name }}
         mode: 0644
       loop: "{{ instances }}"
       when:
@@ -383,8 +385,8 @@
       copy:
         src: ../files/ViewDistanceTweaks.jar
         dest: /opt/minecraft/{{ item.name }}/server/plugins/ViewDistanceTweaks.jar
-        owner: minecraft
-        group: minecraft
+        owner: minecraft-{{ item.name }}
+        group: minecraft-{{ item.name }}
         mode: 0644
       loop: "{{ instances }}"
       when:
@@ -402,8 +404,8 @@
       copy:
         src: "../files/java/{% if item.server_icon.random == false %}{{ item.name }}/server-icon.png{% else %}{{ item.name }}/server-icons{% endif %}"
         dest: /opt/minecraft/{{ item.name }}/{% if item.server_icon.random == false %}server/server-icon.png{% endif %}
-        owner: minecraft
-        group: minecraft
+        owner: minecraft-{{ item.name }}
+        group: minecraft-{{ item.name }}
         mode: u=rwX,g=rX,o=rX
       loop: "{{ instances }}"
       when:
@@ -440,14 +442,14 @@
         - {
             src: "files/scripts/dnf-reboot.sh",
             dest: "/opt/minecraft/dnf-reboot.sh",
-            owner: "minecraft",
+            owner: "root",
             mode: "0755",
             when: true,
           }
         - {
             src: "files/scripts/stop.sh",
             dest: "/opt/minecraft/stop.sh",
-            owner: "minecraft",
+            owner: "root",
             mode: "0755",
             when: true,
           }
@@ -462,7 +464,7 @@
         - {
             src: "templates/scripts/backup.sh.j2",
             dest: "/opt/minecraft/backup.sh",
-            owner: "minecraft",
+            owner: "root",
             mode: "0755",
             when: true,
           }
@@ -474,8 +476,8 @@
             description: "Minecraft Server backup - %i",
             type: "oneshot",
             execstart: "/opt/minecraft/backup.sh %i restart",
-            user: "minecraft",
-            group: "minecraft",
+            user: "root",
+            group: "root",
             when: true,
           }
         - {
@@ -530,7 +532,7 @@
         - {
             src: "files/scripts/server-icon.sh",
             dest: "/opt/minecraft/server-icon.sh",
-            owner: "minecraft",
+            owner: "root",
             mode: "0755",
             when: "{{ true }}",
           }
@@ -566,8 +568,8 @@
       copy:
         content: eula=true
         dest: /opt/minecraft/{{ item.name }}/server/eula.txt
-        owner: minecraft
-        group: minecraft
+        owner: minecraft-{{ item.name }}
+        group: minecraft-{{ item.name }}
         mode: 0644
       loop: "{{ instances }}"
       when:
@@ -579,16 +581,16 @@
       file:
         path: /opt/minecraft/selinux
         state: directory
-        owner: minecraft
-        group: minecraft
+        owner: root
+        group: root
         mode: 0755
 
     - name: Copying SELinux module
       template:
         src: ../templates/selinux.te.j2
         dest: /opt/minecraft/selinux/minecraft.te
-        owner: minecraft
-        group: minecraft
+        owner: root
+        group: root
         mode: 0644
       register: selinux
 

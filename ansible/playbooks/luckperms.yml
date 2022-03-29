@@ -4,8 +4,8 @@
   template:
     src: ../templates/java/plugins/LuckPerms/luckperms.yml.j2
     dest: /opt/minecraft/{{ outer_item.name }}/server/plugins/LuckPerms/{% if outer_item.plugins.luckperms.config['storage-method'] == "json" %}json{% elif outer_item.plugins.luckperms.config['storage-method'] == "yaml" %}yaml{% endif %}-storage/users/{{ item.uuid }}.{% if outer_item.plugins.luckperms.config['storage-method'] == "json" %}json{% elif outer_item.plugins.luckperms.config['storage-method'] == "yaml" %}yml{% endif %}
-    owner: minecraft
-    group: minecraft
+    owner: minecraft-{{ outer_item.name }}
+    group: minecraft-{{ outer_item.name }}
     mode: 0644
   loop: "{{ outer_item.plugins.luckperms.users }}"
   when:
@@ -18,8 +18,8 @@
   template:
     src: ../templates/java/plugins/LuckPerms/luckperms.yml.j2
     dest: /opt/minecraft/{{ outer_item.name }}/server/plugins/LuckPerms/{% if outer_item.plugins.luckperms.config['storage-method'] == "json" %}json{% elif outer_item.plugins.luckperms.config['storage-method'] == "yaml" %}yaml{% endif %}-storage/groups/{{ item.name }}.{% if outer_item.plugins.luckperms.config['storage-method'] == "json" %}json{% elif outer_item.plugins.luckperms.config['storage-method'] == "yaml" %}yml{% endif %}
-    owner: minecraft
-    group: minecraft
+    owner: minecraft-{{ outer_item.name }}
+    group: minecraft-{{ outer_item.name }}
     mode: 0644
   loop: "{{ outer_item.plugins.luckperms.groups }}"
   when:
