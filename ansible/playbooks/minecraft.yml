@@ -151,7 +151,7 @@
       user:
         name: minecraft-{{ item.name }}
         create_home: yes
-        home: /opt/minecraft
+        home: /opt/minecraft/{{ item.name }}
         shell: /bin/bash
       loop: "{{ instances }}"
 
