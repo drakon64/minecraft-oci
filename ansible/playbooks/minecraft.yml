@@ -638,6 +638,7 @@
         enabled: yes
         daemon_reload: yes
       register: caddy
+      when: use_bluemap
 
     - name: Reloading Caddy
       systemd:
@@ -645,7 +646,9 @@
         state: reloaded
         enabled: yes
         daemon_reload: yes
-      when: caddy.changed == false
+      when:
+        - use_bluemap
+        - caddy.changed == false
 
     - name: Starting the Minecraft instances
       systemd:
