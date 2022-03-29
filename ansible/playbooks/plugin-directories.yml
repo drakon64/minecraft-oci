@@ -9,6 +9,10 @@
     mode: 0755
   loop:
     - {
+        path: ../bluemap,
+        state: "{% if outer_item.bluemap.use %}directory{% else %}absent{% endif %}",
+      }
+    - {
         path: BlueMap,
         state: "{% if outer_item.bluemap.use %}directory{% else %}absent{% endif %}",
       }
