@@ -258,19 +258,6 @@
         mode: 0644
       loop: "{{ instances }}"
 
-    - name: Downloading Minecraft Paper server
-      get_url:
-        url: https://papermc.io/api/v2/projects/paper/versions/{{ item.version.full }}/builds/{{ item.version.build }}/downloads/paper-{{ item.version.full }}-{{ item.version.build }}.jar
-        dest: /opt/minecraft/{{ item.name }}/server/server.jar
-        owner: minecraft
-        group: minecraft
-        mode: 0644
-      loop: "{{ instances }}"
-      when:
-        - item.state.new_server or item.state.update_server
-        - item.state.backup.restore_backup == false
-        - item.use_pufferfish == false
-
     - name: Downloading Minecraft Pufferfish server
       get_url:
         url: https://ci.pufferfish.host/job/Pufferfish-{{ item.version.major }}/{{ item.version.build }}/artifact/build/libs/pufferfish-paperclip-{{ item.version.full }}-R0.1-SNAPSHOT-reobf.jar
@@ -282,7 +269,6 @@
       when:
         - item.state.new_server or item.state.update_server
         - item.state.backup.restore_backup == false
-        - item.use_pufferfish
 
     - name: Creating the plugin directories
       include_tasks: plugin-directories.yml

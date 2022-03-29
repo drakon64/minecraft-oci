@@ -57,7 +57,6 @@ minecraft:
             new_server: false
             skip_backup: false
             update_server: false
-          use_pufferfish: true
           version:
             build: 56
             full: 1.18.2

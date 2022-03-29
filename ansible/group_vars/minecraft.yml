@@ -969,10 +969,8 @@ spigot:
         item: 2.5
       mob-spawn-range: 8
       nerf-spawner-mobs: false
-      seed-bastion: 30084232
       seed-desert: 14357617
       seed-endcity: 10387313
-      seed-fortress: 30084232
       seed-fossil: 14357921
       seed-igloo: 14357618
       seed-jungle: 14357619
