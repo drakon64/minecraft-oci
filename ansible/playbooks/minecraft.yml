@@ -215,7 +215,17 @@
       loop: "{{ instances }}"
       when: item.state.new_server or item.state.backup.restore_backup
 
-    - name: Creating the server directory
+    - name: Restoring permissions for the instance directory
+      file:
+        path: /opt/minecraft/{{ item.name }}/
+        state: directory
+        owner: minecraft-{{ item.name }}
+        group: minecraft-{{ item.name }}
+        mode: u=rwX,g=rX,o=rX
+        recurse: yes
+      loop: "{{ instances }}"
+
+    - name: Creating the instance directory
       file:
         path: /opt/minecraft/{{ item.name }}/server
         state: directory
@@ -225,7 +235,7 @@
         recurse: yes
       loop: "{{ instances }}"
 
-    - name: Creating the server backup directory
+    - name: Creating the instance backup directory
       file:
         path: /opt/minecraft/{{ item.name }}/backup
         state: directory
@@ -238,7 +248,7 @@
         - item.continuous_deployment == false
         - item.state.backup.restore_backup == false
 
-    - name: Initialising the server backup repository
+    - name: Initialising the instance backup repository
       command: borg init -e none /opt/minecraft/{{ item.name }}/backup
       changed_when: borg.rc == 0
       failed_when:
@@ -476,7 +486,8 @@
             description: "Minecraft Server backup - %i",
             type: "oneshot",
             execstart: "/opt/minecraft/backup.sh %i restart",
-            user: "%i",
+            workingdirectory: "/opt/minecraft",
+            user: "minecraft-%i",
             when: true,
           }
         - {
