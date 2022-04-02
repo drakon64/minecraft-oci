@@ -3,6 +3,9 @@
 	<description>Explore your own unique world, survive the night, and create anything you can imagine!</description>
 {% for i in instances %}
 	<port protocol="tcp" port="{{ i.server['server-port'] }}"/>
+{% if i.server['enable-query'] %}
+	<port protocol="udp" port="{{ i.server['query.port'] }}"/>
+{% endif %}
 {% if i.geyser %}
 	<port protocol="udp" port="{{ i.plugins.geyser.bedrock.port }}"/>
 {% endif %}

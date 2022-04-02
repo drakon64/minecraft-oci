@@ -26,6 +26,21 @@ resource "oci_core_default_security_list" "default-security-list" {
   }
 
   dynamic "ingress_security_rules" {
+    for_each = var.query ? [1] : []
+    content {
+      protocol    = 17
+      source      = "0.0.0.0/0"
+      source_type = "CIDR_BLOCK"
+      stateless   = false
+
+      udp_options {
+        min = var.query_port_min
+        max = var.query_port_max
+      }
+    }
+  }
+
+  dynamic "ingress_security_rules" {
     for_each = var.geyser ? [1] : []
     content {
       protocol    = 17

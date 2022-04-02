@@ -68,6 +68,21 @@ variable "java_port_max" {
   default = 25565
 }
 
+variable "query" {
+  type    = bool
+  default = false
+}
+
+variable "query_port_min" {
+  type    = number
+  default = 25565
+}
+
+variable "query_port_max" {
+  type    = number
+  default = 25565
+}
+
 variable "geyser" {
   type    = bool
   default = true
