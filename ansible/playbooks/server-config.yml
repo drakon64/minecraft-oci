@@ -53,6 +53,16 @@
     - outer_item.state.backup.restore_backup == false
     - item.when
 
+- name: Configuring custom plugins for {{ outer_item.name }}
+  copy:
+    src: ../files/java/{{ outer_item.name }}/custom-plugins/{{ item.name }}
+    dest: /opt/minecraft/{{ outer_item.name }}/server/plugins/
+    owner: minecraft-{{ outer_item.name }}
+    group: minecraft-{{ outer_item.name }}
+    mode: u=rwX,g=rX,o=rX
+  loop: "{{ outer_item.custom_plugins }}"
+  when: item.config
+
 - name: Copying the server permissions files for {{ outer_item.name }}
   template:
     src: ../templates/java/{{ item }}.json.j2
