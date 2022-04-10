@@ -24,7 +24,7 @@ resource "oci_core_network_security_group_security_rule" "java" {
   network_security_group_id = oci_core_network_security_group.minecraft.id
   direction                 = "INGRESS"
   protocol                  = 6
-  source                    = var.management_ip
+  source                    = "0.0.0.0/0"
   source_type               = "CIDR_BLOCK"
 
   tcp_options {
@@ -39,7 +39,7 @@ resource "oci_core_network_security_group_security_rule" "query" {
   network_security_group_id = oci_core_network_security_group.minecraft.id
   direction                 = "INGRESS"
   protocol                  = 17
-  source                    = var.management_ip
+  source                    = "0.0.0.0/0"
   source_type               = "CIDR_BLOCK"
 
   udp_options {
@@ -56,7 +56,7 @@ resource "oci_core_network_security_group_security_rule" "bedrock" {
   network_security_group_id = oci_core_network_security_group.minecraft.id
   direction                 = "INGRESS"
   protocol                  = 17
-  source                    = var.management_ip
+  source                    = "0.0.0.0/0"
   source_type               = "CIDR_BLOCK"
 
   udp_options {
@@ -73,7 +73,7 @@ resource "oci_core_network_security_group_security_rule" "http" {
   network_security_group_id = oci_core_network_security_group.minecraft.id
   direction                 = "INGRESS"
   protocol                  = 6
-  source                    = var.management_ip
+  source                    = "0.0.0.0/0"
   source_type               = "CIDR_BLOCK"
 
   tcp_options {
@@ -90,7 +90,7 @@ resource "oci_core_network_security_group_security_rule" "https" {
   network_security_group_id = oci_core_network_security_group.minecraft.id
   direction                 = "INGRESS"
   protocol                  = 6
-  source                    = var.management_ip
+  source                    = "0.0.0.0/0"
   source_type               = "CIDR_BLOCK"
 
   tcp_options {
