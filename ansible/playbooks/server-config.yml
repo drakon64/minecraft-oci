@@ -21,6 +21,10 @@
         src: plugins/BlueMap/webserver.conf,
         when: "{{ outer_item.bluemap.use }}",
       }
+    - {
+        src: plugins/BlueBridgeWG/config.yml,
+        when: "{{ outer_item.bluemap.use and outer_item.worldguard }}",
+      }
     - { src: plugins/Chunky/config.yml, when: "{{ outer_item.chunky }}" }
     - {
         src: plugins/DiscordSRV/config.yml,
