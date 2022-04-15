@@ -1,4 +1,14 @@
-bluebridge:
+bluebridgecore:
+  defaultColor: "960087ff"
+  defaultDepthCheck: false
+  defaultOutlineColor: "0060ff"
+  defaultRender: true
+  hideMarkerset: false
+  maxDistance: -1
+  minDistance: -1
+  renderHeight: 63
+  updateInterval: 200
+bluebridgewg:
   defaultExtrude: false
   htmlPreset: |-
     <h2 style="color:#${flag:bluemap-color-outline};text-align:center;margin-block-end:0.3em">

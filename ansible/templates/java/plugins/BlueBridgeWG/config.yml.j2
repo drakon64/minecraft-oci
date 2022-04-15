@@ -1,7 +1,7 @@
-{% if outer_item.plugins.bluebridge is defined %}
-{% set combined_bluebridge = (bluebridge | combine(outer_item.plugins.bluebridge, recursive=True)) %}
+{% if outer_item.plugins.bluebridgewg is defined %}
+{% set combined_bluebridgewg = (bluebridgewg | combine(outer_item.plugins.bluebridgewg, recursive=True)) %}
 {% else %}
-{% set combined_bluebridge = bluebridge %}
+{% set combined_bluebridgewg = bluebridgewg %}
 {% endif %}
 
-{{ combined_bluebridge | to_nice_yaml(indent=2) }}
+{{ combined_bluebridgewg | to_nice_yaml(indent=2) }}
