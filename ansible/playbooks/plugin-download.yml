@@ -123,7 +123,7 @@
 - name: Downloading custom plugins for {{ outer_item.name }}
   get_url:
     url: "{{ item.url }}"
-    dest: /opt/minecraft/{{ outer_item.name }}/server/plugins/{{ item.name }}
+    dest: /opt/minecraft/{{ outer_item.name }}/server/plugins/{{ item.name }}.jar
     owner: minecraft-{{ outer_item.name }}
     group: minecraft-{{ outer_item.name }}
     mode: 0644

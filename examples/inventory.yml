@@ -21,7 +21,7 @@ minecraft:
           chunky: true
           continuous_deployment: false
           custom_plugins:
-            - name: plugin.jar
+            - name: plugin
               url: example.com/plugin.jar
           discordsrv: true
           eula: true
