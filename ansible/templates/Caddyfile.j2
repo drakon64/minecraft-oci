@@ -1,5 +1,4 @@
-{% for i in instances %}
-{% if i.bluemap.use %}
+{% for i in instances if i.bluemap.use %}
 {{ i.bluemap.domain }} {
   root * /opt/minecraft/{{ i.name }}/server/bluemap/web
   file_server
@@ -19,5 +18,4 @@
     header Content-Encoding gzip
   }
 }
-{% endif %}
 {% endfor %}
