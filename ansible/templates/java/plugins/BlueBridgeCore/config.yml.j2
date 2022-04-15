@@ -1,0 +1,7 @@
+{% if outer_item.plugins.bluebridgecore is defined %}
+{% set combined_bluebridgecore = (bluebridgecore | combine(outer_item.plugins.bluebridgecore, recursive=True)) %}
+{% else %}
+{% set combined_bluebridgecore = bluebridgecore %}
+{% endif %}
+
+{{ combined_bluebridgecore | to_nice_yaml(indent=2) }}

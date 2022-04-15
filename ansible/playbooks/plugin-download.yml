@@ -9,6 +9,16 @@
     mode: 0644
   loop:
     - {
+        url: "{{ bluebridgecore_latest.stdout }}",
+        dest: BlueBridgeCore.jar,
+        when: "{{ outer_item.bluemap.use and outer_item.worldguard }}",
+      }
+    - {
+        url: "{{ bluebridgewg_latest.stdout }}",
+        dest: BlueBridgeWG.jar,
+        when: "{{ outer_item.bluemap.use and outer_item.worldguard }}",
+      }
+    - {
         url: "{% if outer_item.discordsrv %}{{ discordsrv_latest.stdout }}{% endif %}",
         dest: DiscordSRV.jar,
         when: "{{ outer_item.discordsrv }}",

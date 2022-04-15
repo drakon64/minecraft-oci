@@ -17,6 +17,14 @@
         state: "{% if outer_item.bluemap.use %}directory{% else %}absent{% endif %}",
       }
     - {
+        path: BlueBridgeCore,
+        state: "{% if outer_item.bluemap.use and outer_item.worldguard %}directory{% else %}absent{% endif %}",
+      }
+    - {
+        path: BlueBridgeWG,
+        state: "{% if outer_item.bluemap.use and outer_item.worldguard %}directory{% else %}absent{% endif %}",
+      }
+    - {
         path: BlueMapFloodgate,
         state: "{% if outer_item.bluemap.use and outer_item.geyser %}directory{% else %}absent{% endif %}",
       }
