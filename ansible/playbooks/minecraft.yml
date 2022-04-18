@@ -438,7 +438,7 @@
       when:
         - item.state.backup.restore_backup
         - item.state.backup.restore_remote_backup
-      become_user: minecraft
+      become_user: minecraft-{{ item.name }}
 
     - name: Restoring the server backup
       shell: "yes 'y' | borg extract /opt/minecraft/{{ item.name }}/backup::{{ item.state.backup.backup_version }}"
@@ -446,7 +446,7 @@
         chdir: /opt/minecraft/{{ item.name }}/server
       loop: "{{ instances }}"
       when: item.state.backup.restore_backup
-      become_user: minecraft
+      become_user: minecraft-{{ item.name }}
 
     - name: Copying scripts and systemd units
       template:
