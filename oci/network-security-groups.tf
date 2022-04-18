@@ -102,3 +102,11 @@ resource "oci_core_network_security_group_security_rule" "https" {
 
   count = var.bluemap ? 1 : 0
 }
+
+resource "oci_core_network_security_group_security_rule" "egress" {
+  network_security_group_id = oci_core_network_security_group.minecraft.id
+  direction                 = "EGRESS"
+  protocol                  = "all"
+  destination               = "0.0.0.0/0"
+  source_type               = "CIDR_BLOCK"
+}
