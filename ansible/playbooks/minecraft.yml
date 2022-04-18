@@ -458,7 +458,7 @@
         validate: "{{ item.validate | default(omit) }}"
       loop:
         - {
-            src: "files/scripts/dnf-reboot.sh",
+            src: "templates/scripts/dnf-reboot.sh.j2",
             dest: "/opt/minecraft/dnf-reboot.sh",
             owner: "root",
             mode: "0755",
