@@ -670,6 +670,15 @@
         - use_bluemap
         - caddy.changed == false
 
+    - name: Disabling the Minecraft instances
+      systemd:
+        name: minecraft-{{ item.name }}
+        state: stopped
+        enabled: no
+        daemon_reload: yes
+      loop: "{{ instances }}"
+      when: item.state.enabled == false
+
     - name: Starting the Minecraft instances
       systemd:
         name: minecraft-{{ item.name }}
@@ -677,6 +686,16 @@
         enabled: yes
         daemon_reload: yes
       loop: "{{ instances }}"
+      when: item.state.enabled
+
+    - name: Stopping the Minecraft backup timers
+      systemd:
+        name: minecraft-backup@{{ item.name }}.timer
+        state: stopped
+        enabled: no
+        daemon_reload: yes
+      loop: "{{ instances }}"
+      when: item.state.enabled == false
 
     - name: Starting the Minecraft backup timers
       systemd:
@@ -685,3 +704,4 @@
         enabled: yes
         daemon_reload: yes
       loop: "{{ instances }}"
+      when: item.state.enabled
