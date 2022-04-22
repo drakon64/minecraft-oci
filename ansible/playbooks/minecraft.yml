@@ -509,6 +509,7 @@
             timer: "{{ backup_oncalendar }}",
             persistent: true,
             when: true,
+            validate: "systemd-analyze %s",
           }
         - {
             src: "templates/systemd/service.j2",
