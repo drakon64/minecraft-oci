@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DATE=$(date -I'minutes')
+DATE=$(date "+%Y-%m-%d-%H-%M-%S")
 BACKUP_RETENTION_DAYS=$(< "$1"/backup_retention_days)
 
 printf "Server closed for backup." > "$1"/server/stop
