@@ -14,7 +14,7 @@ wait
 
 SCRIPT_PWD=$(pwd)
 cd "$1"/server || exit 1
-yes 'y' | borg create --compression zstd{% if use_bluemap %} --pattern=+bluemap/web/data/markers.json --pattern=-bluemap{% endif %} --pattern=-cache "$SCRIPT_PWD"/"$1"/backup::"$DATE" .
+yes 'y' | borg create --compression zstd{% if use_bluemap %} --pattern=+bluemap/web/data/markers.json --pattern=-bluemap{% endif %} --pattern=-cache --pattern=-libraries --pattern=-versions "$SCRIPT_PWD"/"$1"/backup::"$DATE" .
 tmux send-keys -t minecraft-"$1" save-on ENTER
 cd "$SCRIPT_PWD" || exit 1
 
