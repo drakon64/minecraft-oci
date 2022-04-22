@@ -506,7 +506,7 @@
             owner: "root",
             mode: "0644",
             description: "Minecraft Server backup - %i",
-            timer: "6:00",
+            timer: "{{ backup_oncalendar }}",
             persistent: true,
             when: true,
           }
