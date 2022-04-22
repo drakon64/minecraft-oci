@@ -7,8 +7,8 @@ tail_grep() {
 	tail -f -n 0 /opt/minecraft/"$1"/server/logs/latest.log | grep -q "Saved the game"
 }
 
-tmux send-keys -t minecraft-"$1" save-off ENTER
 tail_grep "$@" &
+tmux send-keys -t minecraft-"$1" save-off ENTER
 tmux send-keys -t minecraft-"$1" save-all ENTER
 wait
 
