@@ -8,13 +8,14 @@ tail_grep() {
 }
 
 tail_grep "$@" &
+umount /opt/minecraft/"$1"/snapshot
 tmux send-keys -t minecraft-"$1" save-off ENTER
 tmux send-keys -t minecraft-"$1" save-all ENTER
 wait
 
 SCRIPT_PWD=$(pwd)
 cd "$1"/server || exit 1
-yes 'y' | borg create --compression zstd{% if use_bluemap %} --pattern=+bluemap/web/data/markers.json --pattern=-bluemap{% endif %} --pattern=-cache --pattern=-libraries --pattern=-versions "$SCRIPT_PWD"/"$1"/backup::"$DATE" .
+borg create --compression zstd{% if use_bluemap %} --pattern=+bluemap/web/data/markers.json --pattern=-bluemap{% endif %} --pattern=-cache --pattern=-libraries --pattern=-versions "$SCRIPT_PWD"/"$1"/backup::"$DATE" .
 tmux send-keys -t minecraft-"$1" save-on ENTER
 cd "$SCRIPT_PWD" || exit 1
 
@@ -22,3 +23,5 @@ borg prune --keep-within "$BACKUP_RETENTION_DAYS"d --save-space "$1"/backup
 
 cd "$1" || exit
 tar cf - backup/ | oci os object put --auth instance_principal --bucket-name {{ bucket_name }} --file - --name minecraft-"$1".tar --force
+
+borg mount /opt/minecraft/"$1"/backup /opt/minecraft/"$1"/snapshot

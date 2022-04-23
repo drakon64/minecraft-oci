@@ -272,6 +272,26 @@
         mode: 0644
       loop: "{{ instances }}"
 
+    - name: Creating the instance backup mount point
+      file:
+        path: /opt/minecraft/{{ item.name }}/snapshot
+        owner: minecraft-{{ item.name }}
+        group: minecraft-{{ item.name }}
+        mode: 0755
+        state: directory
+      loop: "{{ instances }}"
+
+    - name: Opening the backup repository once
+      shell: BORG_UNKNOWN_UNENCRYPTED_REPO_ACCESS_IS_OK=yes borg list /opt/minecraft/{{ item.name }}/backup
+      become_user: minecraft-{{ item.name }}
+      loop: "{{ instances }}"
+      when: item.state.backup.new_repository
+
+    - name: Opening the backup repository once as root
+      shell: BORG_UNKNOWN_UNENCRYPTED_REPO_ACCESS_IS_OK=yes borg list /opt/minecraft/{{ item.name }}/backup
+      loop: "{{ instances }}"
+      when: item.state.backup.new_repository
+
     - name: Downloading Minecraft Pufferfish server
       get_url:
         url: https://ci.pufferfish.host/job/Pufferfish-{{ item.version.major }}/{{ item.version.build }}/artifact/build/libs/pufferfish-paperclip-{{ item.version.full }}-R0.1-SNAPSHOT-reobf.jar
