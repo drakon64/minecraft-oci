@@ -463,7 +463,7 @@
       become_user: minecraft-{{ item.name }}
 
     - name: Restoring the server backup
-      shell: "{% if item.state.backup.restore_remote_backup %}BORG_UNKNOWN_UNENCRYPTED_REPO_ACCESS_IS_OK=yes borg extract {% endif %}/opt/minecraft/{{ item.name }}/backup::{{ item.state.backup.backup_version }}"
+      shell: "{% if item.state.backup.restore_remote_backup %}BORG_UNKNOWN_UNENCRYPTED_REPO_ACCESS_IS_OK=yes {% endif %}borg extract /opt/minecraft/{{ item.name }}/backup::{{ item.state.backup.backup_version }}"
       args:
         chdir: /opt/minecraft/{{ item.name }}/server
       loop: "{{ instances }}"
