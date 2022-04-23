@@ -39,6 +39,9 @@ Nice={{ item.nice }}
 {% if item.oomscoreadjust is defined %}
 OOMScoreAdjust={{ item.oomscoreadjust }}
 {% endif %}
+{% if item.timeoutstartsec is defined %}
+TimeoutStartSec={{ item.timeoutstartsec }}
+{% endif %}
 
 [Install]
 WantedBy=multi-user.target

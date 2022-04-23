@@ -498,6 +498,7 @@
             execstart: "/opt/minecraft/backup.sh %i restart",
             workingdirectory: "/opt/minecraft",
             user: "minecraft-%i",
+            timeoutstartsec: "{{ backup.timeout }}",
             when: true,
           }
         - {
@@ -506,7 +507,7 @@
             owner: "root",
             mode: "0644",
             description: "Minecraft Server backup - %i",
-            timer: "{{ backup_oncalendar }}",
+            timer: "{{ backup.oncalendar }}",
             persistent: true,
             when: true,
             validate: "systemd-analyze %s",

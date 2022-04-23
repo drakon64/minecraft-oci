@@ -1,7 +1,9 @@
 minecraft:
   hosts:
     minecraft.example.com:
-      backup_oncalendar: "*-*-* *:00:00"
+      backup:
+        oncalendar: "*-*-* *:00:00"
+        timeout: 1800
       bucket_name: minecraft-backup
       graalvm: false
       grafana:
