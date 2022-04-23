@@ -500,6 +500,7 @@
             user: "minecraft-%i",
             timeoutstartsec: "{{ backup.timeout }}",
             when: true,
+            # validate: "systemd-analyze %s",
           }
         - {
             src: "templates/systemd/timer.j2",
@@ -510,7 +511,7 @@
             timer: "{{ backup.oncalendar }}",
             persistent: true,
             when: true,
-            validate: "systemd-analyze %s",
+            # validate: "systemd-analyze %s",
           }
         - {
             src: "templates/systemd/service.j2",
