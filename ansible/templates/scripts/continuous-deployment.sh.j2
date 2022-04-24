@@ -1,42 +1,45 @@
 #!/bin/sh -e
 
-sudo systemctl stop minecraft
+sudo systemctl stop minecraft-{{ outer_item.name }}.service
 
-PAPERDIR="/opt/minecraft/server"
-BACKUPDIR="/opt/minecraft/backup"
+PUFFERFISHDIR="/opt/minecraft/{{ outer_item.name }}/server"
+BACKUPDIR="/opt/minecraft/{{ outer_item.name }}/backup"
 
-rm -fr $PAPERDIR $BACKUPDIR
-mkdir $PAPERDIR $BACKUPDIR
+rm -fr $PUFFERFISHDIR $BACKUPDIR
+mkdir $PUFFERFISHDIR $BACKUPDIR
 
-oci os object get --auth instance_principal --bucket-name {{ cd_bucket_name }} --file - --name backup.tar | tar xf - -C /opt/minecraft/backup/
-cd $PAPERDIR
-borg extract /opt/minecraft/backup::$(borg list --last 1 backup | awk '{print $1}')
+oci os object get --auth instance_principal --bucket-name {{ outer_item.state.continuous_deployment.bucket_name }} --file - --name minecraft-{{ outer_item.name }}.tar | tar xf - -C /opt/minecraft/{{ outer_item.name }}/backup/
+cd $PUFFERFISHDIR
+borg extract /opt/minecraft/{{ outer_item.name }}/backup::$(borg list --last 1 backup | awk '{print $1}')
 rm -fr $BACKUPDIR
 
-PAPER=$(curl --silent https://papermc.io/api/v2/projects/paper/versions/{{ version }} | jq ".builds | max")
-curl "https://papermc.io/api/v2/projects/paper/versions/{{ version }}/builds/$PAPER/downloads/paper-{{ version }}-$PAPER.jar" -o $PAPERDIR/server.jar
-
-curl https://ci.opencollab.dev/job/GeyserMC/job/Geyser/job/master/lastSuccessfulBuild/artifact/bootstrap/spigot/target/Geyser-Spigot.jar -o $PAPERDIR/plugins/Geyser-Spigot.jar
-
-curl https://ci.opencollab.dev/job/GeyserMC/job/Floodgate/job/master/lastSuccessfulBuild/artifact/spigot/target/floodgate-spigot.jar -o $PAPERDIR/plugins/floodgate-spigot.jar
-
-curl https://ci.opencollab.dev/job/GeyserMC/job/GeyserOptionalPack/job/master/lastSuccessfulBuild/artifact/GeyserOptionalPack.mcpack -o $PAPERDIR/plugins/Geyser-Spigot/packs/GeyserOptionalPack.mcpack
+curl "https://ci.pufferfish.host/job/Pufferfish-1.18/lastBuild/artifact/build/libs/pufferfish-paperclip-1.18.2-R0.1-SNAPSHOT-reobf.jar" -o $PUFFERFISHDIR/server.jar
 
 {% if chunky %}
 CHUNKY=$(curl --silent https://ci.codemc.io/job/pop4959/job/Chunky/lastSuccessfulBuild/api/json | jq -r '.artifacts[0].fileName')
-curl https://ci.codemc.io/view/Author/job/pop4959/job/Chunky/lastSuccessfulBuild/artifact/bukkit/build/libs/"$CHUNKY" -o $PAPERDIR/plugins/Chunky.jar
+curl https://ci.codemc.io/view/Author/job/pop4959/job/Chunky/lastSuccessfulBuild/artifact/bukkit/build/libs/"$CHUNKY" -o $PUFFERFISHDIR/plugins/Chunky.jar
 {% else %}
-rm -fr $PAPERDIR/plugins/Chunky.jar $PAPERDIR/plugins/Chunky/
+rm -fr $PUFFERFISHDIR/plugins/Chunky.jar $PUFFERFISHDIR/plugins/Chunky/
 {% endif %}
 
+{% if geyser %}
+curl https://ci.opencollab.dev/job/GeyserMC/job/Geyser/job/master/lastSuccessfulBuild/artifact/bootstrap/spigot/target/Geyser-Spigot.jar -o $PUFFERFISHDIR/plugins/Geyser-Spigot.jar
+
+curl https://ci.opencollab.dev/job/GeyserMC/job/Floodgate/job/master/lastSuccessfulBuild/artifact/spigot/target/floodgate-spigot.jar -o $PUFFERFISHDIR/plugins/floodgate-spigot.jar
+
+curl https://ci.opencollab.dev/job/GeyserMC/job/GeyserOptionalPack/job/master/lastSuccessfulBuild/artifact/GeyserOptionalPack.mcpack -o $PUFFERFISHDIR/plugins/Geyser-Spigot/packs/GeyserOptionalPack.mcpack
+{% endif %}
+
+rm -fr $PUFFERFISHDIR/plugins/DiscordSRV.jar $PUFFERFISHDIR/plugins/DiscordSRV/
+
 TABTPS=$(curl --silent "https://api.github.com/repos/jpenilla/TabTPS/releases/latest" | jq -r '.assets[].browser_download_url' | grep spigot)
-curl -L "$TABTPS" -o $PAPERDIR/plugins/tabtps.jar
+curl -L "$TABTPS" -o $PUFFERFISHDIR/plugins/tabtps.jar
 
 {% if viaversion %}
 VIAVERSION=$(curl --silent "https://api.github.com/repos/ViaVersion/ViaVersion/releases/latest" | jq -r '.assets[].browser_download_url')
-curl -L "$VIAVERSION" -o $PAPERDIR/plugins/ViaVersion.jar
+curl -L "$VIAVERSION" -o $PUFFERFISHDIR/plugins/ViaVersion.jar
 {% else %}
-rm -fr $PAPERDIR/plugins/ViaVersion.jar $PAPERDIR/plugins/ViaVersion/
+rm -fr $PUFFERFISHDIR/plugins/ViaVersion.jar $PUFFERFISHDIR/plugins/ViaVersion/
 {% endif %}
 
-sudo systemctl start minecraft
+sudo systemctl start minecraft-{{ outer_item.name }}.service

@@ -22,7 +22,6 @@ minecraft:
             domain: minecraft.example.com
             use: true
           chunky: true
-          continuous_deployment: false
           custom_plugins:
             - name: plugin
               url: example.com/plugin.jar
@@ -73,6 +72,9 @@ minecraft:
               backup_version: 2022-03-23T18:02+00:00
               restore_backup: false
               restore_remote_backup: false
+            continuous_deployment:
+              bucket_name: minecraft-backup
+              enabled: false
             new_server: true
             skip_backup: true
             update_server: false

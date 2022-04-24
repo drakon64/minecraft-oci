@@ -1,4 +1,9 @@
 #jinja2: trim_blocks: False
 {% for i in instances if i.state.enabled %}
+{% if i.state.continuous_deployment.enabled == false %}
 minecraft-{{ i.name }} ALL=NOPASSWD: /usr/bin/systemctl stop minecraft-backup-mount@{{ i.name }}.service,/usr/bin/systemctl start minecraft-backup-mount@{{ i.name }}.service
+{% endif %}
+{% if i.state.continuous_deployment.enabled %}
+minecraft-{{ i.name }} ALL=NOPASSWD: /usr/bin/systemctl stop minecraft-{{ i.name }}.service,/usr/bin/systemctl start minecraft-{{ i.name }}.service
+{% endif %}
 {% endfor %}

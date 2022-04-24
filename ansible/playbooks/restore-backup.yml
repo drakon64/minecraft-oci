@@ -1,0 +1,24 @@
+# yaml-language-server: $schema=https://json.schemastore.org/ansible-playbook.json
+
+- name: Downloading the server backup
+  shell: oci os object get --auth instance_principal --bucket-name {% if outer_item.state.continuous_deployment.enabled %}{{ outer_item.state.continuous_deployment.bucket_name}}{% else %}{{ bucket_name }}{% endif %} --file - --name minecraft-{{ outer_item.name }}.tar | tar xf -
+  args:
+    chdir: /opt/minecraft/{{ outer_item.name }}
+  when:
+   - outer_item.state.backup.restore_backup
+   - outer_item.state.backup.restore_remote_backup
+  become_user: minecraft-{{ outer_item.name }}
+
+- name: Getting the latest server backup
+  shell: BORG_UNKNOWN_UNENCRYPTED_REPO_ACCESS_IS_OK=yes borg list --last 1 backup | awk '{print $1}'
+  args:
+    chdir: /opt/minecraft/{{ outer_item.name }}
+  register: latest_backup
+  when: outer_item.state.continuous_deployment.enabled
+
+- name: Restoring the server backup
+  shell: "{% if outer_item.state.backup.restore_remote_backup %}BORG_UNKNOWN_UNENCRYPTED_REPO_ACCESS_IS_OK=yes {% endif %}borg extract /opt/minecraft/{{ outer_item.name }}/backup::{% if outer_item.state.continuous_deployment.enabled %}{{ latest_backup.stdout }}{% else %}{{ outer_item.state.backup.backup_version }}{% endif %}"
+  args:
+    chdir: /opt/minecraft/{{ outer_item.name }}/server
+  when: outer_item.state.backup.restore_backup
+  become_user: minecraft-{{ outer_item.name }}

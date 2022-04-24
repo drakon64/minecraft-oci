@@ -75,7 +75,7 @@
       when:
         - item.state.new_server or item.state.update_server
         - item.state.skip_backup == false
-        - item.continuous_deployment == false
+        - item.state.continuous_deployment.enabled == false
 
     - name: Applying updates with Uptrack
       command: uptrack-upgrade -y
@@ -247,7 +247,7 @@
         recurse: yes
       loop: "{{ instances }}"
       when:
-        - item.continuous_deployment == false
+        - item.state.continuous_deployment.enabled == false
         - item.state.backup.restore_backup == false
 
     - name: Initialising the instance backup repository
@@ -259,7 +259,7 @@
       register: borg
       loop: "{{ instances }}"
       when:
-        - item.continuous_deployment == false
+        - item.state.continuous_deployment.enabled == false
         - item.state.backup.restore_backup == false
       become_user: minecraft-{{ item.name }}
 
@@ -452,23 +452,11 @@
         - item.server_icon.use
         - item.state.backup.restore_backup == false
 
-    - name: Downloading the server backup
-      shell: oci os object get --auth instance_principal --bucket-name {{ bucket_name }} --file - --name minecraft-{{ item.name }}.tar | tar xf -
-      args:
-        chdir: /opt/minecraft/{{ item.name }}
+    - name: Restoring backup
+      include_tasks: restore-backup.yml
       loop: "{{ instances }}"
-      when:
-        - item.state.backup.restore_backup
-        - item.state.backup.restore_remote_backup
-      become_user: minecraft-{{ item.name }}
-
-    - name: Restoring the server backup
-      shell: "{% if item.state.backup.restore_remote_backup %}BORG_UNKNOWN_UNENCRYPTED_REPO_ACCESS_IS_OK=yes {% endif %}borg extract /opt/minecraft/{{ item.name }}/backup::{{ item.state.backup.backup_version }}"
-      args:
-        chdir: /opt/minecraft/{{ item.name }}/server
-      loop: "{{ instances }}"
-      when: item.state.backup.restore_backup
-      become_user: minecraft-{{ item.name }}
+      loop_control:
+        loop_var: outer_item
 
     - name: Copying scripts and systemd units
       template:
@@ -538,6 +526,29 @@
             user: "minecraft-%i",
             when: true,
             # validate: "systemd-analyze %s",
+          }
+        - {
+            src: "templates/systemd/service.j2",
+            dest: "/etc/systemd/system/minecraft-continuous-deployment@.service",
+            owner: "root",
+            mode: "0644",
+            description: "Minecraft Server continuous deployment - %i",
+            type: "oneshot",
+            execstart: "/opt/minecraft/%i/continuous-deployment.sh",
+            workingdirectory: "/opt/minecraft",
+            user: "minecraft-%i",
+            when: true,
+            # validate: "systemd-analyze %s",
+          }
+        - {
+            src: "templates/systemd/timer.j2",
+            dest: "/etc/systemd/system/minecraft-continuous-deployment@.timer",
+            owner: "root",
+            mode: "0644",
+            description: "Minecraft Server continuous deployment - %i",
+            timer: "6:00",
+            persistent: true,
+            when: true,
           }
         - {
             src: "templates/sudoers.j2",
@@ -739,8 +750,15 @@
     - name: Starting the Minecraft backup timers
       systemd:
         name: minecraft-backup@{{ item.name }}.timer
-        state: started
-        enabled: yes
+        state: "{% if item.state.enabled and item.state.continuous_deployment.enabled %}stopped{% elif item.state.enabled %}started{% else %}stopped{% endif %}"
+        enabled: "{% if item.state.enabled and item.state.continuous_deployment.enabled %}no{% elif item.state.enabled %}yes{% else %}no{% endif %}"
         daemon_reload: yes
       loop: "{{ instances }}"
-      when: item.state.enabled
+
+    - name: Starting the Minecraft continuous deployment timers
+      systemd:
+        name: minecraft-continuous-deployment@{{ item.name }}.timer
+        state: "{% if item.state.enabled and item.state.continuous_deployment.enabled %}started{% else %}stopped{% endif %}"
+        enabled: "{% if item.state.enabled and item.state.continuous_deployment.enabled %}no{% elif item.state.enabled %}yes{% else %}no{% endif %}"
+        daemon_reload: yes
+      loop: "{{ instances }}"

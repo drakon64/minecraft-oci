@@ -5,6 +5,7 @@
     owner: "{{ item.owner }}"
     group: "{{ item.owner }}"
     mode: "{{ item.mode }}"
+  when: item.when
   loop:
     - {
         src: "../templates/systemd/service.j2",
@@ -21,4 +22,12 @@
         oomscoreadjust: "-1000",
         user: "minecraft-{{ outer_item.name }}",
         group: "minecraft-{{ outer_item.name }}",
+        when: true,
+      }
+    - {
+        src: "../templates/scripts/continuous-deployment.sh.j2",
+        dest: "/opt/minecraft/{{ outer_item.name }}/continuous-deployment.sh",
+        owner: root,
+        mode: "0744",
+        when: outer_item.state.continuous_deployment.enabled,
       }
