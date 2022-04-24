@@ -8,7 +8,7 @@ tail_grep() {
 }
 
 tail_grep "$@" &
-umount /opt/minecraft/"$1"/snapshot
+borg umount /opt/minecraft/"$1"/snapshot
 tmux send-keys -t minecraft-"$1" save-off ENTER
 tmux send-keys -t minecraft-"$1" save-all ENTER
 wait
