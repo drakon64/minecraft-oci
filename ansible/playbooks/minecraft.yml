@@ -527,6 +527,28 @@
           }
         - {
             src: "templates/systemd/service.j2",
+            dest: "/etc/systemd/system/minecraft-backup-mount@.service",
+            owner: "root",
+            mode: "0644",
+            description: "Minecraft Server snapshot mount - %i",
+            type: "forking",
+            execstart: "borg mount /opt/minecraft/%i/backup /opt/minecraft/%i/snapshot",
+            execstop: borg umount /opt/minecraft/%i/snapshot,
+            workingdirectory: "/opt/minecraft",
+            user: "minecraft-%i",
+            when: true,
+            # validate: "systemd-analyze %s",
+          }
+        - {
+            src: "templates/sudoers.j2",
+            dest: "/etc/sudoers.d/10-minecraft-users",
+            owner: "root",
+            mode: "0400",
+            when: true,
+            validate: "visudo -cf %s",
+          }
+        - {
+            src: "templates/systemd/service.j2",
             dest: "/etc/systemd/system/dnf-upgrade.service",
             owner: "root",
             mode: "0644",
