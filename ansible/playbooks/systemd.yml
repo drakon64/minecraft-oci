@@ -29,5 +29,5 @@
         dest: "/opt/minecraft/{{ outer_item.name }}/continuous-deployment.sh",
         owner: root,
         mode: "0744",
-        when: outer_item.state.continuous_deployment.enabled,
+        when: "{{ outer_item.state.continuous_deployment.enabled }}",
       }
