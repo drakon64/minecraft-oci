@@ -15,14 +15,14 @@ rm -fr $BACKUPDIR
 
 curl "https://ci.pufferfish.host/job/Pufferfish-1.18/lastBuild/artifact/build/libs/pufferfish-paperclip-1.18.2-R0.1-SNAPSHOT-reobf.jar" -o $PUFFERFISHDIR/server.jar
 
-{% if chunky %}
+{% if outer_item.chunky %}
 CHUNKY=$(curl --silent https://ci.codemc.io/job/pop4959/job/Chunky/lastSuccessfulBuild/api/json | jq -r '.artifacts[0].fileName')
 curl https://ci.codemc.io/view/Author/job/pop4959/job/Chunky/lastSuccessfulBuild/artifact/bukkit/build/libs/"$CHUNKY" -o $PUFFERFISHDIR/plugins/Chunky.jar
 {% else %}
 rm -fr $PUFFERFISHDIR/plugins/Chunky.jar $PUFFERFISHDIR/plugins/Chunky/
 {% endif %}
 
-{% if geyser %}
+{% if outer_item.geyser %}
 curl https://ci.opencollab.dev/job/GeyserMC/job/Geyser/job/master/lastSuccessfulBuild/artifact/bootstrap/spigot/target/Geyser-Spigot.jar -o $PUFFERFISHDIR/plugins/Geyser-Spigot.jar
 
 curl https://ci.opencollab.dev/job/GeyserMC/job/Floodgate/job/master/lastSuccessfulBuild/artifact/spigot/target/floodgate-spigot.jar -o $PUFFERFISHDIR/plugins/floodgate-spigot.jar
@@ -35,7 +35,7 @@ rm -fr $PUFFERFISHDIR/plugins/DiscordSRV.jar $PUFFERFISHDIR/plugins/DiscordSRV/
 TABTPS=$(curl --silent "https://api.github.com/repos/jpenilla/TabTPS/releases/latest" | jq -r '.assets[].browser_download_url' | grep spigot)
 curl -L "$TABTPS" -o $PUFFERFISHDIR/plugins/tabtps.jar
 
-{% if viaversion %}
+{% if outer_item.viaversion %}
 VIAVERSION=$(curl --silent "https://api.github.com/repos/ViaVersion/ViaVersion/releases/latest" | jq -r '.assets[].browser_download_url')
 curl -L "$VIAVERSION" -o $PUFFERFISHDIR/plugins/ViaVersion.jar
 {% else %}
