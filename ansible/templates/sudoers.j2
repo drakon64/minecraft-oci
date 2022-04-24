@@ -1,4 +1,0 @@
-#jinja2: trim_blocks: False
-{% for i in instances %}
-minecraft-{{ i.name }} ALL=NOPASSWD: /usr/bin/systemctl stop minecraft-{{ i.name }}.service,/usr/bin/systemctl start minecraft-{{ i.name }}.service
-{% endfor %}
