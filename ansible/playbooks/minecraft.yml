@@ -67,6 +67,13 @@
       loop: "{{ instances }}"
       ignore_errors: yes # todo: fix this
 
+    - name: Unmounting Borg snapshots
+      systemd:
+        name: minecraft-backup-mount@{{ item.name }}
+        state: stopped
+      loop: "{{ instances }}"
+      ignore_errors: yes # todo: fix this
+
     - name: Backing up the existing server
       shell: /opt/minecraft/backup.sh {{ item.name }}
       args:
