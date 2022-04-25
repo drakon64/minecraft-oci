@@ -29,7 +29,6 @@ minecraft:
           eula: true
           geyser: true
           harbor: true
-          gc: G1GC
           heap: 4608M
           name: prod
           ops:

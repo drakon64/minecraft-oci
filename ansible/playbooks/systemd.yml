@@ -15,7 +15,7 @@
         description: "Minecraft Server - {{ outer_item.name }}",
         type: "forking",
         execstartpre: "{% if outer_item.server_icon.random %}-/opt/minecraft/server-icon.sh{% endif %}",
-        execstart: '/usr/bin/tmux new-session -s minecraft-{{ outer_item.name }} -d ''{% if outer_item.gc == "shenandoah" %}{{ shenandoah_command }}{% else %}{{ command }}{% endif %}''',
+        execstart: "/usr/bin/tmux new-session -s minecraft-{{ outer_item.name }} -d '{{ command }}'",
         execstop: "/opt/minecraft/stop.sh {{ outer_item.name }}",
         workingdirectory: "/opt/minecraft/{{ outer_item.name }}/server",
         nice: "-20",
