@@ -833,6 +833,8 @@ pufferfish:
   inactive-goal-selector-throttle: true
   info:
     version: "1.0"
+  misc:
+    disable-method-profiler: true
   projectile:
     max-loads-per-projectile: 10
     max-loads-per-tick: 10
