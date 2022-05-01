@@ -361,9 +361,6 @@ harbor:
   version: 1.6.4
   whitelist-mode: false
 luckperms:
-  chat:
-    chat-format: "{prefix}{name}&r: {message}"
-    group-formats:
   config:
     allow-invalid-usernames: false
     apply-bukkit-attachment-permissions: true
