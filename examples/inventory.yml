@@ -30,6 +30,7 @@ minecraft:
           geyser: true
           harbor: true
           heap: 4608M
+          match_max_players_to_whitelist: true
           name: prod
           ops:
             - bypassesPlayerLimit: true

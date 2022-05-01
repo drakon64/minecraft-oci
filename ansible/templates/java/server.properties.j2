@@ -3,6 +3,9 @@
 {% else %}
 {% set combined_server = server %}
 {% endif %}
+{% if outer_item.match_max_players_to_whitelist %}
+{% set combined_server = combined_server | combine({'max-players': outer_item.whitelist | count}) %}
+{% endif %}
 
 {% for key, value in combined_server | dictsort %}
 {{ key }}={{ value }}
