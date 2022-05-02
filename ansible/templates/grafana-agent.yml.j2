@@ -59,9 +59,18 @@ metrics:
           url: {{ grafana.prometheus.url }}
       scrape_configs:
 {% for i in instances %}
+{% if i.plugins.unifiedmetrics.driver.prometheus.http.port is defined %}
+{% set unifiedmetrics_port = i.plugins.unifiedmetrics.driver.prometheus.http.port %}
+{% elif node_overrides.unifiedmetrics.driver.prometheus.http.port is defined %}
+{% set unifiedmetrics_port = node_overrides.unifiedmetrics.driver.prometheus.http.port %}
+{% elif global_overrides.unifiedmetrics.driver.prometheus.http.port is defined %}
+{% set unifiedmetrics_port = global_overrides.unifiedmetrics.driver.prometheus.http.port %}
+{% else %}
+{% set unifiedmetrics_port = unifiedmetrics.driver.prometheus.http.port %}
+{% endif %}
         - job_name: {{ i.name }}
           static_configs:
-            - targets: ["127.0.0.1:{{ i.plugins.unifiedmetrics.driver.prometheus.http.port }}"]
+            - targets: ["127.0.0.1:{{ unifiedmetrics_port }}"]
 {% endfor %}
   global:
     scrape_interval: 5s
