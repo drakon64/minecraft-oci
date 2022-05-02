@@ -2,12 +2,37 @@
 	<short>Minecraft</short>
 	<description>Explore your own unique world, survive the night, and create anything you can imagine!</description>
 {% for i in instances %}
-	<port protocol="tcp" port="{{ i.server['server-port'] }}"/>
-{% if i.server['enable-query'] %}
-	<port protocol="udp" port="{{ i.server['query.port'] }}"/>
+{% if i.server['server-port'] is defined %}
+{% set server_port = i.server['server-port'] %}
+{% elif node_overrides.server['server-port'] is defined %}
+{% set server_port = node_overrides.server['server-port'] %}
+{% elif global_overrides.server['server-port'] is defined %}
+{% set server_port = global_overrides.server['server-port'] %}
+{% else %}
+{% set server_port = server['server-port'] %}
+{% endif %}
+	<port protocol="tcp" port="{{ server_port }}"/>
+{% if i.server['query.port'] is defined %}
+{% set query_port = i.server['query.port'] %}
+{% elif node_overrides.server['query.port'] is defined %}
+{% set query_port = node_overrides.server['query.port'] %}
+{% elif global_overrides.server['query.port'] is defined %}
+{% set query_port = global_overrides.server['query.port'] %}
+{% endif %}
+{% if query_port is defined %}
+	<port protocol="udp" port="{{ query_port }}"/>
 {% endif %}
 {% if i.geyser %}
-	<port protocol="udp" port="{{ i.plugins.geyser.bedrock.port }}"/>
+{% if i.plugins.geyser.bedrock.port is defined %}
+{% set geyser_port = i.plugins.geyser.bedrock.port %}
+{% elif node_overrides.geyser.bedrock.port is defined %}
+{% set geyser_port = node_overrides.geyser.bedrock.port %}
+{% elif global_overrides.geyser.bedrock.port is defined %}
+{% set geyser_port = global_overrides.geyser.bedrock.port %}
+{% else %}
+{% set geyser_port = geyser.bedrock.port %}
+{% endif %}
+	<port protocol="udp" port="{{ geyser_port }}"/>
 {% endif %}
 {% endfor %}
 {% if use_bluemap %}
