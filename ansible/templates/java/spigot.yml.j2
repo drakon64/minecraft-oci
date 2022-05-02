@@ -9,10 +9,15 @@
 #
 # Discord: https://www.spigotmc.org/go/discord
 # Forums: http://www.spigotmc.org/
-{% if outer_item.spigot is defined %}
-{% set combined_spigot = (spigot | combine(outer_item.spigot, recursive=True)) %}
-{% else %}
 {% set combined_spigot = spigot %}
+{% if global_overrides.spigot is defined %}
+{% set combined_spigot = (combined_spigot | combine(global_overrides.spigot, recursive=True)) %}
+{% endif %}
+{% if node_overrides.spigot is defined %}
+{% set combined_spigot = (combined_spigot | combine(node_overrides.spigot, recursive=True)) %}
+{% endif %}
+{% if outer_item.spigot is defined %}
+{% set combined_spigot = (combined_spigot | combine(outer_item.spigot, recursive=True)) %}
 {% endif %}
 
 {{ combined_spigot | to_nice_yaml(indent=2) }}

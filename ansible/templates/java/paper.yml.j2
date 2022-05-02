@@ -9,10 +9,15 @@
 # IRC: #paper @ irc.esper.net ( https://webchat.esper.net/?channels=paper )
 # Website: https://papermc.io/
 # Docs: https://paper.readthedocs.org/
-{% if outer_item.paper is defined %}
-{% set combined_paper = (paper | combine(outer_item.paper, recursive=True)) %}
-{% else %}
 {% set combined_paper = paper %}
+{% if global_overrides.paper is defined %}
+{% set combined_paper = (combined_paper | combine(global_overrides.paper, recursive=True)) %}
+{% endif %}
+{% if node_overrides.paper is defined %}
+{% set combined_paper = (combined_paper | combine(node_overrides.paper, recursive=True)) %}
+{% endif %}
+{% if outer_item.paper is defined %}
+{% set combined_paper = (combined_paper | combine(outer_item.paper, recursive=True)) %}
 {% endif %}
 
 {{ combined_paper | to_nice_yaml(indent=2) }}

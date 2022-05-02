@@ -10,10 +10,15 @@
 # Forums: https://www.spigotmc.org/
 # Bug tracker: https://www.spigotmc.org/go/bugs
 
-{% if outer_item.commands is defined %}
-{% set combined_commands = (commands | combine(outer_item.commands, recursive=True)) %}
-{% else %}
 {% set combined_commands = commands %}
+{% if global_overrides.commands is defined %}
+{% set combined_commands = (combined_commands | combine(global_overrides.commands, recursive=True)) %}
+{% endif %}
+{% if node_overrides.commands is defined %}
+{% set combined_commands = (combined_commands | combine(node_overrides.commands, recursive=True)) %}
+{% endif %}
+{% if outer_item.commands is defined %}
+{% set combined_commands = (combined_commands | combine(outer_item.commands, recursive=True)) %}
 {% endif %}
 
 {{ combined_commands | to_nice_yaml(indent=2) }}
