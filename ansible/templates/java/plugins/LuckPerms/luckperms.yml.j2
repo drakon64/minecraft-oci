@@ -1,5 +1,16 @@
-{% if outer_item.plugins.luckperms.config['storage-method'] == "json" %}
+{% set combined_luckperms = luckperms.config %}
+{% if global_overrides.luckperms.config is defined %}
+{% set combined_luckperms = (combined_luckperms | combine(global_overrides.luckperms.config, recursive=True)) %}
+{% endif %}
+{% if node_overrides.luckperms.config is defined %}
+{% set combined_luckperms = (combined_luckperms | combine(node_overrides.luckperms.config, recursive=True)) %}
+{% endif %}
+{% if outer_item.luckperms.config is defined %}
+{% set combined_luckperms = (combined_luckperms | combine(outer_item.luckperms.config, recursive=True)) %}
+{% endif %}
+
+{% if combined_luckperms['storage-method'] == "json" %}
 {{ item | to_nice_json(indent=2) }}
-{% elif outer_item.plugins.luckperms.config['storage-method'] == "yaml" %}
+{% elif combined_luckperms['storage-method'] == "yaml" %}
 {{ item | to_nice_yaml(indent=2) }}
 {% endif %}
