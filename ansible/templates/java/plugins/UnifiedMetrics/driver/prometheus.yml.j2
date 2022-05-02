@@ -5,8 +5,8 @@
 {% if node_overrides.unifiedmetrics.driver.prometheus is defined %}
 {% set combined_unifiedmetrics = (combined_unifiedmetrics | combine(node_overrides.unifiedmetrics.driver.prometheus, recursive=True)) %}
 {% endif %}
-{% if outer_item.unifiedmetrics.driver.prometheus is defined %}
-{% set combined_unifiedmetrics = (combined_unifiedmetrics | combine(outer_item.unifiedmetrics.driver.prometheus, recursive=True)) %}
+{% if outer_item.plugins.unifiedmetrics.driver.prometheus is defined %}
+{% set combined_unifiedmetrics = (combined_unifiedmetrics | combine(outer_item.plugins.unifiedmetrics.driver.prometheus, recursive=True)) %}
 {% endif %}
 
 {{ combined_unifiedmetrics | to_nice_yaml(indent=2) }}

@@ -1,12 +1,12 @@
-{% set combined_treeassist = treeassist %}
-{% if global_overrides.treeassist is defined %}
-{% set combined_treeassist = (combined_treeassist | combine(global_overrides.treeassist, recursive=True)) %}
+{% set combined_treeassist = treeassist.trees.default %}
+{% if global_overrides.treeassist.trees.default is defined %}
+{% set combined_treeassist = (combined_treeassist | combine(global_overrides.treeassist.trees.default, recursive=True)) %}
 {% endif %}
-{% if node_overrides.treeassist is defined %}
-{% set combined_treeassist = (combined_treeassist | combine(node_overrides.treeassist, recursive=True)) %}
+{% if node_overrides.treeassist.trees.default is defined %}
+{% set combined_treeassist = (combined_treeassist | combine(node_overrides.treeassist.trees.default, recursive=True)) %}
 {% endif %}
-{% if outer_item.treeassist is defined %}
-{% set combined_treeassist = (combined_treeassist | combine(outer_item.treeassist, recursive=True)) %}
+{% if outer_item.plugins.treeassist.trees.default is defined %}
+{% set combined_treeassist = (combined_treeassist | combine(outer_item.plugins.treeassist.trees.default, recursive=True)) %}
 {% endif %}
 
 {{ combined_treeassist | to_nice_yaml(indent=2) }}

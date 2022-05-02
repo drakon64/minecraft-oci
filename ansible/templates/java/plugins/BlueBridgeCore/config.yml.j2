@@ -5,8 +5,8 @@
 {% if node_overrides.bluebridgecore is defined %}
 {% set combined_bluebridgecore = (combined_bluebridgecore | combine(node_overrides.bluebridgecore, recursive=True)) %}
 {% endif %}
-{% if outer_item.bluebridgecore is defined %}
-{% set combined_bluebridgecore = (combined_bluebridgecore | combine(outer_item.bluebridgecore, recursive=True)) %}
+{% if outer_item.plugins.bluebridgecore is defined %}
+{% set combined_bluebridgecore = (combined_bluebridgecore | combine(outer_item.plugins.bluebridgecore, recursive=True)) %}
 {% endif %}
 
 {{ combined_bluebridgecore | to_nice_yaml(indent=2) }}

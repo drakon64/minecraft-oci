@@ -5,8 +5,8 @@
 {% if node_overrides.bluebridgewg is defined %}
 {% set combined_bluebridgewg = (combined_bluebridgewg | combine(node_overrides.bluebridgewg, recursive=True)) %}
 {% endif %}
-{% if outer_item.bluebridgewg is defined %}
-{% set combined_bluebridgewg = (combined_bluebridgewg | combine(outer_item.bluebridgewg, recursive=True)) %}
+{% if outer_item.plugins.bluebridgewg is defined %}
+{% set combined_bluebridgewg = (combined_bluebridgewg | combine(outer_item.plugins.bluebridgewg, recursive=True)) %}
 {% endif %}
 
 {{ combined_bluebridgewg | to_nice_yaml(indent=2) }}

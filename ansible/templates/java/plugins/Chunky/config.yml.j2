@@ -5,8 +5,8 @@
 {% if node_overrides.chunky is defined %}
 {% set combined_chunky = (combined_chunky | combine(node_overrides.chunky, recursive=True)) %}
 {% endif %}
-{% if outer_item.chunky is defined %}
-{% set combined_chunky = (combined_chunky | combine(outer_item.chunky, recursive=True)) %}
+{% if outer_item.plugins.chunky is defined %}
+{% set combined_chunky = (combined_chunky | combine(outer_item.plugins.chunky, recursive=True)) %}
 {% endif %}
 
 {{ combined_chunky | to_nice_yaml(indent=2) }}

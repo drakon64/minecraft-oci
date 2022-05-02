@@ -5,8 +5,8 @@
 {% if node_overrides.viaversion is defined %}
 {% set combined_viaversion = (combined_viaversion | combine(node_overrides.viaversion, recursive=True)) %}
 {% endif %}
-{% if outer_item.viaversion is defined %}
-{% set combined_viaversion = (combined_viaversion | combine(outer_item.viaversion, recursive=True)) %}
+{% if outer_item.plugins.viaversion is defined %}
+{% set combined_viaversion = (combined_viaversion | combine(outer_item.plugins.viaversion, recursive=True)) %}
 {% endif %}
 
 {{ combined_viaversion | to_nice_yaml(indent=2) }}

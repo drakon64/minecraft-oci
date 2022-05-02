@@ -5,7 +5,7 @@
 {% if node_overrides.discordsrv is defined %}
 {% set combined_discordsrv = (combined_discordsrv | combine(node_overrides.discordsrv, recursive=True)) %}
 {% endif %}
-{% if outer_item.discordsrv is defined %}
+{% if outer_item.plugins.discordsrv is defined %}
 {% set combined_discordsrv = (combined_discordsrv | combine(outer_item.discordsrv, recursive=True)) %}
 {% endif %}
 

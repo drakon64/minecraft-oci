@@ -1,12 +1,12 @@
-{% set combined_bluemap_plugin = bluemap_plugin %}
-{% if global_overrides.bluemap_plugin is defined %}
-{% set combined_bluemap_plugin = (combined_bluemap_plugin | combine(global_overrides.bluemap_plugin, recursive=True)) %}
+{% set combined_bluemap_plugin = bluemap.plugin %}
+{% if global_overrides.bluemap.plugin is defined %}
+{% set combined_bluemap_plugin = (combined_bluemap_plugin | combine(global_overrides.bluemap.plugin, recursive=True)) %}
 {% endif %}
-{% if node_overrides.bluemap_plugin is defined %}
-{% set combined_bluemap_plugin = (combined_bluemap_plugin | combine(node_overrides.bluemap_plugin, recursive=True)) %}
+{% if node_overrides.bluemap.plugin is defined %}
+{% set combined_bluemap_plugin = (combined_bluemap_plugin | combine(node_overrides.bluemap.plugin, recursive=True)) %}
 {% endif %}
-{% if outer_item.bluemap_plugin is defined %}
-{% set combined_bluemap_plugin = (combined_bluemap_plugin | combine(outer_item.bluemap_plugin, recursive=True)) %}
+{% if outer_item.plugins.bluemap.plugin is defined %}
+{% set combined_bluemap_plugin = (combined_bluemap_plugin | combine(outer_item.plugins.bluemap.plugin, recursive=True)) %}
 {% endif %}
 
 {{ combined_bluemap_plugin | to_nice_json(indent=2) }}

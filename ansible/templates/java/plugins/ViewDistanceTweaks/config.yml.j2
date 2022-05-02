@@ -5,8 +5,8 @@
 {% if node_overrides.viewdistancetweaks is defined %}
 {% set combined_viewdistancetweaks = (combined_viewdistancetweaks | combine(node_overrides.viewdistancetweaks, recursive=True)) %}
 {% endif %}
-{% if outer_item.viewdistancetweaks is defined %}
-{% set combined_viewdistancetweaks = (combined_viewdistancetweaks | combine(outer_item.viewdistancetweaks, recursive=True)) %}
+{% if outer_item.plugins.viewdistancetweaks is defined %}
+{% set combined_viewdistancetweaks = (combined_viewdistancetweaks | combine(outer_item.plugins.viewdistancetweaks, recursive=True)) %}
 {% endif %}
 
 {{ combined_viewdistancetweaks | to_nice_yaml(indent=2) }}
