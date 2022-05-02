@@ -1,7 +1,7 @@
 <service>
 	<short>Minecraft</short>
 	<description>Explore your own unique world, survive the night, and create anything you can imagine!</description>
-{% for i in instances %}
+{% for i in instances if i.state.enabled %}
 {% if i.server['server-port'] is defined %}
 {% set server_port = i.server['server-port'] %}
 {% elif node_overrides.server['server-port'] is defined %}
