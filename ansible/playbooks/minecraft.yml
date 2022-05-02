@@ -5,6 +5,9 @@
   vars:
     memtotal_b: "{{ ansible_memtotal_mb * 1048576 }}"
 
+  vars_files:
+    - vars/luckperms.yml
+
   tasks:
     - name: Configuring sshd # Based on https://infosec.mozilla.org/guidelines/openssh and CIS Benchmarks
       lineinfile:

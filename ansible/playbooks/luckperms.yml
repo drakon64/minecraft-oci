@@ -3,27 +3,27 @@
 - name: Configuring the LuckPerms users for {{ outer_item.name }}
   template:
     src: ../templates/java/plugins/LuckPerms/luckperms.yml.j2
-    dest: /opt/minecraft/{{ outer_item.name }}/server/plugins/LuckPerms/{% if outer_item.plugins.luckperms.config['storage-method'] == "json" %}json{% elif outer_item.plugins.luckperms.config['storage-method'] == "yaml" %}yaml{% endif %}-storage/users/{{ item.uuid }}.{% if outer_item.plugins.luckperms.config['storage-method'] == "json" %}json{% elif outer_item.plugins.luckperms.config['storage-method'] == "yaml" %}yml{% endif %}
+    dest: /opt/minecraft/{{ outer_item.name }}/server/plugins/LuckPerms/{% if combined_luckperms.config['storage-method'] == "json" %}json{% elif combined_luckperms.config['storage-method'] == "yaml" %}yaml{% endif %}-storage/users/{{ item.uuid }}.{% if combined_luckperms.config['storage-method'] == "json" %}json{% elif combined_luckperms.config['storage-method'] == "yaml" %}yml{% endif %}
     owner: minecraft-{{ outer_item.name }}
     group: minecraft-{{ outer_item.name }}
     mode: 0644
-  loop: "{{ outer_item.plugins.luckperms.users }}"
+  loop: "{{ combined_luckperms.users }}"
   when:
-    - outer_item.plugins.luckperms.config['storage-method'] == "json" or outer_item.plugins.luckperms.config['storage-method'] == "yaml"
-    - outer_item.plugins.luckperms.users is defined
+    - combined_luckperms.config['storage-method'] == "json" or combined_luckperms.config['storage-method'] == "yaml"
+    - combined_luckperms.users is defined
     - outer_item.state.backup.restore_backup == false
     - outer_item.restore_permissions
 
 - name: Configuring the LuckPerms groups for {{ outer_item.name }}
   template:
     src: ../templates/java/plugins/LuckPerms/luckperms.yml.j2
-    dest: /opt/minecraft/{{ outer_item.name }}/server/plugins/LuckPerms/{% if outer_item.plugins.luckperms.config['storage-method'] == "json" %}json{% elif outer_item.plugins.luckperms.config['storage-method'] == "yaml" %}yaml{% endif %}-storage/groups/{{ item.name }}.{% if outer_item.plugins.luckperms.config['storage-method'] == "json" %}json{% elif outer_item.plugins.luckperms.config['storage-method'] == "yaml" %}yml{% endif %}
+    dest: /opt/minecraft/{{ outer_item.name }}/server/plugins/LuckPerms/{% if combined_luckperms.config['storage-method'] == "json" %}json{% elif combined_luckperms.config['storage-method'] == "yaml" %}yaml{% endif %}-storage/groups/{{ item.name }}.{% if combined_luckperms.config['storage-method'] == "json" %}json{% elif combined_luckperms.config['storage-method'] == "yaml" %}yml{% endif %}
     owner: minecraft-{{ outer_item.name }}
     group: minecraft-{{ outer_item.name }}
     mode: 0644
-  loop: "{{ outer_item.plugins.luckperms.groups }}"
+  loop: "{{ combined_luckperms.groups }}"
   when:
-    - outer_item.plugins.luckperms.config['storage-method'] == "json" or outer_item.plugins.luckperms.config['storage-method'] == "yaml"
-    - outer_item.plugins.luckperms.groups is defined
+    - combined_luckperms.config['storage-method'] == "json" or combined_luckperms.config['storage-method'] == "yaml"
+    - combined_luckperms.groups is defined
     - outer_item.state.backup.restore_backup == false
     - outer_item.restore_permissions
