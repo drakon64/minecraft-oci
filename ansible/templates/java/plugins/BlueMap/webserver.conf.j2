@@ -1,7 +1,12 @@
-{% if outer_item.plugins.bluemap.webserver is defined %}
-{% set combined_bluemap_webserver = (bluemap.webserver | combine(outer_item.plugins.bluemap.webserver, recursive=True)) %}
-{% else %}
-{% set combined_bluemap_webserver = bluemap.webserver %}
+{% set combined_bluemap_webserver = bluemap_webserver %}
+{% if global_overrides.bluemap_webserver is defined %}
+{% set combined_bluemap_webserver = (combined_bluemap_webserver | combine(global_overrides.bluemap_webserver, recursive=True)) %}
+{% endif %}
+{% if node_overrides.bluemap_webserver is defined %}
+{% set combined_bluemap_webserver = (combined_bluemap_webserver | combine(node_overrides.bluemap_webserver, recursive=True)) %}
+{% endif %}
+{% if outer_item.bluemap_webserver is defined %}
+{% set combined_bluemap_webserver = (combined_bluemap_webserver | combine(outer_item.bluemap_webserver, recursive=True)) %}
 {% endif %}
 
 {{ combined_bluemap_webserver | to_nice_json(indent=2) }}

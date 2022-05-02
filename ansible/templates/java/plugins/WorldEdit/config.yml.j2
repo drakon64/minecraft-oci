@@ -1,7 +1,12 @@
-{% if outer_item.plugins.worldedit is defined %}
-{% set combined_worldedit = (worldedit | combine(outer_item.plugins.worldedit, recursive=True)) %}
-{% else %}
 {% set combined_worldedit = worldedit %}
+{% if global_overrides.worldedit is defined %}
+{% set combined_worldedit = (combined_worldedit | combine(global_overrides.worldedit, recursive=True)) %}
+{% endif %}
+{% if node_overrides.worldedit is defined %}
+{% set combined_worldedit = (combined_worldedit | combine(node_overrides.worldedit, recursive=True)) %}
+{% endif %}
+{% if outer_item.worldedit is defined %}
+{% set combined_worldedit = (combined_worldedit | combine(outer_item.worldedit, recursive=True)) %}
 {% endif %}
 
-{{ combined_worldedit | to_nice_yaml(indent=4) }}
+{{ combined_worldedit | to_nice_yaml(indent=2) }}

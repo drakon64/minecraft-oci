@@ -1,7 +1,12 @@
-{% if outer_item.plugins.bluemap.render is defined %}
-{% set combined_bluemap_render = (bluemap.render | combine(outer_item.plugins.bluemap.render, recursive=True)) %}
-{% else %}
-{% set combined_bluemap_render = bluemap.render %}
+{% set combined_bluemap_render = bluemap_render %}
+{% if global_overrides.bluemap_render is defined %}
+{% set combined_bluemap_render = (combined_bluemap_render | combine(global_overrides.bluemap_render, recursive=True)) %}
+{% endif %}
+{% if node_overrides.bluemap_render is defined %}
+{% set combined_bluemap_render = (combined_bluemap_render | combine(node_overrides.bluemap_render, recursive=True)) %}
+{% endif %}
+{% if outer_item.bluemap_render is defined %}
+{% set combined_bluemap_render = (combined_bluemap_render | combine(outer_item.bluemap_render, recursive=True)) %}
 {% endif %}
 
 {{ combined_bluemap_render | to_nice_json(indent=2) }}

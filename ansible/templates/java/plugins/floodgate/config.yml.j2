@@ -1,7 +1,12 @@
-{% if outer_item.plugins.floodgate is defined %}
-{% set combined_floodgate = (floodgate | combine(outer_item.plugins.floodgate, recursive=True)) %}
-{% else %}
 {% set combined_floodgate = floodgate %}
+{% if global_overrides.floodgate is defined %}
+{% set combined_floodgate = (combined_floodgate | combine(global_overrides.floodgate, recursive=True)) %}
+{% endif %}
+{% if node_overrides.floodgate is defined %}
+{% set combined_floodgate = (combined_floodgate | combine(node_overrides.floodgate, recursive=True)) %}
+{% endif %}
+{% if outer_item.floodgate is defined %}
+{% set combined_floodgate = (combined_floodgate | combine(outer_item.floodgate, recursive=True)) %}
 {% endif %}
 
 {{ combined_floodgate | to_nice_yaml(indent=2) }}

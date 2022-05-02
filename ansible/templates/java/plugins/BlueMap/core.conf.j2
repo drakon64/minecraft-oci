@@ -1,7 +1,12 @@
-{% if outer_item.plugins.bluemap.core is defined %}
-{% set combined_bluemap_core = (bluemap.core | combine(outer_item.plugins.bluemap.core, recursive=True)) %}
-{% else %}
-{% set combined_bluemap_core = bluemap.core %}
+{% set combined_bluemap_core = bluemap_core %}
+{% if global_overrides.bluemap_core is defined %}
+{% set combined_bluemap_core = (combined_bluemap_core | combine(global_overrides.bluemap_core, recursive=True)) %}
+{% endif %}
+{% if node_overrides.bluemap_core is defined %}
+{% set combined_bluemap_core = (combined_bluemap_core | combine(node_overrides.bluemap_core, recursive=True)) %}
+{% endif %}
+{% if outer_item.bluemap_core is defined %}
+{% set combined_bluemap_core = (combined_bluemap_core | combine(outer_item.bluemap_core, recursive=True)) %}
 {% endif %}
 
 {{ combined_bluemap_core | to_nice_json(indent=2) }}

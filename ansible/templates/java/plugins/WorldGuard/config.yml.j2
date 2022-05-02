@@ -1,7 +1,12 @@
-{% if outer_item.plugins.worldguard is defined %}
-{% set combined_worldguard = (worldguard | combine(outer_item.plugins.worldguard, recursive=True)) %}
-{% else %}
 {% set combined_worldguard = worldguard %}
+{% if global_overrides.worldguard is defined %}
+{% set combined_worldguard = (combined_worldguard | combine(global_overrides.worldguard, recursive=True)) %}
+{% endif %}
+{% if node_overrides.worldguard is defined %}
+{% set combined_worldguard = (combined_worldguard | combine(node_overrides.worldguard, recursive=True)) %}
+{% endif %}
+{% if outer_item.worldguard is defined %}
+{% set combined_worldguard = (combined_worldguard | combine(outer_item.worldguard, recursive=True)) %}
 {% endif %}
 
-{{ combined_worldguard | to_nice_yaml(indent=4) }}
+{{ combined_worldguard | to_nice_yaml(indent=2) }}

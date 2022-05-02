@@ -1,7 +1,12 @@
-{% if outer_item.plugins.treeassist.config is defined %}
-{% set combined_luckperms = (treeassist.config | combine(outer_item.plugins.treeassist.config, recursive=True)) %}
-{% else %}
-{% set combined_luckperms = treeassist.config %}
+{% set combined_treeassist = treeassist %}
+{% if global_overrides.treeassist is defined %}
+{% set combined_treeassist = (combined_treeassist | combine(global_overrides.treeassist, recursive=True)) %}
+{% endif %}
+{% if node_overrides.treeassist is defined %}
+{% set combined_treeassist = (combined_treeassist | combine(node_overrides.treeassist, recursive=True)) %}
+{% endif %}
+{% if outer_item.treeassist is defined %}
+{% set combined_treeassist = (combined_treeassist | combine(outer_item.treeassist, recursive=True)) %}
 {% endif %}
 
-{{ combined_luckperms | to_nice_yaml(indent=2) }}
+{{ combined_treeassist | to_nice_yaml(indent=2) }}

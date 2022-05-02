@@ -1,7 +1,12 @@
-{% if outer_item.plugins.harbor is defined %}
-{% set combined_harbor = (harbor | combine(outer_item.plugins.harbor, recursive=True)) %}
-{% else %}
 {% set combined_harbor = harbor %}
+{% if global_overrides.harbor is defined %}
+{% set combined_harbor = (combined_harbor | combine(global_overrides.harbor, recursive=True)) %}
+{% endif %}
+{% if node_overrides.harbor is defined %}
+{% set combined_harbor = (combined_harbor | combine(node_overrides.harbor, recursive=True)) %}
+{% endif %}
+{% if outer_item.harbor is defined %}
+{% set combined_harbor = (combined_harbor | combine(outer_item.harbor, recursive=True)) %}
 {% endif %}
 
 {{ combined_harbor | to_nice_yaml(indent=2) }}

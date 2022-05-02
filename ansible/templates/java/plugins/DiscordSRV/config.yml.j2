@@ -1,7 +1,12 @@
-{% if outer_item.plugins.discordsrv is defined %}
-{% set combined_discordsrv = (discordsrv | combine(outer_item.plugins.discordsrv, recursive=True)) %}
-{% else %}
 {% set combined_discordsrv = discordsrv %}
+{% if global_overrides.discordsrv is defined %}
+{% set combined_discordsrv = (combined_discordsrv | combine(global_overrides.discordsrv, recursive=True)) %}
+{% endif %}
+{% if node_overrides.discordsrv is defined %}
+{% set combined_discordsrv = (combined_discordsrv | combine(node_overrides.discordsrv, recursive=True)) %}
+{% endif %}
+{% if outer_item.discordsrv is defined %}
+{% set combined_discordsrv = (combined_discordsrv | combine(outer_item.discordsrv, recursive=True)) %}
 {% endif %}
 
 {{ combined_discordsrv | to_nice_yaml(indent=2) }}

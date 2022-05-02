@@ -1,7 +1,12 @@
-{% if outer_item.plugins.viaversion is defined %}
-{% set combined_luckperms = (viaversion | combine(outer_item.plugins.viaversion, recursive=True)) %}
-{% else %}
-{% set combined_luckperms = viaversion %}
+{% set combined_viaversion = viaversion %}
+{% if global_overrides.viaversion is defined %}
+{% set combined_viaversion = (combined_viaversion | combine(global_overrides.viaversion, recursive=True)) %}
+{% endif %}
+{% if node_overrides.viaversion is defined %}
+{% set combined_viaversion = (combined_viaversion | combine(node_overrides.viaversion, recursive=True)) %}
+{% endif %}
+{% if outer_item.viaversion is defined %}
+{% set combined_viaversion = (combined_viaversion | combine(outer_item.viaversion, recursive=True)) %}
 {% endif %}
 
-{{ combined_luckperms | to_nice_yaml(indent=2) }}
+{{ combined_viaversion | to_nice_yaml(indent=2) }}
