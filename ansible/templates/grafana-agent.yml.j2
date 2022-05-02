@@ -58,7 +58,7 @@ metrics:
             username: {{ grafana.prometheus.username }}
           url: {{ grafana.prometheus.url }}
       scrape_configs:
-{% for i in instances %}
+{% for i in instances if i.state.enabled %}
 {% if i.plugins.unifiedmetrics.driver.prometheus.http.port is defined %}
 {% set unifiedmetrics_port = i.plugins.unifiedmetrics.driver.prometheus.http.port %}
 {% elif node_overrides.unifiedmetrics.driver.prometheus.http.port is defined %}
