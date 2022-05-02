@@ -6,7 +6,7 @@
 {% set combined_discordsrv = (combined_discordsrv | combine(node_overrides.discordsrv, recursive=True)) %}
 {% endif %}
 {% if outer_item.plugins.discordsrv is defined %}
-{% set combined_discordsrv = (combined_discordsrv | combine(outer_item.discordsrv, recursive=True)) %}
+{% set combined_discordsrv = (combined_discordsrv | combine(outer_item.plugins.discordsrv, recursive=True)) %}
 {% endif %}
 
 {{ combined_discordsrv | to_nice_yaml(indent=2) }}
