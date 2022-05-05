@@ -68,6 +68,8 @@
         name: minecraft-{{ item.name }}
         state: stopped
       loop: "{{ instances }}"
+      loop_control:
+        label: "{{ item.name }}"
       ignore_errors: yes # todo: fix this
 
     - name: Unmounting Borg snapshots
@@ -75,6 +77,8 @@
         name: minecraft-backup-mount@{{ item.name }}
         state: stopped
       loop: "{{ instances }}"
+      loop_control:
+        label: "{{ item.name }}"
       ignore_errors: yes # todo: fix this
 
     - name: Backing up the existing server
@@ -82,6 +86,8 @@
       args:
         chdir: /opt/minecraft
       loop: "{{ instances }}"
+      loop_control:
+        label: "{{ item.name }}"
       when:
         - item.state.new_server or item.state.update_server
         - item.state.skip_backup == false
@@ -159,6 +165,8 @@
         home: /opt/minecraft/{{ item.name }}
         shell: /bin/bash
       loop: "{{ instances }}"
+      loop_control:
+        label: "{{ item.name }}"
 
     - name: Setting permissions for the Minecraft directory
       file:
@@ -218,6 +226,8 @@
         path: /opt/minecraft/{{ item.name }}/server
         state: absent
       loop: "{{ instances }}"
+      loop_control:
+        label: "{{ item.name }}"
       when: item.state.new_server or item.state.backup.restore_backup
 
     - name: Restoring permissions for the instance directory
@@ -229,6 +239,8 @@
         mode: u=rwX,g=rX,o=rX
         recurse: yes
       loop: "{{ instances }}"
+      loop_control:
+        label: "{{ item.name }}"
 
     - name: Creating the instance directory
       file:
@@ -239,12 +251,16 @@
         mode: u=rwX,g=rX,o=rX
         recurse: yes
       loop: "{{ instances }}"
+      loop_control:
+        label: "{{ item.name }}"
 
     - name: Removing the existing backup repository
       file:
         path: /opt/minecraft/{{ item.name }}/backup
         state: absent
       loop: "{{ instances }}"
+      loop_control:
+        label: "{{ item.name }}"
       when: item.state.backup.new_repository
 
     - name: Creating the instance backup directory
@@ -256,6 +272,8 @@
         mode: 0755
         recurse: yes
       loop: "{{ instances }}"
+      loop_control:
+        label: "{{ item.name }}"
       when:
         - item.state.continuous_deployment.enabled == false
         - item.state.backup.restore_backup == false
@@ -268,6 +286,8 @@
         - borg.rc != 2
       register: borg
       loop: "{{ instances }}"
+      loop_control:
+        label: "{{ item.name }}"
       when:
         - item.state.continuous_deployment.enabled == false
         - item.state.backup.restore_backup == false
@@ -281,6 +301,8 @@
         group: minecraft-{{ item.name }}
         mode: 0644
       loop: "{{ instances }}"
+      loop_control:
+        label: "{{ item.name }}"
 
     - name: Creating the instance backup mount point
       file:
@@ -290,16 +312,22 @@
         mode: 0755
         state: directory
       loop: "{{ instances }}"
+      loop_control:
+        label: "{{ item.name }}"
 
     - name: Opening the backup repository once
       shell: BORG_UNKNOWN_UNENCRYPTED_REPO_ACCESS_IS_OK=yes borg list /opt/minecraft/{{ item.name }}/backup
       become_user: minecraft-{{ item.name }}
       loop: "{{ instances }}"
+      loop_control:
+        label: "{{ item.name }}"
       when: item.state.backup.new_repository
 
     - name: Opening the backup repository once as root
       shell: BORG_UNKNOWN_UNENCRYPTED_REPO_ACCESS_IS_OK=yes borg list /opt/minecraft/{{ item.name }}/backup
       loop: "{{ instances }}"
+      loop_control:
+        label: "{{ item.name }}"
       when: item.state.backup.new_repository
 
     - name: Downloading Minecraft Pufferfish server
@@ -310,6 +338,8 @@
         group: minecraft-{{ item.name }}
         mode: 0644
       loop: "{{ instances }}"
+      loop_control:
+        label: "{{ item.name }}"
       when:
         - item.state.new_server or item.state.update_server
         - item.state.backup.restore_backup == false
@@ -319,6 +349,7 @@
       loop: "{{ instances }}"
       loop_control:
         loop_var: outer_item
+        label: "{{ outer_item.name }}"
 
     - name: Downloading TreeAssist
       git:
@@ -336,6 +367,8 @@
         mode: u=rwX,g=rX,o=rX
         remote_src: yes
       loop: "{{ instances }}"
+      loop_control:
+        label: "{{ item.name }}"
       when:
         - item.state.new_server or item.state.update_server
         - item.state.backup.restore_backup == false
@@ -345,6 +378,7 @@
       loop: "{{ instances }}"
       loop_control:
         loop_var: outer_item
+        label: "{{ outer_item.name }}"
 
     - name: Getting the latest BlueMap release
       shell: curl --silent "https://api.github.com/repos/BlueMap-Minecraft/BlueMap/releases/latest" | jq -r '.assets[].browser_download_url | select(contains("spigot"))'
@@ -399,12 +433,14 @@
       loop: "{{ instances }}"
       loop_control:
         loop_var: outer_item
+        label: "{{ outer_item.name }}"
 
     - name: Configuring LuckPerms permissions
       include_tasks: luckperms.yml
       loop: "{{ instances }}"
       loop_control:
         loop_var: outer_item
+        label: "{{ outer_item.name }}"
 
     - name: Downloading the CustomCommandPrefix plugin
       copy:
@@ -414,6 +450,8 @@
         group: minecraft-{{ item.name }}
         mode: 0644
       loop: "{{ instances }}"
+      loop_control:
+        label: "{{ item.name }}"
       when:
         - item.state.new_server or item.state.update_server
         - item.geyser
@@ -427,6 +465,8 @@
         group: minecraft-{{ item.name }}
         mode: 0644
       loop: "{{ instances }}"
+      loop_control:
+        label: "{{ item.name }}"
       when:
         - item.geyser
         - item.state.backup.restore_backup == false
@@ -439,6 +479,8 @@
         group: minecraft-{{ item.name }}
         mode: 0644
       loop: "{{ instances }}"
+      loop_control:
+        label: "{{ item.name }}"
       when:
         - item.state.new_server or item.state.update_server
         - item.viewdistancetweaks
@@ -449,6 +491,7 @@
       loop: "{{ instances }}"
       loop_control:
         loop_var: outer_item
+        label: "{{ outer_item.name }}"
 
     - name: Copying the server icon(s)
       copy:
@@ -458,6 +501,8 @@
         group: minecraft-{{ item.name }}
         mode: u=rwX,g=rX,o=rX
       loop: "{{ instances }}"
+      loop_control:
+        label: "{{ item.name }}"
       when:
         - item.server_icon.use
         - item.state.backup.restore_backup == false
@@ -467,6 +512,7 @@
       loop: "{{ instances }}"
       loop_control:
         loop_var: outer_item
+        label: "{{ outer_item.name }}"
 
     - name: Copying scripts and systemd units
       template:
@@ -621,6 +667,7 @@
       loop: "{{ instances }}"
       loop_control:
         loop_var: outer_item
+        label: "{{ outer_item.name }}"
 
     - name: Copying firewall rule
       template:
@@ -650,6 +697,8 @@
         group: minecraft-{{ item.name }}
         mode: 0644
       loop: "{{ instances }}"
+      loop_control:
+        label: "{{ item.name }}"
       when:
         - item.state.new_server
         - item.state.backup.restore_backup == false
@@ -737,6 +786,8 @@
         enabled: no
         daemon_reload: yes
       loop: "{{ instances }}"
+      loop_control:
+        label: "{{ item.name }}"
       when: item.state.enabled == false
 
     - name: Starting the Minecraft instances
@@ -746,6 +797,8 @@
         enabled: yes
         daemon_reload: yes
       loop: "{{ instances }}"
+      loop_control:
+        label: "{{ item.name }}"
       when: item.state.enabled
 
     - name: Stopping the Minecraft backup timers
@@ -755,6 +808,8 @@
         enabled: no
         daemon_reload: yes
       loop: "{{ instances }}"
+      loop_control:
+        label: "{{ item.name }}"
       when: item.state.enabled == false
 
     - name: Starting the Minecraft backup timers
@@ -764,6 +819,8 @@
         enabled: "{% if item.state.enabled and item.state.continuous_deployment.enabled %}no{% elif item.state.enabled %}yes{% else %}no{% endif %}"
         daemon_reload: yes
       loop: "{{ instances }}"
+      loop_control:
+        label: "{{ item.name }}"
 
     - name: Starting the Minecraft continuous deployment timers
       systemd:
@@ -772,3 +829,5 @@
         enabled: "{% if item.state.enabled and item.state.continuous_deployment.enabled %}no{% elif item.state.enabled %}yes{% else %}no{% endif %}"
         daemon_reload: yes
       loop: "{{ instances }}"
+      loop_control:
+        label: "{{ item.name }}"
