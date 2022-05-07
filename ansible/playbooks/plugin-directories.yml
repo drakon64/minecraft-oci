@@ -71,6 +71,10 @@
         state: "{% if combined_luckperms.config['storage-method'] == 'yaml' %}directory{% else %}absent{% endif %}",
       }
     - {
+        path: ProtocolLib,
+        state: "{% if outer_item.raytraceantixray %}directory{% else %}absent{% endif %}",
+      }
+    - {
         path: RayTraceAntiXray,
         state: "{% if outer_item.raytraceantixray %}directory{% else %}absent{% endif %}",
       }
