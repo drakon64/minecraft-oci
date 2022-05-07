@@ -79,6 +79,11 @@
         when: "{{ true }}",
       }
     - {
+        url: "{% if outer_item.raytraceantixray %}{{ protocollib_latest.stdout }}{% endif %}",
+        dest: ProtocolLib.jar,
+        when: "{{ outer_item.raytraceantixray }}",
+      }
+    - {
         url: "{% if outer_item.raytraceantixray %}{{ raytraceantixray_latest.stdout }}{% endif %}",
         dest: RayTraceAntiXray.jar,
         when: "{{ outer_item.raytraceantixray }}",
