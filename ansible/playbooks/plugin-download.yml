@@ -129,6 +129,14 @@
     - { src: floodgate-spigot.jar, when: "{{ outer_item.geyser == false }}" }
     - { src: Geyser-Spigot.jar, when: "{{ outer_item.geyser == false }}" }
     - { src: Harbor.jar, when: "{{ outer_item.harbor == false }}" }
+    - {
+        src: ProtocolLib.jar,
+        when: "{{ outer_item.raytraceantixray == false }}",
+      }
+    - {
+        src: RayTraceAntiXray.jar,
+        when: "{{ outer_item.raytraceantixray == false }}",
+      }
     - { src: ViaVersion.jar, when: "{{ outer_item.viaversion == false }}" }
     - {
         src: worldedit-bukkit.jar,
