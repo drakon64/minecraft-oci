@@ -55,6 +55,7 @@ minecraft:
                 prometheus:
                   http:
                     port: 9100
+          raytraceantixray: false
           restore_permissions: true
           server:
             "query.port": 25565

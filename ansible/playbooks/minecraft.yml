@@ -408,6 +408,10 @@
       shell: curl --silent https://api.github.com/repos/nkomarn/harbor/releases/latest | jq -r '.assets[].browser_download_url'
       register: harbor_latest
 
+    - name: Getting the latest RayTraceAntiXray release
+      shell: curl --silent https://api.github.com/repos/stonar96/RayTraceAntiXray/releases/latest | jq -r '.assets[].browser_download_url'
+      register: raytraceantixray_latest
+
     - name: Getting the latest ViaVersion release
       shell: curl --silent "https://api.github.com/repos/ViaVersion/ViaVersion/releases/latest" | jq -r '.assets[].browser_download_url'
       register: viaversion_latest

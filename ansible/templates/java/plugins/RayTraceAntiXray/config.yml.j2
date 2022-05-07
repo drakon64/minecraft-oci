@@ -1,0 +1,12 @@
+{% set combined_raytraceantixray = raytraceantixray %}
+{% if global_overrides.raytraceantixray is defined %}
+{% set combined_raytraceantixray = (combined_raytraceantixray | combine(global_overrides.raytraceantixray, recursive=True)) %}
+{% endif %}
+{% if node_overrides.raytraceantixray is defined %}
+{% set combined_raytraceantixray = (combined_raytraceantixray | combine(node_overrides.raytraceantixray, recursive=True)) %}
+{% endif %}
+{% if outer_item.plugins.raytraceantixray is defined %}
+{% set combined_raytraceantixray = (combined_raytraceantixray | combine(outer_item.plugins.raytraceantixray, recursive=True)) %}
+{% endif %}
+
+{{ combined_raytraceantixray | to_nice_yaml(indent=2) }}

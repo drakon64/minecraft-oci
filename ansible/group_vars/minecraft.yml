@@ -838,6 +838,20 @@ pufferfish:
   sentry-dsn: ""
   web-services:
     token: ""
+raytraceantixray:
+  settings:
+    anti-xray:
+      ms-per-ray-trace-tick: 50
+      ray-trace-threads: 2
+      update-ticks: 1
+  world-settings:
+    default:
+      anti-xray:
+        max-ray-trace-block-count-per-chunk: 30
+        ray-trace: true
+        ray-trace-blocks: []
+        ray-trace-distance: 80.0
+        ray-trace-third-person: false
 server:
   allow-flight: "false"
   allow-nether: "true"
