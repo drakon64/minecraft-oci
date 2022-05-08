@@ -1,0 +1,12 @@
+{% set combined_farmcontrol = lfarmcontrol.profiles %}
+{% if global_overrides.lfarmcontrol.profiles is defined %}
+{% set combined_farmcontrol = (combined_farmcontrol | combine(global_overrides.lfarmcontrol.profiles, recursive=True)) %}
+{% endif %}
+{% if node_overrides.lfarmcontrol.profiles is defined %}
+{% set combined_farmcontrol = (combined_farmcontrol | combine(node_overrides.lfarmcontrol.profiles, recursive=True)) %}
+{% endif %}
+{% if outer_item.plugins.lfarmcontrol.profiles is defined %}
+{% set combined_farmcontrol = (combined_farmcontrol | combine(outer_item.plugins.lfarmcontrol.profiles, recursive=True)) %}
+{% endif %}
+
+{{ combined_farmcontrol | to_nice_yaml(indent=2) }}

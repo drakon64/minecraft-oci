@@ -479,6 +479,21 @@
         - item.geyser
         - item.state.backup.restore_backup == false
 
+    - name: Downloading the FarmControl plugin
+      copy:
+        src: ../files/FarmControl.jar
+        dest: /opt/minecraft/{{ item.name }}/server/plugins/FarmControl.jar
+        owner: minecraft-{{ item.name }}
+        group: minecraft-{{ item.name }}
+        mode: 0644
+      loop: "{{ instances }}"
+      loop_control:
+        label: "{{ item.name }}"
+      when:
+        - item.state.new_server or item.state.update_server
+        - item.farmcontrol
+        - item.state.backup.restore_backup == false
+
     - name: Downloading the ViewDistanceTweaks plugin
       copy:
         src: ../files/ViewDistanceTweaks.jar

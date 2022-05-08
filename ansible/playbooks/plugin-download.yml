@@ -126,6 +126,7 @@
     - { src: Chunky.jar, when: "{{ outer_item.chunky == false }}" }
     - { src: CustomCommandPrefix.jar, when: "{{ outer_item.geyser == false }}" }
     - { src: DiscordSRV.jar, when: "{{ outer_item.discordsrv == false }}" }
+    - { src: FarmControl.jar, when: "{{ outer_item.farmcontrol == false }}" }
     - { src: floodgate-spigot.jar, when: "{{ outer_item.geyser == false }}" }
     - { src: Geyser-Spigot.jar, when: "{{ outer_item.geyser == false }}" }
     - { src: Harbor.jar, when: "{{ outer_item.harbor == false }}" }
