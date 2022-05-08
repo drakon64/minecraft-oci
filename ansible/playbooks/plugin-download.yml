@@ -139,6 +139,10 @@
       }
     - { src: ViaVersion.jar, when: "{{ outer_item.viaversion == false }}" }
     - {
+        src: ViewDistanceTweaks.jar,
+        when: "{{ outer_item.viewdistancetweaks == false }}",
+      }
+    - {
         src: worldedit-bukkit.jar,
         when: "{{ outer_item.worldguard == false }}",
       }
