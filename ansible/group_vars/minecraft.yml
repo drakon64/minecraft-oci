@@ -470,7 +470,7 @@ luckperms:
     watch-files: true
     world-rewrite:
 paper:
-  config-version: 25
+  config-version: 27
   messages:
     kick:
       authentication-servers-down: ""
@@ -584,7 +584,7 @@ paper:
       alt-item-despawn-rate:
         enabled: false
         items:
-          COBBLESTONE: 300
+          cobblestone: 300
       anti-xray:
         enabled: false
         engine-mode: 1
@@ -662,10 +662,16 @@ paper:
       disable-teleportation-suffocation-check: false
       disable-thunder: false
       door-breaking-difficulty:
+        husk:
+          - HARD
         vindicator:
           - NORMAL
           - HARD
         zombie:
+          - HARD
+        zombie_villager:
+          - HARD
+        zombified_piglin:
           - HARD
       duplicate-uuid-resolver: saferegen
       duplicate-uuid-saferegen-delete-range: 32
@@ -770,6 +776,7 @@ paper:
       portal-search-vanilla-dimension-scaling: true
       prevent-moving-into-unloaded-chunks: false
       prevent-tnt-from-moving-in-water: false
+      redstone-implementation: vanilla
       should-remove-dragon: false
       show-sign-click-command-failure-msgs-to-player: false
       skeleton-horse-thunder-spawn-chance: 0.01
@@ -801,7 +808,6 @@ paper:
       unsupported-settings:
         fix-invulnerable-end-crystal-exploit: true
       update-pathfinding-on-block-update: true
-      use-faster-eigencraft-redstone: false
       use-vanilla-world-scoreboard-name-coloring: false
       wandering-trader:
         spawn-chance-failure-increment: 25
