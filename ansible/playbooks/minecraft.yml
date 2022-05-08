@@ -384,14 +384,6 @@
       shell: curl --silent "https://api.github.com/repos/BlueMap-Minecraft/BlueMap/releases/latest" | jq -r '.assets[].browser_download_url | select(contains("spigot"))'
       register: bluemap_latest
 
-    - name: Getting the latest BlueBridgeCore release
-      shell: curl --silent "https://api.github.com/repos/Mark-225/BlueBridge/releases" | jq -r '.[0].assets[].browser_download_url | select(contains("Core"))'
-      register: bluebridgecore_latest
-
-    - name: Getting the latest BlueBridgeWG release
-      shell: curl --silent "https://api.github.com/repos/Mark-225/BlueBridge/releases" | jq -r '.[0].assets[].browser_download_url | select(contains("WG"))'
-      register: bluebridgewg_latest
-
     - name: Getting the latest BlueMap-Floodgate release
       shell: curl --silent "https://api.github.com/repos/TechnicJelle/BlueMapFloodgate/releases" | jq -r '.[0].assets[].browser_download_url'
       register: bluemap_floodgate_latest
