@@ -34,7 +34,7 @@
         when: "{{ outer_item.harbor }}",
       }
     - {
-        url: https://cdn.discordapp.com/attachments/804019242512810034/968582269092651038/TreeAssist.jar, # this is terrible and I hate it
+        url: https://cdn.discordapp.com/attachments/804019242512810034/973257903211429928/TreeAssist.jar, # This really needs a proper CI URL and not a Discord URL
         dest: TreeAssist.jar,
         when: "{{ true }}",
       }
