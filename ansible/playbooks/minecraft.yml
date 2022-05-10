@@ -6,6 +6,7 @@
     memtotal_b: "{{ ansible_memtotal_mb * 1048576 }}"
 
   vars_files:
+    - vars/geyser.yml
     - vars/luckperms.yml
     - vars/server.yml
 

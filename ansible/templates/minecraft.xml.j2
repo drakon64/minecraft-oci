@@ -7,16 +7,7 @@
 	<port protocol="udp" port="{{ combined_server['query.port'] }}"/>
 {% endif %}
 {% if i.geyser %}
-{% if i.plugins.geyser.bedrock.port is defined %}
-{% set geyser_port = i.plugins.geyser.bedrock.port %}
-{% elif node_overrides.geyser.bedrock.port is defined %}
-{% set geyser_port = node_overrides.geyser.bedrock.port %}
-{% elif global_overrides.geyser.bedrock.port is defined %}
-{% set geyser_port = global_overrides.geyser.bedrock.port %}
-{% else %}
-{% set geyser_port = geyser.bedrock.port %}
-{% endif %}
-	<port protocol="udp" port="{{ geyser_port }}"/>
+	<port protocol="udp" port="{{ combined_geyser.bedrock.port }}"/>
 {% endif %}
 {% endfor %}
 {% if use_bluemap %}
