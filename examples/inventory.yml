@@ -72,6 +72,8 @@ minecraft:
             backup:
               backup_retention_days: 7
               backup_version: 2022-03-23T18:02+00:00
+              remote:
+                skip_if_server_occupied: true
               restore_backup: false
               restore_remote_backup: false
             continuous_deployment:

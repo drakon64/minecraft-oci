@@ -1,14 +1,3 @@
-{% set combined_server = server %}
-{% if global_overrides.server is defined %}
-{% set combined_server = (combined_server | combine(global_overrides.server, recursive=True)) %}
-{% endif %}
-{% if node_overrides.server is defined %}
-{% set combined_server = (combined_server | combine(node_overrides.server, recursive=True)) %}
-{% endif %}
-{% if outer_item.server is defined %}
-{% set combined_server = (combined_server | combine(outer_item.server, recursive=True)) %}
-{% endif %}
-
 {% for key, value in combined_server | dictsort %}
 {{ key }}={{ value }}
 {% endfor %}

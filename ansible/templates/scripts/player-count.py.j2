@@ -1,0 +1,15 @@
+#!/usr/bin/env python3
+
+{% if outer_item.state.backup.remote.skip_if_server_occupied %}
+from mcstatus import MinecraftServer
+import sys
+
+if MinecraftServer.lookup("127.0.0.1:{{ combined_server['server-port'] }}").status().players.online == 0:
+    sys.exit()
+else:
+    sys.exit(1)
+{% else %}
+import sys
+
+sys.exit()
+{% endif %}

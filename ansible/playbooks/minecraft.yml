@@ -7,6 +7,7 @@
 
   vars_files:
     - vars/luckperms.yml
+    - vars/server.yml
 
   tasks:
     - name: Configuring sshd # Based on https://infosec.mozilla.org/guidelines/openssh and CIS Benchmarks
@@ -141,6 +142,11 @@
             name: "graalvm22-ee-17-jdk",
             state: "{% if graalvm %}present{% else %}absent{% endif %}",
           }
+
+    - name: Installing MCStatus
+      pip:
+        name: mcstatus
+        state: latest
 
     - name: Installing and configuring Caddy
       include_tasks: caddy.yml
