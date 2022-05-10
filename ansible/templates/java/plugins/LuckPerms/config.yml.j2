@@ -1,12 +1,1 @@
-{% set combined_luckperms = luckperms.config %}
-{% if global_overrides.luckperms.config is defined %}
-{% set combined_luckperms = (combined_luckperms | combine(global_overrides.luckperms.config, recursive=True)) %}
-{% endif %}
-{% if node_overrides.luckperms.config is defined %}
-{% set combined_luckperms = (combined_luckperms | combine(node_overrides.luckperms.config, recursive=True)) %}
-{% endif %}
-{% if outer_item.plugins.luckperms.config is defined %}
-{% set combined_luckperms = (combined_luckperms | combine(outer_item.plugins.luckperms.config, recursive=True)) %}
-{% endif %}
-
-{{ combined_luckperms | to_nice_yaml(indent=2) }}
+{{ combined_luckperms.config | to_nice_yaml(indent=2) }}
