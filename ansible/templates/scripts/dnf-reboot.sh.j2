@@ -17,8 +17,9 @@ if [ "$?" = "100" ] ; then
 		reboot
 	else
 		SERVICES=$(dnf needs-restarting -s)
-		if $SERVICES ; then
-			systemctl restart "$SERVICES"
+		if [ -n "$SERVICES" ] ; then
+			#shellcheck disable=2086
+			systemctl restart $SERVICES
 		fi
 		systemctl start{% for i in instances if i.state.enabled %} minecraft-{{ i.name }}{% endfor %}
 	fi
