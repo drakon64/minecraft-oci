@@ -1337,10 +1337,11 @@ treeassist:
             minecraft:golden_apple: 0.0001
           Override: false
         Diagonal: false
+        Greedy: false
         Minimum Height: 4
         Thickness: 1
         Uneven Bottom: false
-      Version: 7.3019
+      Version: 7.3026
 unifiedmetrics:
   driver:
     prometheus:
