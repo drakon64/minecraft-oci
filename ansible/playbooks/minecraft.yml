@@ -573,7 +573,7 @@
             mode: "0644",
             description: "Minecraft Server backup - %i",
             type: "oneshot",
-            execstart: "/opt/minecraft/backup.sh %i restart",
+            execstart: "/opt/minecraft/backup.sh %i",
             workingdirectory: "/opt/minecraft",
             user: "minecraft-%i",
             timeoutstartsec: "{{ backup.timeout }}",
