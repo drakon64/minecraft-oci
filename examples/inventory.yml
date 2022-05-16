@@ -9,10 +9,12 @@ minecraft:
       grafana:
         api_key:
         loki:
-          url:
+          url: https://logs-prod-eu-west-0.grafana.net/loki/api/v1/push
           username:
         prometheus:
-          url:
+          read:
+            api_key:
+          url: https://prometheus-prod-01-eu-west-0.grafana.net/api/prom
           username:
         use: true
       instances:
@@ -23,14 +25,15 @@ minecraft:
             use: true
           chunky: true
           custom_plugins:
-            - name: plugin
-              url: example.com/plugin.jar
+            - config: true
+              name: example_plugin
+              url: https://example.com/plugin.jar
           discordsrv: true
           eula: true
+          farmcontrol: true
           geyser: true
           harbor: true
-          heap: 4608M
-          match_max_players_to_whitelist: true
+          heap: 4096M
           name: prod
           ops:
             - bypassesPlayerLimit: true
@@ -41,49 +44,37 @@ minecraft:
             settings:
               log-player-ip-addresses: false
           plugins:
-            bluemap:
-              webserver:
-                port: 8100
-            geyser:
-              bedrock:
-                port: 19132
-            luckperms:
-              config:
-                storage-method: yaml
-            unifiedmetrics:
-              driver:
-                prometheus:
-                  http:
-                    port: 9100
-          raytraceantixray: false
+            worldedit:
+              snapshots:
+                directory: /opt/minecraft/prod/snapshot
+          raytraceantixray: true
           restore_permissions: true
           server:
-            "query.port": 25565
-            server-port: 25565
+            level-seed: Minecraft 1.18
+            max-players: 5
+            motd: minecraft-oci
+            require-resource-pack: "true"
+            resource-pack: https://example.com/resourcepack.zip
           server_icon:
-            random: no
-            use: no
-          spigot:
-            world-settings:
-              default:
-                entity-tracking-range:
-                  players: 512
+            random: yes
+            use: yes
           state:
             backup:
               backup_retention_days: 7
-              backup_version: 2022-03-23T18:02+00:00
-              remote:
-                skip_if_server_occupied: true
+              backup_version: 2022-04-17T06:00+01:00
+              new_repository: false
               restore_backup: false
               restore_remote_backup: false
             continuous_deployment:
               bucket_name: minecraft-backup
               enabled: false
+            enabled: true
             new_server: true
+            remove: false
             skip_backup: true
             update_server: false
           version:
-            build: 59
+            build: 67
             full: 1.18.2
             major: 1.18
           viaversion: false
@@ -94,3 +85,29 @@ minecraft:
           worldguard: true
       timezone: Europe/London
       use_bluemap: true
+  vars:
+    global_overrides:
+      chunky:
+        continue-on-restart: true
+        tasks:
+          world:
+            cancelled: false
+            iterator: concentric
+            radius: 1536.0
+            shape: square
+            x-center: 0.0
+            z-center: 0.0
+          world_nether:
+            cancelled: false
+            iterator: concentric
+            radius: 1536.0
+            shape: circle
+            x-center: 0.0
+            z-center: 0.0
+          world_the_end:
+            cancelled: false
+            iterator: concentric
+            radius: 1536.0
+            shape: circle
+            x-center: 100.0
+            z-center: 0.0
