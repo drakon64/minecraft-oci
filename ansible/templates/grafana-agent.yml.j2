@@ -73,7 +73,7 @@ metrics:
             - targets: ["127.0.0.1:{{ unifiedmetrics_port }}"]
 {% endfor %}
   global:
-    scrape_interval: 5s
+    scrape_interval: 15s
   wal_directory: /tmp/grafana-agent-wal
 server:
   http_listen_port: 12345
