@@ -3,6 +3,7 @@ minecraft:
     minecraft.example.com:
       backup:
         oncalendar: "*-*-* *:00:00"
+        player_check_range: 1h
         timeout: 1800
       bucket_name: minecraft-backup
       graalvm: false

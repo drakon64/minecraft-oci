@@ -10,7 +10,7 @@ integrations:
     - basic_auth:
         password: {{ grafana.api_key }}
         username: {{ grafana.prometheus.username }}
-      url: {{ grafana.prometheus.url }}
+      url: {{ grafana.prometheus.url }}/push
 logs:
   configs:
     - clients:
@@ -56,7 +56,7 @@ metrics:
         - basic_auth:
             password: {{ grafana.api_key }}
             username: {{ grafana.prometheus.username }}
-          url: {{ grafana.prometheus.url }}
+          url: {{ grafana.prometheus.url }}/push
       scrape_configs:
 {% for i in instances if i.state.enabled %}
 {% if i.plugins.unifiedmetrics.driver.prometheus.http.port is defined %}
