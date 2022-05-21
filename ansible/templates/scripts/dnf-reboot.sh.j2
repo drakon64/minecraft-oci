@@ -16,6 +16,7 @@ fi
 
 if [ ! "$(dnf needs-restarting -r)" ] ; then
 	reboot
+	exit
 else
 	SERVICES=$(dnf needs-restarting -s)
 	if [ -n "$SERVICES" ] ; then
