@@ -65,6 +65,7 @@ minecraft:
               backup_version: 2022-04-17T06:00+01:00
               new_repository: false
               restore_backup: false
+              restore_latest_backup: no
               restore_remote_backup: false
             continuous_deployment:
               bucket_name: minecraft-backup

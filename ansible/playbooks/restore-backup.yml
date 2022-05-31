@@ -14,10 +14,10 @@
   args:
     chdir: /opt/minecraft/{{ outer_item.name }}
   register: latest_backup
-  when: outer_item.state.continuous_deployment.enabled
+  when: outer_item.state.continuous_deployment.enabled or outer_item.state.backup.restore_latest_backup
 
 - name: Restoring the server backup
-  shell: "{% if outer_item.state.backup.restore_remote_backup %}BORG_UNKNOWN_UNENCRYPTED_REPO_ACCESS_IS_OK=yes {% endif %}borg extract /opt/minecraft/{{ outer_item.name }}/backup::{% if outer_item.state.continuous_deployment.enabled %}{{ latest_backup.stdout }}{% else %}{{ outer_item.state.backup.backup_version }}{% endif %}"
+  shell: "{% if outer_item.state.backup.restore_remote_backup %}BORG_UNKNOWN_UNENCRYPTED_REPO_ACCESS_IS_OK=yes {% endif %}borg extract /opt/minecraft/{{ outer_item.name }}/backup::{% if outer_item.state.continuous_deployment.enabled or outer_item.state.backup.restore_latest_backup %}{{ latest_backup.stdout }}{% else %}{{ outer_item.state.backup.backup_version }}{% endif %}"
   args:
     chdir: /opt/minecraft/{{ outer_item.name }}/server
   when: outer_item.state.backup.restore_backup
