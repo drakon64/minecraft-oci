@@ -34,6 +34,7 @@
     - { src: plugins/Geyser-Spigot/config.yml, when: "{{ outer_item.geyser }}" }
     - { src: plugins/Harbor/config.yml, when: "{{ outer_item.harbor }}" }
     - { src: plugins/LuckPerms/config.yml, when: "{{ true }}" }
+    - { src: plugins/LPC/config.yml, when: "{{ true }}" }
     - {
         src: plugins/RayTraceAntiXray/config.yml,
         when: "{{ outer_item.raytraceantixray }}",

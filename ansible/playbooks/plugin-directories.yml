@@ -48,6 +48,10 @@
         path: Harbor,
         state: "{% if outer_item.harbor %}directory{% else %}absent{% endif %}",
       }
+    - {
+        path: LPC,
+        state: "{% if outer_item.lpc %}directory{% else %}absent{% endif %}",
+      }
     - { path: TreeAssist/trees, state: directory }
     - { path: LuckPerms, state: directory }
     - {
