@@ -403,6 +403,10 @@
       shell: curl --silent "https://api.github.com/repos/DiscordSRV/DiscordSRV/releases/latest" | jq -r '.assets[].browser_download_url'
       register: discordsrv_latest
 
+    - name: Getting the latest FloodgatePlaceholders release
+      shell: curl --silent "https://api.github.com/repos/rtm516/FloodgatePlaceholders/releases/latest" | jq -r '.assets[].browser_download_url'
+      register: floodgateplaceholders_latest
+
     - name: Getting the latest Harbor release
       shell: curl --silent https://api.github.com/repos/nkomarn/harbor/releases/latest | jq -r '.assets[].browser_download_url'
       register: harbor_latest
