@@ -35,6 +35,7 @@ minecraft:
           geyser: true
           harbor: true
           heap: 4096M
+          lpc: true
           name: prod
           ops:
             - bypassesPlayerLimit: true

@@ -34,6 +34,21 @@
         when: "{{ outer_item.harbor }}",
       }
     - {
+        url: "{% if outer_item.lpc %}https://api.spiget.org/v2/resources/68965/download{% endif %}",
+        dest: LPC.jar,
+        when: "{{ outer_item.lpc }}",
+      }
+    - {
+        url: "{% if outer_item.lpc %}https://api.spiget.org/v2/resources/6245/download{% endif %}",
+        dest: PlaceholderAPI.jar,
+        when: "{{ outer_item.lpc }}",
+      }
+    - {
+        url: "{% if outer_item.lpc and outer_item.geyser %}{{ floodgateplaceholders_latest.stdout }}{% endif %}",
+        dest: PlaceholderAPI/expansions/FloodgatePlaceholders.jar,
+        when: "{{ outer_item.lpc and outer_item.geyser }}",
+      }
+    - {
         url: https://cdn.discordapp.com/attachments/804019242512810034/974085746329780275/TreeAssist.jar, # This really needs an API and not a Discord URL
         dest: TreeAssist.jar,
         when: "{{ true }}",
@@ -120,6 +135,11 @@
     - { src: floodgate-spigot.jar, when: "{{ outer_item.geyser == false }}" }
     - { src: Geyser-Spigot.jar, when: "{{ outer_item.geyser == false }}" }
     - { src: Harbor.jar, when: "{{ outer_item.harbor == false }}" }
+    - { src: LPC.jar, when: "{{ outer_item.lpc == false }}" }
+    - {
+        src: PlaceholderAPI.jar,
+        when: "{{ ( outer_item.lpc and outer_item.geyser ) == false }}",
+      }
     - {
         src: ProtocolLib.jar,
         when: "{{ outer_item.raytraceantixray == false }}",

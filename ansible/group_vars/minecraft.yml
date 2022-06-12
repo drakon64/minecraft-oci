@@ -427,6 +427,9 @@ harbor:
     time-rate: 70
   version: 1.6.4
   whitelist-mode: false
+lpc:
+  chat-format: "{prefix}{name}&r: {message}"
+  group-formats:
 luckperms:
   config:
     allow-invalid-usernames: false
