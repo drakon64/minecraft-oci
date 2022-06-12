@@ -75,6 +75,10 @@
         state: "{% if outer_item.raytraceantixray %}directory{% else %}absent{% endif %}",
       }
     - {
+        path: PlaceholderAPI/expansions,
+        state: "{% if outer_item.lpc and outer_item.geyser %}directory{% else %}absent{% endif %}",
+      }
+    - {
         path: RayTraceAntiXray,
         state: "{% if outer_item.raytraceantixray %}directory{% else %}absent{% endif %}",
       }
