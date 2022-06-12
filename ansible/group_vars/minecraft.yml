@@ -1161,6 +1161,7 @@ treeassist:
       Prevent Log Breaking With Breaking Tool: false
       Prevent Log Breaking Without Tool: false
       Toggle Default: true
+      Toggle Remember: false
       Use Permissions: false
       Verbose Config Loading: false
     Modding:
@@ -1179,7 +1180,7 @@ treeassist:
     Update:
       Mode: both
       Type: beta
-    Version: 7.2046
+    Version: 7.3027
     Worlds:
       Enabled Worlds:
         - world
