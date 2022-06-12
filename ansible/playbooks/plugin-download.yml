@@ -44,8 +44,8 @@
         when: "{{ outer_item.lpc }}",
       }
     - {
-        url: "{% if outer_item.lpc and outer_item.geyser %}{{ floodgateplaceholders_latest }}{% endif %}",
-        dest: FloodgatePlaceholders.jar,
+        url: "{% if outer_item.lpc and outer_item.geyser %}{{ floodgateplaceholders_latest.stdout }}{% endif %}",
+        dest: PlaceholderAPI/expansions/FloodgatePlaceholders.jar,
         when: "{{ outer_item.lpc and outer_item.geyser }}",
       }
     - {
