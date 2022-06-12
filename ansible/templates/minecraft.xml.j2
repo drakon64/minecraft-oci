@@ -2,6 +2,7 @@
 	<short>Minecraft</short>
 	<description>Explore your own unique world, survive the night, and create anything you can imagine!</description>
 {% for i in instances if i.state.enabled %}
+{% set combined_server = server %}{% if global_overrides.server is defined %}{% set combined_server = (combined_server | combine(global_overrides.server, recursive=True)) %}{% endif %}{% if node_overrides.server is defined %}{% set combined_server = (combined_server | combine(node_overrides.server, recursive=True)) %}{% endif %}{% if i.server is defined %}{% set combined_server = (combined_server | combine(i.server, recursive=True)) %}{% endif %}
 	<port protocol="tcp" port="{{ combined_server['server-port'] }}"/>
 {% if combined_server['query.port'] != None %}
 	<port protocol="udp" port="{{ combined_server['query.port'] }}"/>
