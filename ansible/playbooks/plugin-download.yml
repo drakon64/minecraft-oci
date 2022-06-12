@@ -137,6 +137,10 @@
     - { src: Harbor.jar, when: "{{ outer_item.harbor == false }}" }
     - { src: LPC.jar, when: "{{ outer_item.lpc == false }}" }
     - {
+        src: PlaceholderAPI.jar,
+        when: "{{ ( outer_item.lpc and outer_item.geyser ) == false }}",
+      }
+    - {
         src: ProtocolLib.jar,
         when: "{{ outer_item.raytraceantixray == false }}",
       }
