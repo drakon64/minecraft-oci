@@ -1,0 +1,52 @@
+bluemap:
+  core:
+    accept-download: false
+    data: bluemap
+    metrics: true
+    renderThreadCount: -2
+  plugin:
+    fullUpdateInterval: 1440
+    hiddenGameModes:
+      - spectator
+    hideInvisible: true
+    hideSneaking: false
+    liveUpdates: true
+    playerRenderLimit: -1
+    skinDownload: true
+  render:
+    enableFreeFlight: true
+    maps:
+      - ambientLight: 0.1
+        caveDetectionUsesBlockLight: false
+        id: world
+        ignoreMissingLightData: false
+        name: World
+        removeCavesBelowY: 55
+        renderEdges: true
+        skyColor: "#7dabff"
+        useCompression: true
+        world: world
+        worldSkyLight: 15
+      - ambientLight: 0.6
+        id: end
+        name: End
+        removeCavesBelowY: -10000
+        skyColor: "#080010"
+        world: world_the_end/DIM1
+        worldSkyLight: 0
+      - ambientLight: 0.6
+        id: nether
+        maxY: 90
+        name: Nether
+        removeCavesBelowY: -10000
+        renderEdges: true
+        skyColor: "#290000"
+        world: world_nether/DIM-1
+        worldSkyLight: 0
+    useCookies: true
+    webroot: bluemap/web
+  webserver:
+    enabled: true
+    maxConnectionCount: 100
+    port: 8100
+    webroot: bluemap/web

@@ -1,0 +1,109 @@
+farmcontrol:
+  config:
+    cycle-period: 600
+    mspt-tracker-settings:
+      collection-period: 1200
+    start-up-delay: 0
+    version: 6
+    world-settings:
+      default:
+        action-settings:
+          undo-on:
+            default:
+              damage: false
+              interact: false
+              target: false
+              tempt: false
+            disable-collisions:
+              tempt: true
+            remove-ai:
+              damage: true
+              interact: true
+              target: true
+            remove-awareness:
+              damage: true
+              interact: true
+              target: true
+        exclusion-settings:
+          leashed: true
+          love-mode: true
+          metadata:
+            - Elitemob
+            - Elitemobs_NPC
+            - Supermob
+            - infernalMetadata
+            - NPC
+            - shopkeeper
+          named: true
+          patrol-leader: false
+          tamed: true
+          type:
+          younger-than: 0
+        profiles:
+          proactive:
+            - soft-nerf-animal-farms
+          reactive:
+        reactive-mode-settings:
+          trigger-mspt-threshold: 45.0
+          untrigger-mspt-threshold: 35.0
+          untrigger-settings:
+            entity-undo-weight:
+              default: 1
+              villager: 5
+            maximum-undos-per-cycle: 40
+            minimum-cycles-before-undo: 10
+  profiles:
+    profiles:
+      freeze-animal-farms:
+        actions:
+          - remove-ai
+          - disable-collisions
+        group:
+          count: 15
+          distance: 5
+          types:
+            - "category:animal"
+      hard-nerf-animal-farms:
+        actions:
+          - remove-awareness
+          - disable-collisions
+        group:
+          count: 15
+          distance: 5
+          types:
+            - "category:animal"
+      soft-nerf-animal-farms:
+        actions:
+          - remove-random-movement
+          - disable-collisions
+        group:
+          count: 15
+          distance: 5
+          types:
+            - "category:animal"
+      trim-animal-farms:
+        actions:
+          - kill
+        group:
+          count: 21
+          distance: 5
+          pure: true
+          types:
+            - "category:animal"
+      trim-sparse-animal-farms:
+        actions:
+          - kill
+        group:
+          count: 51
+          distance: 160
+          pure: true
+          types:
+            - "category:animal"
+      trim-villager-chunks:
+        actions:
+          - kill
+        group:
+          count: 11
+          distance: same-chunk
+          types:
+            - "villager"

@@ -1,0 +1,33 @@
+viewdistancetweaks:
+  adjustment-mode: mixed
+  enabled: false
+  log-changes: false
+  passed-checks-for-decrease: 1
+  passed-checks-for-increase: 10
+  proactive-mode-settings:
+    global-non-ticking-chunk-count-target: 6720
+    global-ticking-chunk-count-target: 5780
+  reactive-mode-settings:
+    decrease-mspt-threshold: 47.0
+    increase-mspt-threshold: 40.0
+    mspt-prediction:
+      enabled: true
+      history-length: 30
+    mspt-tracker-settings:
+      collection-period: 1200
+  start-up-delay: 2400
+  ticks-per-check: 600
+  version: 8
+  world-settings:
+    default:
+      chunk-counter-settings:
+        exclude-overlap: true
+      chunk-weight: 1
+      simulation-distance:
+        exclude: false
+        maximum-simulation-distance: 12
+        minimum-simulation-distance: 6
+      view-distance:
+        exclude: false
+        maximum-view-distance: 16
+        minimum-view-distance: 8

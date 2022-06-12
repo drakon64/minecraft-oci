@@ -1,0 +1,3 @@
+lpc:
+  chat-format: "{prefix}{name}&r: {message}"
+  group-formats:
