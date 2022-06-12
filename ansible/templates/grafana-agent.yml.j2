@@ -59,18 +59,10 @@ metrics:
           url: {{ grafana.prometheus.url }}/push
       scrape_configs:
 {% for i in instances if i.state.enabled %}
-{% if i.plugins.unifiedmetrics.driver.prometheus.http.port is defined %}
-{% set unifiedmetrics_port = i.plugins.unifiedmetrics.driver.prometheus.http.port %}
-{% elif node_overrides.unifiedmetrics.driver.prometheus.http.port is defined %}
-{% set unifiedmetrics_port = node_overrides.unifiedmetrics.driver.prometheus.http.port %}
-{% elif global_overrides.unifiedmetrics.driver.prometheus.http.port is defined %}
-{% set unifiedmetrics_port = global_overrides.unifiedmetrics.driver.prometheus.http.port %}
-{% else %}
-{% set unifiedmetrics_port = unifiedmetrics.driver.prometheus.http.port %}
-{% endif %}
+{% set combined_server = unifiedmetrics %}{% if global_overrides.unifiedmetrics is defined %}{% set combined_server = (combined_server | combine(global_overrides.unifiedmetrics, recursive=True)) %}{% endif %}{% if node_overrides.unifiedmetrics is defined %}{% set combined_server = (combined_server | combine(node_overrides.unifiedmetrics, recursive=True)) %}{% endif %}{% if i.plugins.unifiedmetrics is defined %}{% set combined_server = (combined_server | combine(i.plugins.unifiedmetrics, recursive=True)) %}{% endif %}
         - job_name: {{ i.name }}
           static_configs:
-            - targets: ["127.0.0.1:{{ unifiedmetrics_port }}"]
+            - targets: ["127.0.0.1:{{ combined_server.driver.prometheus.http.port }}"]
 {% endfor %}
   global:
     scrape_interval: 15s
