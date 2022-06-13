@@ -149,6 +149,12 @@
         name: mcstatus
         state: latest
 
+    - name: Including variables
+      include_vars:
+        dir: ../vars/
+        extensions:
+          - yml
+
     - name: Installing and configuring Caddy
       include_tasks: caddy.yml
 
@@ -379,12 +385,6 @@
       when:
         - item.state.new_server or item.state.update_server
         - item.state.backup.restore_backup == false
-
-    - name: Including variables
-      include_vars:
-        dir: ../vars/
-        extensions:
-          - yml
 
     - name: Configuring the Minecraft server
       include_tasks: server-config.yml
