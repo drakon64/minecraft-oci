@@ -59,6 +59,11 @@
         when: "{{ outer_item.chunky }}",
       }
     - {
+        url: "{% if outer_item.farmcontrol %}https://api.spiget.org/v2/resources/86923/download{% endif %}",
+        dest: "FarmControl.jar",
+        when: "{{ outer_item.farmcontrol }}",
+      }
+    - {
         url: "{% if use_bluemap %}{{ bluemap_latest.stdout }}{% endif %}",
         dest: BlueMap.jar,
         when: "{{ outer_item.bluemap.use }}",
@@ -97,6 +102,11 @@
         url: "{% if outer_item.viaversion %}{{ viaversion_latest.stdout }}{% endif %}",
         dest: "ViaVersion.jar",
         when: "{{ outer_item.viaversion }}",
+      }
+    - {
+        url: "{% if outer_item.viewdistancetweaks %}https://api.spiget.org/v2/resources/75164/download{% endif %}",
+        dest: "ViewDistanceTweaks.jar",
+        when: "{{ outer_item.viewdistancetweaks }}",
       }
     - {
         url: "{% if grafana.use %}{{ unifiedmetrics_latest.stdout }}{% endif %}",
