@@ -6,9 +6,29 @@
     memtotal_b: "{{ ansible_memtotal_mb * 1048576 }}"
 
   vars_files:
-    - vars/geyser.yml
-    - vars/luckperms.yml
-    - vars/server.yml
+    - ../vars/bluemap.yml
+    - ../vars/bukkit.yml
+    - ../vars/chunky.yml
+    - ../vars/commands.yml
+    - ../vars/discordsrv.yml
+    - ../vars/farmcontrol.yml
+    - ../vars/floodgate.yml
+    - ../vars/geyser.yml
+    - ../vars/harbor.yml
+    - ../vars/lpc.yml
+    - ../vars/luckperms.yml
+    - ../vars/minimotd.yml
+    - ../vars/paper.yml
+    - ../vars/pufferfish.yml
+    - ../vars/raytraceantixray.yml
+    - ../vars/server.yml
+    - ../vars/spigot.yml
+    - ../vars/treeassist.yml
+    - ../vars/unifiedmetrics.yml
+    - ../vars/viaversion.yml
+    - ../vars/viewdistancetweaks.yml
+    - ../vars/worldedit.yml
+    - ../vars/worldguard.yml
 
   tasks:
     - name: Configuring sshd # Based on https://infosec.mozilla.org/guidelines/openssh and CIS Benchmarks
@@ -148,12 +168,6 @@
       pip:
         name: mcstatus
         state: latest
-
-    - name: Including variables
-      include_vars:
-        dir: ../vars/
-        extensions:
-          - yml
 
     - name: Installing and configuring Caddy
       include_tasks: caddy.yml
