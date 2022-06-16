@@ -13,7 +13,7 @@ then
 
 	tail_grep "$@" &
 	sudo systemctl stop minecraft-backup-mount@"$1".service
-	tmux send-keys -t minecraft-"$1" say SPACE Saving SPACE the SPACE game SPACE (this SPACE may SPACE take SPACE a SPACE moment!)
+	tmux send-keys -t minecraft-"$1" say SPACE Saving SPACE the SPACE game SPACE \(this SPACE may SPACE take SPACE a SPACE moment!\) ENTER
 	tmux send-keys -t minecraft-"$1" save-off ENTER
 	tmux send-keys -t minecraft-"$1" save-all ENTER
 	wait
@@ -22,7 +22,7 @@ then
 	cd "$1"/server || exit 1
 	borg create --compression zstd{% if use_bluemap %} --pattern=+bluemap/web/data/markers.json --pattern=-bluemap{% endif %} --pattern=-cache --pattern=-libraries --pattern=-versions "$SCRIPT_PWD"/"$1"/backup::"$DATE" .
 	tmux send-keys -t minecraft-"$1" save-on ENTER
-	tmux send-keys -t minecraft-"$1" say Saved SPACE the SPACE game
+	tmux send-keys -t minecraft-"$1" say SPACE Saved SPACE the SPACE game ENTER
 	cd "$SCRIPT_PWD" || exit 1
 
 	borg prune --keep-within "$BACKUP_RETENTION_DAYS"d --save-space "$1"/backup
