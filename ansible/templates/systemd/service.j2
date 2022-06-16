@@ -8,9 +8,6 @@ After=network.target
 
 [Service]
 Type={{ item.type }}
-{% if item.execstartpre is defined %}
-ExecStartPre={{ item.execstartpre }}
-{% endif %}
 ExecStart={{ item.execstart }}
 {% if item.execstartpost is defined %}
 ExecStartPost={{ item.execstartpost }}

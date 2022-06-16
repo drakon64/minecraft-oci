@@ -36,6 +36,7 @@ minecraft:
           harbor: true
           heap: 4096M
           lpc: true
+          minimotd: true
           name: prod
           ops:
             - bypassesPlayerLimit: true
@@ -58,7 +59,6 @@ minecraft:
             require-resource-pack: "true"
             resource-pack: https://example.com/resourcepack.zip
           server_icon:
-            random: yes
             use: yes
           state:
             backup:
