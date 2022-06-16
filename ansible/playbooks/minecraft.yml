@@ -493,10 +493,10 @@
         loop_var: outer_item
         label: "{{ outer_item.name }}"
 
-    - name: Copying the server icon(s)
+    - name: Copying the server icon
       copy:
-        src: "../files/java/{% if item.server_icon.random == false %}{{ item.name }}/server-icon.png{% else %}{{ item.name }}/server-icons{% endif %}"
-        dest: /opt/minecraft/{{ item.name }}/{% if item.server_icon.random == false %}server/server-icon.png{% endif %}
+        src: ../files/java/{{ item.name }}/server-icon.png
+        dest: /opt/minecraft/{{ item.name }}/server/
         owner: minecraft-{{ item.name }}
         group: minecraft-{{ item.name }}
         mode: u=rwX,g=rX,o=rX
@@ -648,13 +648,6 @@
             type: "simple",
             after: "network-online.target",
             when: "{{ grafana.use }}",
-          }
-        - {
-            src: "files/scripts/server-icon.sh",
-            dest: "/opt/minecraft/server-icon.sh",
-            owner: "root",
-            mode: "0755",
-            when: "{{ true }}",
           }
       when: item.when
 

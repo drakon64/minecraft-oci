@@ -59,7 +59,6 @@ minecraft:
             require-resource-pack: "true"
             resource-pack: https://example.com/resourcepack.zip
           server_icon:
-            random: yes
             use: yes
           state:
             backup:
