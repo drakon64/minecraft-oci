@@ -89,6 +89,11 @@
         when: "{{ true }}",
       }
     - {
+        url: "{{ minimotd_latest.stdout }}",
+        dest: minimotd.jar,
+        when: "{{ outer_item.minimotd }}",
+      }
+    - {
         url: "{% if outer_item.raytraceantixray %}{{ protocollib_latest.stdout }}{% endif %}",
         dest: ProtocolLib.jar,
         when: "{{ outer_item.raytraceantixray }}",
@@ -146,6 +151,7 @@
     - { src: Geyser-Spigot.jar, when: "{{ outer_item.geyser == false }}" }
     - { src: Harbor.jar, when: "{{ outer_item.harbor == false }}" }
     - { src: LPC.jar, when: "{{ outer_item.lpc == false }}" }
+    - { src: minimotd.jar, when: "{{ outer_item.minimotd == false }}" }
     - {
         src: PlaceholderAPI.jar,
         when: "{{ ( outer_item.lpc and outer_item.geyser ) == false }}",

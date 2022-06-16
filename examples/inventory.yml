@@ -36,6 +36,7 @@ minecraft:
           harbor: true
           heap: 4096M
           lpc: true
+          minimotd: true
           name: prod
           ops:
             - bypassesPlayerLimit: true
