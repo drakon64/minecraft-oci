@@ -1,0 +1,12 @@
+{% set combined_minimotd = minimotd.main %}
+{% if global_overrides.minimotd.main is defined %}
+{% set combined_minimotd = (combined_minimotd | combine(global_overrides.minimotd.main, recursive=True)) %}
+{% endif %}
+{% if node_overrides.minimotd.main is defined %}
+{% set combined_minimotd = (combined_minimotd | combine(node_overrides.minimotd.main, recursive=True)) %}
+{% endif %}
+{% if outer_item.plugins.minimotd.main is defined %}
+{% set combined_minimotd = (combined_minimotd | combine(outer_item.plugins.minimotd.main, recursive=True)) %}
+{% endif %}
+
+{{ combined_minimotd | to_nice_yaml(indent=2) }}
