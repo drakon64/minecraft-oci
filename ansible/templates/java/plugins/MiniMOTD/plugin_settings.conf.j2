@@ -9,4 +9,4 @@
 {% set combined_minimotd = (combined_minimotd | combine(outer_item.plugins.minimotd.plugin_settings, recursive=True)) %}
 {% endif %}
 
-{{ combined_minimotd | to_nice_yaml(indent=2) }}
+{{ combined_minimotd | to_nice_json(indent=2) }}
