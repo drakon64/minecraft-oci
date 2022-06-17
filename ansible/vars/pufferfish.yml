@@ -8,6 +8,9 @@ pufferfish:
   enable-async-mob-spawning: true
   enable-books: true
   enable-suffocation-optimization: true
+  entity_timeouts:
+    LLAMA_SPIT: -1
+    SNOWBALL: -1
   flare:
     url: https://flare.airplane.gg
   inactive-goal-selector-throttle: true
