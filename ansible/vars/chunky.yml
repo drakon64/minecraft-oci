@@ -1,4 +1,6 @@
 chunky:
   continue-on-restart: false
   language: en
+  silent: false
+  update-interval: 1
   version: 1
