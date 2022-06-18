@@ -80,7 +80,7 @@
       }
     - {
         url: "{{ tabtps_latest.stdout }}",
-        dest: tabtps.jar,
+        dest: TabTPS.jar,
         when: "{{ true }}",
       }
     - {
