@@ -1,0 +1,61 @@
+harbor:
+  afk-detection:
+    essentials-detection-mode: and
+    essentials-enabled: true
+    fallback-enabled: true
+    fallback-timeout: 15
+  blacklisted-worlds:
+    - "world_nether"
+    - "world_the_end"
+  debug: false
+  exclusions:
+    exclude-adventure: false
+    exclude-afk: true
+    exclude-creative: false
+    exclude-spectator: true
+    exclude-survival: false
+    exclude-vanished: true
+    ignored-permission: true
+  interval: 1
+  messages:
+    actionbar:
+      enabled: true
+      night-skipping: "&eEveryone is sleeping- sweet dreams!"
+      players-sleeping: "&e[sleeping] out of [needed] players are sleeping ([more] more needed to skip)"
+    bossbar:
+      enabled: true
+      night-skipping:
+        color: GREEN
+        message: "&f&lEveryone is sleeping. Sweet dreams!"
+      players-sleeping:
+        color: BLUE
+        message: "&f&l[sleeping] out of [needed] are sleeping &7&l([more] more needed)"
+    chat:
+      enabled: true
+      message-cooldown: 5
+      night-skipped:
+        - "&eThe night has been skipped."
+        - "&eAhhh, finally morning."
+        - "&eArghh, it's so bright outside."
+        - "&eRise and shine."
+      night-skipping:
+        - "&eAccelerating the night."
+        - "&eRapidly approaching daytime."
+      player-left-bed: "&e[player] got out of bed ([sleeping]/[needed], [more] more needed to skip)."
+      player-sleeping: "&e[player] is now sleeping ([sleeping]/[needed], [more] more needed to skip)."
+    miscellaneous:
+      chat-prefix: "&8&l(&6&lHarbor&8&l)&f "
+      unrecognized-command: "Unrecognized command."
+  metrics: true
+  night-skip:
+    clear-rain: true
+    clear-thunder: true
+    daytime-ticks: 1200
+    enabled: true
+    instant-skip: false
+    percentage: 50
+    proportional-acceleration: false
+    reset-phantom-statistic: true
+    time-rate: 70
+  version: 1.6.4
+  whitelist-mode: false

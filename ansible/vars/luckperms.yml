@@ -1,0 +1,110 @@
+combined_luckperms: "{% set combined_luckperms = luckperms %}{% if global_overrides.luckperms is defined %}{% set combined_luckperms = (combined_luckperms | combine(global_overrides.luckperms, recursive=True)) %}{% endif %}{% if node_overrides.luckperms is defined %}{% set combined_luckperms = (combined_luckperms | combine(node_overrides.luckperms, recursive=True)) %}{% endif %}{% if outer_item.plugins.luckperms is defined %}{% set combined_luckperms = (combined_luckperms | combine(outer_item.plugins.luckperms, recursive=True)) %}{% endif %}{{ combined_luckperms }}"
+luckperms:
+  config:
+    allow-invalid-usernames: false
+    apply-bukkit-attachment-permissions: true
+    apply-bukkit-child-permissions: true
+    apply-bukkit-default-permissions: true
+    apply-default-negated-permissions-before-wildcards: false
+    apply-global-groups: true
+    apply-global-world-groups: true
+    apply-regex: true
+    apply-shorthand: true
+    apply-sponge-implicit-wildcards: false
+    apply-wildcards: true
+    argument-based-command-permissions: false
+    auto-install-translations: true
+    auto-op: false
+    auto-push-updates: true
+    broadcast-received-log-entries: true
+    commands-allow-op: true
+    context-satisfy-mode: at-least-one-value-per-key
+    data:
+      address: localhost
+      database: minecraft
+      mongodb-collection-prefix: ""
+      mongodb-connection-uri: ""
+      password: ""
+      pool-settings:
+        connection-timeout: 5000
+        keepalive-time: 0
+        maximum-lifetime: 1800000
+        maximum-pool-size: 10
+        minimum-idle: 10
+        properties:
+          characterEncoding: utf8
+          useUnicode: true
+      table-prefix: "luckperms_"
+      username: root
+    debug-logins: false
+    disable-bulkupdate: false
+    disabled-context-calculators: []
+    disabled-contexts:
+    enable-ops: true
+    group-weight:
+    include-global: true
+    include-global-world: true
+    inheritance-traversal-algorithm: depth-first-pre-order
+    log-notify: true
+    log-notify-filtered-descriptions:
+    messaging-service: auto
+    meta-formatting:
+      prefix:
+        duplicates: first-only
+        end-spacer: ""
+        format:
+          - "highest"
+        middle-spacer: " "
+        start-spacer: ""
+      suffix:
+        duplicates: first-only
+        end-spacer: ""
+        format:
+          - "highest"
+        middle-spacer: " "
+        start-spacer: ""
+    meta-value-selection:
+    meta-value-selection-default: inheritance
+    post-traversal-inheritance-sort: false
+    prevent-primary-group-removal: false
+    primary-group-calculation: parents-by-weight
+    push-log-entries: true
+    rabbitmq:
+      address: localhost
+      enabled: false
+      password: "guest"
+      username: "guest"
+      vhost: "/"
+    redis:
+      address: localhost
+      enabled: false
+      password: ""
+      username: ""
+    register-command-list-data: true
+    require-sender-group-membership-to-modify: false
+    resolve-command-selectors: false
+    server: global
+    skip-bulkupdate-confirmation: false
+    split-storage:
+      enabled: false
+      methods:
+        group: h2
+        log: h2
+        track: h2
+        user: h2
+        uuid: h2
+    storage-method: h2
+    sync-minutes: -1
+    temporary-add-behaviour: deny
+    update-client-command-list: true
+    use-server-uuid-cache: false
+    use-vault-server: false
+    vault-group-use-displaynames: true
+    vault-ignore-world: false
+    vault-include-global: true
+    vault-npc-group: default
+    vault-npc-op-status: false
+    vault-server: global
+    vault-unsafe-lookups: false
+    watch-files: true
+    world-rewrite:
