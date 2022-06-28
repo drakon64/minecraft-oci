@@ -79,7 +79,6 @@ minecraft:
           version:
             build: 67
             full: 1.18.2
-            major: 1.18
           viaversion: false
           viewdistancetweaks: true
           whitelist:

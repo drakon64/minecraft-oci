@@ -19,7 +19,6 @@
     - ../vars/luckperms.yml
     - ../vars/minimotd.yml
     - ../vars/paper.yml
-    - ../vars/pufferfish.yml
     - ../vars/raytraceantixray.yml
     - ../vars/server.yml
     - ../vars/spigot.yml
@@ -357,9 +356,9 @@
         label: "{{ item.name }}"
       when: item.state.backup.new_repository
 
-    - name: Downloading Minecraft Pufferfish server
+    - name: Downloading Minecraft Paper server
       get_url:
-        url: https://ci.pufferfish.host/job/Pufferfish-{{ item.version.major }}/{{ item.version.build }}/artifact/build/libs/pufferfish-paperclip-{{ item.version.full }}-R0.1-SNAPSHOT-reobf.jar
+        url: https://api.papermc.io/v2/projects/paper/versions/{{ item.version.full }}/builds/{{ item.version.build }}/downloads/paper-{{ item.version.full }}-{{ item.version.build }}.jar
         dest: /opt/minecraft/{{ item.name }}/server/server.jar
         owner: minecraft-{{ item.name }}
         group: minecraft-{{ item.name }}

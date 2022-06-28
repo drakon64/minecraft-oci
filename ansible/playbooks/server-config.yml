@@ -13,7 +13,6 @@
     - { src: commands.yml, when: "{{ true }}" }
     - { src: spigot.yml, when: "{{ true }}" }
     - { src: paper.yml, when: "{{ true }}" }
-    - { src: pufferfish.yml, when: "{{ true }}" }
     - { src: plugins/BlueMap/core.conf, when: "{{ outer_item.bluemap.use }}" }
     - { src: plugins/BlueMap/plugin.conf, when: "{{ outer_item.bluemap.use }}" }
     - { src: plugins/BlueMap/render.conf, when: "{{ outer_item.bluemap.use }}" }
