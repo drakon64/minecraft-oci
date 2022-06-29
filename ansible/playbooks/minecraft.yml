@@ -163,11 +163,6 @@
             state: "{% if graalvm %}present{% else %}absent{% endif %}",
           }
 
-    - name: Installing MCStatus
-      pip:
-        name: mcstatus
-        state: latest
-
     - name: Installing and configuring Caddy
       include_tasks: caddy.yml
 
