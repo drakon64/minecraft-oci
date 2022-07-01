@@ -57,7 +57,10 @@
         src: plugins/ViewDistanceTweaks/config.yml,
         when: "{{ outer_item.viewdistancetweaks }}",
       }
-    - { src: plugins/WorldEdit/config.yml, when: "{{ outer_item.worldguard }}" }
+    - {
+        src: plugins/WorldEdit/config.yml,
+        when: "{{ outer_item.worldedit or outer_item.worldguard }}",
+      }
     - {
         src: plugins/WorldGuard/config.yml,
         when: "{{ outer_item.worldguard }}",

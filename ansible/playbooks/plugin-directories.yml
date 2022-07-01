@@ -108,7 +108,7 @@
       }
     - {
         path: WorldEdit,
-        state: "{% if outer_item.worldguard %}directory{% else %}absent{% endif %}",
+        state: "{% if outer_item.worldedit or outer_item.worldguard %}directory{% else %}absent{% endif %}",
       }
     - {
         path: WorldGuard,

@@ -122,7 +122,7 @@
     - {
         url: https://media.forgecdn.net/files/3697/296/worldedit-bukkit-7.2.10.jar,
         dest: worldedit-bukkit.jar,
-        when: "{{ outer_item.worldguard }}",
+        when: "{{ outer_item.worldedit or outer_item.worldguard }}",
       }
     - {
         url: https://media.forgecdn.net/files/3677/516/worldguard-bukkit-7.0.7-dist.jar,
@@ -172,7 +172,7 @@
       }
     - {
         src: worldedit-bukkit.jar,
-        when: "{{ outer_item.worldguard == false }}",
+        when: "{{ outer_item.worldedit == false or outer_item.worldguard == false }}",
       }
     - {
         src: worldguard-bukkit.jar,
