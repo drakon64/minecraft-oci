@@ -120,12 +120,12 @@
         when: "{{ grafana.use }}",
       }
     - {
-        url: https://media.forgecdn.net/files/3697/296/worldedit-bukkit-7.2.10.jar,
+        url: https://dev.bukkit.org/projects/worldedit/files/latest,
         dest: worldedit-bukkit.jar,
         when: "{{ outer_item.worldedit or outer_item.worldguard }}",
       }
     - {
-        url: https://media.forgecdn.net/files/3677/516/worldguard-bukkit-7.0.7-dist.jar,
+        url: https://dev.bukkit.org/projects/worldguard/files/latest,
         dest: worldguard-bukkit.jar,
         when: "{{ outer_item.worldguard }}",
       }
