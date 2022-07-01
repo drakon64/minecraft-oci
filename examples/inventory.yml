@@ -23,6 +23,7 @@ minecraft:
           bluemap:
             domain: minecraft.example.com
             use: true
+          build: 41
           chunky: true
           custom_plugins:
             use: true
@@ -74,9 +75,6 @@ minecraft:
             remove: false
             skip_backup: true
             update_server: false
-          version:
-            build: 67
-            full: 1.18.2
           viaversion: false
           viewdistancetweaks: true
           whitelist:
