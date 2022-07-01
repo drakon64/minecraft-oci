@@ -112,6 +112,7 @@ spigot:
         wheat-modifier: 100
       hanging-tick-frequency: 100
       hopper-amount: 1
+      hopper-can-load-chunks: false
       hunger:
         combat-exhaustion: 0.1
         jump-sprint-exhaustion: 0.2
