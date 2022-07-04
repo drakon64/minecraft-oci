@@ -115,9 +115,9 @@
         when: "{{ outer_item.viewdistancetweaks }}",
       }
     - {
-        url: "{% if grafana.use %}{{ unifiedmetrics_latest.stdout }}{% endif %}",
+        url: "{{ unifiedmetrics_latest.stdout }}",
         dest: "unifiedmetrics.jar",
-        when: "{{ grafana.use }}",
+        when: true,
       }
     - {
         url: https://dev.bukkit.org/projects/worldedit/files/latest,

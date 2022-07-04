@@ -90,14 +90,8 @@
         path: RayTraceAntiXray,
         state: "{% if outer_item.raytraceantixray %}directory{% else %}absent{% endif %}",
       }
-    - {
-        path: UnifiedMetrics,
-        state: "{% if grafana.use %}directory{% else %}absent{% endif %}",
-      }
-    - {
-        path: UnifiedMetrics/driver,
-        state: "{% if grafana.use %}directory{% else %}absent{% endif %}",
-      }
+    - { path: UnifiedMetrics, state: directory }
+    - { path: UnifiedMetrics/driver, state: directory }
     - {
         path: ViaVersion,
         state: "{% if outer_item.viaversion %}directory{% else %}absent{% endif %}",

@@ -169,15 +169,12 @@
     - name: Getting the latest Grafana Agent release
       shell: curl --silent https://api.github.com/repos/grafana/agent/releases/latest | jq -r '.assets[].browser_download_url | select(contains("{% if ansible_architecture == 'aarch64' %}arm64{% elif ansible_architecture == 'x86_64' %}amd64{% endif %}")) | select(contains("rpm"))'
       register: grafanaagent_latest
-      when:
-        - grafana.use
 
     - name: Installing Grafana Agent
       dnf:
         name: "{{ grafanaagent_latest.stdout }}"
         state: present
         disable_gpg_check: yes
-      when: grafana.use
 
     - name: Creating the instance user
       user:
@@ -646,7 +643,7 @@
             owner: root,
             group: grafana-agent,
             mode: "0640",
-            when: "{{ grafana.use }}",
+            when: true,
           }
         - {
             src: "templates/systemd/service.j2",
@@ -657,7 +654,7 @@
             execstart: "/usr/bin/grafana-agent --config.file /etc/grafana-agent.yaml",
             type: "simple",
             after: "network-online.target",
-            when: "{{ grafana.use }}",
+            when: true,
           }
       when: item.when
 
@@ -755,7 +752,7 @@
             name: "grafana-agent.service",
             state: "restarted",
             enabled: "true",
-            when: "{{ grafana.use }}",
+            when: true,
           }
       when: item.when
 

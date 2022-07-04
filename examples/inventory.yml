@@ -17,7 +17,6 @@ minecraft:
             api_key:
           url: https://prometheus-prod-01-eu-west-0.grafana.net/api/prom
           username:
-        use: true
       instances:
         - bedrock_resource_packs:
             - https://minecraft.example.com/bedrockresourcepack.mcpack

@@ -45,10 +45,7 @@
       }
     - { src: plugins/TreeAssist/config.yml, when: "{{ true }}" }
     - { src: plugins/TreeAssist/trees/default.yml, when: "{{ true }}" }
-    - {
-        src: plugins/UnifiedMetrics/driver/prometheus.yml,
-        when: "{{ grafana.use }}",
-      }
+    - { src: plugins/UnifiedMetrics/driver/prometheus.yml, when: true }
     - {
         src: plugins/ViaVersion/config.yml,
         when: "{{ outer_item.viaversion }}",
