@@ -1,5 +1,22 @@
 #yaml-language-server: $schema=https://json.schemastore.org/ansible-playbook.json
 
+- name: Creating the Paper config directory for {{ outer_item.name }}
+  file:
+    path: /opt/minecraft/{{ outer_item.name }}/server/config
+    owner: minecraft-{{ outer_item.name }}
+    group: minecraft-{{ outer_item.name }}
+    mode: 0755
+    state: directory
+
+- name: Creating the Paper world directories for {{ outer_item.name }}
+  file:
+    path: /opt/minecraft/{{ outer_item.name }}/server/{{ item.key }}
+    owner: minecraft-{{ outer_item.name }}
+    group: minecraft-{{ outer_item.name }}
+    mode: 0755
+    state: directory
+  loop: "{{ combined_paper_worlds | dict2items }}"
+
 - name: Configuring the Minecraft server for {{ outer_item.name }}
   template:
     src: ../templates/java/{{ item.src }}.j2
