@@ -105,7 +105,7 @@ variable "bluemap" {
 
 variable "oci_image_id" {
   type    = string
-  default = "ocid1.image.oc1.uk-london-1.aaaaaaaazy7izw6yreafj2e32puchmuv4o6thk4dh6n66ejogxjjbxlgqs2a"
+  default = "ocid1.image.oc1.uk-london-1.aaaaaaaamfdzbyzadoi7aj6btdrlfnx7jkmsagmu5c6noef2i33mbua3uaiq"
 }
 
 variable "ssh_authorized_keys" {
