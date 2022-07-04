@@ -76,8 +76,10 @@
     owner: minecraft-{{ outer_item.name }}
     group: minecraft-{{ outer_item.name }}
     mode: u=rwX,g=rX,o=rX
-  loop: "{{ outer_item.custom_plugins }}"
-  when: item.config
+  loop: "{{ outer_item.custom_plugins.plugins }}"
+  when:
+    - outer_item.custom_plugins.use
+    - item.config
 
 - name: Copying the server permissions files for {{ outer_item.name }}
   template:

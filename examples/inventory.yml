@@ -26,9 +26,11 @@ minecraft:
             use: true
           chunky: true
           custom_plugins:
-            - config: true
-              name: example_plugin
-              url: https://example.com/plugin.jar
+            use: true
+            plugins:
+              - name: example_plugin
+                config: true
+                url: https://example.com/plugin.jar
           discordsrv: true
           eula: true
           farmcontrol: true

@@ -188,4 +188,5 @@
     group: minecraft-{{ outer_item.name }}
     mode: 0644
     force: yes
-  loop: "{{ outer_item.custom_plugins }}"
+  loop: "{{ outer_item.custom_plugins.plugins }}"
+  when: outer_item.custom_plugins.use
