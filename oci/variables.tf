@@ -15,11 +15,6 @@ variable "oci_namespace" {
   type = string
 }
 
-variable "continuous_deployment" {
-  type    = bool
-  default = false
-}
-
 variable "live_compartment_name" {
   type = string
 }

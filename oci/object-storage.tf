@@ -5,8 +5,6 @@ resource "oci_objectstorage_bucket" "minecraft_backup" {
 
   access_type  = "NoPublicAccess"
   auto_tiering = "InfrequentAccess"
-
-  count = var.continuous_deployment ? 0 : 1
 }
 
 resource "oci_objectstorage_object_lifecycle_policy" "minecraft_backup" {
@@ -22,6 +20,4 @@ resource "oci_objectstorage_object_lifecycle_policy" "minecraft_backup" {
 
     target = "multipart-uploads"
   }
-
-  count = var.continuous_deployment ? 0 : 1
 }

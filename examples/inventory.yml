@@ -69,9 +69,6 @@ minecraft:
               restore_backup: false
               restore_latest_backup: no
               restore_remote_backup: false
-            continuous_deployment:
-              bucket_name: minecraft-backup
-              enabled: false
             enabled: true
             new_server: true
             remove: false

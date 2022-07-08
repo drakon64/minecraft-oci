@@ -112,7 +112,6 @@
       when:
         - item.state.new_server or item.state.update_server
         - item.state.skip_backup == false
-        - item.state.continuous_deployment.enabled == false
 
     - name: Applying updates with Uptrack
       command: uptrack-upgrade -y
@@ -293,7 +292,6 @@
       loop_control:
         label: "{{ item.name }}"
       when:
-        - item.state.continuous_deployment.enabled == false
         - item.state.backup.restore_backup == false
 
     - name: Initialising the instance backup repository
@@ -307,7 +305,6 @@
       loop_control:
         label: "{{ item.name }}"
       when:
-        - item.state.continuous_deployment.enabled == false
         - item.state.backup.restore_backup == false
       become_user: minecraft-{{ item.name }}
 
@@ -588,28 +585,6 @@
             when: true,
           }
         - {
-            src: "templates/systemd/service.j2",
-            dest: "/etc/systemd/system/minecraft-continuous-deployment@.service",
-            owner: "root",
-            mode: "0644",
-            description: "Minecraft Server continuous deployment - %i",
-            type: "oneshot",
-            execstart: "/opt/minecraft/%i/continuous-deployment.sh",
-            workingdirectory: "/opt/minecraft",
-            user: "minecraft-%i",
-            when: true,
-          }
-        - {
-            src: "templates/systemd/timer.j2",
-            dest: "/etc/systemd/system/minecraft-continuous-deployment@.timer",
-            owner: "root",
-            mode: "0644",
-            description: "Minecraft Server continuous deployment - %i",
-            timer: "6:00",
-            persistent: true,
-            when: true,
-          }
-        - {
             src: "templates/sudoers.j2",
             dest: "/etc/sudoers.d/10-minecraft-users",
             owner: "root",
@@ -811,18 +786,8 @@
     - name: Starting the Minecraft backup timers
       systemd:
         name: minecraft-backup@{{ item.name }}.timer
-        state: "{% if item.state.enabled and item.state.continuous_deployment.enabled %}stopped{% elif item.state.enabled %}started{% else %}stopped{% endif %}"
-        enabled: "{% if item.state.enabled and item.state.continuous_deployment.enabled %}no{% elif item.state.enabled %}yes{% else %}no{% endif %}"
-        daemon_reload: yes
-      loop: "{{ instances }}"
-      loop_control:
-        label: "{{ item.name }}"
-
-    - name: Starting the Minecraft continuous deployment timers
-      systemd:
-        name: minecraft-continuous-deployment@{{ item.name }}.timer
-        state: "{% if item.state.enabled and item.state.continuous_deployment.enabled %}started{% else %}stopped{% endif %}"
-        enabled: "{% if item.state.enabled and item.state.continuous_deployment.enabled %}no{% elif item.state.enabled %}yes{% else %}no{% endif %}"
+        state: "{% if item.state.enabled %}started{% else %}stopped{% endif %}"
+        enabled: "{% if item.state.enabled %}yes{% else %}no{% endif %}"
         daemon_reload: yes
       loop: "{{ instances }}"
       loop_control:
