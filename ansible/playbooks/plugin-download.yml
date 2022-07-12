@@ -50,7 +50,7 @@
         when: "{{ outer_item.lpc and outer_item.geyser }}",
       }
     - {
-        url: https://cdn.discordapp.com/attachments/804019242512810034/981299679184695336/TreeAssist.jar, # This really needs an API and not a Discord URL
+        url: https://cdn.discordapp.com/attachments/804019242512810034/995443364201762876/TreeAssist.jar, # This really needs an API and not a Discord URL
         dest: TreeAssist.jar,
         when: "{{ true }}",
       }
