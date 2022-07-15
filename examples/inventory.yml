@@ -63,6 +63,7 @@ minecraft:
             resource-pack: https://example.com/resourcepack.zip
           server_icon:
             use: yes
+            minimotd: yes
           state:
             backup:
               backup_retention_days: 7
