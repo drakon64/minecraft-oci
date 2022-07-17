@@ -6,3 +6,8 @@ then
 fi
 
 tmux send-keys -t minecraft-"$1" stop ENTER
+
+while tmux list-sessions | grep -q minecraft-"$1"
+do
+	sleep 1
+done
