@@ -531,7 +531,7 @@
             src: "templates/scripts/dnf-reboot.sh.j2",
             dest: "/opt/minecraft/dnf-reboot.sh",
             owner: "root",
-            mode: "0755",
+            mode: "0744",
             when: true,
           }
         - {
