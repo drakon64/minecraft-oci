@@ -1,5 +1,22 @@
 #yaml-language-server: $schema=https://json.schemastore.org/ansible-playbook.json
 
+- name: Creating the Paper config directory for {{ outer_item.name }}
+  file:
+    path: /opt/minecraft/{{ outer_item.name }}/server/config
+    owner: minecraft-{{ outer_item.name }}
+    group: minecraft-{{ outer_item.name }}
+    mode: 0755
+    state: directory
+
+- name: Creating the Paper world directories for {{ outer_item.name }}
+  file:
+    path: /opt/minecraft/{{ outer_item.name }}/server/{{ item.key }}
+    owner: minecraft-{{ outer_item.name }}
+    group: minecraft-{{ outer_item.name }}
+    mode: 0755
+    state: directory
+  loop: "{{ combined_paper_worlds | dict2items }}"
+
 - name: Configuring the Minecraft server for {{ outer_item.name }}
   template:
     src: ../templates/java/{{ item.src }}.j2
@@ -12,7 +29,8 @@
     - { src: bukkit.yml, when: "{{ true }}" }
     - { src: commands.yml, when: "{{ true }}" }
     - { src: spigot.yml, when: "{{ true }}" }
-    - { src: paper.yml, when: "{{ true }}" }
+    - { src: config/paper-global.yml, when: "{{ true }}" }
+    - { src: config/paper-world-defaults.yml, when: "{{ true }}" }
     - { src: plugins/BlueMap/core.conf, when: "{{ outer_item.bluemap.use }}" }
     - { src: plugins/BlueMap/plugin.conf, when: "{{ outer_item.bluemap.use }}" }
     - { src: plugins/BlueMap/render.conf, when: "{{ outer_item.bluemap.use }}" }
@@ -65,6 +83,17 @@
   when:
     - outer_item.state.backup.restore_backup == false
     - item.when
+
+- name: Configuring the Paper world settings for {{ outer_item.name }}
+  template:
+    src: ../templates/java/config/paper-world.yml.j2
+    dest: /opt/minecraft/{{ outer_item.name }}/server/{{ item.key }}/paper-world.yml
+    owner: minecraft-{{ outer_item.name }}
+    group: minecraft-{{ outer_item.name }}
+    mode: 0644
+  loop: "{{ combined_paper_worlds | dict2items }}"
+  when:
+    - outer_item.state.backup.restore_backup == false
 
 - name: Configuring custom plugins for {{ outer_item.name }}
   copy:

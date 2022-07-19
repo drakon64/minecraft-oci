@@ -23,6 +23,7 @@ minecraft:
           bluemap:
             domain: minecraft.example.com
             use: true
+          build: 41
           chunky: true
           custom_plugins:
             use: true
@@ -45,8 +46,9 @@ minecraft:
               name: jeb_
               uuid: 853c80ef-3c37-49fd-aa49-938b674adae6
           paper:
-            settings:
-              log-player-ip-addresses: false
+            global:
+              logging:
+                log-player-ip-addresses: false
           plugins:
             worldedit:
               snapshots:
@@ -61,6 +63,7 @@ minecraft:
             resource-pack: https://example.com/resourcepack.zip
           server_icon:
             use: yes
+            minimotd: yes
           state:
             backup:
               backup_retention_days: 7
@@ -74,9 +77,6 @@ minecraft:
             remove: false
             skip_backup: true
             update_server: false
-          version:
-            build: 67
-            full: 1.18.2
           viaversion: false
           viewdistancetweaks: true
           whitelist:

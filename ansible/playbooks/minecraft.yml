@@ -509,6 +509,22 @@
         label: "{{ item.name }}"
       when:
         - item.server_icon.use
+        - item.server_icon.minimotd == false
+        - item.state.backup.restore_backup == false
+
+    - name: Copying the server icons for MiniMOTD
+      copy:
+        src: ../files/java/{{ item.name }}/server-icons/
+        dest: /opt/minecraft/{{ item.name }}/server/plugins/MiniMOTD/icons
+        owner: minecraft-{{ item.name }}
+        group: minecraft-{{ item.name }}
+        mode: u=rwX,g=rX,o=rX
+      loop: "{{ instances }}"
+      loop_control:
+        label: "{{ item.name }}"
+      when:
+        - item.server_icon.use
+        - item.server_icon.minimotd
         - item.state.backup.restore_backup == false
 
     - name: Restoring backup
