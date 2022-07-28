@@ -1,12 +1,12 @@
 # yaml-language-server: $schema=https://json.schemastore.org/ansible-playbook.json
 
 - name: Getting the Minecraft Paper checksum for {{ outer_item.name }}
-  shell: curl --silent https://api.papermc.io/v2/projects/paper/versions/1.19/builds/{{ outer_item.build }} | jq -r .downloads.application.sha256
+  shell: curl --silent https://api.papermc.io/v2/projects/paper/versions/1.19.1/builds/{{ outer_item.build }} | jq -r .downloads.application.sha256
   register: paper_checksum
 
 - name: Downloading Minecraft Paper server for {{ outer_item.name }}
   get_url:
-    url: https://api.papermc.io/v2/projects/paper/versions/1.19/builds/{{ outer_item.build }}/downloads/paper-1.19-{{ outer_item.build }}.jar
+    url: https://api.papermc.io/v2/projects/paper/versions/1.19.1/builds/{{ outer_item.build }}/downloads/paper-1.19.1-{{ outer_item.build }}.jar
     dest: /opt/minecraft/{{ outer_item.name }}/server/server.jar
     owner: minecraft-{{ outer_item.name }}
     group: minecraft-{{ outer_item.name }}
