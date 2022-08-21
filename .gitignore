@@ -8,3 +8,4 @@ ansible/files/java/*
 
 oci/aws/.terraform*
 oci/aws/cloud.tf
+oci/aws/terraform.tfvars
