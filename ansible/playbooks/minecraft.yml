@@ -117,13 +117,13 @@
 
     - name: Enabling EPEL
       yum_repository:
-        name: ol8_developer_EPEL
-        baseurl: https://yum$ociregion.$ocidomain/repo/OracleLinux/OL8/developer/EPEL/$basearch/
+        name: ol9_developer_EPEL
+        baseurl: https://yum$ociregion.$ocidomain/repo/OracleLinux/OL9/developer/EPEL/$basearch/
         description: Oracle Linux $releasever EPEL Packages for Development ($basearch)
         gpgcheck: yes
         gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-oracle
         enabled: yes
-        file: oracle-epel-ol8
+        file: oracle-epel-ol9
 
     - name: Installing updates
       dnf:
