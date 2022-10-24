@@ -28,6 +28,8 @@
     - { src: server.properties, when: "{{ true }}" }
     - { src: bukkit.yml, when: "{{ true }}" }
     - { src: commands.yml, when: "{{ true }}" }
+    - { src: pufferfish.yml, when: "{{ true }}" }
+    - { src: purpur.yml, when: "{{ true }}" }
     - { src: spigot.yml, when: "{{ true }}" }
     - { src: config/paper-global.yml, when: "{{ true }}" }
     - { src: config/paper-world-defaults.yml, when: "{{ true }}" }

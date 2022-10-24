@@ -80,11 +80,6 @@
         when: "{{ true }}",
       }
     - {
-        url: "{{ tabtps_latest.stdout }}",
-        dest: TabTPS.jar,
-        when: "{{ true }}",
-      }
-    - {
         url: "https://ci.lucko.me/job/LuckPerms/lastSuccessfulBuild/artifact/bukkit/loader/build/libs/{{ luckperms_latest.stdout }}",
         dest: LuckPerms.jar,
         when: "{{ true }}",

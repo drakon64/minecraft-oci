@@ -19,6 +19,8 @@
     - ../vars/luckperms.yml
     - ../vars/minimotd.yml
     - ../vars/paper.yml
+    - ../vars/pufferfish.yml
+    - ../vars/purpur.yml
     - ../vars/server.yml
     - ../vars/spigot.yml
     - ../vars/treeassist.yml
@@ -387,8 +389,8 @@
         label: "{{ item.name }}"
       when: aws.enabled
 
-    - name: Downloading Minecraft Paper server
-      include_tasks: paper-download.yml
+    - name: Downloading Minecraft Purpur server
+      include_tasks: purpur-download.yml
       loop: "{{ instances }}"
       loop_control:
         loop_var: outer_item
@@ -464,10 +466,6 @@
     - name: Getting the latest ViaVersion release
       shell: curl --silent "https://api.github.com/repos/ViaVersion/ViaVersion/releases/latest" | jq -r '.assets[].browser_download_url'
       register: viaversion_latest
-
-    - name: Getting the latest TabTPS release
-      shell: curl --silent https://api.github.com/repos/jpenilla/TabTPS/releases/latest | jq -r '.assets[].browser_download_url | select(contains("spigot"))'
-      register: tabtps_latest
 
     - name: Getting the latest AppleSkinSpigot release
       shell: curl --silent https://api.github.com/repos/jmattingley23/AppleSkinSpigot/releases/latest | jq -r '.assets[].browser_download_url'
