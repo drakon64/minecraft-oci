@@ -147,6 +147,13 @@
         state: present
         update_cache: yes
 
+    - name: Installing the AWS CLI
+      dnf:
+        name: awscli
+        state: present
+        update_cache: yes
+      when: aws.enabled
+
     - name: Installing Java
       dnf:
         name: "{{ item.name }}"
@@ -344,6 +351,42 @@
       loop_control:
         label: "{{ item.name }}"
       when: item.state.backup.new_repository
+
+    - name: Creating the AWS directory
+      file:
+        path: /opt/minecraft/{{ item.name }}/.aws
+        owner: minecraft-{{ item.name }}
+        group: minecraft-{{ item.name }}
+        mode: 0700
+        state: directory
+      loop: "{{ instances }}"
+      loop_control:
+        label: "{{ item.name }}"
+      when: aws.enabled
+
+    - name: Copying the AWS config
+      template:
+        src: ../templates/aws/config.j2
+        dest: /opt/minecraft/{{ item.name }}/.aws/config
+        owner: minecraft-{{ item.name }}
+        group: minecraft-{{ item.name }}
+        mode: 0600
+      loop: "{{ instances }}"
+      loop_control:
+        label: "{{ item.name }}"
+      when: aws.enabled
+
+    - name: Copying the AWS credentials
+      template:
+        src: ../templates/aws/credentials.j2
+        dest: /opt/minecraft/{{ item.name }}/.aws/credentials
+        owner: minecraft-{{ item.name }}
+        group: minecraft-{{ item.name }}
+        mode: 0600
+      loop: "{{ instances }}"
+      loop_control:
+        label: "{{ item.name }}"
+      when: aws.enabled
 
     - name: Downloading Minecraft Paper server
       include_tasks: paper-download.yml

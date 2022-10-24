@@ -1,6 +1,12 @@
 minecraft:
   hosts:
     minecraft.example.com:
+      aws:
+        access_key:
+        secret_key:
+        region:
+        bucket_name:
+        enabled: true
       backup:
         oncalendar: "*-*-* *:00:00"
         player_check_range: 1h
