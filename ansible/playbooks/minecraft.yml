@@ -389,8 +389,8 @@
         label: "{{ item.name }}"
       when: aws.enabled
 
-    - name: Downloading Minecraft Purpur server
-      include_tasks: purpur-download.yml
+    - name: Downloading Minecraft Petal server
+      include_tasks: petal-download.yml
       loop: "{{ instances }}"
       loop_control:
         loop_var: outer_item
