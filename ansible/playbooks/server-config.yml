@@ -57,10 +57,6 @@
         src: plugins/MiniMOTD/plugin_settings.conf,
         when: "{{ outer_item.minimotd }}",
       }
-    - {
-        src: plugins/RayTraceAntiXray/config.yml,
-        when: "{{ outer_item.raytraceantixray }}",
-      }
     - { src: plugins/TreeAssist/config.yml, when: "{{ true }}" }
     - { src: plugins/TreeAssist/trees/default.yml, when: "{{ true }}" }
     - { src: plugins/UnifiedMetrics/driver/prometheus.yml, when: true }

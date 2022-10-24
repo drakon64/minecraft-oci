@@ -59,7 +59,6 @@ minecraft:
             worldedit:
               snapshots:
                 directory: /opt/minecraft/prod/snapshot
-          raytraceantixray: true
           restore_permissions: true
           server:
             level-seed: Minecraft 1.18

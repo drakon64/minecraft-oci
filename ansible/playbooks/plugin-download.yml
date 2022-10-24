@@ -95,16 +95,6 @@
         when: "{{ outer_item.minimotd }}",
       }
     - {
-        url: "https://ci.dmulloy2.net/job/ProtocolLib/lastSuccessfulBuild/artifact/target/ProtocolLib.jar",
-        dest: ProtocolLib.jar,
-        when: "{{ outer_item.raytraceantixray }}",
-      }
-    - {
-        url: "{% if outer_item.raytraceantixray %}{{ raytraceantixray_latest.stdout }}{% endif %}",
-        dest: RayTraceAntiXray.jar,
-        when: "{{ outer_item.raytraceantixray }}",
-      }
-    - {
         url: "{% if outer_item.viaversion %}{{ viaversion_latest.stdout }}{% endif %}",
         dest: "ViaVersion.jar",
         when: "{{ outer_item.viaversion }}",
@@ -156,14 +146,6 @@
     - {
         src: PlaceholderAPI.jar,
         when: "{{ ( outer_item.lpc and outer_item.geyser ) == false }}",
-      }
-    - {
-        src: ProtocolLib.jar,
-        when: "{{ outer_item.raytraceantixray == false }}",
-      }
-    - {
-        src: RayTraceAntiXray.jar,
-        when: "{{ outer_item.raytraceantixray == false }}",
       }
     - { src: ViaVersion.jar, when: "{{ outer_item.viaversion == false }}" }
     - {

@@ -75,20 +75,12 @@
         state: "{% if outer_item.minimotd %}directory{% else %}absent{% endif %}",
       }
     - {
-        path: ProtocolLib,
-        state: "{% if outer_item.raytraceantixray %}directory{% else %}absent{% endif %}",
-      }
-    - {
         path: PlaceholderAPI,
         state: "{% if outer_item.lpc and outer_item.geyser %}directory{% else %}absent{% endif %}",
       }
     - {
         path: PlaceholderAPI/expansions,
         state: "{% if outer_item.lpc and outer_item.geyser %}directory{% else %}absent{% endif %}",
-      }
-    - {
-        path: RayTraceAntiXray,
-        state: "{% if outer_item.raytraceantixray %}directory{% else %}absent{% endif %}",
       }
     - { path: UnifiedMetrics, state: directory }
     - { path: UnifiedMetrics/driver, state: directory }

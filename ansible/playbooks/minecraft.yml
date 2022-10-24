@@ -19,7 +19,6 @@
     - ../vars/luckperms.yml
     - ../vars/minimotd.yml
     - ../vars/paper.yml
-    - ../vars/raytraceantixray.yml
     - ../vars/server.yml
     - ../vars/spigot.yml
     - ../vars/treeassist.yml
@@ -461,10 +460,6 @@
     - name: Getting the latest MiniMOTD release
       shell: curl --silent https://api.github.com/repos/jpenilla/MiniMOTD/releases/latest | jq -r '.assets[].browser_download_url | select(contains("bukkit"))'
       register: minimotd_latest
-
-    - name: Getting the latest RayTraceAntiXray release
-      shell: curl --silent https://api.github.com/repos/stonar96/RayTraceAntiXray/releases/latest | jq -r '.assets[].browser_download_url'
-      register: raytraceantixray_latest
 
     - name: Getting the latest ViaVersion release
       shell: curl --silent "https://api.github.com/repos/ViaVersion/ViaVersion/releases/latest" | jq -r '.assets[].browser_download_url'
