@@ -28,11 +28,11 @@
     - { src: server.properties, when: "{{ true }}" }
     - { src: bukkit.yml, when: "{{ true }}" }
     - { src: commands.yml, when: "{{ true }}" }
+    - { src: pufferfish.yml, when: "{{ true }}" }
+    - { src: purpur.yml, when: "{{ true }}" }
     - { src: spigot.yml, when: "{{ true }}" }
     - { src: config/paper-global.yml, when: "{{ true }}" }
     - { src: config/paper-world-defaults.yml, when: "{{ true }}" }
-    - { src: config/pufferfish.yml, when: "{{ true }}" }
-    - { src: config/purpur.yml, when: "{{ true }}" }
     - { src: plugins/BlueMap/core.conf, when: "{{ outer_item.bluemap.use }}" }
     - { src: plugins/BlueMap/plugin.conf, when: "{{ outer_item.bluemap.use }}" }
     - { src: plugins/BlueMap/render.conf, when: "{{ outer_item.bluemap.use }}" }
