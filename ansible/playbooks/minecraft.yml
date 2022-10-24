@@ -465,10 +465,6 @@
       shell: curl --silent "https://api.github.com/repos/ViaVersion/ViaVersion/releases/latest" | jq -r '.assets[].browser_download_url'
       register: viaversion_latest
 
-    - name: Getting the latest TabTPS release
-      shell: curl --silent https://api.github.com/repos/jpenilla/TabTPS/releases/latest | jq -r '.assets[].browser_download_url | select(contains("spigot"))'
-      register: tabtps_latest
-
     - name: Getting the latest AppleSkinSpigot release
       shell: curl --silent https://api.github.com/repos/jmattingley23/AppleSkinSpigot/releases/latest | jq -r '.assets[].browser_download_url'
       register: appleskin_latest
