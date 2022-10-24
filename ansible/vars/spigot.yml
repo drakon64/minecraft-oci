@@ -131,12 +131,15 @@ spigot:
         item: 2.5
       mob-spawn-range: 8
       nerf-spawner-mobs: false
+      seed-ancientcity: 20083232
+      seed-buriedtreasure: 10387320
       seed-desert: 14357617
       seed-endcity: 10387313
       seed-fossil: 14357921
       seed-igloo: 14357618
       seed-jungle: 14357619
       seed-mansion: 10387319
+      seed-mineshaft: default
       seed-monument: 10387313
       seed-nether: 30084232
       seed-ocean: 14357621
