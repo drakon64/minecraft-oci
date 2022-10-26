@@ -1,9 +1,12 @@
 floodgate:
-  config-version: 2
+  config-version: 3
   disconnect:
     invalid-arguments-length: Expected {} arguments, got {}. Is Geyser up-to-date?
     invalid-key: Please connect through the official Geyser
   key-file-name: key.pem
+  metrics:
+    enabled: true
+    uuid: ${metrics.uuid}
   player-link:
     allowed: true
     enable-global-linking: true
@@ -13,4 +16,4 @@ floodgate:
     require-link: false
     type: sqlite
   replace-spaces: true
-  username-prefix: "."
+  username-prefix: .

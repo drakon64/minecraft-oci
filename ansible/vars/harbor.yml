@@ -5,8 +5,8 @@ harbor:
     fallback-enabled: true
     fallback-timeout: 15
   blacklisted-worlds:
-    - "world_nether"
-    - "world_the_end"
+    - world_nether
+    - world_the_end
   debug: false
   exclusions:
     exclude-adventure: false
@@ -45,7 +45,7 @@ harbor:
       player-sleeping: "&e[player] is now sleeping ([sleeping]/[needed], [more] more needed to skip)."
     miscellaneous:
       chat-prefix: "&8&l(&6&lHarbor&8&l)&f "
-      unrecognized-command: "Unrecognized command."
+      unrecognized-command: Unrecognized command.
   metrics: true
   night-skip:
     clear-rain: true

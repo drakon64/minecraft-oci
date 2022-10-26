@@ -2,7 +2,7 @@ viaversion:
   1_13-tab-complete-delay: 0
   anti-xray-patch: true
   auto-team: true
-  block-disconnect-msg: "You are using an unsupported Minecraft version!"
+  block-disconnect-msg: You are using an unsupported Minecraft version!
   block-protocols: []
   block-versions: []
   blockconnection-method: packet
@@ -15,6 +15,12 @@ viaversion:
   change-1_14-hitbox: false
   change-1_9-hitbox: false
   chat-nbt-fix: true
+  chat-types-1_19:
+    chat.type.announcement: "[%s] %s"
+    chat.type.emote: "* %s %s"
+    chat.type.team.text: "%s <%s> %s"
+    chat.type.text: <%s> %s
+    commands.message.display.incoming: "%s whispers to you: %s"
   checkforupdates: true
   chunk-border-fix: false
   disable-1_13-auto-complete: false
@@ -31,11 +37,11 @@ viaversion:
   item-cache: true
   left-handed-handling: true
   map-1_16-world-names:
-    end: "minecraft:the_end"
-    nether: "minecraft:the_nether"
-    overworld: "minecraft:overworld"
+    end: minecraft:the_end
+    nether: minecraft:the_nether
+    overworld: minecraft:overworld
   max-pps: 800
-  max-pps-kick-msg: "You are sending too many packets!"
+  max-pps-kick-msg: You are sending too many packets!
   minimize-cooldown: true
   nms-player-ticking: true
   no-delay-shield-blocking: false
@@ -43,7 +49,7 @@ viaversion:
   prevent-collision: true
   quick-move-action-fix: false
   reduce-blockstorage-memory: false
-  reload-disconnect-msg: "Server reload, please rejoin!"
+  reload-disconnect-msg: Server reload, please rejoin!
   replace-pistons: false
   replacement-piston-id: 0
   resource-pack-1_17-prompt: ""
@@ -55,7 +61,7 @@ viaversion:
   suppress-conversion-warnings: false
   suppress-metadata-errors: false
   team-colour-fix: true
-  tracking-max-kick-msg: "You are sending too many packets, :("
+  tracking-max-kick-msg: You are sending too many packets, :(
   tracking-max-warnings: 4
   tracking-period: 6
   tracking-warning-pps: 120

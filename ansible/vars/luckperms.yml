@@ -34,7 +34,7 @@ luckperms:
         properties:
           characterEncoding: utf8
           useUnicode: true
-      table-prefix: "luckperms_"
+      table-prefix: luckperms_
       username: root
     debug-logins: false
     disable-bulkupdate: false
@@ -53,14 +53,14 @@ luckperms:
         duplicates: first-only
         end-spacer: ""
         format:
-          - "highest"
+          - highest
         middle-spacer: " "
         start-spacer: ""
       suffix:
         duplicates: first-only
         end-spacer: ""
         format:
-          - "highest"
+          - highest
         middle-spacer: " "
         start-spacer: ""
     meta-value-selection:
@@ -72,9 +72,9 @@ luckperms:
     rabbitmq:
       address: localhost
       enabled: false
-      password: "guest"
-      username: "guest"
-      vhost: "/"
+      password: guest
+      username: guest
+      vhost: /
     redis:
       address: localhost
       enabled: false
