@@ -45,10 +45,6 @@
         src: plugins/DiscordSRV/config.yml,
         when: "{{ outer_item.discordsrv }}",
       }
-    - {
-        src: plugins/FarmControl/config.yml,
-        when: "{{ outer_item.farmcontrol }}",
-      }
     - { src: plugins/floodgate/config.yml, when: "{{ outer_item.geyser }}" }
     - { src: plugins/Geyser-Spigot/config.yml, when: "{{ outer_item.geyser }}" }
     - { src: plugins/Harbor/config.yml, when: "{{ outer_item.harbor }}" }

@@ -11,7 +11,6 @@
     - ../vars/chunky.yml
     - ../vars/commands.yml
     - ../vars/discordsrv.yml
-    - ../vars/farmcontrol.yml
     - ../vars/floodgate.yml
     - ../vars/geyser.yml
     - ../vars/harbor.yml

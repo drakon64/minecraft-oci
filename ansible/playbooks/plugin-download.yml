@@ -60,11 +60,6 @@
         when: "{{ outer_item.chunky }}",
       }
     - {
-        url: "{% if outer_item.farmcontrol %}https://api.spiget.org/v2/resources/86923/download{% endif %}",
-        dest: "FarmControl.jar",
-        when: "{{ outer_item.farmcontrol }}",
-      }
-    - {
         url: "{% if use_bluemap %}{{ bluemap_latest.stdout }}{% endif %}",
         dest: BlueMap.jar,
         when: "{{ outer_item.bluemap.use }}",
@@ -132,7 +127,6 @@
     - { src: Chunky.jar, when: "{{ outer_item.chunky == false }}" }
     - { src: CustomCommandPrefix.jar, when: "{{ outer_item.geyser == false }}" }
     - { src: DiscordSRV.jar, when: "{{ outer_item.discordsrv == false }}" }
-    - { src: FarmControl.jar, when: "{{ outer_item.farmcontrol == false }}" }
     - { src: floodgate-spigot.jar, when: "{{ outer_item.geyser == false }}" }
     - { src: Geyser-Spigot.jar, when: "{{ outer_item.geyser == false }}" }
     - { src: Harbor.jar, when: "{{ outer_item.harbor == false }}" }

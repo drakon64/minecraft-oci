@@ -39,7 +39,6 @@ minecraft:
                 url: https://example.com/plugin.jar
           discordsrv: true
           eula: true
-          farmcontrol: true
           geyser: true
           harbor: true
           heap: 4096M
