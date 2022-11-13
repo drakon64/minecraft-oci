@@ -3,50 +3,88 @@ bluemap:
     accept-download: false
     data: bluemap
     metrics: true
-    renderThreadCount: -2
+    render-thread-count: 1
+    scan-for-mod-resources: true
   plugin:
-    fullUpdateInterval: 1440
-    hiddenGameModes:
+    hidden-gamemodes:
       - spectator
-    hideInvisible: true
-    hideSneaking: false
-    liveUpdates: true
-    playerRenderLimit: -1
-    skinDownload: true
-  render:
-    enableFreeFlight: true
-    maps:
-      - ambientLight: 0.1
-        caveDetectionUsesBlockLight: false
-        id: world
-        ignoreMissingLightData: false
-        name: World
-        removeCavesBelowY: 55
-        renderEdges: true
-        skyColor: "#7dabff"
-        useCompression: true
-        world: world
-        worldSkyLight: 15
-      - ambientLight: 0.6
-        id: end
-        name: End
-        removeCavesBelowY: -10000
-        skyColor: "#080010"
-        world: world_the_end/DIM1
-        worldSkyLight: 0
-      - ambientLight: 0.6
-        id: nether
-        maxY: 90
-        name: Nether
-        removeCavesBelowY: -10000
-        renderEdges: true
-        skyColor: "#290000"
-        world: world_nether/DIM-1
-        worldSkyLight: 0
-    useCookies: true
+    hide-below-block-light: 0
+    hide-below-sky-light: 0
+    hide-different-world: false
+    hide-invisible: true
+    hide-sneaking: false
+    hide-vanished: true
+    live-player-markers: true
+    map-update-interval: 1440
+    player-render-limit: -1
+    skin-download: true
+  webapp:
+    enable-free-flight: true
+    enabled: true
+    hires-slider-default: 100
+    hires-slider-max: 500
+    hires-slider-min: 0
+    lowres-slider-default: 2000
+    lowres-slider-max: 7000
+    lowres-slider-min: 500
+    max-zoom-distance: 100000
+    min-zoom-distance: 5
+    resolution-default: 1
+    update-settings-file: true
+    use-cookies: true
     webroot: bluemap/web
   webserver:
     enabled: true
-    maxConnectionCount: 100
+    max-connection-count: 100
     port: 8100
     webroot: bluemap/web
+  worlds:
+    - world:
+        ambient-light: 0.1
+        cave-detection-ocean-floor: -5
+        cave-detection-uses-block-light: false
+        ignore-missing-light-data: false
+        marker-sets:
+        min-inhabited-time: 0
+        name: world
+        remove-caves-below-y: 55
+        render-edges: true
+        save-hires-layer: true
+        sky-color: #7dabff
+        sorting: 0
+        storage: file
+        world: world
+        world-sky-light: 15
+    - world_nether:
+        ambient-light: 0.6
+        cave-detection-ocean-floor: -5
+        cave-detection-uses-block-light: false
+        ignore-missing-light-data: false
+        marker-sets:
+        max-y: 90
+        min-inhabited-time: 0
+        name: world_nether
+        remove-caves-below-y: -10000
+        render-edges: true
+        save-hires-layer: true
+        sky-color: #290000
+        sorting: 100
+        storage: file
+        world: world_nether/DIM-1
+        world-sky-light: 0
+    - world_the_end:
+        ambient-light: 0.6
+        cave-detection-ocean-floor: -5
+        cave-detection-uses-block-light: false
+        ignore-missing-light-data: false
+        marker-sets:
+        min-inhabited-time: 0
+        name: world_the_end
+        remove-caves-below-y: -10000
+        render-edges: true
+        save-hires-layer: true
+        sky-color: #080010
+        sorting: 200
+        storage: file
+        world: world_the_end/DIM1
+        world-sky-light: 0

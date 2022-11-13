@@ -35,7 +35,7 @@
     - { src: config/paper-world-defaults.yml, when: "{{ true }}" }
     - { src: plugins/BlueMap/core.conf, when: "{{ outer_item.bluemap.use }}" }
     - { src: plugins/BlueMap/plugin.conf, when: "{{ outer_item.bluemap.use }}" }
-    - { src: plugins/BlueMap/render.conf, when: "{{ outer_item.bluemap.use }}" }
+    - { src: plugins/BlueMap/webapp.conf, when: "{{ outer_item.bluemap.use }}" }
     - {
         src: plugins/BlueMap/webserver.conf,
         when: "{{ outer_item.bluemap.use }}",

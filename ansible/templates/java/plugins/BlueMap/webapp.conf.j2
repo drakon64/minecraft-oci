@@ -1,0 +1,12 @@
+{% set combined_bluemap_webapp = bluemap.webapp %}
+{% if global_overrides.bluemap.webapp is defined %}
+{% set combined_bluemap_webapp = (combined_bluemap_webapp | combine(global_overrides.bluemap.webapp, recursive=True)) %}
+{% endif %}
+{% if node_overrides.bluemap.webapp is defined %}
+{% set combined_bluemap_webapp = (combined_bluemap_webapp | combine(node_overrides.bluemap.webapp, recursive=True)) %}
+{% endif %}
+{% if outer_item.plugins.bluemap.webapp is defined %}
+{% set combined_bluemap_webapp = (combined_bluemap_webapp | combine(outer_item.plugins.bluemap.webapp, recursive=True)) %}
+{% endif %}
+
+{{ combined_bluemap_webapp | to_nice_json(indent=2) }}
