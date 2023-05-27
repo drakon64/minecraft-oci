@@ -1,3 +1,6 @@
+.idea/aws.xml
+.idea/discord.xml
+
 .DS_Store
 ansible/inventory.yml
 
