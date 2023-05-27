@@ -9,18 +9,6 @@
     mode: 0755
   loop:
     - {
-        path: ../bluemap,
-        state: "{% if outer_item.bluemap.use %}directory{% else %}absent{% endif %}",
-      }
-    - {
-        path: BlueMap,
-        state: "{% if outer_item.bluemap.use %}directory{% else %}absent{% endif %}",
-      }
-    - {
-        path: BlueMapFloodgate,
-        state: "{% if outer_item.bluemap.use and outer_item.geyser %}directory{% else %}absent{% endif %}",
-      }
-    - {
         path: Chunky,
         state: "{% if outer_item.chunky %}directory{% else %}absent{% endif %}",
       }
@@ -44,11 +32,6 @@
         path: Harbor,
         state: "{% if outer_item.harbor %}directory{% else %}absent{% endif %}",
       }
-    - {
-        path: LPC,
-        state: "{% if outer_item.lpc %}directory{% else %}absent{% endif %}",
-      }
-    - { path: TreeAssist/trees, state: directory }
     - { path: LuckPerms, state: directory }
     - {
         path: LuckPerms/json-storage/groups,
@@ -70,23 +53,11 @@
         path: MiniMOTD,
         state: "{% if outer_item.minimotd %}directory{% else %}absent{% endif %}",
       }
-    - {
-        path: PlaceholderAPI,
-        state: "{% if outer_item.lpc and outer_item.geyser %}directory{% else %}absent{% endif %}",
-      }
-    - {
-        path: PlaceholderAPI/expansions,
-        state: "{% if outer_item.lpc and outer_item.geyser %}directory{% else %}absent{% endif %}",
-      }
     - { path: UnifiedMetrics, state: directory }
     - { path: UnifiedMetrics/driver, state: directory }
     - {
         path: ViaVersion,
         state: "{% if outer_item.viaversion %}directory{% else %}absent{% endif %}",
-      }
-    - {
-        path: ViewDistanceTweaks,
-        state: "{% if outer_item.viewdistancetweaks %}directory{% else %}absent{% endif %}",
       }
     - {
         path: WorldEdit,

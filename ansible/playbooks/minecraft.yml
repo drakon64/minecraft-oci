@@ -169,9 +169,6 @@
             state: "{% if graalvm %}present{% else %}absent{% endif %}",
           }
 
-    - name: Installing and configuring Caddy
-      include_tasks: caddy.yml
-
     - name: Getting the latest Grafana Agent release
       shell: curl --silent https://api.github.com/repos/grafana/agent/releases/latest | jq -r '.assets[].browser_download_url | select(contains("{% if ansible_architecture == 'aarch64' %}arm64{% elif ansible_architecture == 'x86_64' %}amd64{% endif %}")) | select(contains("rpm"))'
       register: grafanaagent_latest
@@ -351,52 +348,6 @@
       loop_control:
         label: "{{ item.name }}"
       when: item.state.backup.new_repository
-
-    - name: Creating the AWS directory
-      file:
-        path: /opt/minecraft/{{ item.name }}/.aws
-        owner: minecraft-{{ item.name }}
-        group: minecraft-{{ item.name }}
-        mode: 0700
-        state: directory
-      loop: "{{ instances }}"
-      loop_control:
-        label: "{{ item.name }}"
-      when: aws.enabled
-
-    - name: Copying the AWS config
-      template:
-        src: ../templates/aws/config.j2
-        dest: /opt/minecraft/{{ item.name }}/.aws/config
-        owner: minecraft-{{ item.name }}
-        group: minecraft-{{ item.name }}
-        mode: 0600
-      loop: "{{ instances }}"
-      loop_control:
-        label: "{{ item.name }}"
-      when: aws.enabled
-
-    - name: Copying the AWS credentials
-      template:
-        src: ../templates/aws/credentials.j2
-        dest: /opt/minecraft/{{ item.name }}/.aws/credentials
-        owner: minecraft-{{ item.name }}
-        group: minecraft-{{ item.name }}
-        mode: 0600
-      loop: "{{ instances }}"
-      loop_control:
-        label: "{{ item.name }}"
-      when: aws.enabled
-
-    - name: Downloading Minecraft Petal server
-      include_tasks: petal-download.yml
-      loop: "{{ instances }}"
-      loop_control:
-        loop_var: outer_item
-        label: "{{ outer_item.name }}"
-      when:
-        - outer_item.state.new_server or outer_item.state.update_server
-        - outer_item.state.backup.restore_backup == false
 
     - name: Creating the plugin directories
       include_tasks: plugin-directories.yml

@@ -35,39 +35,9 @@
         when: "{{ outer_item.harbor }}",
       }
     - {
-        url: "{% if outer_item.lpc %}https://api.spiget.org/v2/resources/68965/download{% endif %}",
-        dest: LPC.jar,
-        when: "{{ outer_item.lpc }}",
-      }
-    - {
-        url: "{% if outer_item.lpc %}https://api.spiget.org/v2/resources/6245/download{% endif %}",
-        dest: PlaceholderAPI.jar,
-        when: "{{ outer_item.lpc }}",
-      }
-    - {
-        url: "{% if outer_item.lpc and outer_item.geyser %}{{ floodgateplaceholders_latest.stdout }}{% endif %}",
-        dest: PlaceholderAPI/expansions/FloodgatePlaceholders.jar,
-        when: "{{ outer_item.lpc and outer_item.geyser }}",
-      }
-    - {
-        url: https://cdn.discordapp.com/attachments/804019242512810034/995443364201762876/TreeAssist.jar, # This really needs an API and not a Discord URL
-        dest: TreeAssist.jar,
-        when: "{{ true }}",
-      }
-    - {
         url: "{% if outer_item.chunky %}https://ci.codemc.io/view/Author/job/pop4959/job/Chunky/lastSuccessfulBuild/artifact/bukkit/build/libs/{{ chunky_latest.stdout }}{% endif %}",
         dest: "Chunky.jar",
         when: "{{ outer_item.chunky }}",
-      }
-    - {
-        url: "{% if use_bluemap %}{{ bluemap_latest.stdout }}{% endif %}",
-        dest: BlueMap.jar,
-        when: "{{ outer_item.bluemap.use }}",
-      }
-    - {
-        url: "{% if outer_item.bluemap.use %}{{ bluemap_floodgate_latest.stdout }}{% endif %}",
-        dest: BlueMapFloodgate.jar,
-        when: "{{ outer_item.bluemap.use and outer_item.geyser }}",
       }
     - {
         url: "{{ appleskin_latest.stdout }}",
@@ -119,28 +89,14 @@
     path: /opt/minecraft/{{ outer_item.name }}/server/plugins/{{ item.src }}
     state: absent
   loop:
-    - { src: BlueMap.jar, when: "{{ outer_item.bluemap.use == false }}" }
-    - {
-        src: BlueMapFloodgate.jar,
-        when: "{{ outer_item.bluemap.use == false }}",
-      }
     - { src: Chunky.jar, when: "{{ outer_item.chunky == false }}" }
     - { src: CustomCommandPrefix.jar, when: "{{ outer_item.geyser == false }}" }
     - { src: DiscordSRV.jar, when: "{{ outer_item.discordsrv == false }}" }
     - { src: floodgate-spigot.jar, when: "{{ outer_item.geyser == false }}" }
     - { src: Geyser-Spigot.jar, when: "{{ outer_item.geyser == false }}" }
     - { src: Harbor.jar, when: "{{ outer_item.harbor == false }}" }
-    - { src: LPC.jar, when: "{{ outer_item.lpc == false }}" }
     - { src: minimotd.jar, when: "{{ outer_item.minimotd == false }}" }
-    - {
-        src: PlaceholderAPI.jar,
-        when: "{{ ( outer_item.lpc and outer_item.geyser ) == false }}",
-      }
     - { src: ViaVersion.jar, when: "{{ outer_item.viaversion == false }}" }
-    - {
-        src: ViewDistanceTweaks.jar,
-        when: "{{ outer_item.viewdistancetweaks == false }}",
-      }
     - {
         src: worldedit-bukkit.jar,
         when: "{{ outer_item.worldedit == false or outer_item.worldguard == false }}",
