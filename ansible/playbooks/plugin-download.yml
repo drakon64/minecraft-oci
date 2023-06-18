@@ -49,12 +49,12 @@
       when: true,
     }
     - {
-      url: "{% if outer_item.harbor %}{{ harbor_latest.stdout }}{% endif %}",
+      url: "{{ harbor_latest.stdout }}",
       dest: Harbor.jar,
       when: true,
     }
     - {
-      url: "{% if outer_item.chunky %}https://ci.codemc.io/view/Author/job/pop4959/job/Chunky/lastSuccessfulBuild/artifact/bukkit/build/libs/{{ chunky_latest.stdout }}{% endif %}",
+      url: https://ci.codemc.io/view/Author/job/pop4959/job/Chunky/lastSuccessfulBuild/artifact/bukkit/build/libs/{{ chunky_latest.stdout }},
       dest: "Chunky.jar",
       when: true,
     }
@@ -64,7 +64,7 @@
       when: true,
     }
     - {
-      url: "https://ci.lucko.me/job/LuckPerms/lastSuccessfulBuild/artifact/bukkit/loader/build/libs/{{ luckperms_latest.stdout }}",
+      url: https://ci.lucko.me/job/LuckPerms/lastSuccessfulBuild/artifact/bukkit/loader/build/libs/{{ luckperms_latest.stdout }},
       dest: LuckPerms.jar,
       when: true,
     }
