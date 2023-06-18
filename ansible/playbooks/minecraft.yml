@@ -570,8 +570,8 @@
 #        mode: 0755
 #
 #    - name: Copying SELinux module
-#      template:
-#        src: ../templates/selinux.te.j2
+#      copy:
+#        src: ../files/selinux.te
 #        dest: /opt/minecraft/selinux/minecraft.te
 #        owner: root
 #        group: root
