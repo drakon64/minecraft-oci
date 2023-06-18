@@ -15,8 +15,6 @@
     - ../vars/luckperms.yml
     - ../vars/minimotd.yml
     - ../vars/paper.yml
-    - ../vars/pufferfish.yml
-    - ../vars/purpur.yml
     - ../vars/server.yml
     - ../vars/spigot.yml
     - ../vars/viaversion.yml
@@ -314,8 +312,8 @@
         label: "{{ item.name }}"
       when: item.state.backup.new_repository
 
-    - name: Downloading Minecraft Purpur server
-      include_tasks: purpur-download.yml
+    - name: Downloading Minecraft Paper server
+      include_tasks: paper-download.yml
       loop: "{{ instances }}"
       loop_control:
         loop_var: outer_item
