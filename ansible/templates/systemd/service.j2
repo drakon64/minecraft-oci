@@ -9,9 +9,6 @@ After=network.target
 [Service]
 Type={{ item.type }}
 ExecStart={{ item.execstart }}
-{% if item.execstartpost is defined %}
-ExecStartPost={{ item.execstartpost }}
-{% endif %}
 {% if item.execstop is defined %}
 ExecStop={{ item.execstop }}
 {% endif %}
@@ -19,9 +16,6 @@ ExecStop={{ item.execstop }}
 WorkingDirectory={{ item.workingdirectory }}
 {% else %}
 WorkingDirectory=/opt/minecraft
-{% endif %}
-{% if item.pidfile is defined %}
-PIDFile={{ item.pidfile }}
 {% endif %}
 {% if item.restart is defined %}
 Restart={{ item.restart }}
