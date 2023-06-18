@@ -584,10 +584,6 @@
       loop: "{{ instances }}"
       loop_control:
         label: "{{ item.name }}"
-      when:
-        - item.state.new_server
-        - item.state.backup.restore_backup == false
-        - item.eula
 
     - name: Creating directory for the SELinux module
       file:
