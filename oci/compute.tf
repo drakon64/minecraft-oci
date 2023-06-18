@@ -5,42 +5,19 @@ data "oci_identity_availability_domains" "ads" {
 resource "oci_core_instance" "minecraft_instance" {
   availability_domain = data.oci_identity_availability_domains.ads.availability_domains[0].name
   compartment_id      = oci_identity_compartment.minecraft_compartment.id
-  shape               = var.oci_compute_shape
-  source_details {
-    boot_volume_size_in_gbs = var.oci_volume_size
-    source_id               = var.oci_image_id
-    source_type             = "image"
-  }
-
-  dynamic "shape_config" {
-    for_each = var.oci_compute_shape_flex ? [1] : []
-    content {
-      memory_in_gbs = var.oci_compute_memory
-      ocpus         = var.oci_compute_ocpus
-    }
-  }
-
-  display_name = var.oci_compute_display_name
-  create_vnic_details {
-    assign_public_ip = var.static_ip ? false : true
-    subnet_id        = oci_core_subnet.vcn-subnet.id
-    nsg_ids = [
-      oci_core_network_security_group.minecraft.id
-    ]
-  }
-  instance_options {
-    are_legacy_imds_endpoints_disabled = true
-  }
-  metadata = {
-    ssh_authorized_keys = var.ssh_authorized_keys
-  }
+  shape               = "VM.Standard.A1.Flex"
 
   agent_config {
-    is_management_disabled = "false"
+    is_management_disabled = "true"
     is_monitoring_disabled = "false"
 
     plugins_config {
-      name          = "Custom Logs Monitoring"
+      name          = "Bastion"
+      desired_state = "DISABLED"
+    }
+
+    plugins_config {
+      name          = "Block Volume Management"
       desired_state = "DISABLED"
     }
 
@@ -50,14 +27,53 @@ resource "oci_core_instance" "minecraft_instance" {
     }
 
     plugins_config {
-      name          = "OS Management Service Agent"
+      name          = "Oracle Autonomous Linux"
+      desired_state = "DISABLED"
+    }
+
+    plugins_config {
+      name          = "Oracle Java Management Service"
       desired_state = "DISABLED"
     }
 
     plugins_config {
       name          = "Vulnerability Scanning"
-      desired_state = "ENABLED"
+      desired_state = "DISABLED"
     }
+  }
+
+  #  availability_config {
+  #    is_live_migration_preferred = var.instance_availability_config_is_live_migration_preferred
+  #    recovery_action             = var.instance_availability_config_recovery_action
+  #  }
+
+  create_vnic_details {
+    assign_public_ip = var.static_ip ? false : true
+    subnet_id        = oci_core_subnet.subnet.id
+    nsg_ids          = [
+      oci_core_network_security_group.minecraft.id
+    ]
+  }
+
+  display_name = var.oci_compute_display_name
+
+  instance_options {
+    are_legacy_imds_endpoints_disabled = true
+  }
+
+  metadata = {
+    ssh_authorized_keys = var.ssh_authorized_keys
+  }
+
+  shape_config {
+    memory_in_gbs = var.oci_compute_memory
+    ocpus         = var.oci_compute_ocpus
+  }
+
+  source_details {
+    boot_volume_size_in_gbs = var.oci_volume_size
+    source_id               = var.oci_image_id
+    source_type             = "image"
   }
 }
 

@@ -15,19 +15,6 @@ variable "oci_namespace" {
   type = string
 }
 
-variable "live_compartment_name" {
-  type = string
-}
-
-variable "live_backup_bucket_name" {
-  type = string
-}
-
-variable "oci_compute_shape" {
-  type    = string
-  default = "VM.Standard.A1.Flex"
-}
-
 variable "oci_compute_shape_flex" {
   type    = bool
   default = true
@@ -53,47 +40,12 @@ variable "oci_compute_display_name" {
   default = "minecraft"
 }
 
-variable "java_port_min" {
-  type    = number
-  default = 25565
-}
-
-variable "java_port_max" {
-  type    = number
-  default = 25565
-}
-
 variable "query" {
   type    = bool
   default = false
 }
 
-variable "query_port_min" {
-  type    = number
-  default = 25565
-}
-
-variable "query_port_max" {
-  type    = number
-  default = 25565
-}
-
 variable "geyser" {
-  type    = bool
-  default = true
-}
-
-variable "bedrock_port_min" {
-  type    = number
-  default = 19132
-}
-
-variable "bedrock_port_max" {
-  type    = number
-  default = 19132
-}
-
-variable "bluemap" {
   type    = bool
   default = true
 }

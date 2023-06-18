@@ -29,8 +29,8 @@ resource "oci_core_network_security_group_security_rule" "java" {
 
   tcp_options {
     destination_port_range {
-      min = var.java_port_min
-      max = var.java_port_max
+      min = 25565
+      max = 25565
     }
   }
 }
@@ -44,8 +44,8 @@ resource "oci_core_network_security_group_security_rule" "query" {
 
   udp_options {
     destination_port_range {
-      min = var.query_port_min
-      max = var.query_port_max
+      min = 25565
+      max = 25565
     }
   }
 
@@ -61,46 +61,12 @@ resource "oci_core_network_security_group_security_rule" "bedrock" {
 
   udp_options {
     destination_port_range {
-      min = var.bedrock_port_min
-      max = var.bedrock_port_max
+      min = 19132
+      max = 19132
     }
   }
 
   count = var.geyser ? 1 : 0
-}
-
-resource "oci_core_network_security_group_security_rule" "http" {
-  network_security_group_id = oci_core_network_security_group.minecraft.id
-  direction                 = "INGRESS"
-  protocol                  = 6
-  source                    = "0.0.0.0/0"
-  source_type               = "CIDR_BLOCK"
-
-  tcp_options {
-    destination_port_range {
-      min = 80
-      max = 80
-    }
-  }
-
-  count = var.bluemap ? 1 : 0
-}
-
-resource "oci_core_network_security_group_security_rule" "https" {
-  network_security_group_id = oci_core_network_security_group.minecraft.id
-  direction                 = "INGRESS"
-  protocol                  = 6
-  source                    = "0.0.0.0/0"
-  source_type               = "CIDR_BLOCK"
-
-  tcp_options {
-    destination_port_range {
-      min = 443
-      max = 443
-    }
-  }
-
-  count = var.bluemap ? 1 : 0
 }
 
 resource "oci_core_network_security_group_security_rule" "egress" {
