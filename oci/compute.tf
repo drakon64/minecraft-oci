@@ -48,7 +48,7 @@ resource "oci_core_instance" "minecraft_instance" {
   #  }
 
   create_vnic_details {
-    assign_public_ip = var.static_ip ? false : true
+    assign_public_ip = false
     subnet_id        = oci_core_subnet.subnet.id
     nsg_ids          = [
       oci_core_network_security_group.minecraft.id
@@ -66,12 +66,12 @@ resource "oci_core_instance" "minecraft_instance" {
   }
 
   shape_config {
-    memory_in_gbs = var.oci_compute_memory
-    ocpus         = var.oci_compute_ocpus
+    memory_in_gbs = 8
+    ocpus         = 3
   }
 
   source_details {
-    boot_volume_size_in_gbs = var.oci_volume_size
+    boot_volume_size_in_gbs = 50
     source_id               = var.oci_image_id
     source_type             = "image"
   }
@@ -81,14 +81,10 @@ data "oci_core_vnic_attachments" "minecraft_vnic_attachments" {
   compartment_id = oci_identity_compartment.minecraft_compartment.id
 
   instance_id = oci_core_instance.minecraft_instance.id
-
-  count = var.static_ip ? 1 : 0
 }
 
 data "oci_core_private_ips" "minecraft_private_ip" {
-  vnic_id = data.oci_core_vnic_attachments.minecraft_vnic_attachments[0].vnic_attachments[0].vnic_id
-
-  count = var.static_ip ? 1 : 0
+  vnic_id = data.oci_core_vnic_attachments.minecraft_vnic_attachments.vnic_attachments[0].vnic_id
 }
 
 resource "oci_core_public_ip" "minecraft_public_ip" {
@@ -96,7 +92,5 @@ resource "oci_core_public_ip" "minecraft_public_ip" {
   lifetime       = "RESERVED"
 
   display_name  = var.oci_compute_display_name
-  private_ip_id = data.oci_core_private_ips.minecraft_private_ip[0].private_ips[0].id
-
-  count = var.static_ip ? 1 : 0
+  private_ip_id = data.oci_core_private_ips.minecraft_private_ip.private_ips[0].id
 }

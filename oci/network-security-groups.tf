@@ -48,8 +48,6 @@ resource "oci_core_network_security_group_security_rule" "query" {
       max = 25565
     }
   }
-
-  count = var.query ? 1 : 0
 }
 
 resource "oci_core_network_security_group_security_rule" "bedrock" {
@@ -65,8 +63,6 @@ resource "oci_core_network_security_group_security_rule" "bedrock" {
       max = 19132
     }
   }
-
-  count = var.geyser ? 1 : 0
 }
 
 resource "oci_core_network_security_group_security_rule" "egress" {
