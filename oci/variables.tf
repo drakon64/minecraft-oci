@@ -35,7 +35,7 @@ variable "oci_compute_shape_flex" {
 
 variable "oci_compute_memory" {
   type    = number
-  default = 6
+  default = 8
 }
 
 variable "oci_compute_ocpus" {
