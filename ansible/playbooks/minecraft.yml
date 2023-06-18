@@ -127,7 +127,7 @@
           - git
           - jq
           - borgbackup
-          - python36-oci-cli
+          - python39-oci-cli
           - tmux
         state: present
         update_cache: yes
