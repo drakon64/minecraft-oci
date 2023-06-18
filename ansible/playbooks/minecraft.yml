@@ -32,28 +32,28 @@
         line: "{{ item.line }}"
       loop:
         - {
-            regexp: "KexAlgorithms",
-            line: "KexAlgorithms curve25519-sha256@libssh.org",
-          }
+          regexp: "KexAlgorithms",
+          line: "KexAlgorithms curve25519-sha256@libssh.org",
+        }
         - { regexp: "Ciphers", line: "Ciphers chacha20-poly1305@openssh.com" }
         - {
-            regexp: "MACs",
-            line: "MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com",
-          }
+          regexp: "MACs",
+          line: "MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com",
+        }
         - {
-            regexp: "AuthenticationMethods",
-            line: "AuthenticationMethods publickey",
-          }
+          regexp: "AuthenticationMethods",
+          line: "AuthenticationMethods publickey",
+        }
         - { regexp: "LogLevel", line: "LogLevel VERBOSE" }
         - {
-            regexp: "Subsystem sftp",
-            line: "Subsystem sftp /usr/libexec/openssh/sftp-server -f AUTHPRIV -l INFO",
-          }
+          regexp: "Subsystem sftp",
+          line: "Subsystem sftp /usr/libexec/openssh/sftp-server -f AUTHPRIV -l INFO",
+        }
         - { regexp: "PermitRootLogin", line: "PermitRootLogin no" }
         - {
-            regexp: "UsePrivilegeSeparation",
-            line: "UsePrivilegeSeparation sandbox",
-          }
+          regexp: "UsePrivilegeSeparation",
+          line: "UsePrivilegeSeparation sandbox",
+        }
         - { regexp: "LoginGraceTime", line: "LoginGraceTime 1m" }
         - { regexp: "AllowTcpForwarding", line: "AllowTcpForwarding no" }
         - { regexp: "MaxSessions", line: "MaxSessions 4" }
@@ -149,13 +149,13 @@
         update_cache: yes
       loop:
         - {
-            name: "java-17-openjdk",
-            state: "{% if graalvm %}absent{% else %}present{% endif %}",
-          }
+          name: "java-17-openjdk",
+          state: "{% if graalvm %}absent{% else %}present{% endif %}",
+        }
         - {
-            name: "graalvm22-ee-17-jdk",
-            state: "{% if graalvm %}present{% else %}absent{% endif %}",
-          }
+          name: "graalvm22-ee-17-jdk",
+          state: "{% if graalvm %}present{% else %}absent{% endif %}",
+        }
 
     - name: Creating the instance user
       user:
@@ -466,90 +466,90 @@
         validate: "{{ item.validate | default(omit) }}"
       loop:
         - {
-            src: "templates/scripts/dnf-reboot.sh.j2",
-            dest: "/opt/minecraft/dnf-reboot.sh",
-            owner: "root",
-            mode: "0744",
-            when: true,
-          }
+          src: "templates/scripts/dnf-reboot.sh.j2",
+          dest: "/opt/minecraft/dnf-reboot.sh",
+          owner: "root",
+          mode: "0744",
+          when: true,
+        }
         - {
-            src: "files/scripts/stop.sh",
-            dest: "/opt/minecraft/stop.sh",
-            owner: "root",
-            mode: "0755",
-            when: true,
-          }
+          src: "files/scripts/stop.sh",
+          dest: "/opt/minecraft/stop.sh",
+          owner: "root",
+          mode: "0755",
+          when: true,
+        }
         - {
-            src: "templates/scripts/backup.sh.j2",
-            dest: "/opt/minecraft/backup.sh",
-            owner: "root",
-            mode: "0755",
-            when: true,
-          }
+          src: "templates/scripts/backup.sh.j2",
+          dest: "/opt/minecraft/backup.sh",
+          owner: "root",
+          mode: "0755",
+          when: true,
+        }
         - {
-            src: "templates/systemd/service.j2",
-            dest: "/etc/systemd/system/minecraft-backup@.service",
-            owner: "root",
-            mode: "0644",
-            description: "Minecraft Server backup - %i",
-            type: "oneshot",
-            execstart: "/opt/minecraft/backup.sh %i",
-            workingdirectory: "/opt/minecraft",
-            user: "minecraft-%i",
-            timeoutstartsec: "{{ backup.timeout }}",
-            when: true,
-          }
+          src: "templates/systemd/service.j2",
+          dest: "/etc/systemd/system/minecraft-backup@.service",
+          owner: "root",
+          mode: "0644",
+          description: "Minecraft Server backup - %i",
+          type: "oneshot",
+          execstart: "/opt/minecraft/backup.sh %i",
+          workingdirectory: "/opt/minecraft",
+          user: "minecraft-%i",
+          timeoutstartsec: "{{ backup.timeout }}",
+          when: true,
+        }
         - {
-            src: "templates/systemd/timer.j2",
-            dest: "/etc/systemd/system/minecraft-backup@.timer",
-            owner: "root",
-            mode: "0644",
-            description: "Minecraft Server backup - %i",
-            timer: "{{ backup.oncalendar }}",
-            persistent: true,
-            when: true,
-          }
+          src: "templates/systemd/timer.j2",
+          dest: "/etc/systemd/system/minecraft-backup@.timer",
+          owner: "root",
+          mode: "0644",
+          description: "Minecraft Server backup - %i",
+          timer: "{{ backup.oncalendar }}",
+          persistent: true,
+          when: true,
+        }
         - {
-            src: "templates/systemd/service.j2",
-            dest: "/etc/systemd/system/minecraft-backup-mount@.service",
-            owner: "root",
-            mode: "0644",
-            description: "Minecraft Server snapshot mount - %i",
-            type: "simple",
-            execstart: "borg mount -f /opt/minecraft/%i/backup /opt/minecraft/%i/snapshot",
-            execstop: borg umount /opt/minecraft/%i/snapshot,
-            workingdirectory: "/opt/minecraft",
-            user: "minecraft-%i",
-            when: true,
-          }
+          src: "templates/systemd/service.j2",
+          dest: "/etc/systemd/system/minecraft-backup-mount@.service",
+          owner: "root",
+          mode: "0644",
+          description: "Minecraft Server snapshot mount - %i",
+          type: "simple",
+          execstart: "borg mount -f /opt/minecraft/%i/backup /opt/minecraft/%i/snapshot",
+          execstop: borg umount /opt/minecraft/%i/snapshot,
+          workingdirectory: "/opt/minecraft",
+          user: "minecraft-%i",
+          when: true,
+        }
         - {
-            src: "templates/sudoers.j2",
-            dest: "/etc/sudoers.d/10-minecraft-users",
-            owner: "root",
-            mode: "0400",
-            when: true,
-            validate: "visudo -cf %s",
-          }
+          src: "templates/sudoers.j2",
+          dest: "/etc/sudoers.d/10-minecraft-users",
+          owner: "root",
+          mode: "0400",
+          when: true,
+          validate: "visudo -cf %s",
+        }
         - {
-            src: "templates/systemd/service.j2",
-            dest: "/etc/systemd/system/dnf-upgrade.service",
-            owner: "root",
-            mode: "0644",
-            description: "DNF Upgrade",
-            type: "oneshot",
-            execstart: "/opt/minecraft/dnf-reboot.sh",
-            when: true,
-          }
+          src: "templates/systemd/service.j2",
+          dest: "/etc/systemd/system/dnf-upgrade.service",
+          owner: "root",
+          mode: "0644",
+          description: "DNF Upgrade",
+          type: "oneshot",
+          execstart: "/opt/minecraft/dnf-reboot.sh",
+          when: true,
+        }
         - {
-            src: "templates/systemd/timer.j2",
-            dest: "/etc/systemd/system/dnf-upgrade.timer",
-            owner: "root",
-            mode: "0644",
-            description: "DNF Upgrade",
-            timer: "Tue 7:00",
-            persistent: true,
-            when: true,
-          }
+          src: "templates/systemd/timer.j2",
+          dest: "/etc/systemd/system/dnf-upgrade.timer",
+          owner: "root",
+          mode: "0644",
+          description: "DNF Upgrade",
+          timer: "Tue 7:00",
+          persistent: true,
+          when: true,
+        }
       when: item.when
 
     - name: Copying systemd services
@@ -637,11 +637,11 @@
         daemon_reload: yes
       loop:
         - {
-            name: "dnf-upgrade.timer",
-            state: "restarted",
-            enabled: "yes",
-            when: "{{ true }}",
-          }
+          name: "dnf-upgrade.timer",
+          state: "restarted",
+          enabled: "yes",
+          when: "{{ true }}",
+        }
       when: item.when
 
     - name: Disabling the Minecraft instances

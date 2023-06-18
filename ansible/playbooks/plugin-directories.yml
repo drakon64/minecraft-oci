@@ -9,61 +9,61 @@
     mode: 0755
   loop:
     - {
-        path: Chunky,
-        state: "{% if outer_item.chunky %}directory{% else %}absent{% endif %}",
-      }
+      path: Chunky,
+      state: "{% if outer_item.chunky %}directory{% else %}absent{% endif %}",
+    }
     - {
-        path: CustomCommandPrefix,
-        state: "{% if outer_item.geyser %}directory{% else %}absent{% endif %}",
-      }
+      path: CustomCommandPrefix,
+      state: "{% if outer_item.geyser %}directory{% else %}absent{% endif %}",
+    }
     - {
-        path: DiscordSRV,
-        state: "{% if outer_item.discordsrv %}directory{% else %}absent{% endif %}",
-      }
+      path: DiscordSRV,
+      state: "{% if outer_item.discordsrv %}directory{% else %}absent{% endif %}",
+    }
     - {
-        path: floodgate,
-        state: "{% if outer_item.geyser %}directory{% else %}absent{% endif %}",
-      }
+      path: floodgate,
+      state: "{% if outer_item.geyser %}directory{% else %}absent{% endif %}",
+    }
     - {
-        path: Geyser-Spigot/packs,
-        state: "{% if outer_item.geyser %}directory{% else %}absent{% endif %}",
-      }
+      path: Geyser-Spigot/packs,
+      state: "{% if outer_item.geyser %}directory{% else %}absent{% endif %}",
+    }
     - {
-        path: Harbor,
-        state: "{% if outer_item.harbor %}directory{% else %}absent{% endif %}",
-      }
+      path: Harbor,
+      state: "{% if outer_item.harbor %}directory{% else %}absent{% endif %}",
+    }
     - { path: LuckPerms, state: directory }
     - {
-        path: LuckPerms/json-storage/groups,
-        state: "{% if combined_luckperms.config['storage-method'] == 'json' %}directory{% else %}absent{% endif %}",
-      }
+      path: LuckPerms/json-storage/groups,
+      state: "{% if combined_luckperms.config['storage-method'] == 'json' %}directory{% else %}absent{% endif %}",
+    }
     - {
-        path: LuckPerms/json-storage/users,
-        state: "{% if combined_luckperms.config['storage-method'] == 'json' %}directory{% else %}absent{% endif %}",
-      }
+      path: LuckPerms/json-storage/users,
+      state: "{% if combined_luckperms.config['storage-method'] == 'json' %}directory{% else %}absent{% endif %}",
+    }
     - {
-        path: LuckPerms/yaml-storage/groups,
-        state: "{% if combined_luckperms.config['storage-method'] == 'yaml' %}directory{% else %}absent{% endif %}",
-      }
+      path: LuckPerms/yaml-storage/groups,
+      state: "{% if combined_luckperms.config['storage-method'] == 'yaml' %}directory{% else %}absent{% endif %}",
+    }
     - {
-        path: LuckPerms/yaml-storage/users,
-        state: "{% if combined_luckperms.config['storage-method'] == 'yaml' %}directory{% else %}absent{% endif %}",
-      }
+      path: LuckPerms/yaml-storage/users,
+      state: "{% if combined_luckperms.config['storage-method'] == 'yaml' %}directory{% else %}absent{% endif %}",
+    }
     - {
-        path: MiniMOTD,
-        state: "{% if outer_item.minimotd %}directory{% else %}absent{% endif %}",
-      }
+      path: MiniMOTD,
+      state: "{% if outer_item.minimotd %}directory{% else %}absent{% endif %}",
+    }
     - {
-        path: ViaVersion,
-        state: "{% if outer_item.viaversion %}directory{% else %}absent{% endif %}",
-      }
+      path: ViaVersion,
+      state: "{% if outer_item.viaversion %}directory{% else %}absent{% endif %}",
+    }
     - {
-        path: WorldEdit,
-        state: "{% if outer_item.worldedit or outer_item.worldguard %}directory{% else %}absent{% endif %}",
-      }
+      path: WorldEdit,
+      state: "{% if outer_item.worldedit or outer_item.worldguard %}directory{% else %}absent{% endif %}",
+    }
     - {
-        path: WorldGuard,
-        state: "{% if outer_item.worldguard %}directory{% else %}absent{% endif %}",
-      }
+      path: WorldGuard,
+      state: "{% if outer_item.worldguard %}directory{% else %}absent{% endif %}",
+    }
   when:
     - outer_item.state.backup.restore_backup == false

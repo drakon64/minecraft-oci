@@ -10,65 +10,65 @@
     force: yes
   loop:
     - {
-        url: "{% if outer_item.discordsrv %}{{ discordsrv_latest.stdout }}{% endif %}",
-        dest: DiscordSRV.jar,
-        when: "{{ outer_item.discordsrv }}",
-      }
+      url: "{% if outer_item.discordsrv %}{{ discordsrv_latest.stdout }}{% endif %}",
+      dest: DiscordSRV.jar,
+      when: "{{ outer_item.discordsrv }}",
+    }
     - {
-        url: https://ci.opencollab.dev/job/GeyserMC/job/Geyser/job/master/lastSuccessfulBuild/artifact/bootstrap/spigot/target/Geyser-Spigot.jar,
-        dest: Geyser-Spigot.jar,
-        when: "{{ outer_item.geyser }}",
-      }
+      url: https://ci.opencollab.dev/job/GeyserMC/job/Geyser/job/master/lastSuccessfulBuild/artifact/bootstrap/spigot/target/Geyser-Spigot.jar,
+      dest: Geyser-Spigot.jar,
+      when: "{{ outer_item.geyser }}",
+    }
     - {
-        url: https://ci.opencollab.dev/job/GeyserMC/job/Floodgate/job/master/lastSuccessfulBuild/artifact/spigot/target/floodgate-spigot.jar,
-        dest: floodgate-spigot.jar,
-        when: "{{ outer_item.geyser }}",
-      }
+      url: https://ci.opencollab.dev/job/GeyserMC/job/Floodgate/job/master/lastSuccessfulBuild/artifact/spigot/target/floodgate-spigot.jar,
+      dest: floodgate-spigot.jar,
+      when: "{{ outer_item.geyser }}",
+    }
     - {
-        url: https://ci.opencollab.dev/job/GeyserMC/job/GeyserOptionalPack/job/master/lastSuccessfulBuild/artifact/GeyserOptionalPack.mcpack,
-        dest: Geyser-Spigot/packs/,
-        when: "{{ outer_item.geyser }}",
-      }
+      url: https://ci.opencollab.dev/job/GeyserMC/job/GeyserOptionalPack/job/master/lastSuccessfulBuild/artifact/GeyserOptionalPack.mcpack,
+      dest: Geyser-Spigot/packs/,
+      when: "{{ outer_item.geyser }}",
+    }
     - {
-        url: "{% if outer_item.harbor %}{{ harbor_latest.stdout }}{% endif %}",
-        dest: Harbor.jar,
-        when: "{{ outer_item.harbor }}",
-      }
+      url: "{% if outer_item.harbor %}{{ harbor_latest.stdout }}{% endif %}",
+      dest: Harbor.jar,
+      when: "{{ outer_item.harbor }}",
+    }
     - {
-        url: "{% if outer_item.chunky %}https://ci.codemc.io/view/Author/job/pop4959/job/Chunky/lastSuccessfulBuild/artifact/bukkit/build/libs/{{ chunky_latest.stdout }}{% endif %}",
-        dest: "Chunky.jar",
-        when: "{{ outer_item.chunky }}",
-      }
+      url: "{% if outer_item.chunky %}https://ci.codemc.io/view/Author/job/pop4959/job/Chunky/lastSuccessfulBuild/artifact/bukkit/build/libs/{{ chunky_latest.stdout }}{% endif %}",
+      dest: "Chunky.jar",
+      when: "{{ outer_item.chunky }}",
+    }
     - {
-        url: "{{ appleskin_latest.stdout }}",
-        dest: AppleSkinSpigot.jar,
-        when: "{{ true }}",
-      }
+      url: "{{ appleskin_latest.stdout }}",
+      dest: AppleSkinSpigot.jar,
+      when: "{{ true }}",
+    }
     - {
-        url: "https://ci.lucko.me/job/LuckPerms/lastSuccessfulBuild/artifact/bukkit/loader/build/libs/{{ luckperms_latest.stdout }}",
-        dest: LuckPerms.jar,
-        when: "{{ true }}",
-      }
+      url: "https://ci.lucko.me/job/LuckPerms/lastSuccessfulBuild/artifact/bukkit/loader/build/libs/{{ luckperms_latest.stdout }}",
+      dest: LuckPerms.jar,
+      when: "{{ true }}",
+    }
     - {
-        url: "{{ minimotd_latest.stdout }}",
-        dest: minimotd.jar,
-        when: "{{ outer_item.minimotd }}",
-      }
+      url: "{{ minimotd_latest.stdout }}",
+      dest: minimotd.jar,
+      when: "{{ outer_item.minimotd }}",
+    }
     - {
-        url: "{% if outer_item.viaversion %}{{ viaversion_latest.stdout }}{% endif %}",
-        dest: ViaVersion.jar,
-        when: "{{ outer_item.viaversion }}",
-      }
+      url: "{% if outer_item.viaversion %}{{ viaversion_latest.stdout }}{% endif %}",
+      dest: ViaVersion.jar,
+      when: "{{ outer_item.viaversion }}",
+    }
     - {
-        url: https://dev.bukkit.org/projects/worldedit/files/latest,
-        dest: worldedit-bukkit.jar,
-        when: "{{ outer_item.worldedit or outer_item.worldguard }}",
-      }
+      url: https://dev.bukkit.org/projects/worldedit/files/latest,
+      dest: worldedit-bukkit.jar,
+      when: "{{ outer_item.worldedit or outer_item.worldguard }}",
+    }
     - {
-        url: https://dev.bukkit.org/projects/worldguard/files/latest,
-        dest: worldguard-bukkit.jar,
-        when: "{{ outer_item.worldguard }}",
-      }
+      url: https://dev.bukkit.org/projects/worldguard/files/latest,
+      dest: worldguard-bukkit.jar,
+      when: "{{ outer_item.worldguard }}",
+    }
   when:
     - outer_item.state.new_server or outer_item.state.update_server
     - outer_item.state.backup.restore_backup == false
