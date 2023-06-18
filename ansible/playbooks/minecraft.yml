@@ -350,35 +350,6 @@
         loop_var: outer_item
         label: "{{ outer_item.name }}"
 
-    - name: Downloading the CustomCommandPrefix plugin
-      copy:
-        src: ../files/CustomCommandPrefix-1.0.jar
-        dest: /opt/minecraft/{{ item.name }}/server/plugins/CustomCommandPrefix.jar
-        owner: minecraft-{{ item.name }}
-        group: minecraft-{{ item.name }}
-        mode: 0644
-      loop: "{{ instances }}"
-      loop_control:
-        label: "{{ item.name }}"
-      when:
-        - item.state.new_server or item.state.update_server
-        - item.geyser
-        - item.state.backup.restore_backup == false
-
-    - name: Configuring the CustomCommandPrefix plugin
-      copy:
-        content: "prefix: '?'"
-        dest: /opt/minecraft/{{ item.name }}/server/plugins/CustomCommandPrefix/config.yml
-        owner: minecraft-{{ item.name }}
-        group: minecraft-{{ item.name }}
-        mode: 0644
-      loop: "{{ instances }}"
-      loop_control:
-        label: "{{ item.name }}"
-      when:
-        - item.geyser
-        - item.state.backup.restore_backup == false
-
     - name: Downloading Bedrock resource packs
       include_tasks: bedrock-rp.yml
       loop: "{{ instances }}"
@@ -398,22 +369,6 @@
         label: "{{ item.name }}"
       when:
         - item.server_icon.use
-        - item.server_icon.minimotd == false
-        - item.state.backup.restore_backup == false
-
-    - name: Copying the server icons for MiniMOTD
-      copy:
-        src: ../files/java/{{ item.name }}/server-icons/
-        dest: /opt/minecraft/{{ item.name }}/server/plugins/MiniMOTD/icons
-        owner: minecraft-{{ item.name }}
-        group: minecraft-{{ item.name }}
-        mode: u=rwX,g=rX,o=rX
-      loop: "{{ instances }}"
-      loop_control:
-        label: "{{ item.name }}"
-      when:
-        - item.server_icon.use
-        - item.server_icon.minimotd
         - item.state.backup.restore_backup == false
 
     - name: Restoring backup
@@ -557,40 +512,40 @@
       loop_control:
         label: "{{ item.name }}"
 
-    #    - name: Creating directory for the SELinux module
-    #      file:
-    #        path: /opt/minecraft/selinux
-    #        state: directory
-    #        owner: root
-    #        group: root
-    #        mode: 0755
-    #
-    #    - name: Copying SELinux module
-    #      copy:
-    #        src: ../files/selinux.te
-    #        dest: /opt/minecraft/selinux/minecraft.te
-    #        owner: root
-    #        group: root
-    #        mode: 0644
-    #      register: selinux
-    #
-    #    - name: Compiling SELinux module
-    #      command: checkmodule -M -m -o minecraft.mod minecraft.te
-    #      args:
-    #        chdir: /opt/minecraft/selinux
-    #      when: selinux.changed
-    #
-    #    - name: Packaging SELinux module
-    #      command: semodule_package -o minecraft.pp -m minecraft.mod
-    #      args:
-    #        chdir: /opt/minecraft/selinux
-    #      when: selinux.changed
-    #
-    #    - name: Loading SELinux module
-    #      command: semodule -i minecraft.pp
-    #      args:
-    #        chdir: /opt/minecraft/selinux
-    #      when: selinux.changed
+    - name: Creating directory for the SELinux module
+      file:
+        path: /opt/minecraft/selinux
+        state: directory
+        owner: root
+        group: root
+        mode: 0755
+
+    - name: Copying SELinux module
+      copy:
+        src: ../files/selinux.te
+        dest: /opt/minecraft/selinux/minecraft.te
+        owner: root
+        group: root
+        mode: 0644
+      register: selinux
+
+    - name: Compiling SELinux module
+      command: checkmodule -M -m -o minecraft.mod minecraft.te
+      args:
+        chdir: /opt/minecraft/selinux
+      when: selinux.changed
+
+    - name: Packaging SELinux module
+      command: semodule_package -o minecraft.pp -m minecraft.mod
+      args:
+        chdir: /opt/minecraft/selinux
+      when: selinux.changed
+
+    - name: Loading SELinux module
+      command: semodule -i minecraft.pp
+      args:
+        chdir: /opt/minecraft/selinux
+      when: selinux.changed
 
     - name: Starting the `dnf-upgrade` timer
       systemd:

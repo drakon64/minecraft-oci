@@ -70,5 +70,5 @@ resource "oci_core_network_security_group_security_rule" "egress" {
   direction                 = "EGRESS"
   protocol                  = "all"
   destination               = "0.0.0.0/0"
-  source_type               = "CIDR_BLOCK"
+  destination_type          = "CIDR_BLOCK"
 }

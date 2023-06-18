@@ -13,10 +13,6 @@
       state: directory,
     }
     - {
-      path: CustomCommandPrefix,
-      state: directory,
-    }
-    - {
       path: floodgate,
       state: directory,
     }
@@ -44,10 +40,6 @@
     - {
       path: LuckPerms/yaml-storage/users,
       state: "{% if combined_luckperms.config['storage-method'] == 'yaml' %}directory{% else %}absent{% endif %}",
-    }
-    - {
-      path: MiniMOTD,
-      state: directory,
     }
     - {
       path: ViaVersion,

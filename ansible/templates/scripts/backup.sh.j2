@@ -1,6 +1,6 @@
 #!/bin/bash -ex
 
-PLAYERS=$(curl --silent -u '{{ grafana.prometheus.username }}:{{ grafana.prometheus.read.api_key }}' --data-urlencode 'query=max_over_time(minecraft_players_count[{{ backup.player_check_range }}])' {{ grafana.prometheus.url }}/api/v1/query | jq -r ".data.result[].value[1]")
+{#PLAYERS=$(curl --silent -u '{{ grafana.prometheus.username }}:{{ grafana.prometheus.read.api_key }}' --data-urlencode 'query=max_over_time(minecraft_players_count[{{ backup.player_check_range }}])' {{ grafana.prometheus.url }}/api/v1/query | jq -r ".data.result[].value[1]")#}
 
 if [ "$PLAYERS" -gt 0 ]
 then
@@ -20,7 +20,7 @@ then
 
 	SCRIPT_PWD=$(pwd)
 	cd "$1"/server || exit 1
-	borg create --compression zstd{% if use_bluemap %} --pattern=+bluemap/web/data/markers.json --pattern=-bluemap{% endif %} --pattern=-cache --pattern=-libraries --pattern=-versions "$SCRIPT_PWD"/"$1"/backup::"$DATE" .
+	borg create --compression zstd --pattern=-cache --pattern=-libraries --pattern=-versions "$SCRIPT_PWD"/"$1"/backup::"$DATE" .
 	tmux send-keys -t minecraft-"$1" save-on ENTER
 	tmux send-keys -t minecraft-"$1" say SPACE Saved SPACE the SPACE game ENTER
 	cd "$SCRIPT_PWD" || exit 1
@@ -29,13 +29,7 @@ then
 	#borg compact "$1"/backup
 
 	cd "$1" || exit
-{% if aws.enabled %}
-	tar cf minecraft-"$1".tar backup/
-	oci os object put --auth instance_principal --bucket-name {{ bucket_name }} --file minecraft-"$1".tar --name minecraft-"$1".tar --force
-	aws s3 cp minecraft-"$1".tar s3://{{ aws.bucket_name }}/minecraft-"$1".tar
-{% else %}
 	tar cf - backup/ | oci os object put --auth instance_principal --bucket-name {{ bucket_name }} --file - --name minecraft-"$1".tar --force
-{% endif %}
 
 	sudo systemctl start minecraft-backup-mount@"$1".service
 else

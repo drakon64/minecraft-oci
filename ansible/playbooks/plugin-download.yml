@@ -8,10 +8,6 @@
   shell: curl --silent https://api.github.com/repos/nkomarn/harbor/releases/latest | jq -r '.assets[].browser_download_url'
   register: harbor_latest
 
-- name: Getting the latest MiniMOTD release
-  shell: curl --silent https://api.github.com/repos/jpenilla/MiniMOTD/releases/latest | jq -r '.assets[].browser_download_url | select(contains("bukkit"))'
-  register: minimotd_latest
-
 - name: Getting the latest ViaVersion release
   shell: curl --silent "https://api.github.com/repos/ViaVersion/ViaVersion/releases/latest" | jq -r '.assets[].browser_download_url'
   register: viaversion_latest
@@ -34,12 +30,12 @@
     force: true
   loop:
     - {
-      url: https://ci.opencollab.dev/job/GeyserMC/job/Geyser/job/master/lastSuccessfulBuild/artifact/bootstrap/spigot/target/Geyser-Spigot.jar,
+      url: https://download.geysermc.org/v2/projects/geyser/versions/latest/builds/latest/downloads/spigot,
       dest: Geyser-Spigot.jar,
       when: true,
     }
     - {
-      url: https://ci.opencollab.dev/job/GeyserMC/job/Floodgate/job/master/lastSuccessfulBuild/artifact/spigot/target/floodgate-spigot.jar,
+      url: https://download.geysermc.org/v2/projects/floodgate/versions/latest/builds/latest/downloads/spigot,
       dest: floodgate-spigot.jar,
       when: true,
     }
@@ -54,7 +50,7 @@
       when: true,
     }
     - {
-      url: https://ci.codemc.io/view/Author/job/pop4959/job/Chunky/lastSuccessfulBuild/artifact/bukkit/build/libs/{{ chunky_latest.stdout }},
+      url: "https://ci.codemc.io/view/Author/job/pop4959/job/Chunky/lastSuccessfulBuild/artifact/bukkit/build/libs/{{ chunky_latest.stdout }}",
       dest: "Chunky.jar",
       when: true,
     }
@@ -64,13 +60,8 @@
       when: true,
     }
     - {
-      url: https://ci.lucko.me/job/LuckPerms/lastSuccessfulBuild/artifact/bukkit/loader/build/libs/{{ luckperms_latest.stdout }},
+      url: "https://ci.lucko.me/job/LuckPerms/lastSuccessfulBuild/artifact/bukkit/loader/build/libs/{{ luckperms_latest.stdout }}",
       dest: LuckPerms.jar,
-      when: true,
-    }
-    - {
-      url: "{{ minimotd_latest.stdout }}",
-      dest: minimotd.jar,
       when: true,
     }
     - {
