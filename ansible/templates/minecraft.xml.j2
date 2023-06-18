@@ -12,8 +12,4 @@
 	<port protocol="udp" port="{{ combined_geyser.bedrock.port }}"/>
 {% endif %}
 {% endfor %}
-{% if use_bluemap %}
-	<port protocol="tcp" port="80"/>
-	<port protocol="tcp" port="443"/>
-{% endif %}
 </service>

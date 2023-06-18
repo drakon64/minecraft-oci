@@ -15,11 +15,6 @@ variable "oci_namespace" {
   type = string
 }
 
-variable "oci_compute_shape_flex" {
-  type    = bool
-  default = true
-}
-
 variable "oci_compute_memory" {
   type    = number
   default = 8
