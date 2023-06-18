@@ -9,7 +9,6 @@
     - ../vars/bukkit.yml
     - ../vars/chunky.yml
     - ../vars/commands.yml
-    - ../vars/discordsrv.yml
     - ../vars/floodgate.yml
     - ../vars/geyser.yml
     - ../vars/harbor.yml
@@ -344,10 +343,6 @@
     - name: Getting the latest Chunky release
       shell: curl --silent https://ci.codemc.io/job/pop4959/job/Chunky/lastSuccessfulBuild/api/json | jq -r '.artifacts[0].fileName'
       register: chunky_latest
-
-    - name: Getting the latest DiscordSRV release
-      shell: curl --silent "https://api.github.com/repos/DiscordSRV/DiscordSRV/releases/latest" | jq -r '.assets[].browser_download_url'
-      register: discordsrv_latest
 
     - name: Getting the latest Harbor release
       shell: curl --silent https://api.github.com/repos/nkomarn/harbor/releases/latest | jq -r '.assets[].browser_download_url'
