@@ -10,23 +10,23 @@
   loop:
     - {
       path: Chunky,
-      state: "{% if outer_item.chunky %}directory{% else %}absent{% endif %}",
+      state: directory,
     }
     - {
       path: CustomCommandPrefix,
-      state: "{% if outer_item.geyser %}directory{% else %}absent{% endif %}",
+      state: directory,
     }
     - {
       path: floodgate,
-      state: "{% if outer_item.geyser %}directory{% else %}absent{% endif %}",
+      state: directory,
     }
     - {
       path: Geyser-Spigot/packs,
-      state: "{% if outer_item.geyser %}directory{% else %}absent{% endif %}",
+      state: directory,
     }
     - {
       path: Harbor,
-      state: "{% if outer_item.harbor %}directory{% else %}absent{% endif %}",
+      state: directory,
     }
     - { path: LuckPerms, state: directory }
     - {
@@ -47,7 +47,7 @@
     }
     - {
       path: MiniMOTD,
-      state: "{% if outer_item.minimotd %}directory{% else %}absent{% endif %}",
+      state: directory,
     }
     - {
       path: ViaVersion,
@@ -55,11 +55,11 @@
     }
     - {
       path: WorldEdit,
-      state: "{% if outer_item.worldedit or outer_item.worldguard %}directory{% else %}absent{% endif %}",
+      state: directory,
     }
     - {
       path: WorldGuard,
-      state: "{% if outer_item.worldguard %}directory{% else %}absent{% endif %}",
+      state: directory,
     }
   when:
     - outer_item.state.backup.restore_backup == false

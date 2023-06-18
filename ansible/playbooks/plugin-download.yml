@@ -1,5 +1,29 @@
 #yaml-language-server: $schema=https://json.schemastore.org/ansible-playbook.json
 
+- name: Getting the latest Chunky release
+  shell: curl --silent https://ci.codemc.io/job/pop4959/job/Chunky/lastSuccessfulBuild/api/json | jq -r '.artifacts[0].fileName'
+  register: chunky_latest
+
+- name: Getting the latest Harbor release
+  shell: curl --silent https://api.github.com/repos/nkomarn/harbor/releases/latest | jq -r '.assets[].browser_download_url'
+  register: harbor_latest
+
+- name: Getting the latest MiniMOTD release
+  shell: curl --silent https://api.github.com/repos/jpenilla/MiniMOTD/releases/latest | jq -r '.assets[].browser_download_url | select(contains("bukkit"))'
+  register: minimotd_latest
+
+- name: Getting the latest ViaVersion release
+  shell: curl --silent "https://api.github.com/repos/ViaVersion/ViaVersion/releases/latest" | jq -r '.assets[].browser_download_url'
+  register: viaversion_latest
+
+- name: Getting the latest AppleSkinSpigot release
+  shell: curl --silent https://api.github.com/repos/jmattingley23/AppleSkinSpigot/releases/latest | jq -r '.assets[].browser_download_url'
+  register: appleskin_latest
+
+- name: Getting the latest LuckPerms release
+  shell: curl --silent https://ci.lucko.me/job/LuckPerms/lastSuccessfulBuild/api/json | jq -r '.artifacts[0].fileName'
+  register: luckperms_latest
+
 - name: Downloading plugins for {{ outer_item.name }}
   get_url:
     url: "{{ item.url }}"
@@ -12,42 +36,42 @@
     - {
       url: https://ci.opencollab.dev/job/GeyserMC/job/Geyser/job/master/lastSuccessfulBuild/artifact/bootstrap/spigot/target/Geyser-Spigot.jar,
       dest: Geyser-Spigot.jar,
-      when: "{{ outer_item.geyser }}",
+      when: true,
     }
     - {
       url: https://ci.opencollab.dev/job/GeyserMC/job/Floodgate/job/master/lastSuccessfulBuild/artifact/spigot/target/floodgate-spigot.jar,
       dest: floodgate-spigot.jar,
-      when: "{{ outer_item.geyser }}",
+      when: true,
     }
     - {
       url: https://ci.opencollab.dev/job/GeyserMC/job/GeyserOptionalPack/job/master/lastSuccessfulBuild/artifact/GeyserOptionalPack.mcpack,
       dest: Geyser-Spigot/packs/,
-      when: "{{ outer_item.geyser }}",
+      when: true,
     }
     - {
       url: "{% if outer_item.harbor %}{{ harbor_latest.stdout }}{% endif %}",
       dest: Harbor.jar,
-      when: "{{ outer_item.harbor }}",
+      when: true,
     }
     - {
       url: "{% if outer_item.chunky %}https://ci.codemc.io/view/Author/job/pop4959/job/Chunky/lastSuccessfulBuild/artifact/bukkit/build/libs/{{ chunky_latest.stdout }}{% endif %}",
       dest: "Chunky.jar",
-      when: "{{ outer_item.chunky }}",
+      when: true,
     }
     - {
       url: "{{ appleskin_latest.stdout }}",
       dest: AppleSkinSpigot.jar,
-      when: "{{ true }}",
+      when: true,
     }
     - {
       url: "https://ci.lucko.me/job/LuckPerms/lastSuccessfulBuild/artifact/bukkit/loader/build/libs/{{ luckperms_latest.stdout }}",
       dest: LuckPerms.jar,
-      when: "{{ true }}",
+      when: true,
     }
     - {
       url: "{{ minimotd_latest.stdout }}",
       dest: minimotd.jar,
-      when: "{{ outer_item.minimotd }}",
+      when: true,
     }
     - {
       url: "{% if outer_item.viaversion %}{{ viaversion_latest.stdout }}{% endif %}",
@@ -57,12 +81,12 @@
     - {
       url: https://dev.bukkit.org/projects/worldedit/files/latest,
       dest: worldedit-bukkit.jar,
-      when: "{{ outer_item.worldedit or outer_item.worldguard }}",
+      when: true,
     }
     - {
       url: https://dev.bukkit.org/projects/worldguard/files/latest,
       dest: worldguard-bukkit.jar,
-      when: "{{ outer_item.worldguard }}",
+      when: true,
     }
   when:
     - outer_item.state.new_server or outer_item.state.update_server

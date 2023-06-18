@@ -340,30 +340,6 @@
         loop_var: outer_item
         label: "{{ outer_item.name }}"
 
-    - name: Getting the latest Chunky release
-      shell: curl --silent https://ci.codemc.io/job/pop4959/job/Chunky/lastSuccessfulBuild/api/json | jq -r '.artifacts[0].fileName'
-      register: chunky_latest
-
-    - name: Getting the latest Harbor release
-      shell: curl --silent https://api.github.com/repos/nkomarn/harbor/releases/latest | jq -r '.assets[].browser_download_url'
-      register: harbor_latest
-
-    - name: Getting the latest MiniMOTD release
-      shell: curl --silent https://api.github.com/repos/jpenilla/MiniMOTD/releases/latest | jq -r '.assets[].browser_download_url | select(contains("bukkit"))'
-      register: minimotd_latest
-
-    - name: Getting the latest ViaVersion release
-      shell: curl --silent "https://api.github.com/repos/ViaVersion/ViaVersion/releases/latest" | jq -r '.assets[].browser_download_url'
-      register: viaversion_latest
-
-    - name: Getting the latest AppleSkinSpigot release
-      shell: curl --silent https://api.github.com/repos/jmattingley23/AppleSkinSpigot/releases/latest | jq -r '.assets[].browser_download_url'
-      register: appleskin_latest
-
-    - name: Getting the latest LuckPerms release
-      shell: curl --silent https://ci.lucko.me/job/LuckPerms/lastSuccessfulBuild/api/json | jq -r '.artifacts[0].fileName'
-      register: luckperms_latest
-
     - name: Downloading plugins
       include_tasks: plugin-download.yml
       loop: "{{ instances }}"
