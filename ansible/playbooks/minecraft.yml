@@ -16,6 +16,8 @@
     - ../vars/luckperms.yml
     - ../vars/minimotd.yml
     - ../vars/paper.yml
+    - ../vars/pufferfish.yml
+    - ../vars/purpur.yml
     - ../vars/server.yml
     - ../vars/spigot.yml
     - ../vars/viaversion.yml
