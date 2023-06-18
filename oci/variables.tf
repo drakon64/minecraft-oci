@@ -47,7 +47,7 @@ variable "geyser" {
 
 variable "oci_image_id" {
   type    = string
-  default = "ocid1.image.oc1.uk-london-1.aaaaaaaa4kzur5s3zhiyespdxox3rkqbvc7nei5dc6ctzg37umtalrgklexq"
+  default = "ocid1.image.oc1.uk-london-1.aaaaaaaaz6k37ro65q3hcnzlahygzhyyf24pkur3hfqsfc3dqgzwwb2bblsa"
 }
 
 variable "ssh_authorized_keys" {
