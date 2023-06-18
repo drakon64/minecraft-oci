@@ -596,20 +596,12 @@
 #        chdir: /opt/minecraft/selinux
 #      when: selinux.changed
 
-    - name: Starting the systemd units
+    - name: Starting the `dnf-upgrade` timer
       systemd:
-        name: "{{ item.name }}"
-        state: "{{ item.state }}"
-        enabled: "{{ item.enabled }}"
-        daemon_reload: yes
-      loop:
-        - {
-          name: "dnf-upgrade.timer",
-          state: "restarted",
-          enabled: "yes",
-          when: "{{ true }}",
-        }
-      when: item.when
+        name: dnf-upgrade.timer
+        state: restarted
+        enabled: true
+        daemon_reload: true
 
     - name: Disabling the Minecraft instances
       systemd:
