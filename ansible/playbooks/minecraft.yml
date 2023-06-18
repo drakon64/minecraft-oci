@@ -585,40 +585,40 @@
       loop_control:
         label: "{{ item.name }}"
 
-    - name: Creating directory for the SELinux module
-      file:
-        path: /opt/minecraft/selinux
-        state: directory
-        owner: root
-        group: root
-        mode: 0755
-
-    - name: Copying SELinux module
-      template:
-        src: ../templates/selinux.te.j2
-        dest: /opt/minecraft/selinux/minecraft.te
-        owner: root
-        group: root
-        mode: 0644
-      register: selinux
-
-    - name: Compiling SELinux module
-      command: checkmodule -M -m -o minecraft.mod minecraft.te
-      args:
-        chdir: /opt/minecraft/selinux
-      when: selinux.changed
-
-    - name: Packaging SELinux module
-      command: semodule_package -o minecraft.pp -m minecraft.mod
-      args:
-        chdir: /opt/minecraft/selinux
-      when: selinux.changed
-
-    - name: Loading SELinux module
-      command: semodule -i minecraft.pp
-      args:
-        chdir: /opt/minecraft/selinux
-      when: selinux.changed
+#    - name: Creating directory for the SELinux module
+#      file:
+#        path: /opt/minecraft/selinux
+#        state: directory
+#        owner: root
+#        group: root
+#        mode: 0755
+#
+#    - name: Copying SELinux module
+#      template:
+#        src: ../templates/selinux.te.j2
+#        dest: /opt/minecraft/selinux/minecraft.te
+#        owner: root
+#        group: root
+#        mode: 0644
+#      register: selinux
+#
+#    - name: Compiling SELinux module
+#      command: checkmodule -M -m -o minecraft.mod minecraft.te
+#      args:
+#        chdir: /opt/minecraft/selinux
+#      when: selinux.changed
+#
+#    - name: Packaging SELinux module
+#      command: semodule_package -o minecraft.pp -m minecraft.mod
+#      args:
+#        chdir: /opt/minecraft/selinux
+#      when: selinux.changed
+#
+#    - name: Loading SELinux module
+#      command: semodule -i minecraft.pp
+#      args:
+#        chdir: /opt/minecraft/selinux
+#      when: selinux.changed
 
     - name: Starting the systemd units
       systemd:
