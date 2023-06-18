@@ -7,9 +7,7 @@
 {% if combined_server['query.port'] != None %}
 	<port protocol="udp" port="{{ combined_server['query.port'] }}"/>
 {% endif %}
-{% if i.geyser %}
 {% set combined_geyser = geyser %}{% if global_overrides.geyser is defined %}{% set combined_geyser = (combined_geyser | combine(global_overrides.geyser, recursive=True)) %}{% endif %}{% if node_overrides.geyser is defined %}{% set combined_geyser = (combined_geyser | combine(node_overrides.geyser, recursive=True)) %}{% endif %}{% if i.plugins.geyser is defined %}{% set combined_geyser = (combined_geyser | combine(i.plugins.geyser, recursive=True)) %}{% endif %}
 	<port protocol="udp" port="{{ combined_geyser.bedrock.port }}"/>
-{% endif %}
 {% endfor %}
 </service>
