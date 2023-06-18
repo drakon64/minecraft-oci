@@ -140,13 +140,6 @@
         state: present
         update_cache: yes
 
-    - name: Installing the AWS CLI
-      dnf:
-        name: awscli
-        state: present
-        update_cache: yes
-      when: aws.enabled
-
     - name: Installing Java
       dnf:
         name: "{{ item.name }}"
@@ -154,23 +147,13 @@
         update_cache: yes
       loop:
         - {
-            name: "java-17-openjdk-headless",
+            name: "java-17-openjdk",
             state: "{% if graalvm %}absent{% else %}present{% endif %}",
           }
         - {
             name: "graalvm22-ee-17-jdk",
             state: "{% if graalvm %}present{% else %}absent{% endif %}",
           }
-
-    - name: Getting the latest Grafana Agent release
-      shell: curl --silent https://api.github.com/repos/grafana/agent/releases/latest | jq -r '.assets[].browser_download_url | select(contains("{% if ansible_architecture == 'aarch64' %}arm64{% elif ansible_architecture == 'x86_64' %}amd64{% endif %}")) | select(contains("rpm"))'
-      register: grafanaagent_latest
-
-    - name: Installing Grafana Agent
-      dnf:
-        name: "{{ grafanaagent_latest.stdout }}"
-        state: present
-        disable_gpg_check: yes
 
     - name: Creating the instance user
       user:
@@ -225,7 +208,7 @@
       command: mkswap /.swapfile
       when: swapfile.stat.size != memtotal_b
 
-    - name: Changing vm.swappiness to 1 # Oracle Linux recommendation for SSD's
+    - name: Changing vm.swappiness to 1 # Oracle Linux recommendation for SSD's
       sysctl:
         name: vm.swappiness
         value: 1
@@ -349,42 +332,12 @@
         loop_var: outer_item
         label: "{{ outer_item.name }}"
 
-    - name: Downloading TreeAssist
-      git:
-        repo: https://github.com/slipcor/TreeAssist.git
-        dest: /opt/minecraft/TreeAssist
-        depth: 1
-        single_branch: yes
-
-    - name: Configuring TreeAssist
-      copy:
-        src: /opt/minecraft/TreeAssist/src/main/resources/trees
-        dest: /opt/minecraft/{{ item.name }}/server/plugins/TreeAssist/
-        owner: minecraft-{{ item.name }}
-        group: minecraft-{{ item.name }}
-        mode: u=rwX,g=rX,o=rX
-        remote_src: yes
-      loop: "{{ instances }}"
-      loop_control:
-        label: "{{ item.name }}"
-      when:
-        - item.state.new_server or item.state.update_server
-        - item.state.backup.restore_backup == false
-
     - name: Configuring the Minecraft server
       include_tasks: server-config.yml
       loop: "{{ instances }}"
       loop_control:
         loop_var: outer_item
         label: "{{ outer_item.name }}"
-
-    - name: Getting the latest BlueMap release
-      shell: curl --silent "https://api.github.com/repos/BlueMap-Minecraft/BlueMap/releases/latest" | jq -r '.assets[].browser_download_url | select(contains("spigot"))'
-      register: bluemap_latest
-
-    - name: Getting the latest BlueMap-Floodgate release
-      shell: curl --silent "https://api.github.com/repos/TechnicJelle/BlueMapFloodgate/releases" | jq -r '.[0].assets[].browser_download_url'
-      register: bluemap_floodgate_latest
 
     - name: Getting the latest Chunky release
       shell: curl --silent https://ci.codemc.io/job/pop4959/job/Chunky/lastSuccessfulBuild/api/json | jq -r '.artifacts[0].fileName'
@@ -393,10 +346,6 @@
     - name: Getting the latest DiscordSRV release
       shell: curl --silent "https://api.github.com/repos/DiscordSRV/DiscordSRV/releases/latest" | jq -r '.assets[].browser_download_url'
       register: discordsrv_latest
-
-    - name: Getting the latest FloodgatePlaceholders release
-      shell: curl --silent "https://api.github.com/repos/rtm516/FloodgatePlaceholders/releases/latest" | jq -r '.assets[].browser_download_url'
-      register: floodgateplaceholders_latest
 
     - name: Getting the latest Harbor release
       shell: curl --silent https://api.github.com/repos/nkomarn/harbor/releases/latest | jq -r '.assets[].browser_download_url'
@@ -417,10 +366,6 @@
     - name: Getting the latest LuckPerms release
       shell: curl --silent https://ci.lucko.me/job/LuckPerms/lastSuccessfulBuild/api/json | jq -r '.artifacts[0].fileName'
       register: luckperms_latest
-
-    - name: Getting the latest UnifiedMetrics release
-      shell: curl --silent https://api.github.com/repos/Cubxity/UnifiedMetrics/releases/latest | jq -r '.assets[].browser_download_url | select(contains("bukkit")) | select(contains("asc") | not)'
-      register: unifiedmetrics_latest
 
     - name: Downloading plugins
       include_tasks: plugin-download.yml
@@ -603,25 +548,6 @@
             persistent: true,
             when: true,
           }
-        - {
-            src: "templates/grafana-agent.yml.j2",
-            dest: "/etc/grafana-agent.yaml",
-            owner: root,
-            group: grafana-agent,
-            mode: "0640",
-            when: true,
-          }
-        - {
-            src: "templates/systemd/service.j2",
-            dest: "/etc/systemd/system/grafana-agent.service",
-            owner: "root",
-            mode: "0644",
-            description: "Monitoring system and forwarder",
-            execstart: "/usr/bin/grafana-agent --config.file /etc/grafana-agent.yaml",
-            type: "simple",
-            after: "network-online.target",
-            when: true,
-          }
       when: item.when
 
     - name: Copying systemd services
@@ -714,32 +640,7 @@
             enabled: "yes",
             when: "{{ true }}",
           }
-        - {
-            name: "grafana-agent.service",
-            state: "restarted",
-            enabled: "true",
-            when: true,
-          }
       when: item.when
-
-    - name: Starting Caddy
-      systemd:
-        name: caddy
-        state: started
-        enabled: yes
-        daemon_reload: yes
-      register: caddy
-      when: use_bluemap
-
-    - name: Reloading Caddy
-      systemd:
-        name: caddy
-        state: reloaded
-        enabled: yes
-        daemon_reload: yes
-      when:
-        - use_bluemap
-        - caddy.changed == false
 
     - name: Disabling the Minecraft instances
       systemd:
