@@ -517,7 +517,7 @@
           owner: "root",
           mode: "0644",
           description: "DNF Upgrade",
-          timer: "Tue 7:00",
+          timer: "Tue 10:00",
           persistent: true,
           when: true,
         }
