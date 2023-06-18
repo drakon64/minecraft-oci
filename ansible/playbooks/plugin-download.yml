@@ -56,18 +56,8 @@
       }
     - {
         url: "{% if outer_item.viaversion %}{{ viaversion_latest.stdout }}{% endif %}",
-        dest: "ViaVersion.jar",
+        dest: ViaVersion.jar,
         when: "{{ outer_item.viaversion }}",
-      }
-    - {
-        url: "{% if outer_item.viewdistancetweaks %}https://api.spiget.org/v2/resources/75164/download{% endif %}",
-        dest: "ViewDistanceTweaks.jar",
-        when: "{{ outer_item.viewdistancetweaks }}",
-      }
-    - {
-        url: "{{ unifiedmetrics_latest.stdout }}",
-        dest: "unifiedmetrics.jar",
-        when: true,
       }
     - {
         url: https://dev.bukkit.org/projects/worldedit/files/latest,
@@ -83,37 +73,3 @@
     - outer_item.state.new_server or outer_item.state.update_server
     - outer_item.state.backup.restore_backup == false
     - item.when
-
-- name: Removing plugins for {{ outer_item.name }}
-  file:
-    path: /opt/minecraft/{{ outer_item.name }}/server/plugins/{{ item.src }}
-    state: absent
-  loop:
-    - { src: Chunky.jar, when: "{{ outer_item.chunky == false }}" }
-    - { src: CustomCommandPrefix.jar, when: "{{ outer_item.geyser == false }}" }
-    - { src: DiscordSRV.jar, when: "{{ outer_item.discordsrv == false }}" }
-    - { src: floodgate-spigot.jar, when: "{{ outer_item.geyser == false }}" }
-    - { src: Geyser-Spigot.jar, when: "{{ outer_item.geyser == false }}" }
-    - { src: Harbor.jar, when: "{{ outer_item.harbor == false }}" }
-    - { src: minimotd.jar, when: "{{ outer_item.minimotd == false }}" }
-    - { src: ViaVersion.jar, when: "{{ outer_item.viaversion == false }}" }
-    - {
-        src: worldedit-bukkit.jar,
-        when: "{{ outer_item.worldedit == false or outer_item.worldguard == false }}",
-      }
-    - {
-        src: worldguard-bukkit.jar,
-        when: "{{ outer_item.worldguard == false }}",
-      }
-  when: item.when
-
-- name: Downloading custom plugins for {{ outer_item.name }}
-  get_url:
-    url: "{{ item.url }}"
-    dest: /opt/minecraft/{{ outer_item.name }}/server/plugins/{{ item.name }}.jar
-    owner: minecraft-{{ outer_item.name }}
-    group: minecraft-{{ outer_item.name }}
-    mode: 0644
-    force: yes
-  loop: "{{ outer_item.custom_plugins.plugins }}"
-  when: outer_item.custom_plugins.use

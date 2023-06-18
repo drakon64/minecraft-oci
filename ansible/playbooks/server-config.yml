@@ -47,7 +47,6 @@
         src: plugins/MiniMOTD/plugin_settings.conf,
         when: "{{ outer_item.minimotd }}",
       }
-    - { src: plugins/UnifiedMetrics/driver/prometheus.yml, when: true }
     - {
         src: plugins/ViaVersion/config.yml,
         when: "{{ outer_item.viaversion }}",
@@ -74,18 +73,6 @@
   loop: "{{ combined_paper_worlds | dict2items }}"
   when:
     - outer_item.state.backup.restore_backup == false
-
-- name: Configuring custom plugins for {{ outer_item.name }}
-  copy:
-    src: ../files/java/{{ outer_item.name }}/custom-plugins/{{ item.name }}
-    dest: /opt/minecraft/{{ outer_item.name }}/server/plugins/
-    owner: minecraft-{{ outer_item.name }}
-    group: minecraft-{{ outer_item.name }}
-    mode: u=rwX,g=rX,o=rX
-  loop: "{{ outer_item.custom_plugins.plugins }}"
-  when:
-    - outer_item.custom_plugins.use
-    - item.config
 
 - name: Copying the server permissions files for {{ outer_item.name }}
   template:

@@ -18,7 +18,6 @@
     - ../vars/paper.yml
     - ../vars/server.yml
     - ../vars/spigot.yml
-    - ../vars/unifiedmetrics.yml
     - ../vars/viaversion.yml
     - ../vars/worldedit.yml
     - ../vars/worldguard.yml
