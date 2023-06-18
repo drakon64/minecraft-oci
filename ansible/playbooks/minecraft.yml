@@ -32,12 +32,12 @@
       loop:
         - {
           regexp: "KexAlgorithms",
-          line: "KexAlgorithms curve25519-sha256@libssh.org",
+          line: "KexAlgorithms curve25519-sha256@libssh.org,diffie-hellman-group-exchange-sha256",
         }
         - { regexp: "Ciphers", line: "Ciphers chacha20-poly1305@openssh.com" }
         - {
           regexp: "MACs",
-          line: "MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com",
+          line: "MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512,hmac-sha2-256",
         }
         - {
           regexp: "AuthenticationMethods",
@@ -49,15 +49,6 @@
           line: "Subsystem sftp /usr/libexec/openssh/sftp-server -f AUTHPRIV -l INFO",
         }
         - { regexp: "PermitRootLogin", line: "PermitRootLogin no" }
-        - {
-          regexp: "UsePrivilegeSeparation",
-          line: "UsePrivilegeSeparation sandbox",
-        }
-        - { regexp: "LoginGraceTime", line: "LoginGraceTime 1m" }
-        - { regexp: "AllowTcpForwarding", line: "AllowTcpForwarding no" }
-        - { regexp: "MaxSessions", line: "MaxSessions 4" }
-        - { regexp: "X11Forwarding", line: "X11Forwarding no" }
-        - { regexp: "MaxAuthTries", line: "MaxAuthTries 4" }
       register: sshd
 
     - name: Checking if SSH short moduli needs disabling
