@@ -1,6 +1,7 @@
 chunky:
   continue-on-restart: false
+  force-load-existing-chunks: false
   language: en
   silent: false
   update-interval: 1
-  version: 1
+  version: 2

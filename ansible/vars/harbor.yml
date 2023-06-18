@@ -20,31 +20,31 @@ harbor:
   messages:
     actionbar:
       enabled: true
-      night-skipping: "&eEveryone is sleeping- sweet dreams!"
-      players-sleeping: "&e[sleeping] out of [needed] players are sleeping ([more] more needed to skip)"
+      night-skipping: '&eEveryone is sleeping- sweet dreams!'
+      players-sleeping: '&e[sleeping] out of [needed] players are sleeping ([more] more needed to skip)'
     bossbar:
       enabled: true
       night-skipping:
         color: GREEN
-        message: "&f&lEveryone is sleeping. Sweet dreams!"
+        message: '&f&lEveryone is sleeping. Sweet dreams!'
       players-sleeping:
         color: BLUE
-        message: "&f&l[sleeping] out of [needed] are sleeping &7&l([more] more needed)"
+        message: '&f&l[sleeping] out of [needed] are sleeping &7&l([more] more needed)'
     chat:
       enabled: true
       message-cooldown: 5
       night-skipped:
-        - "&eThe night has been skipped."
-        - "&eAhhh, finally morning."
-        - "&eArghh, it's so bright outside."
-        - "&eRise and shine."
+        - '&eThe night has been skipped.'
+        - '&eAhhh, finally morning.'
+        - '&eArghh, it''s so bright outside.'
+        - '&eRise and shine.'
       night-skipping:
-        - "&eAccelerating the night."
-        - "&eRapidly approaching daytime."
-      player-left-bed: "&e[player] got out of bed ([sleeping]/[needed], [more] more needed to skip)."
-      player-sleeping: "&e[player] is now sleeping ([sleeping]/[needed], [more] more needed to skip)."
+        - '&eAccelerating the night.'
+        - '&eRapidly approaching daytime.'
+      player-left-bed: '&e[player] got out of bed ([sleeping]/[needed], [more] more needed to skip).'
+      player-sleeping: '&e[player] is now sleeping ([sleeping]/[needed], [more] more needed to skip).'
     miscellaneous:
-      chat-prefix: "&8&l(&6&lHarbor&8&l)&f "
+      chat-prefix: '&8&l(&6&lHarbor&8&l)&f '
       unrecognized-command: Unrecognized command.
   metrics: true
   night-skip:

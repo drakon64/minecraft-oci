@@ -1,4 +1,5 @@
 pufferfish:
+  allow-end-crystal-respawn: true
   dab:
     activation-dist-mod: 8
     blacklisted-entities: []

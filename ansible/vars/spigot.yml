@@ -85,6 +85,7 @@ spigot:
         water: 16
       entity-tracking-range:
         animals: 48
+        display: 128
         misc: 32
         monsters: 48
         other: 64
@@ -102,10 +103,12 @@ spigot:
         melon-modifier: 100
         mushroom-modifier: 100
         netherwart-modifier: 100
+        pitcherplant-modifier: 100
         potato-modifier: 100
         pumpkin-modifier: 100
         sapling-modifier: 100
         sweetberry-modifier: 100
+        torchflower-modifier: 100
         twistingvines-modifier: 100
         vine-modifier: 100
         weepingvines-modifier: 100

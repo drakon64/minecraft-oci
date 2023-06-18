@@ -1,5 +1,5 @@
 purpur:
-  config-version: 30
+  config-version: 32
   settings:
     allow-water-placement-in-the-end: true
     blast-resistance-overrides: {}
@@ -74,6 +74,7 @@ purpur:
         only-broadcast-to-affected-player: false
       death:
         only-broadcast-to-affected-player: false
+    clamp-attributes: true
     command:
       compass:
         overlay: PROGRESS
@@ -81,8 +82,6 @@ purpur:
         progress-color: BLUE
         tick-interval: 5
         title: 'S  ·  ◈  ·  ◈  ·  ◈  ·  SW  ·  ◈  ·  ◈  ·  ◈  ·  W  ·  ◈  ·  ◈  ·  ◈  ·  NW  ·  ◈  ·  ◈  ·  ◈  ·  N  ·  ◈  ·  ◈  ·  ◈  ·  NE  ·  ◈  ·  ◈  ·  ◈  ·  E  ·  ◈  ·  ◈  ·  ◈  ·  SE  ·  ◈  ·  ◈  ·  ◈  ·  S  ·  ◈  ·  ◈  ·  ◈  ·  SW  ·  ◈  ·  ◈  ·  ◈  ·  W  ·  ◈  ·  ◈  ·  ◈  ·  NW  ·  ◈  ·  ◈  ·  ◈  ·  N  ·  ◈  ·  ◈  ·  ◈  ·  NE  ·  ◈  ·  ◈  ·  ◈  ·  E  ·  ◈  ·  ◈  ·  ◈  ·  SE  ·  ◈  ·  ◈  ·  ◈  ·  '
-      fill:
-        max-area: 32768
       gamemode:
         requires-specific-permission: false
       hide-hidden-players-from-entity-selector: false
@@ -136,19 +135,21 @@ purpur:
     entity:
       enderman:
         short-height: false
+    fix-network-serialized-items-in-creative: false
     fix-projectile-looting-transfer: false
     food-properties: {}
     lagging-threshold: 19.0
+    limit-armor: true
     logger:
       suppress-ignored-advancement-warnings: false
       suppress-init-legacy-material-errors: false
       suppress-library-loader: false
-      suppress-sent-expired-chat: false
       suppress-setblock-in-far-chunk-errors: false
       suppress-unrecognized-recipe-errors: false
     messages:
       afk-broadcast-away: <yellow><italic>%s is now AFK
       afk-broadcast-back: <yellow><italic>%s is no longer AFK
+      afk-broadcast-use-display-name: false
       afk-tab-list-prefix: '[AFK] '
       afk-tab-list-suffix: ""
       cannot-ride-mob: <red>You cannot mount that mob
@@ -170,10 +171,6 @@ purpur:
       kick-for-out-of-order-chat: true
       max-joins-per-second: false
       upnp-port-forwarding: false
-    seed:
-      structure:
-        buried_treasure: -1
-        mineshaft: -1
     server-mod-name: Purpur
     tps-catchup: true
     use-alternate-keepalive: false
@@ -190,6 +187,7 @@ purpur:
         azalea:
           growth-chance: 0.0
         beacon:
+          allow-effects-with-tinted-glass: false
           effect-range:
             level-1: 20
             level-2: 30
@@ -198,7 +196,7 @@ purpur:
         bed:
           explode: true
           explode-on-villager-sleep: false
-          explosion-effect: DESTROY
+          explosion-effect: BLOCK
           explosion-fire: true
           explosion-power: 5.0
         big_dripleaf:
@@ -209,9 +207,8 @@ purpur:
         blue_ice:
           allow-mob-spawns: true
           allow-snow-formation: true
-        budding_amethyst:
-          silk-touch: false
         cactus:
+          affected-by-bonemeal: false
           breaks-from-solid-neighbors: true
         campfire:
           lit-when-placed: true
@@ -249,14 +246,15 @@ purpur:
         end-crystal:
           base:
             explode: true
-            explosion-effect: DESTROY
+            explosion-effect: BLOCK
             explosion-fire: false
             explosion-power: 6.0
           baseless:
             explode: true
-            explosion-effect: DESTROY
+            explosion-effect: BLOCK
             explosion-fire: false
             explosion-power: 6.0
+          cramming-amount: 0
         end_portal:
           safe-teleporting: true
         farmland:
@@ -273,13 +271,14 @@ purpur:
           use-lava-from-underneath: false
         lava:
           infinite-required-sources: 2
-          infinite-source: false
           speed:
             nether: 10
             not-nether: 30
         magma-block:
           damage-when-sneaking: false
           damage-with-frost-walker: false
+        nether_wart:
+          affected-by-bonemeal: false
         observer:
           disable-clock: false
         packed_ice:
@@ -292,7 +291,7 @@ purpur:
           activation-range: 8
         respawn_anchor:
           explode: true
-          explosion-effect: DESTROY
+          explosion-effect: BLOCK
           explosion-fire: true
           explosion-power: 5.0
         sand:
@@ -303,7 +302,6 @@ purpur:
           allow-oversized-stacks: false
         sign:
           allow-colors: false
-          right-click-edit: false
         slab:
           break-individual-slabs-when-sneaking: false
         spawner:
@@ -316,6 +314,8 @@ purpur:
             radius: 6
         stonecutter:
           damage: 0.0
+        sugar_cane:
+          affected-by-bonemeal: false
         turtle_egg:
           break-from-exp-orbs: true
           break-from-items: true
@@ -325,7 +325,6 @@ purpur:
           random-tick-crack-chance: 500
         water:
           infinite-required-sources: 2
-          infinite-source: true
       gameplay-mechanics:
         always-tame-in-creative: false
         animal-breeding-cooldown-seconds: 0
@@ -335,13 +334,14 @@ purpur:
           can-movement-tick: true
           fix-nametags: false
           place-with-arms-visible: false
-          set-name-visible-when-placing-with-custom-name: false
+          set-name-visible-when-placing-with-custom-name: true
           step-height: 0.0
         arrow:
           movement-resets-despawn-counter: true
         boat:
-          do-fall-damage: true
+          do-fall-damage: false
           eject-players-on-land: false
+        clamp-explosion-radius: true
         daylight-cycle-ticks:
           daytime: 12000
           nighttime: 12000
@@ -390,6 +390,8 @@ purpur:
             lightning: []
           shears:
             damage-if-sprinting: false
+            ignore-in-lava: false
+            ignore-in-water: false
             sprinting-damage: 1.0
           shulker_box:
             drop-contents-when-destroyed: true
@@ -398,6 +400,7 @@ purpur:
               campfires: false
               candles: false
               fire: false
+        mending-multiplier: 1.0
         milk-clears-beneficial-effects: true
         milk-cures-bad-omen: true
         minecart:
@@ -431,16 +434,14 @@ purpur:
           wandering-traders: default
         mobs-ignore-rails: false
         note-block-ignore-above: false
-        persistent-droppable-entity-display-names: false
+        persistent-droppable-entity-display-names: true
         persistent-tileentity-display-names-and-lore: false
         player:
           allow-void-trading: false
-          armor-click-equip:
-            allow-hot-swapping: false
-            creative-makes-copy: true
           burp-delay: 10
           burp-when-full: false
           can-skip-night: true
+          creative-portal-wait-time: 1
           critical-damage-multiplier: 1.5
           curse-of-binding:
             remove-with-weakness: false
@@ -463,11 +464,13 @@ purpur:
             show-icon: true
             show-particles: false
           one-punch-in-creative: false
+          portal-wait-time: 80
           ridable-in-water: false
           shift-right-click-repairs-mending-points: 0
           sleep-ignore-nearby-mobs: false
           spawn-invulnerable-ticks: 60
           teleport-if-outside-border: false
+          teleport-on-nether-ceiling-damage: false
           totem-of-undying-works-in-inventory: false
         projectile-damage:
           snowball: -1
@@ -494,7 +497,7 @@ purpur:
           minimal-level: 1
           spawner-lore:
             - Spawns a <mob>
-          spawner-name: <reset><white>Spawner
+          spawner-name: <reset><white>Monster Spawner
           tools:
             - minecraft:iron_pickaxe
             - minecraft:golden_pickaxe
@@ -513,7 +516,7 @@ purpur:
           controllable: true
           respect-nbt: []
           ridable: false
-          ridable-in-water: false
+          ridable-in-water: true
         axolotl:
           always-drop-exp: false
           attributes:
@@ -525,10 +528,17 @@ purpur:
         bat:
           always-drop-exp: false
           attributes:
+            armor: 0.0
+            armor_toughness: 0.0
+            attack_knockback: 0.0
+            flying_speed: 0.6
+            follow_range: 16.0
+            knockback_resistance: 0.0
             max_health: 6.0
+            movement_speed: 0.6
           controllable: true
           ridable: false
-          ridable-in-water: false
+          ridable-in-water: true
           ridable-max-y: 320.0
           takes-damage-from-water: false
         bee:
@@ -541,7 +551,7 @@ purpur:
           controllable: true
           dies-after-sting: true
           ridable: false
-          ridable-in-water: false
+          ridable-in-water: true
           ridable-max-y: 320.0
           takes-damage-from-water: false
         blaze:
@@ -550,9 +560,22 @@ purpur:
             max_health: 20.0
           controllable: true
           ridable: false
-          ridable-in-water: false
+          ridable-in-water: true
           ridable-max-y: 320.0
           takes-damage-from-water: true
+        camel:
+          attributes:
+            jump_strength:
+              max: 0.42
+              min: 0.42
+            max_health:
+              max: 32.0
+              min: 32.0
+            movement_speed:
+              max: 0.09
+              min: 0.09
+          breeding-delay-ticks: 6000
+          ridable-in-water: false
         cat:
           always-drop-exp: false
           attributes:
@@ -561,7 +584,7 @@ purpur:
           controllable: true
           default-collar-color: RED
           ridable: false
-          ridable-in-water: false
+          ridable-in-water: true
           scan-range-for-other-cats:
             swamp-hut: 16
             village: 48
@@ -573,7 +596,7 @@ purpur:
             max_health: 12.0
           controllable: true
           ridable: false
-          ridable-in-water: false
+          ridable-in-water: true
           takes-damage-from-water: false
         chicken:
           always-drop-exp: false
@@ -603,7 +626,7 @@ purpur:
             chance: 0.0
             damage: 2.0
           ridable: false
-          ridable-in-water: false
+          ridable-in-water: true
           takes-damage-from-water: false
         creeper:
           allow-griefing: true
@@ -612,12 +635,13 @@ purpur:
             max_health: 20.0
           bypass-mob-griefing: false
           controllable: true
+          encircle-target: false
           explode-when-killed: false
           head-visibility-percent: 0.5
           health-impacts-explosion: false
           naturally-charged-chance: 0.0
           ridable: false
-          ridable-in-water: false
+          ridable-in-water: true
           takes-damage-from-water: false
         dolphin:
           always-drop-exp: false
@@ -659,7 +683,7 @@ purpur:
             only-babies: true
             try-existing-chickens: true
           ridable: false
-          ridable-in-water: false
+          ridable-in-water: true
           takes-damage-from-water: false
         elder_guardian:
           always-drop-exp: false
@@ -676,7 +700,7 @@ purpur:
           can-ride-vehicles: false
           controllable: true
           ridable: false
-          ridable-in-water: false
+          ridable-in-water: true
           ridable-max-y: 320.0
           takes-damage-from-water: false
         enderman:
@@ -693,7 +717,7 @@ purpur:
           ignore-players-wearing-dragon-head: false
           ignore-projectiles: false
           ridable: false
-          ridable-in-water: false
+          ridable-in-water: true
           takes-damage-from-water: true
         endermite:
           always-drop-exp: false
@@ -701,7 +725,7 @@ purpur:
             max_health: 8.0
           controllable: true
           ridable: false
-          ridable-in-water: false
+          ridable-in-water: true
           takes-damage-from-water: false
         evoker:
           always-drop-exp: false
@@ -710,7 +734,7 @@ purpur:
           bypass-mob-griefing: false
           controllable: true
           ridable: false
-          ridable-in-water: false
+          ridable-in-water: true
           takes-damage-from-water: false
         fox:
           always-drop-exp: false
@@ -720,14 +744,14 @@ purpur:
           bypass-mob-griefing: false
           controllable: true
           ridable: false
-          ridable-in-water: false
+          ridable-in-water: true
           takes-damage-from-water: false
           tulips-change-type: false
         frog:
           breeding-delay-ticks: 6000
           controllable: true
           ridable: false
-          ridable-in-water: false
+          ridable-in-water: true
           ridable-jump-height: 0.6499999761581421
         ghast:
           always-drop-exp: false
@@ -735,7 +759,7 @@ purpur:
             max_health: 10.0
           controllable: true
           ridable: false
-          ridable-in-water: false
+          ridable-in-water: true
           ridable-max-y: 320.0
           takes-damage-from-water: false
         giant:
@@ -749,7 +773,7 @@ purpur:
           jump-height: 1.0
           movement-speed: 0.5
           ridable: false
-          ridable-in-water: false
+          ridable-in-water: true
           step-height: 2.0
           takes-damage-from-water: false
         glow_squid:
@@ -768,7 +792,7 @@ purpur:
           breeding-delay-ticks: 6000
           controllable: true
           ridable: false
-          ridable-in-water: false
+          ridable-in-water: true
           takes-damage-from-water: false
         guardian:
           always-drop-exp: false
@@ -784,7 +808,7 @@ purpur:
           breeding-delay-ticks: 6000
           controllable: true
           ridable: false
-          ridable-in-water: false
+          ridable-in-water: true
           takes-damage-from-water: false
         horse:
           always-drop-exp: false
@@ -800,8 +824,6 @@ purpur:
               min: 0.1125
           breeding-delay-ticks: 6000
           ridable-in-water: false
-          stand-when-hurt: true
-          stand-with-rider: true
           takes-damage-from-water: false
         husk:
           always-drop-exp: false
@@ -814,7 +836,7 @@ purpur:
             only-babies: true
             try-existing-chickens: true
           ridable: false
-          ridable-in-water: false
+          ridable-in-water: true
           takes-damage-from-water: false
         illusioner:
           always-drop-exp: false
@@ -824,7 +846,7 @@ purpur:
           follow-range: 18.0
           movement-speed: 0.5
           ridable: false
-          ridable-in-water: false
+          ridable-in-water: true
           takes-damage-from-water: false
         iron_golem:
           always-drop-exp: false
@@ -835,7 +857,7 @@ purpur:
           healing-calms-anger: false
           poppy-calms-anger: false
           ridable: false
-          ridable-in-water: false
+          ridable-in-water: true
           takes-damage-from-water: false
         llama:
           always-drop-exp: false
@@ -862,7 +884,7 @@ purpur:
             max_health: size * size
           controllable: true
           ridable: false
-          ridable-in-water: false
+          ridable-in-water: true
           takes-damage-from-water: false
         mooshroom:
           always-drop-exp: false
@@ -871,7 +893,7 @@ purpur:
           breeding-delay-ticks: 6000
           controllable: true
           ridable: false
-          ridable-in-water: false
+          ridable-in-water: true
           takes-damage-from-water: false
         mule:
           always-drop-exp: false
@@ -895,7 +917,7 @@ purpur:
           breeding-delay-ticks: 6000
           controllable: true
           ridable: false
-          ridable-in-water: false
+          ridable-in-water: true
           takes-damage-from-water: false
         panda:
           always-drop-exp: false
@@ -904,7 +926,7 @@ purpur:
           breeding-delay-ticks: 6000
           controllable: true
           ridable: false
-          ridable-in-water: false
+          ridable-in-water: true
           takes-damage-from-water: false
         parrot:
           always-drop-exp: false
@@ -913,7 +935,7 @@ purpur:
           can-breed: false
           controllable: true
           ridable: false
-          ridable-in-water: false
+          ridable-in-water: true
           ridable-max-y: 320.0
           takes-damage-from-water: false
         phantom:
@@ -934,24 +956,16 @@ purpur:
           ignore-players-with-torch: false
           orbit-crystal-radius: 0.0
           ridable: false
-          ridable-in-water: false
+          ridable-in-water: true
           ridable-max-y: 320.0
           size:
             max: 0
             min: 0
           spawn:
-            delay:
-              max: 2400
-              min: 1200
             local-difficulty-chance: 3.0
             min-sky-darkness: 5
-            min-time-since-slept: 72000
             only-above-sea-level: true
             only-with-visible-sky: true
-            overhead:
-              max: 35
-              min: 20
-              radius: 10
             per-attempt:
               max: -1
               min: 1
@@ -972,9 +986,10 @@ purpur:
             max_health: 16.0
           bypass-mob-griefing: false
           controllable: true
+          head-visibility-percent: 0.5
           portal-spawn-modifier: 2000
           ridable: false
-          ridable-in-water: false
+          ridable-in-water: true
           takes-damage-from-water: false
         piglin_brute:
           always-drop-exp: false
@@ -982,7 +997,7 @@ purpur:
             max_health: 50.0
           controllable: true
           ridable: false
-          ridable-in-water: false
+          ridable-in-water: true
           takes-damage-from-water: false
         pillager:
           always-drop-exp: false
@@ -991,7 +1006,7 @@ purpur:
           bypass-mob-griefing: false
           controllable: true
           ridable: false
-          ridable-in-water: false
+          ridable-in-water: true
           takes-damage-from-water: false
         polar_bear:
           always-drop-exp: false
@@ -1001,7 +1016,7 @@ purpur:
           breeding-delay-ticks: 6000
           controllable: true
           ridable: false
-          ridable-in-water: false
+          ridable-in-water: true
           takes-damage-from-water: false
         pufferfish:
           always-drop-exp: false
@@ -1018,7 +1033,7 @@ purpur:
           bypass-mob-griefing: false
           controllable: true
           ridable: false
-          ridable-in-water: false
+          ridable-in-water: true
           spawn-killer-rabbit-chance: 0.0
           spawn-toast-chance: 0.0
           takes-damage-from-water: false
@@ -1058,7 +1073,7 @@ purpur:
           controllable: true
           jeb-shear-random-color: false
           ridable: false
-          ridable-in-water: false
+          ridable-in-water: true
           takes-damage-from-water: false
         shulker:
           always-drop-exp: false
@@ -1067,7 +1082,7 @@ purpur:
           change-color-with-dye: false
           controllable: true
           ridable: false
-          ridable-in-water: false
+          ridable-in-water: true
           spawn-from-bullet:
             base-chance: 1.0
             nearby-equation: (nearby - 1) / 5.0
@@ -1082,7 +1097,7 @@ purpur:
           bypass-mob-griefing: false
           controllable: true
           ridable: false
-          ridable-in-water: false
+          ridable-in-water: true
           takes-damage-from-water: false
         skeleton:
           always-drop-exp: false
@@ -1093,7 +1108,7 @@ purpur:
           feed-wither-roses: 0
           head-visibility-percent: 0.5
           ridable: false
-          ridable-in-water: false
+          ridable-in-water: true
           takes-damage-from-water: false
         skeleton_horse:
           always-drop-exp: false
@@ -1117,8 +1132,15 @@ purpur:
             max_health: size * size
           controllable: true
           ridable: false
-          ridable-in-water: false
+          ridable-in-water: true
           takes-damage-from-water: false
+        sniffer:
+          attributes:
+            max_health: 14.0
+          breeding-delay-ticks: 6000
+          controllable: true
+          ridable: false
+          ridable-in-water: true
         snow_golem:
           always-drop-exp: false
           attack-distance: 1.25
@@ -1132,14 +1154,13 @@ purpur:
           min-shoot-interval-ticks: 20
           pumpkin-can-be-added-back: false
           ridable: false
-          ridable-in-water: false
+          ridable-in-water: true
           snow-ball-modifier: 10.0
           takes-damage-from-water: true
         spider:
           always-drop-exp: false
           attributes:
             max_health: 16.0
-          can-climb-world-border: true
           controllable: true
           ridable: false
           ridable-in-water: false
@@ -1160,7 +1181,7 @@ purpur:
             max_health: 20.0
           controllable: true
           ridable: false
-          ridable-in-water: false
+          ridable-in-water: true
           takes-damage-from-water: false
         strider:
           always-drop-exp: false
@@ -1175,7 +1196,7 @@ purpur:
         tadpole:
           controllable: true
           ridable: false
-          ridable-in-water: false
+          ridable-in-water: true
         trader_llama:
           always-drop-exp: false
           attributes:
@@ -1207,7 +1228,7 @@ purpur:
           breeding-delay-ticks: 6000
           controllable: true
           ridable: false
-          ridable-in-water: false
+          ridable-in-water: true
           takes-damage-from-water: false
         vex:
           always-drop-exp: false
@@ -1215,7 +1236,7 @@ purpur:
             max_health: 14.0
           controllable: true
           ridable: false
-          ridable-in-water: false
+          ridable-in-water: true
           ridable-max-y: 320.0
           takes-damage-from-water: false
         villager:
@@ -1223,7 +1244,6 @@ purpur:
           always-drop-exp: false
           attributes:
             max_health: 20.0
-          brain-ticks: 1
           breeding-delay-ticks: 6000
           bypass-mob-griefing: false
           can-be-leashed: false
@@ -1238,12 +1258,11 @@ purpur:
             enabled: false
           minimum-demand: 0
           ridable: false
-          ridable-in-water: false
+          ridable-in-water: true
           spawn-iron-golem:
             limit: 0
             radius: 0
           takes-damage-from-water: false
-          use-brain-ticks-only-when-lagging: true
         vindicator:
           always-drop-exp: false
           attributes:
@@ -1252,7 +1271,7 @@ purpur:
           johnny:
             spawn-chance: 0.0
           ridable: false
-          ridable-in-water: false
+          ridable-in-water: true
           takes-damage-from-water: false
         wandering_trader:
           allow-trading: true
@@ -1263,19 +1282,19 @@ purpur:
           controllable: true
           follow-emerald-blocks: false
           ridable: false
-          ridable-in-water: false
+          ridable-in-water: true
           takes-damage-from-water: false
         warden:
           controllable: true
           ridable: false
-          ridable-in-water: false
+          ridable-in-water: true
         witch:
           always-drop-exp: false
           attributes:
             max_health: 26.0
           controllable: true
           ridable: false
-          ridable-in-water: false
+          ridable-in-water: true
           takes-damage-from-water: false
         wither:
           always-drop-exp: false
@@ -1289,7 +1308,7 @@ purpur:
           health-regen-delay: 20
           play-spawn-sound: true
           ridable: false
-          ridable-in-water: false
+          ridable-in-water: true
           ridable-max-y: 320.0
           takes-damage-from-water: false
         wither_skeleton:
@@ -1298,7 +1317,7 @@ purpur:
             max_health: 20.0
           controllable: true
           ridable: false
-          ridable-in-water: false
+          ridable-in-water: true
           takes-damage-from-water: false
         wolf:
           always-drop-exp: false
@@ -1309,7 +1328,7 @@ purpur:
           default-collar-color: RED
           milk-cures-rabid-wolves: true
           ridable: false
-          ridable-in-water: false
+          ridable-in-water: true
           spawn-rabid-chance: 0.0
           takes-damage-from-water: false
         zoglin:
@@ -1318,7 +1337,7 @@ purpur:
             max_health: 40.0
           controllable: true
           ridable: false
-          ridable-in-water: false
+          ridable-in-water: true
           takes-damage-from-water: false
         zombie:
           aggressive-towards-villager-when-lagging: true
@@ -1334,7 +1353,7 @@ purpur:
             only-babies: true
             try-existing-chickens: true
           ridable: false
-          ridable-in-water: false
+          ridable-in-water: true
           takes-damage-from-water: false
         zombie_horse:
           always-drop-exp: false
@@ -1368,7 +1387,7 @@ purpur:
             only-babies: true
             try-existing-chickens: true
           ridable: false
-          ridable-in-water: false
+          ridable-in-water: true
           takes-damage-from-water: false
         zombified_piglin:
           always-drop-exp: false
@@ -1382,11 +1401,12 @@ purpur:
             only-babies: true
             try-existing-chickens: true
           ridable: false
-          ridable-in-water: false
+          ridable-in-water: true
           takes-damage-from-water: false
       ridable-settings:
         babies-are-ridable: true
         untamed-tamables-are-ridable: true
+        use-dismounts-underwater-tag: true
         use-night-vision: false
       settings:
         entity:
@@ -1400,12 +1420,21 @@ purpur:
             minecraft:acacia_wood:
               drops: {}
               into: minecraft:stripped_acacia_wood
+            minecraft:bamboo_block:
+              drops: {}
+              into: minecraft:stripped_bamboo_block
             minecraft:birch_log:
               drops: {}
               into: minecraft:stripped_birch_log
             minecraft:birch_wood:
               drops: {}
               into: minecraft:stripped_birch_wood
+            minecraft:cherry_log:
+              drops: {}
+              into: minecraft:stripped_cherry_log
+            minecraft:cherry_wood:
+              drops: {}
+              into: minecraft:stripped_cherry_wood
             minecraft:crimson_hyphae:
               drops: {}
               into: minecraft:stripped_crimson_hyphae

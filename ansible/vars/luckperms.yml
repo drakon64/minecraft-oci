@@ -1,4 +1,4 @@
-combined_luckperms: "{% set combined_luckperms = luckperms %}{% if global_overrides.luckperms is defined %}{% set combined_luckperms = (combined_luckperms | combine(global_overrides.luckperms, recursive=True)) %}{% endif %}{% if node_overrides.luckperms is defined %}{% set combined_luckperms = (combined_luckperms | combine(node_overrides.luckperms, recursive=True)) %}{% endif %}{% if outer_item.plugins.luckperms is defined %}{% set combined_luckperms = (combined_luckperms | combine(outer_item.plugins.luckperms, recursive=True)) %}{% endif %}{{ combined_luckperms }}"
+combined_luckperms: '{% set combined_luckperms = luckperms %}{% if global_overrides.luckperms is defined %}{% set combined_luckperms = (combined_luckperms | combine(global_overrides.luckperms, recursive=True)) %}{% endif %}{% if node_overrides.luckperms is defined %}{% set combined_luckperms = (combined_luckperms | combine(node_overrides.luckperms, recursive=True)) %}{% endif %}{% if outer_item.plugins.luckperms is defined %}{% set combined_luckperms = (combined_luckperms | combine(outer_item.plugins.luckperms, recursive=True)) %}{% endif %}{{ combined_luckperms }}'
 luckperms:
   config:
     allow-invalid-usernames: false
@@ -54,17 +54,22 @@ luckperms:
         end-spacer: ""
         format:
           - highest
-        middle-spacer: " "
+        middle-spacer: ' '
         start-spacer: ""
       suffix:
         duplicates: first-only
         end-spacer: ""
         format:
           - highest
-        middle-spacer: " "
+        middle-spacer: ' '
         start-spacer: ""
     meta-value-selection:
     meta-value-selection-default: inheritance
+    nats:
+      address: localhost
+      enabled: false
+      password: ""
+      username: ""
     post-traversal-inheritance-sort: false
     prevent-primary-group-removal: false
     primary-group-calculation: parents-by-weight

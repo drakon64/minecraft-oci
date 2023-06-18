@@ -18,17 +18,17 @@ worldguard:
         path: worldguard/logs/%Y-%m-%d.log
     use-as-whitelist: false
   build-permission-nodes:
-    deny-message: "&eSorry, but you are not permitted to do that here."
+    deny-message: '&eSorry, but you are not permitted to do that here.'
     enable: false
   crops:
     disable-creature-trampling: false
     disable-player-trampling: false
-  custom-metrics-charts: true
   default:
     disable-health-regain: false
     pumpkin-scuba: false
   disable-permission-cache: false
   dynamics:
+    disable-copper-block-fade: false
     disable-coral-block-fade: false
     disable-crop-growth: false
     disable-grass-growth: false
@@ -38,6 +38,7 @@ worldguard:
     disable-mushroom-spread: false
     disable-mycelium-spread: false
     disable-rock-growth: false
+    disable-sculk-growth: false
     disable-snow-formation: false
     disable-snow-melting: false
     disable-soil-dehydration: false
@@ -49,8 +50,6 @@ worldguard:
     emit-block-use-at-feet: []
     ignore-hopper-item-move-events: false
     interaction-whitelist: []
-  extra-timings:
-    session-handlers: true
   fire:
     disable-all-fire-spread: false
     disable-fire-spread-blocks: []
@@ -137,7 +136,7 @@ worldguard:
     use-paper-entity-origin: false
     uuid-migration:
       keep-names-that-lack-uuids: true
-      perform-on-next-start: false
+      perform-on-next-start: true
     wand: minecraft:leather
   security:
     block-in-game-op-command: false

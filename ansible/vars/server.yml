@@ -1,4 +1,4 @@
-combined_server: "{% set combined_server = server %}{% if global_overrides.server is defined %}{% set combined_server = (combined_server | combine(global_overrides.server, recursive=True)) %}{% endif %}{% if node_overrides.server is defined %}{% set combined_server = (combined_server | combine(node_overrides.server, recursive=True)) %}{% endif %}{% if outer_item.server is defined %}{% set combined_server = (combined_server | combine(outer_item.server, recursive=True)) %}{% endif %}{{ combined_server }}"
+combined_server: '{% set combined_server = server %}{% if global_overrides.server is defined %}{% set combined_server = (combined_server | combine(global_overrides.server, recursive=True)) %}{% endif %}{% if node_overrides.server is defined %}{% set combined_server = (combined_server | combine(node_overrides.server, recursive=True)) %}{% endif %}{% if outer_item.server is defined %}{% set combined_server = (combined_server | combine(outer_item.server, recursive=True)) %}{% endif %}{{ combined_server }}'
 server:
   allow-flight: "false"
   allow-nether: "true"
@@ -11,7 +11,7 @@ server:
   enable-query: "false"
   enable-rcon: "false"
   enable-status: "true"
-  enforce-secure-profile: "false"
+  enforce-secure-profile: "true"
   enforce-whitelist: "false"
   entity-broadcast-range-percentage: 100
   force-gamemode: "false"
@@ -21,6 +21,8 @@ server:
   generator-settings: {}
   hardcore: "false"
   hide-online-players: "false"
+  initial-disabled-packs:
+  initial-enabled-packs: vanilla
   level-name: world
   level-seed:
   level-type: minecraft\:normal
@@ -34,7 +36,6 @@ server:
   op-permission-level: 4
   player-idle-timeout: 0
   prevent-proxy-connections: "false"
-  previews-chat: "false"
   pvp: "true"
   "query.port": 25565
   rate-limit: 0
@@ -45,6 +46,7 @@ server:
   resource-pack-prompt:
   resource-pack-sha1:
   server-ip:
+  server-name: Unknown Server
   server-port: 25565
   simulation-distance: 10
   spawn-animals: "true"

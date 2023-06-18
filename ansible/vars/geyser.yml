@@ -1,13 +1,11 @@
-combined_geyser: "{% set combined_geyser = geyser %}{% if global_overrides.geyser is defined %}{% set combined_geyser = (combined_geyser | combine(global_overrides.geyser, recursive=True)) %}{% endif %}{% if node_overrides.geyser is defined %}{% set combined_geyser = (combined_geyser | combine(node_overrides.geyser, recursive=True)) %}{% endif %}{% if outer_item.plugins.geyser is defined %}{% set combined_geyser = (combined_geyser | combine(outer_item.plugins.geyser, recursive=True)) %}{% endif %}{{ combined_geyser }}"
+combined_geyser: '{% set combined_geyser = geyser %}{% if global_overrides.geyser is defined %}{% set combined_geyser = (combined_geyser | combine(global_overrides.geyser, recursive=True)) %}{% endif %}{% if node_overrides.geyser is defined %}{% set combined_geyser = (combined_geyser | combine(node_overrides.geyser, recursive=True)) %}{% endif %}{% if outer_item.plugins.geyser is defined %}{% set combined_geyser = (combined_geyser | combine(outer_item.plugins.geyser, recursive=True)) %}{% endif %}{{ combined_geyser }}'
 geyser:
   above-bedrock-nether-building: false
   add-non-bedrock-items: true
   allow-custom-skulls: true
-  allow-third-party-capes: true
+  allow-third-party-capes: false
   allow-third-party-ears: false
-  always-quick-change-armor: false
   bedrock:
-    address: 0.0.0.0
     clone-remote-port: false
     compression-level: 6
     enable-proxy-protocol: false
@@ -21,6 +19,7 @@ geyser:
   custom-skull-render-distance: 32
   debug-mode: false
   disable-bedrock-scaffolding: false
+  disable-compression: true
   emote-offhand-workaround: disabled
   enable-proxy-connections: false
   floodgate-key-file: key.pem
@@ -53,5 +52,6 @@ geyser:
   scoreboard-packet-threshold: 20
   show-cooldown: title
   show-coordinates: true
+  unusable-space-block: minecraft:barrier
   use-direct-connection: true
   xbox-achievements-enabled: false
