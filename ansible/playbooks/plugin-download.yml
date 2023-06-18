@@ -31,7 +31,7 @@
     owner: minecraft-{{ outer_item.name }}
     group: minecraft-{{ outer_item.name }}
     mode: 0644
-    force: yes
+    force: true
   loop:
     - {
       url: https://ci.opencollab.dev/job/GeyserMC/job/Geyser/job/master/lastSuccessfulBuild/artifact/bootstrap/spigot/target/Geyser-Spigot.jar,

@@ -76,7 +76,7 @@
       loop: "{{ instances }}"
       loop_control:
         label: "{{ item.name }}"
-      ignore_errors: yes # todo: fix this
+      ignore_errors: true # todo: fix this
 
     - name: Unmounting Borg snapshots
       systemd:
@@ -85,7 +85,7 @@
       loop: "{{ instances }}"
       loop_control:
         label: "{{ item.name }}"
-      ignore_errors: yes # todo: fix this
+      ignore_errors: true # todo: fix this
 
     - name: Backing up the existing server
       shell: /opt/minecraft/backup.sh {{ item.name }}
@@ -106,16 +106,16 @@
         name: ol9_developer_EPEL
         baseurl: https://yum$ociregion.$ocidomain/repo/OracleLinux/OL9/developer/EPEL/$basearch/
         description: Oracle Linux $releasever EPEL Packages for Development ($basearch)
-        gpgcheck: yes
+        gpgcheck: true
         gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-oracle
-        enabled: yes
+        enabled: true
         file: oracle-epel-ol9
 
     - name: Installing updates
       dnf:
         name: "*"
         state: latest
-        update_cache: yes
+        update_cache: true
 
     - name: Setting the timezone
       timezone:
@@ -130,13 +130,13 @@
           - python39-oci-cli
           - tmux
         state: present
-        update_cache: yes
+        update_cache: true
 
     - name: Installing Java
       dnf:
         name: "{{ item.name }}"
         state: "{{ item.state }}"
-        update_cache: yes
+        update_cache: true
       loop:
         - {
           name: "java-17-openjdk",
@@ -150,7 +150,7 @@
     - name: Creating the instance user
       user:
         name: minecraft-{{ item.name }}
-        create_home: yes
+        create_home: true
         home: /opt/minecraft/{{ item.name }}
         shell: /bin/bash
       loop: "{{ instances }}"
@@ -204,7 +204,7 @@
       sysctl:
         name: vm.swappiness
         value: 1
-        reload: yes
+        reload: true
 
     - name: Turning on swapfile
       command: swapon /.swapfile
@@ -226,7 +226,7 @@
         owner: minecraft-{{ item.name }}
         group: minecraft-{{ item.name }}
         mode: u=rwX,g=rX,o=rX
-        recurse: yes
+        recurse: true
       loop: "{{ instances }}"
       loop_control:
         label: "{{ item.name }}"
@@ -238,7 +238,7 @@
         owner: minecraft-{{ item.name }}
         group: minecraft-{{ item.name }}
         mode: u=rwX,g=rX,o=rX
-        recurse: yes
+        recurse: true
       loop: "{{ instances }}"
       loop_control:
         label: "{{ item.name }}"
@@ -259,7 +259,7 @@
         owner: minecraft-{{ item.name }}
         group: minecraft-{{ item.name }}
         mode: 0755
-        recurse: yes
+        recurse: true
       loop: "{{ instances }}"
       loop_control:
         label: "{{ item.name }}"
@@ -548,8 +548,8 @@
       firewalld:
         service: minecraft
         state: enabled
-        permanent: yes
-        immediate: yes
+        permanent: true
+        immediate: true
 
     - name: Accepting the Minecraft Server EULA
       copy:
@@ -608,8 +608,8 @@
       systemd:
         name: minecraft-{{ item.name }}
         state: stopped
-        enabled: no
-        daemon_reload: yes
+        enabled: false
+        daemon_reload: true
       loop: "{{ instances }}"
       loop_control:
         label: "{{ item.name }}"
@@ -619,8 +619,8 @@
       systemd:
         name: minecraft-{{ item.name }}
         state: started
-        enabled: yes
-        daemon_reload: yes
+        enabled: true
+        daemon_reload: true
       loop: "{{ instances }}"
       loop_control:
         label: "{{ item.name }}"
@@ -630,8 +630,8 @@
       systemd:
         name: minecraft-backup@{{ item.name }}.timer
         state: stopped
-        enabled: no
-        daemon_reload: yes
+        enabled: false
+        daemon_reload: true
       loop: "{{ instances }}"
       loop_control:
         label: "{{ item.name }}"
@@ -642,7 +642,7 @@
         name: minecraft-backup@{{ item.name }}.timer
         state: "{% if item.state.enabled %}started{% else %}stopped{% endif %}"
         enabled: "{% if item.state.enabled %}yes{% else %}no{% endif %}"
-        daemon_reload: yes
+        daemon_reload: true
       loop: "{{ instances }}"
       loop_control:
         label: "{{ item.name }}"

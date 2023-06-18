@@ -7,4 +7,4 @@
     owner: minecraft-{{ outer_item.name }}
     group: minecraft-{{ outer_item.name }}
     mode: "0644"
-    force: yes
+    force: true
