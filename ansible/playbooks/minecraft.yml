@@ -392,21 +392,21 @@
           src: "templates/scripts/dnf-reboot.sh.j2",
           dest: "/opt/minecraft/dnf-reboot.sh",
           owner: "root",
-          mode: "u=rwX,g=r,o=r",
+          mode: "u=rwx,g=r,o=r",
           when: true,
         }
         - {
           src: "files/scripts/stop.sh",
           dest: "/opt/minecraft/stop.sh",
           owner: "root",
-          mode: "u=rwX,g=r,o=r",
+          mode: "u=rwx,g=rx,o=rx",
           when: true,
         }
         - {
           src: "templates/scripts/backup.sh.j2",
           dest: "/opt/minecraft/backup.sh",
           owner: "root",
-          mode: "u=rwX,g=r,o=r",
+          mode: "u=rwx,g=rx,o=rx",
           when: true,
         }
         - {
