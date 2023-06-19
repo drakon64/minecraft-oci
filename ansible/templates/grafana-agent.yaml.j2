@@ -1,0 +1,19 @@
+prometheus:
+  global:
+    scrape_interval: 5s
+  configs:
+    - name: minecraft
+      host_filter: false
+      scrape_configs:
+        - job_name: minecraft_scrape
+          static_configs:
+            # Put your server's IP here
+            - targets: [ "127.0.0.1:9100" ]
+      remote_write:
+        # Create an account at https://grafana.com/ and create an organization.
+        # Put Prometheus remote write credentials here. Make sure to update the push URL to match yours.
+        - url: {{ grafana.push.url }}
+          # Create an API key with write scope on Grafana Cloud
+          basic_auth:
+            username: {{ grafana.username }}
+            password: {{ grafana.push.api_key }}

@@ -1,0 +1,12 @@
+{% set combined_unifiedmetrics = unifiedmetrics.config %}
+{% if global_overrides.unifiedmetrics.config is defined %}
+{% set combined_unifiedmetrics = (combined_unifiedmetrics | combine(global_overrides.unifiedmetrics.config, recursive=True)) %}
+{% endif %}
+{% if node_overrides.unifiedmetrics.config is defined %}
+{% set combined_unifiedmetrics = (combined_unifiedmetrics | combine(node_overrides.unifiedmetrics.config, recursive=True)) %}
+{% endif %}
+{% if outer_item.plugins.unifiedmetrics.config is defined %}
+{% set combined_unifiedmetrics = (combined_unifiedmetrics | combine(outer_item.plugins.unifiedmetrics.config, recursive=True)) %}
+{% endif %}
+
+{{ combined_unifiedmetrics | to_nice_yaml(indent=2) }}

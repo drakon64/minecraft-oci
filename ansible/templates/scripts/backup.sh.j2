@@ -1,6 +1,6 @@
 #!/bin/bash -ex
 
-{#PLAYERS=$(curl --silent -u '{{ grafana.prometheus.username }}:{{ grafana.prometheus.read.api_key }}' --data-urlencode 'query=max_over_time(minecraft_players_count[{{ backup.player_check_range }}])' {{ grafana.prometheus.url }}/api/v1/query | jq -r ".data.result[].value[1]")#}
+PLAYERS=$(curl --silent -u '{{ grafana.username }}:{{ grafana.view.api_key }}' --data-urlencode 'query=max_over_time(minecraft_players_count[{{ backup.player_check_range }}])' {{ grafana.view.url }}/api/v1/query | jq -r ".data.result[].value[1]")
 
 if [ "$PLAYERS" -gt 0 ]
 then

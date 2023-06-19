@@ -1,0 +1,33 @@
+# yaml-language-server: $schema=https://json.schemastore.org/ansible-playbook.json
+
+- name: Adding the Grafana repository
+  yum_repository:
+    name: grafana
+    description: grafana
+    baseurl: https://rpm.grafana.com
+    gpgcheck: true
+    gpgkey: https://rpm.grafana.com/gpg.key
+    repo_gpgcheck: true
+    sslverify: true
+    enabled: true
+    state: present
+
+- name: Installing the Grafana Agent
+  dnf:
+    name: grafana-agent
+    state: present
+
+- name: Configuring the Grafana Agent
+  template:
+    src: ../templates/grafana-agent.yaml.j2
+    dest: /etc/grafana-agent.yaml
+    owner: root
+    group: root
+    mode: u=rw,g=r,o=r
+
+- name: Restarting the Grafana Agent
+  systemd:
+    name: grafana-agent
+    state: restarted
+    enabled: true
+    daemon_reload: true

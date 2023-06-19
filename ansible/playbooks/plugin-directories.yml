@@ -6,7 +6,7 @@
     state: "{{ item.state }}"
     owner: minecraft-{{ outer_item.name }}
     group: minecraft-{{ outer_item.name }}
-    mode: u=rw,g=r,o=r
+    mode: u=rwX,g=rX,o=rX
   loop:
     - {
       path: Chunky,
@@ -41,6 +41,7 @@
       path: LuckPerms/yaml-storage/users,
       state: "{% if combined_luckperms.config['storage-method'] == 'yaml' %}directory{% else %}absent{% endif %}",
     }
+    - { path: UnifiedMetrics/driver, state: directory }
     - {
       path: ViaVersion,
       state: "{% if outer_item.viaversion %}directory{% else %}absent{% endif %}",

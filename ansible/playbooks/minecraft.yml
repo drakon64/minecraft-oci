@@ -17,6 +17,7 @@
     - ../vars/paper.yml
     - ../vars/server.yml
     - ../vars/spigot.yml
+    - ../vars/unifiedmetrics.yml
     - ../vars/viaversion.yml
     - ../vars/worldedit.yml
     - ../vars/worldguard.yml
@@ -95,9 +96,6 @@
       when:
         - item.state.new_server or item.state.update_server
         - item.state.skip_backup == false
-
-    - name: Applying updates with Uptrack
-      command: uptrack-upgrade -y
 
     - name: Enabling EPEL
       yum_repository:
@@ -377,6 +375,9 @@
       loop_control:
         loop_var: outer_item
         label: "{{ outer_item.name }}"
+
+    - name: Configuring Grafana Agent
+      include_tasks: grafana.yml
 
     - name: Copying scripts and systemd units
       template:

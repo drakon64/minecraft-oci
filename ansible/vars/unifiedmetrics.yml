@@ -1,0 +1,24 @@
+unifiedmetrics:
+  config:
+    metrics:
+      collectors:
+        events: true
+        server: true
+        systemGc: true
+        systemMemory: true
+        systemProcess: true
+        systemThread: true
+        tick: true
+        world: true
+      driver: prometheus
+      enabled: true
+    server:
+      name: global
+  driver:
+    prometheus:
+      mode: "HTTP"
+      http:
+        host: "0.0.0.0"
+        port: 9100
+        authentication:
+          scheme: "NONE"

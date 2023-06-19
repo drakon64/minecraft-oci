@@ -1,5 +1,9 @@
 #yaml-language-server: $schema=https://json.schemastore.org/ansible-playbook.json
 
+- name: Getting the latest AppleSkinSpigot release
+  shell: curl --silent https://api.github.com/repos/jmattingley23/AppleSkinSpigot/releases/latest | jq -r '.assets[].browser_download_url'
+  register: appleskin_latest
+
 - name: Getting the latest Chunky release
   shell: curl --silent https://ci.codemc.io/job/pop4959/job/Chunky/lastSuccessfulBuild/api/json | jq -r '.artifacts[0].fileName'
   register: chunky_latest
@@ -8,17 +12,17 @@
   shell: curl --silent https://api.github.com/repos/nkomarn/harbor/releases/latest | jq -r '.assets[].browser_download_url'
   register: harbor_latest
 
-- name: Getting the latest ViaVersion release
-  shell: curl --silent "https://api.github.com/repos/ViaVersion/ViaVersion/releases/latest" | jq -r '.assets[].browser_download_url'
-  register: viaversion_latest
-
-- name: Getting the latest AppleSkinSpigot release
-  shell: curl --silent https://api.github.com/repos/jmattingley23/AppleSkinSpigot/releases/latest | jq -r '.assets[].browser_download_url'
-  register: appleskin_latest
-
 - name: Getting the latest LuckPerms release
   shell: curl --silent https://ci.lucko.me/job/LuckPerms/lastSuccessfulBuild/api/json | jq -r '.artifacts[0].fileName'
   register: luckperms_latest
+
+- name: Getting the latest UnifiedMetrics release
+  shell: curl --silent "https://api.github.com/repos/Cubxity/UnifiedMetrics/releases/latest" | jq -r '.assets[].browser_download_url | select(contains("bukkit")) | select(endswith("jar"))'
+  register: unifiedmetrics_latest
+
+- name: Getting the latest ViaVersion release
+  shell: curl --silent "https://api.github.com/repos/ViaVersion/ViaVersion/releases/latest" | jq -r '.assets[].browser_download_url'
+  register: viaversion_latest
 
 - name: Downloading plugins for {{ outer_item.name }}
   get_url:
@@ -30,13 +34,23 @@
     force: true
   loop:
     - {
-      url: https://download.geysermc.org/v2/projects/geyser/versions/latest/builds/latest/downloads/spigot,
-      dest: Geyser-Spigot.jar,
+      url: "{{ appleskin_latest.stdout }}",
+      dest: AppleSkinSpigot.jar,
+      when: true,
+    }
+    - {
+      url: "https://ci.codemc.io/view/Author/job/pop4959/job/Chunky/lastSuccessfulBuild/artifact/bukkit/build/libs/{{ chunky_latest.stdout }}",
+      dest: Chunky.jar,
       when: true,
     }
     - {
       url: https://download.geysermc.org/v2/projects/floodgate/versions/latest/builds/latest/downloads/spigot,
       dest: floodgate-spigot.jar,
+      when: true,
+    }
+    - {
+      url: https://download.geysermc.org/v2/projects/geyser/versions/latest/builds/latest/downloads/spigot,
+      dest: Geyser-Spigot.jar,
       when: true,
     }
     - {
@@ -50,18 +64,13 @@
       when: true,
     }
     - {
-      url: "https://ci.codemc.io/view/Author/job/pop4959/job/Chunky/lastSuccessfulBuild/artifact/bukkit/build/libs/{{ chunky_latest.stdout }}",
-      dest: "Chunky.jar",
-      when: true,
-    }
-    - {
-      url: "{{ appleskin_latest.stdout }}",
-      dest: AppleSkinSpigot.jar,
-      when: true,
-    }
-    - {
       url: "https://ci.lucko.me/job/LuckPerms/lastSuccessfulBuild/artifact/bukkit/loader/build/libs/{{ luckperms_latest.stdout }}",
       dest: LuckPerms.jar,
+      when: true,
+    }
+    - {
+      url: "{{ unifiedmetrics_latest.stdout }}",
+      dest: UnifiedMetrics.jar,
       when: true,
     }
     - {
