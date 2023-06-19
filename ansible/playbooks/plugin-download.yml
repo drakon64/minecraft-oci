@@ -26,7 +26,7 @@
     dest: /opt/minecraft/{{ outer_item.name }}/server/plugins/{{ item.dest }}
     owner: minecraft-{{ outer_item.name }}
     group: minecraft-{{ outer_item.name }}
-    mode: 0644
+    mode: u=rw,g=r,o=r
     force: true
   loop:
     - {

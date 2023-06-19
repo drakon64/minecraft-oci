@@ -66,7 +66,7 @@ resource "oci_core_instance" "minecraft_instance" {
   }
 
   shape_config {
-    memory_in_gbs = 8
+    memory_in_gbs = 10
     ocpus         = 3
   }
 

@@ -386,4 +386,4 @@ paper:
           secondarypoisensor: 40
     unsupported-settings:
       fix-invulnerable-end-crystal-exploit: true
-  worlds:
+  worlds: {}

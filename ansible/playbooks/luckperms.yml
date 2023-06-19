@@ -6,7 +6,7 @@
     dest: /opt/minecraft/{{ outer_item.name }}/server/plugins/LuckPerms/{% if combined_luckperms.config['storage-method'] == "json" %}json{% elif combined_luckperms.config['storage-method'] == "yaml" %}yaml{% endif %}-storage/users/{{ item.uuid }}.{% if combined_luckperms.config['storage-method'] == "json" %}json{% elif combined_luckperms.config['storage-method'] == "yaml" %}yml{% endif %}
     owner: minecraft-{{ outer_item.name }}
     group: minecraft-{{ outer_item.name }}
-    mode: 0644
+    mode: u=rw,g=r,o=r
   loop: "{{ combined_luckperms.users }}"
   when:
     - combined_luckperms.config['storage-method'] == "json" or combined_luckperms.config['storage-method'] == "yaml"
@@ -20,7 +20,7 @@
     dest: /opt/minecraft/{{ outer_item.name }}/server/plugins/LuckPerms/{% if combined_luckperms.config['storage-method'] == "json" %}json{% elif combined_luckperms.config['storage-method'] == "yaml" %}yaml{% endif %}-storage/groups/{{ item.name }}.{% if combined_luckperms.config['storage-method'] == "json" %}json{% elif combined_luckperms.config['storage-method'] == "yaml" %}yml{% endif %}
     owner: minecraft-{{ outer_item.name }}
     group: minecraft-{{ outer_item.name }}
-    mode: 0644
+    mode: u=rw,g=r,o=r
   loop: "{{ combined_luckperms.groups }}"
   when:
     - combined_luckperms.config['storage-method'] == "json" or combined_luckperms.config['storage-method'] == "yaml"

@@ -6,7 +6,7 @@
     dest: /opt/minecraft/{{ outer_item.name }}/server/plugins/Geyser-Spigot/packs/
     owner: minecraft-{{ outer_item.name }}
     group: minecraft-{{ outer_item.name }}
-    mode: 0644
+    mode: u=rw,g=r,o=r
   loop: "{{ outer_item.bedrock_resource_packs }}"
   when:
     - outer_item.bedrock_resource_packs is defined

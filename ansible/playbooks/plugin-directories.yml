@@ -6,7 +6,7 @@
     state: "{{ item.state }}"
     owner: minecraft-{{ outer_item.name }}
     group: minecraft-{{ outer_item.name }}
-    mode: "0755"
+    mode: u=rw,g=r,o=r
   loop:
     - {
       path: Chunky,

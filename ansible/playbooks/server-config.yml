@@ -5,7 +5,7 @@
     path: /opt/minecraft/{{ outer_item.name }}/server/config
     owner: minecraft-{{ outer_item.name }}
     group: minecraft-{{ outer_item.name }}
-    mode: 0755
+    mode: u=rwX,g=rX,o=rX
     state: directory
 
 - name: Creating the Paper world directories for {{ outer_item.name }}
@@ -13,7 +13,7 @@
     path: /opt/minecraft/{{ outer_item.name }}/server/{{ item.key }}
     owner: minecraft-{{ outer_item.name }}
     group: minecraft-{{ outer_item.name }}
-    mode: 0755
+    mode: u=rwX,g=rX,o=rX
     state: directory
   loop: "{{ combined_paper_worlds | dict2items }}"
 
@@ -23,7 +23,7 @@
     dest: /opt/minecraft/{{ outer_item.name }}/server/{{ item.src }}
     owner: minecraft-{{ outer_item.name }}
     group: minecraft-{{ outer_item.name }}
-    mode: "0644"
+    mode: u=rw,g=r,o=r
   loop:
     - { src: server.properties, when: true }
     - { src: bukkit.yml, when: true }
@@ -36,11 +36,6 @@
     - { src: plugins/Geyser-Spigot/config.yml, when: true }
     - { src: plugins/Harbor/config.yml, when: true }
     - { src: plugins/LuckPerms/config.yml, when: true }
-    - { src: plugins/MiniMOTD/main.conf, when: true }
-    - {
-      src: plugins/MiniMOTD/plugin_settings.conf,
-      when: true,
-    }
     - {
       src: plugins/ViaVersion/config.yml,
       when: "{{ outer_item.viaversion }}",
@@ -63,7 +58,7 @@
     dest: /opt/minecraft/{{ outer_item.name }}/server/{{ item.key }}/paper-world.yml
     owner: minecraft-{{ outer_item.name }}
     group: minecraft-{{ outer_item.name }}
-    mode: 0644
+    mode: u=rw,g=r,o=r
   loop: "{{ combined_paper_worlds | dict2items }}"
   when:
     - outer_item.state.backup.restore_backup == false
@@ -74,7 +69,7 @@
     dest: /opt/minecraft/{{ outer_item.name }}/server/{{ item }}.json
     owner: minecraft-{{ outer_item.name }}
     group: minecraft-{{ outer_item.name }}
-    mode: 0644
+    mode: u=rw,g=r,o=r
   loop:
     - ops
     - whitelist
