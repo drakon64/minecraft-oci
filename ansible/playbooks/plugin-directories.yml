@@ -9,7 +9,11 @@
     mode: u=rwX,g=rX,o=rX
   loop:
     - {
-      path: Chunky,
+      path: Chunky/tasks,
+      state: directory,
+    }
+    - {
+      path: DiscordSRV,
       state: directory,
     }
     - {

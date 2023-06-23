@@ -8,6 +8,10 @@
   shell: curl --silent https://ci.codemc.io/job/pop4959/job/Chunky/lastSuccessfulBuild/api/json | jq -r '.artifacts[0].fileName'
   register: chunky_latest
 
+- name: Getting the latest DiscordSRV release
+  shell: curl --silent https://api.github.com/repos/DiscordSRV/DiscordSRV/releases/latest | jq -r '.assets[].browser_download_url'
+  register: discordsrv_latest
+
 - name: Getting the latest Harbor release
   shell: curl --silent https://api.github.com/repos/nkomarn/harbor/releases/latest | jq -r '.assets[].browser_download_url'
   register: harbor_latest
@@ -45,6 +49,11 @@
     - {
       url: "https://ci.codemc.io/view/Author/job/pop4959/job/Chunky/lastSuccessfulBuild/artifact/bukkit/build/libs/{{ chunky_latest.stdout }}",
       dest: Chunky.jar,
+      when: true,
+    }
+    - {
+      url: "{{ discordsrv_latest.stdout }}",
+      dest: DiscordSRV.jar,
       when: true,
     }
     - {

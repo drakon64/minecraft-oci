@@ -1,0 +1,12 @@
+{% set combined_discordsrv = discordsrv.config %}
+{% if global_overrides.discordsrv.config is defined %}
+{% set combined_discordsrv = (combined_discordsrv | combine(global_overrides.discordsrv.config, recursive=True)) %}
+{% endif %}
+{% if node_overrides.discordsrv.config is defined %}
+{% set combined_discordsrv = (combined_discordsrv | combine(node_overrides.discordsrv.config, recursive=True)) %}
+{% endif %}
+{% if outer_item.plugins.discordsrv.config is defined %}
+{% set combined_discordsrv = (combined_discordsrv | combine(outer_item.plugins.discordsrv.config, recursive=True)) %}
+{% endif %}
+
+{{ combined_discordsrv | to_nice_yaml(indent=2) }}

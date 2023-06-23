@@ -32,6 +32,7 @@
     - { src: config/paper-global.yml, when: true }
     - { src: config/paper-world-defaults.yml, when: true }
     - { src: plugins/Chunky/config.yml, when: true }
+    - { src: plugins/DiscordSRV/config.yml, when: true }
     - { src: plugins/floodgate/config.yml, when: true }
     - { src: plugins/Geyser-Spigot/config.yml, when: true }
     - { src: plugins/Harbor/config.yml, when: true }
@@ -84,3 +85,12 @@
   when:
     - outer_item.restore_permissions
     - outer_item.state.backup.restore_backup == false
+
+- name: Copying Chunky tasks for {{ outer_item.name }}
+  template:
+    src: ../templates/java/plugins/Chunky/tasks/task.properties.j2
+    dest: /opt/minecraft/{{ outer_item.name }}/server/plugins/Chunky/tasks/{{ item.world }}.properties
+    owner: minecraft-{{ outer_item.name }}
+    group: minecraft-{{ outer_item.name }}
+    mode: u=rw,g=r,o=r
+  loop: "{{ global_overrides.chunky.tasks }}"

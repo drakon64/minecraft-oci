@@ -1,12 +1,12 @@
-{% set combined_chunky = chunky %}
-{% if global_overrides.chunky is defined %}
-{% set combined_chunky = (combined_chunky | combine(global_overrides.chunky, recursive=True)) %}
+{% set combined_chunky = chunky.config %}
+{% if global_overrides.chunky.config is defined %}
+{% set combined_chunky = (combined_chunky | combine(global_overrides.chunky.config, recursive=True)) %}
 {% endif %}
-{% if node_overrides.chunky is defined %}
-{% set combined_chunky = (combined_chunky | combine(node_overrides.chunky, recursive=True)) %}
+{% if node_overrides.chunky.config is defined %}
+{% set combined_chunky = (combined_chunky | combine(node_overrides.chunky.config, recursive=True)) %}
 {% endif %}
-{% if outer_item.plugins.chunky is defined %}
-{% set combined_chunky = (combined_chunky | combine(outer_item.plugins.chunky, recursive=True)) %}
+{% if outer_item.plugins.chunky.config is defined %}
+{% set combined_chunky = (combined_chunky | combine(outer_item.plugins.chunky.config, recursive=True)) %}
 {% endif %}
 
 {{ combined_chunky | to_nice_yaml(indent=2) }}

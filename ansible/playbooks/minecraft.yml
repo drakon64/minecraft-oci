@@ -9,11 +9,11 @@
     - ../vars/bukkit.yml
     - ../vars/chunky.yml
     - ../vars/commands.yml
+    - ../vars/discordsrv.yml
     - ../vars/floodgate.yml
     - ../vars/geyser.yml
     - ../vars/harbor.yml
     - ../vars/luckperms.yml
-    - ../vars/minimotd.yml
     - ../vars/paper.yml
     - ../vars/server.yml
     - ../vars/spigot.yml
