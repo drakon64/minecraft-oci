@@ -9,8 +9,12 @@
     mode: u=rwX,g=rX,o=rX
   loop:
     - {
+      path: Chunky,
+      state: "{% if outer_item.chunky %}directory{% else %}absent{% endif %}"
+    }
+    - {
       path: Chunky/tasks,
-      state: directory,
+      state: "{% if outer_item.chunky %}directory{% else %}absent{% endif %}"
     }
     - {
       path: DiscordSRV,

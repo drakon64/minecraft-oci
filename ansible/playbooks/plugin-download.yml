@@ -49,7 +49,7 @@
     - {
       url: "https://ci.codemc.io/view/Author/job/pop4959/job/Chunky/lastSuccessfulBuild/artifact/bukkit/build/libs/{{ chunky_latest.stdout }}",
       dest: Chunky.jar,
-      when: true,
+      when: "{{ outer_item.chunky }}",
     }
     - {
       url: "{{ discordsrv_latest.stdout }}",
