@@ -49,12 +49,14 @@
       path: LuckPerms/yaml-storage/users,
       state: "{% if combined_luckperms.config['storage-method'] == 'yaml' %}directory{% else %}absent{% endif %}",
     }
+    - { path: SeeMore, state: directory }
     - { path: TabTPS, state: directory }
     - { path: UnifiedMetrics/driver, state: directory }
     - {
       path: ViaVersion,
       state: "{% if outer_item.viaversion %}directory{% else %}absent{% endif %}",
     }
+    - { path: ViewDistanceTweaks, state: directory }
     - {
       path: WorldEdit,
       state: directory,

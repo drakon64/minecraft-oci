@@ -31,12 +31,16 @@
     - { src: spigot.yml, when: true }
     - { src: config/paper-global.yml, when: true }
     - { src: config/paper-world-defaults.yml, when: true }
-    - { src: plugins/Chunky/config.yml, when: true }
+    - { src: plugins/Chunky/config.yml, when: "{{ outer_item.chunky }}", }
     - { src: plugins/DiscordSRV/config.yml, when: true }
     - { src: plugins/floodgate/config.yml, when: true }
     - { src: plugins/Geyser-Spigot/config.yml, when: true }
     - { src: plugins/Harbor/config.yml, when: true }
     - { src: plugins/LuckPerms/config.yml, when: true }
+    - {
+      src: plugins/SeeMore/config.yml,
+      when: true,
+    }
     - {
       src: plugins/UnifiedMetrics/config.yml,
       when: true,
@@ -48,6 +52,10 @@
     - {
       src: plugins/ViaVersion/config.yml,
       when: "{{ outer_item.viaversion }}",
+    }
+    - {
+      src: plugins/ViewDistanceTweaks/config.yml,
+      when: true,
     }
     - {
       src: plugins/WorldEdit/config.yml,
@@ -94,3 +102,4 @@
     group: minecraft-{{ outer_item.name }}
     mode: u=rw,g=r,o=r
   loop: "{{ global_overrides.chunky.tasks }}"
+  when: outer_item.chunky

@@ -1,0 +1,6 @@
+seemore:
+  update-delay: 600
+  version: 1
+  world-settings:
+    default:
+      maximum-view-distance: -1

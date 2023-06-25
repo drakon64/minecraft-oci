@@ -15,10 +15,12 @@
     - ../vars/harbor.yml
     - ../vars/luckperms.yml
     - ../vars/paper.yml
+    - ../vars/seemore.yml
     - ../vars/server.yml
     - ../vars/spigot.yml
     - ../vars/unifiedmetrics.yml
     - ../vars/viaversion.yml
+    - ../vars/viewdistancetweaks.yml
     - ../vars/worldedit.yml
     - ../vars/worldguard.yml
 

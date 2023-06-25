@@ -1,0 +1,12 @@
+{% set combined_seemore = seemore %}
+{% if global_overrides.seemore is defined %}
+{% set combined_seemore = (combined_seemore | combine(global_overrides.seemore, recursive=True)) %}
+{% endif %}
+{% if node_overrides.seemore is defined %}
+{% set combined_seemore = (combined_seemore | combine(node_overrides.seemore, recursive=True)) %}
+{% endif %}
+{% if outer_item.plugins.seemore is defined %}
+{% set combined_seemore = (combined_seemore | combine(outer_item.plugins.seemore, recursive=True)) %}
+{% endif %}
+
+{{ combined_seemore | to_nice_yaml(indent=2) }}
