@@ -25,11 +25,15 @@ then
 	tmux send-keys -t minecraft-"$1" say SPACE Saved SPACE the SPACE game ENTER
 	cd "$SCRIPT_PWD" || exit 1
 
+  tmux send-keys -t minecraft-"$1" say SPACE Pruning SPACE backup SPACE repository ENTER
 	borg prune --keep-within "$BACKUP_RETENTION_DAYS"d --save-space "$1"/backup
 	#borg compact "$1"/backup
+	tmux send-keys -t minecraft-"$1" say SPACE Pruned SPACE backup SPACE repository ENTER
 
 	cd "$1" || exit
+	tmux send-keys -t minecraft-"$1" say SPACE Uploading SPACE backup ENTER
 	tar cf - backup/ | oci os object put --auth instance_principal --bucket-name {{ bucket_name }} --file - --name minecraft-"$1".tar --force
+	tmux send-keys -t minecraft-"$1" say SPACE Uploaded SPACE backup ENTER
 
 	sudo systemctl start minecraft-backup-mount@"$1".service
 else
